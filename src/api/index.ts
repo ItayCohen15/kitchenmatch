@@ -73,6 +73,15 @@ export const api = {
   getPendingApplications: (restaurantId: number) =>
     fetch(`${BASE}/jobs/restaurant/${restaurantId}/pending`, { headers: headers() }).then(handleResponse),
 
+  workerEndShift: (jobId: number) =>
+    fetch(`${BASE}/jobs/${jobId}/worker-end`, {
+      method: 'PUT',
+      headers: headers()
+    }).then(handleResponse),
+
+  getShiftsToConfirm: (restaurantId: number) =>
+    fetch(`${BASE}/jobs/restaurant/${restaurantId}/to-confirm`, { headers: headers() }).then(handleResponse),
+
   startJob: (jobId: number) =>
     fetch(`${BASE}/jobs/${jobId}/start`, {
       method: 'PUT',

@@ -47,8 +47,11 @@ export const RestaurantAnalytics: React.FC = () => {
     const d = new Date(j.StartTime);
     const key = MONTH_NAMES[d.getMonth()];
     if (!monthlyMap[key]) monthlyMap[key] = { spend: 0, shifts: 0 };
+    const hours = j.StartTime && j.EndTime
+      ? (new Date(j.EndTime).getTime() - new Date(j.StartTime).getTime()) / (1000 * 60 * 60)
+      : 5;
     monthlyMap[key].shifts += 1;
-    monthlyMap[key].spend += j.TotalPay || (j.HourlyRate * 5);
+    monthlyMap[key].spend += (j.TotalPay || (j.HourlyRate * hours)) * 1.065;
   });
 
   const chartData = Object.entries(monthlyMap).map(([month, v]) => ({ month, ...v }));
@@ -58,7 +61,14 @@ export const RestaurantAnalytics: React.FC = () => {
   }
 
   const totalShifts = jobs.length;
-  const totalSpend = jobs.reduce((s, j) => s + (j.TotalPay || j.HourlyRate * 5), 0);
+  // הוצאות אמיתיות = סכום בסיס × 1.065 (כולל עמלת 6.5% מהמסעדה)
+  const totalSpend = jobs.reduce((s, j) => {
+    const hours = j.StartTime && j.EndTime
+      ? (new Date(j.EndTime).getTime() - new Date(j.StartTime).getTime()) / (1000 * 60 * 60)
+      : 5;
+    const base = j.TotalPay || (j.HourlyRate * hours);
+    return s + base * 1.065;
+  }, 0);
   const avgPerShift = totalShifts > 0 ? (totalSpend / totalShifts).toFixed(0) : 0;
 
   // התפלגות תפקידים
