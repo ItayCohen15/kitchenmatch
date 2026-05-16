@@ -87,6 +87,21 @@ export const api = {
   getWorkerEarnings: (workerId: number) =>
     fetch(`${BASE}/workers/${workerId}/earnings`, { headers: headers() }).then(handleResponse),
 
+  updateWorker: (workerId: number, data: object) =>
+    fetch(`${BASE}/workers/${workerId}`, {
+      method: 'PUT',
+      headers: headers(),
+      body: JSON.stringify(data)
+    }).then(handleResponse),
+
+  // ========== RESTAURANTS ==========
+  updateRestaurant: (restaurantId: number, data: object) =>
+    fetch(`${BASE}/restaurants/${restaurantId}`, {
+      method: 'PUT',
+      headers: headers(),
+      body: JSON.stringify(data)
+    }).then(handleResponse),
+
   // ========== RATINGS ==========
   sendRating: (jobId: number, fromUserId: number, toUserId: number, score: number, comment: string) =>
     fetch(`${BASE}/ratings`, {

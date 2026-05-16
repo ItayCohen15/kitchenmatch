@@ -3,7 +3,7 @@ import { ChefHat, Store, Eye, EyeOff } from 'lucide-react';
 import { api } from '../api';
 
 interface Props {
-  onLogin: (token: string, role: string, profile: any) => void;
+  onLogin: (token: string, role: string, profile: any, isNew?: boolean) => void;
 }
 
 export const Auth: React.FC<Props> = ({ onLogin }) => {
@@ -31,8 +31,10 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
       }
       localStorage.setItem('km_token', data.token);
       localStorage.setItem('km_role', data.role);
-      localStorage.setItem('km_profile', JSON.stringify(data.profile));
-      onLogin(data.token, data.role, data.profile);
+      if (data.profile) localStorage.setItem('km_profile', JSON.stringify(data.profile));
+      const isNew = mode === 'register';
+      if (isNew) localStorage.removeItem('km_onboarding');
+      onLogin(data.token, data.role, data.profile, isNew);
     } catch (err: any) {
       setError(err.message);
     } finally {

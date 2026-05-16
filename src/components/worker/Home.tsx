@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Zap, MapPin, Clock, ChevronLeft, Filter } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { ROLE_LABELS, EXPERIENCE_LABELS, LEVEL_LABELS, LEVEL_COLORS, CURRENT_WORKER } from '../../data/mockData';
+import { ROLE_LABELS, LEVEL_LABELS, LEVEL_COLORS } from '../../data/mockData';
 import { api } from '../../api';
 
 export const WorkerHome: React.FC = () => {
-  const { navToWorker, selectWorkerJob } = useApp();
-  const w = CURRENT_WORKER;
+  const { navToWorker, selectWorkerJob, userProfile } = useApp();
+  const name = userProfile?.Name || 'עובד';
+  const initials = name.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
+  const level = userProfile?.Level || 'bronze';
+  const rating = userProfile?.Rating || 0;
+  const completedShifts = userProfile?.CompletedShifts || 0;
+  const reliabilityScore = userProfile?.ReliabilityScore || 100;
+  const city = userProfile?.City || '';
+  const totalEarnings = userProfile?.TotalEarnings || 0;
   const [filterRole, setFilterRole] = useState<string>('all');
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,20 +37,16 @@ export const WorkerHome: React.FC = () => {
       {/* Worker header */}
       <div className="bg-gradient-to-l from-gray-900 to-gray-800 rounded-2xl p-5 text-white">
         <div className="flex items-center gap-3 mb-4">
-          <div
-            className="w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl"
-            style={{ backgroundColor: w.avatarColor }}
-          >
-            {w.initials}
+          <div className="w-14 h-14 bg-orange-500 rounded-2xl flex items-center justify-center font-black text-xl">
+            {initials}
           </div>
           <div className="flex-1">
-            <div className="font-bold text-lg">{w.name}</div>
+            <div className="font-bold text-lg">{name}</div>
             <div className="flex items-center gap-2">
-              <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${LEVEL_COLORS[w.level]}`}>
-                {LEVEL_LABELS[w.level]}
+              <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${LEVEL_COLORS[level] || 'text-gray-500 bg-gray-100'}`}>
+                {LEVEL_LABELS[level] || level}
               </span>
-              <span className="text-yellow-400 text-sm font-bold">★{w.rating}</span>
-              <span className="text-gray-400 text-xs">({w.reviewCount})</span>
+              {rating > 0 && <span className="text-yellow-400 text-sm font-bold">★{rating.toFixed(1)}</span>}
             </div>
           </div>
           <div className="text-right">
@@ -51,15 +54,15 @@ export const WorkerHome: React.FC = () => {
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
               זמין
             </div>
-            <div className="text-gray-400 text-xs">{w.city}</div>
+            <div className="text-gray-400 text-xs">{city}</div>
           </div>
         </div>
 
         <div className="grid grid-cols-3 gap-3">
           {[
-            { label: 'הרוויח החודש', value: '₪3,200', color: 'text-green-400' },
-            { label: 'משמרות', value: w.completedShifts, color: 'text-white' },
-            { label: 'אמינות', value: `${w.reliabilityScore}%`, color: 'text-blue-400' },
+            { label: 'סה״כ הכנסות', value: `₪${totalEarnings.toLocaleString()}`, color: 'text-green-400' },
+            { label: 'משמרות', value: completedShifts, color: 'text-white' },
+            { label: 'אמינות', value: `${reliabilityScore}%`, color: 'text-blue-400' },
           ].map(s => (
             <div key={s.label} className="bg-white/10 rounded-xl p-3 text-center">
               <div className={`font-black text-lg ${s.color}`}>{s.value}</div>
