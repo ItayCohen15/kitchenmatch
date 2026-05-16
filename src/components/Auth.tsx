@@ -26,8 +26,7 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
       if (mode === 'login') {
         data = await api.login(email, password);
       } else {
-        if (!name) return setError('נא למלא שם');
-        data = await api.register(email, password, role, name, city);
+        data = await api.register(email, password, role, '', '');
       }
       localStorage.setItem('km_token', data.token);
       localStorage.setItem('km_role', data.role);
@@ -98,22 +97,9 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
           {/* Fields */}
           <div className="space-y-3">
             {mode === 'register' && (
-              <>
-                <input
-                  type="text"
-                  placeholder="שם מלא / שם מסעדה"
-                  value={name}
-                  onChange={e => setName(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right text-sm focus:border-orange-400 outline-none"
-                />
-                <input
-                  type="text"
-                  placeholder="עיר"
-                  value={city}
-                  onChange={e => setCity(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right text-sm focus:border-orange-400 outline-none"
-                />
-              </>
+              <p className="text-xs text-gray-400 text-center bg-gray-50 rounded-xl p-2">
+                📋 לאחר ההרשמה נשלים את פרטי הפרופיל שלך
+              </p>
             )}
             <input
               type="email"

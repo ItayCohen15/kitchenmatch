@@ -1,16 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip,
   ResponsiveContainer, PieChart, Pie, Cell,
 } from 'recharts';
-import { TrendingUp, TrendingDown, Users, Clock, AlertCircle } from 'lucide-react';
-import { ANALYTICS_DATA } from '../../data/mockData';
-
-const ROLE_DIST = [
-  { name: 'שפים', value: 45, color: '#f97316' },
-  { name: 'טבחים', value: 38, color: '#3b82f6' },
-  { name: 'מדיחים', value: 17, color: '#10b981' },
-];
+import { TrendingUp, Users, Clock, AlertCircle } from 'lucide-react';
+import { useApp } from '../../context/AppContext';
+import { api } from '../../api';
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload?.length) {
@@ -28,48 +23,102 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
+const MONTH_NAMES = ['ינו׳','פבר׳','מרץ','אפר׳','מאי','יוני','יולי','אוג׳','ספט׳','אוק׳','נוב׳','דצמ׳'];
+
 export const RestaurantAnalytics: React.FC = () => {
-  const thisMonth = ANALYTICS_DATA[ANALYTICS_DATA.length - 1];
-  const lastMonth = ANALYTICS_DATA[ANALYTICS_DATA.length - 2];
-  const spendGrowth = (((thisMonth.spend - lastMonth.spend) / lastMonth.spend) * 100).toFixed(1);
-  const shiftsGrowth = (((thisMonth.shifts - lastMonth.shifts) / lastMonth.shifts) * 100).toFixed(1);
+  const { userProfile } = useApp();
+  const [jobs, setJobs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (userProfile?.Id) {
+      api.getRestaurantJobs(userProfile.Id)
+        .then(data => setJobs(Array.isArray(data) ? data : []))
+        .catch(() => setJobs([]))
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
+  }, [userProfile]);
+
+  // בנה דאטא לגרפים מהמשמרות האמיתיות
+  const monthlyMap: Record<string, { spend: number; shifts: number }> = {};
+  jobs.forEach(j => {
+    const d = new Date(j.StartTime);
+    const key = MONTH_NAMES[d.getMonth()];
+    if (!monthlyMap[key]) monthlyMap[key] = { spend: 0, shifts: 0 };
+    monthlyMap[key].shifts += 1;
+    monthlyMap[key].spend += j.TotalPay || (j.HourlyRate * 5);
+  });
+
+  const chartData = Object.entries(monthlyMap).map(([month, v]) => ({ month, ...v }));
+  if (chartData.length === 0) {
+    const now = new Date();
+    chartData.push({ month: MONTH_NAMES[now.getMonth()], spend: 0, shifts: 0 });
+  }
+
+  const totalShifts = jobs.length;
+  const totalSpend = jobs.reduce((s, j) => s + (j.TotalPay || j.HourlyRate * 5), 0);
+  const avgPerShift = totalShifts > 0 ? (totalSpend / totalShifts).toFixed(0) : 0;
+
+  // התפלגות תפקידים
+  const roleCounts: Record<string, number> = {};
+  jobs.forEach(j => { roleCounts[j.Role] = (roleCounts[j.Role] || 0) + 1; });
+  const roleColors: Record<string, string> = { chef: '#f97316', line_cook: '#3b82f6', dishwasher: '#10b981' };
+  const roleLabels: Record<string, string> = { chef: 'שפים', line_cook: 'טבחים', dishwasher: 'מדיחים' };
+  const roleDist = Object.entries(roleCounts).map(([role, count]) => ({
+    name: roleLabels[role] || role,
+    value: Math.round((count / totalShifts) * 100),
+    color: roleColors[role] || '#9ca3af',
+  }));
+  if (roleDist.length === 0) {
+    roleDist.push({ name: 'אין עדיין', value: 100, color: '#e5e7eb' });
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="screen-enter space-y-4">
       <h2 className="text-xl font-black text-gray-900">ניתוח ביצועים</h2>
 
+      {totalShifts === 0 && (
+        <div className="bg-orange-50 border border-orange-100 rounded-2xl p-6 text-center">
+          <div className="text-4xl mb-3">📊</div>
+          <p className="font-bold text-gray-700">אין עדיין נתונים</p>
+          <p className="text-gray-400 text-sm mt-1">פרסם משמרות כדי לראות ניתוח</p>
+        </div>
+      )}
+
       {/* KPI cards */}
       <div className="grid grid-cols-2 gap-3">
         {[
           {
-            title: 'הוצאה חודשית',
-            value: `₪${thisMonth.spend.toLocaleString()}`,
-            change: `+${spendGrowth}%`,
-            up: true,
+            title: 'סה״כ הוצאות',
+            value: `₪${totalSpend.toLocaleString()}`,
             icon: <TrendingUp size={18} />,
             color: 'text-orange-500 bg-orange-50',
           },
           {
-            title: 'משמרות',
-            value: `${thisMonth.shifts}`,
-            change: `+${shiftsGrowth}%`,
-            up: true,
+            title: 'סה״כ משמרות',
+            value: `${totalShifts}`,
             icon: <Users size={18} />,
             color: 'text-blue-500 bg-blue-50',
           },
           {
-            title: 'ממוצע לשעה',
-            value: '₪396',
-            change: '+2.1%',
-            up: true,
+            title: 'ממוצע למשמרת',
+            value: `₪${avgPerShift}`,
             icon: <Clock size={18} />,
             color: 'text-green-500 bg-green-50',
           },
           {
-            title: 'שיעור ביטולים',
-            value: '4.2%',
-            change: '-1.3%',
-            up: false,
+            title: 'חודשים פעילים',
+            value: `${chartData.length}`,
             icon: <AlertCircle size={18} />,
             color: 'text-purple-500 bg-purple-50',
           },
@@ -80,10 +129,6 @@ export const RestaurantAnalytics: React.FC = () => {
             </div>
             <div className="font-black text-gray-900 text-xl">{kpi.value}</div>
             <div className="text-gray-500 text-xs">{kpi.title}</div>
-            <div className={`flex items-center gap-1 mt-1 text-xs font-semibold ${kpi.up ? 'text-green-600' : 'text-red-500'}`}>
-              {kpi.up ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
-              {kpi.change} מחודש שעבר
-            </div>
           </div>
         ))}
       </div>
@@ -92,7 +137,7 @@ export const RestaurantAnalytics: React.FC = () => {
       <div className="bg-white rounded-2xl p-4 card-shadow">
         <h3 className="font-bold text-gray-800 mb-4">הוצאות לאורך זמן</h3>
         <ResponsiveContainer width="100%" height={160}>
-          <AreaChart data={ANALYTICS_DATA} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+          <AreaChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="spendGrad" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#f97316" stopOpacity={0.3} />
@@ -117,7 +162,7 @@ export const RestaurantAnalytics: React.FC = () => {
       <div className="bg-white rounded-2xl p-4 card-shadow">
         <h3 className="font-bold text-gray-800 mb-4">מספר משמרות</h3>
         <ResponsiveContainer width="100%" height={140}>
-          <BarChart data={ANALYTICS_DATA} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+          <BarChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
             <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#9ca3af' }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 10, fill: '#9ca3af' }} axisLine={false} tickLine={false} />
             <Tooltip content={<CustomTooltip />} />
@@ -127,39 +172,34 @@ export const RestaurantAnalytics: React.FC = () => {
       </div>
 
       {/* Role distribution */}
-      <div className="bg-white rounded-2xl p-4 card-shadow">
-        <h3 className="font-bold text-gray-800 mb-4">התפלגות תפקידים</h3>
-        <div className="flex items-center gap-4">
-          <div className="flex-shrink-0">
-            <ResponsiveContainer width={120} height={120}>
-              <PieChart>
-                <Pie
-                  data={ROLE_DIST}
-                  cx="50%" cy="50%"
-                  innerRadius={32} outerRadius={54}
-                  paddingAngle={3}
-                  dataKey="value"
-                >
-                  {ROLE_DIST.map((entry, i) => (
-                    <Cell key={i} fill={entry.color} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="flex-1 space-y-2">
-            {ROLE_DIST.map(d => (
-              <div key={d.name} className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: d.color }} />
-                  <span className="text-sm text-gray-700">{d.name}</span>
+      {roleDist[0].name !== 'אין עדיין' && (
+        <div className="bg-white rounded-2xl p-4 card-shadow">
+          <h3 className="font-bold text-gray-800 mb-4">התפלגות תפקידים</h3>
+          <div className="flex items-center gap-4">
+            <div className="flex-shrink-0">
+              <ResponsiveContainer width={120} height={120}>
+                <PieChart>
+                  <Pie data={roleDist} cx="50%" cy="50%"
+                    innerRadius={32} outerRadius={54} paddingAngle={3} dataKey="value">
+                    {roleDist.map((entry, i) => <Cell key={i} fill={entry.color} />)}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="flex-1 space-y-2">
+              {roleDist.map(d => (
+                <div key={d.name} className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: d.color }} />
+                    <span className="text-sm text-gray-700">{d.name}</span>
+                  </div>
+                  <span className="font-bold text-gray-900 text-sm">{d.value}%</span>
                 </div>
-                <span className="font-bold text-gray-900 text-sm">{d.value}%</span>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Insight */}
       <div className="bg-gradient-to-l from-orange-600 to-orange-500 rounded-2xl p-4 text-white">

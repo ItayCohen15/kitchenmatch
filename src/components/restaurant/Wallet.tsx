@@ -1,14 +1,35 @@
-import React, { useState } from 'react';
-import { Plus, ArrowUpRight, ArrowDownRight, CreditCard, CheckCircle2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Plus, ArrowUpRight, CreditCard, CheckCircle2 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { CURRENT_RESTAURANT, RESTAURANT_TRANSACTIONS } from '../../data/mockData';
+import { api } from '../../api';
+import { ROLE_LABELS } from '../../data/mockData';
 
 export const RestaurantWallet: React.FC = () => {
-  const r = CURRENT_RESTAURANT;
+  const { userProfile } = useApp();
   const [topUpAmount, setTopUpAmount] = useState('');
   const [showTopUp, setShowTopUp] = useState(false);
   const [topping, setTopping] = useState(false);
   const [topped, setTopped] = useState(false);
+  const [jobs, setJobs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const walletBalance = userProfile?.WalletBalance || 0;
+  const name = userProfile?.Name || '';
+
+  useEffect(() => {
+    if (userProfile?.Id) {
+      api.getRestaurantJobs(userProfile.Id)
+        .then(data => setJobs(Array.isArray(data) ? data : []))
+        .catch(() => setJobs([]))
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
+  }, [userProfile]);
+
+  const completedJobs = jobs.filter(j => j.Status === 'completed');
+  const totalSpend = completedJobs.reduce((sum, j) => sum + (j.TotalPay || 0), 0);
+  const avgPerShift = completedJobs.length > 0 ? (totalSpend / completedJobs.length).toFixed(0) : 0;
 
   const handleTopUp = () => {
     setTopping(true);
@@ -25,9 +46,9 @@ export const RestaurantWallet: React.FC = () => {
       {/* Balance card */}
       <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-5 text-white">
         <div className="text-gray-400 text-sm mb-1">יתרה בארנק</div>
-        <div className="text-4xl font-black mb-1">₪{r.walletBalance.toLocaleString()}</div>
+        <div className="text-4xl font-black mb-1">₪{walletBalance.toLocaleString()}</div>
         <div className="text-gray-400 text-sm">
-          תשלום ממתין: <span className="text-yellow-400 font-bold">₪{r.pendingPayments}</span>
+          {name && <span className="text-gray-300">{name}</span>}
         </div>
 
         <div className="grid grid-cols-2 gap-3 mt-4">
@@ -98,9 +119,9 @@ export const RestaurantWallet: React.FC = () => {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: 'הוצאה חודשית', value: `₪${r.monthlySpend.toLocaleString()}`, color: 'text-orange-500' },
-          { label: 'ממוצע למשמרת', value: '₪396', color: 'text-blue-500' },
-          { label: 'משמרות החודש', value: '22', color: 'text-green-500' },
+          { label: 'סה״כ הוצאות', value: `₪${totalSpend.toLocaleString()}`, color: 'text-orange-500' },
+          { label: 'ממוצע למשמרת', value: `₪${avgPerShift}`, color: 'text-blue-500' },
+          { label: 'משמרות', value: jobs.length, color: 'text-green-500' },
         ].map(s => (
           <div key={s.label} className="bg-white rounded-xl p-3 card-shadow text-center">
             <div className={`font-black text-lg ${s.color}`}>{s.value}</div>
@@ -122,20 +143,47 @@ export const RestaurantWallet: React.FC = () => {
 
       {/* Transactions */}
       <div>
-        <h3 className="font-bold text-gray-800 mb-3">היסטוריית תשלומים</h3>
+        <h3 className="font-bold text-gray-800 mb-3">היסטוריית משמרות</h3>
+        {loading && (
+          <div className="text-center py-4">
+            <div className="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto" />
+          </div>
+        )}
+        {!loading && jobs.length === 0 && (
+          <div className="bg-white rounded-xl p-6 text-center card-shadow">
+            <div className="text-3xl mb-2">📋</div>
+            <p className="text-gray-500 text-sm">אין משמרות עדיין</p>
+            <p className="text-gray-400 text-xs mt-1">פרסם משמרת ראשונה להתחיל</p>
+          </div>
+        )}
         <div className="space-y-2">
-          {RESTAURANT_TRANSACTIONS.map(t => (
-            <div key={t.id} className="bg-white rounded-xl p-3 flex items-center gap-3 card-shadow">
-              <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0">
-                <ArrowUpRight size={18} className="text-red-500" />
+          {jobs.map((j: any, i: number) => {
+            const start = new Date(j.StartTime);
+            const end = new Date(j.EndTime);
+            const hours = ((end.getTime() - start.getTime()) / (1000 * 60 * 60)).toFixed(1);
+            const pay = j.TotalPay || (parseFloat(hours) * j.HourlyRate);
+            const statusColor = j.Status === 'completed' ? 'text-green-500' : j.Status === 'searching' ? 'text-orange-400' : 'text-blue-400';
+            const statusLabel = j.Status === 'completed' ? 'הושלם' : j.Status === 'searching' ? 'מחפש' : j.Status === 'active' ? 'פעיל' : j.Status;
+            return (
+              <div key={i} className="bg-white rounded-xl p-3 flex items-center gap-3 card-shadow">
+                <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center flex-shrink-0">
+                  <ArrowUpRight size={18} className="text-orange-500" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-semibold text-gray-900 text-sm">
+                    {ROLE_LABELS[j.Role] || j.Role} · {hours} ש׳
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-400 text-xs">
+                      {start.toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit' })}
+                    </span>
+                    <span className={`text-xs font-semibold ${statusColor}`}>{statusLabel}</span>
+                  </div>
+                </div>
+                <div className="text-red-500 font-bold text-sm flex-shrink-0">-₪{pay.toFixed(0)}</div>
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="font-semibold text-gray-900 text-sm truncate">{t.description}</div>
-                <div className="text-gray-400 text-xs">{t.date}</div>
-              </div>
-              <div className="text-red-500 font-bold text-sm flex-shrink-0">{t.amount.toLocaleString()}₪</div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
