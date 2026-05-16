@@ -1,17 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Zap, MapPin, Clock, ChevronLeft, Filter } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { NEARBY_JOBS, CURRENT_WORKER, ROLE_LABELS, EXPERIENCE_LABELS, LEVEL_LABELS, LEVEL_COLORS } from '../../data/mockData';
+import { ROLE_LABELS, EXPERIENCE_LABELS, LEVEL_LABELS, LEVEL_COLORS, CURRENT_WORKER } from '../../data/mockData';
+import { api } from '../../api';
 
 export const WorkerHome: React.FC = () => {
   const { navToWorker, selectWorkerJob } = useApp();
   const w = CURRENT_WORKER;
   const [filterRole, setFilterRole] = useState<string>('all');
+  const [jobs, setJobs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filtered = NEARBY_JOBS.filter(j => filterRole === 'all' || j.role === filterRole);
+  useEffect(() => {
+    api.getJobs()
+      .then(data => setJobs(Array.isArray(data) ? data : []))
+      .catch(() => setJobs([]))
+      .finally(() => setLoading(false));
+  }, []);
 
-  const handleJobPress = (jobId: string) => {
-    selectWorkerJob(jobId);
+  const filtered = jobs.filter(j => filterRole === 'all' || j.Role === filterRole);
+
+  const handleJobPress = (jobId: string, jobData: any) => {
+    selectWorkerJob(jobId, jobData);
     navToWorker('job_details');
   };
 
@@ -105,25 +115,39 @@ export const WorkerHome: React.FC = () => {
           <h2 className="font-bold text-gray-800 text-base">משמרות קרובות</h2>
           <span className="text-xs text-gray-400">{filtered.length} זמינות</span>
         </div>
+
+        {loading && (
+          <div className="text-center py-8">
+            <div className="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+            <p className="text-gray-400 text-sm">טוען משמרות...</p>
+          </div>
+        )}
+
+        {!loading && filtered.length === 0 && (
+          <div className="text-center py-10 bg-white rounded-2xl card-shadow">
+            <div className="text-4xl mb-3">🍳</div>
+            <p className="text-gray-500 font-medium">אין משמרות זמינות כרגע</p>
+            <p className="text-gray-400 text-sm mt-1">בדוק שוב מאוחר יותר</p>
+          </div>
+        )}
+
         <div className="space-y-3">
           {filtered.map(job => {
-            const hours = (() => {
-              const [sh, sm] = job.startTime.split(':').map(Number);
-              const [eh, em] = job.endTime.split(':').map(Number);
-              let d = (eh * 60 + em) - (sh * 60 + sm);
-              if (d < 0) d += 1440;
-              return (d / 60).toFixed(1);
-            })();
-            const totalPay = parseFloat(hours) * job.hourlyRate;
+            const start = new Date(job.StartTime);
+            const end = new Date(job.EndTime);
+            const hours = ((end.getTime() - start.getTime()) / (1000 * 60 * 60)).toFixed(1);
+            const totalPay = parseFloat(hours) * job.HourlyRate;
+            const startStr = start.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+            const endStr = end.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
 
             return (
               <div
-                key={job.id}
+                key={job.Id}
                 className={`bg-white rounded-2xl p-4 card-shadow border-2 ${
-                  job.isEmergency ? 'border-red-200' : 'border-transparent'
+                  job.IsEmergency ? 'border-red-200' : 'border-transparent'
                 }`}
               >
-                {job.isEmergency && (
+                {job.IsEmergency === true && (
                   <div className="flex items-center gap-1.5 mb-2">
                     <Zap size={12} className="text-red-500 fill-red-500" />
                     <span className="text-red-500 text-xs font-bold">חירום – דרוש מיידי</span>
@@ -132,44 +156,32 @@ export const WorkerHome: React.FC = () => {
 
                 <div className="flex items-start justify-between gap-2 mb-3">
                   <div className="flex-1">
-                    <div className="font-bold text-gray-900">{job.restaurantName}</div>
+                    <div className="font-bold text-gray-900">{job.RestaurantName}</div>
                     <div className="flex items-center gap-1 text-gray-500 text-sm mt-0.5">
                       <MapPin size={12} />
-                      {job.restaurantCity} · {(Math.random() * 3 + 0.5).toFixed(1)} ק״מ
+                      {job.RestaurantCity}
                     </div>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <div className="text-orange-500 font-black text-lg">₪{job.hourlyRate}/ש׳</div>
+                    <div className="text-orange-500 font-black text-lg">₪{job.HourlyRate}/ש׳</div>
                     <div className="text-green-600 text-xs font-semibold">₪{totalPay.toFixed(0)} סה״כ</div>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3 flex-wrap mb-3">
                   <span className="bg-blue-50 text-blue-600 text-xs font-semibold rounded-full px-2.5 py-1">
-                    {ROLE_LABELS[job.role]}
+                    {ROLE_LABELS[job.Role] || job.Role}
                   </span>
                   <div className="flex items-center gap-1 text-gray-500 text-xs">
                     <Clock size={12} />
-                    {job.startTime}–{job.endTime} ({hours} ש׳)
+                    {startStr}–{endStr} ({hours} ש׳)
                   </div>
-                  <span className="text-gray-500 text-xs">{job.date}</span>
-                  <span className="text-gray-400 text-xs">{EXPERIENCE_LABELS[job.experienceRequired]}</span>
                 </div>
 
-                {job.requiredSkills.length > 0 && (
-                  <div className="flex gap-1 flex-wrap mb-3">
-                    {job.requiredSkills.map(s => (
-                      <span key={s} className="text-xs bg-gray-100 text-gray-600 rounded-full px-2 py-0.5">{s}</span>
-                    ))}
-                  </div>
-                )}
-
                 <button
-                  onClick={() => handleJobPress(job.id)}
+                  onClick={() => handleJobPress(String(job.Id), job)}
                   className={`w-full rounded-xl py-3 font-bold text-sm flex items-center justify-center gap-1 transition-all active:scale-98 ${
-                    job.isEmergency
-                      ? 'bg-red-500 text-white'
-                      : 'bg-orange-500 text-white'
+                    job.IsEmergency ? 'bg-red-500 text-white' : 'bg-orange-500 text-white'
                   }`}
                 >
                   צפה בפרטים

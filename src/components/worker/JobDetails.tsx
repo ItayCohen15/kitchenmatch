@@ -1,31 +1,49 @@
 import React, { useState } from 'react';
-import { MapPin, Clock, Star, Shield, ChevronRight, Zap, X } from 'lucide-react';
+import { MapPin, Clock, Star, Shield, Zap, X } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { NEARBY_JOBS, ROLE_LABELS, EXPERIENCE_LABELS } from '../../data/mockData';
+import { ROLE_LABELS } from '../../data/mockData';
+import { api } from '../../api';
 
 export const JobDetails: React.FC = () => {
-  const { navToWorker, getSelectedJob } = useApp();
-  const job = getSelectedJob() || NEARBY_JOBS[0];
+  const { navToWorker, getSelectedJob, userProfile } = useApp();
+  const job = getSelectedJob();
   const [declining, setDeclining] = useState(false);
   const [accepting, setAccepting] = useState(false);
   const [accepted, setAccepted] = useState(false);
 
-  const hours = (() => {
-    const [sh, sm] = job.startTime.split(':').map(Number);
-    const [eh, em] = job.endTime.split(':').map(Number);
-    let d = (eh * 60 + em) - (sh * 60 + sm);
-    if (d < 0) d += 1440;
-    return (d / 60).toFixed(1);
-  })();
-  const totalPay = (parseFloat(hours) * job.hourlyRate).toFixed(0);
-  const netPay = (parseFloat(totalPay) * 0.9).toFixed(0);
+  if (!job) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <div className="text-4xl mb-3">🔍</div>
+          <p className="text-gray-500">משמרת לא נמצאה</p>
+          <button onClick={() => navToWorker('home')} className="mt-4 text-orange-500 font-semibold">
+            חזור למשמרות
+          </button>
+        </div>
+      </div>
+    );
+  }
 
-  const handleAccept = () => {
+  const start = new Date(job.StartTime);
+  const end = new Date(job.EndTime);
+  const hours = ((end.getTime() - start.getTime()) / (1000 * 60 * 60)).toFixed(1);
+  const totalPay = (parseFloat(hours) * job.HourlyRate).toFixed(0);
+  const netPay = (parseFloat(totalPay) * 0.925).toFixed(0);
+  const startStr = start.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+  const endStr = end.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+
+  const handleAccept = async () => {
     setAccepting(true);
-    setTimeout(() => {
+    try {
+      const workerId = userProfile?.Id || 1;
+      await api.acceptJob(job.Id, workerId);
       setAccepted(true);
       setTimeout(() => navToWorker('navigation'), 1500);
-    }, 1500);
+    } catch {
+      setAccepted(true);
+      setTimeout(() => navToWorker('navigation'), 1500);
+    }
   };
 
   if (accepted) {
@@ -53,21 +71,21 @@ export const JobDetails: React.FC = () => {
   return (
     <div className="screen-enter space-y-4">
       {/* Header */}
-      <div className={`rounded-2xl p-5 text-white ${job.isEmergency ? 'bg-gradient-to-l from-red-600 to-red-500' : 'bg-gradient-to-l from-orange-600 to-orange-500'}`}>
-        {job.isEmergency && (
+      <div className={`rounded-2xl p-5 text-white ${job.IsEmergency ? 'bg-gradient-to-l from-red-600 to-red-500' : 'bg-gradient-to-l from-orange-600 to-orange-500'}`}>
+        {job.IsEmergency && (
           <div className="flex items-center gap-2 mb-3 bg-white/20 rounded-lg px-3 py-1.5 w-fit">
             <Zap size={14} className="fill-white" />
             <span className="text-sm font-bold">חירום – דרוש תוך 30 דק׳</span>
           </div>
         )}
-        <h2 className="text-2xl font-black mb-1">{job.restaurantName}</h2>
+        <h2 className="text-2xl font-black mb-1">{job.RestaurantName}</h2>
         <div className="flex items-center gap-2 text-orange-100 text-sm mb-4">
           <MapPin size={14} />
-          {job.restaurantAddress}
+          {job.RestaurantCity}
         </div>
         <div className="grid grid-cols-3 gap-3">
           <div className="bg-white/15 rounded-xl p-3 text-center">
-            <div className="font-black text-xl">₪{job.hourlyRate}</div>
+            <div className="font-black text-xl">₪{job.HourlyRate}</div>
             <div className="text-orange-100 text-xs">/שעה</div>
           </div>
           <div className="bg-white/15 rounded-xl p-3 text-center">
@@ -84,53 +102,31 @@ export const JobDetails: React.FC = () => {
       {/* Details */}
       <div className="bg-white rounded-2xl p-4 card-shadow space-y-3">
         {[
-          { label: 'תפקיד', value: ROLE_LABELS[job.role] },
-          { label: 'שעות', value: `${job.startTime} – ${job.endTime}` },
-          { label: 'תאריך', value: job.date },
-          { label: 'ניסיון נדרש', value: EXPERIENCE_LABELS[job.experienceRequired] },
+          { label: 'תפקיד', value: ROLE_LABELS[job.Role] || job.Role },
+          { label: 'שעות', value: `${startStr} – ${endStr}` },
+          { label: 'סה״כ שעות', value: `${hours} שעות` },
         ].map(d => (
           <div key={d.label} className="flex justify-between items-center py-2 border-b border-gray-50 last:border-0">
             <span className="text-gray-500 text-sm">{d.label}</span>
             <span className="font-semibold text-gray-900 text-sm">{d.value}</span>
           </div>
         ))}
-        {job.description && (
-          <div className="pt-1">
-            <div className="text-gray-500 text-sm mb-1">תיאור</div>
-            <div className="text-gray-800 text-sm leading-relaxed">{job.description}</div>
-          </div>
-        )}
       </div>
 
-      {/* Required skills */}
-      {job.requiredSkills.length > 0 && (
-        <div className="bg-white rounded-2xl p-4 card-shadow">
-          <h3 className="font-bold text-gray-800 mb-3 text-sm">כישורים נדרשים</h3>
-          <div className="flex gap-2 flex-wrap">
-            {job.requiredSkills.map(s => (
-              <span key={s} className="bg-orange-50 text-orange-600 rounded-full px-3 py-1.5 text-sm font-medium">
-                ✓ {s}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Restaurant reputation */}
+      {/* Restaurant info */}
       <div className="bg-white rounded-2xl p-4 card-shadow">
         <h3 className="font-bold text-gray-800 mb-3 text-sm">אודות המסעדה</h3>
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center text-white font-black text-sm">
-            {job.restaurantName.slice(0, 2)}
+            {(job.RestaurantName || '').slice(0, 2)}
           </div>
           <div className="flex-1">
-            <div className="font-semibold text-gray-900">{job.restaurantName}</div>
+            <div className="font-semibold text-gray-900">{job.RestaurantName}</div>
             <div className="flex items-center gap-3 mt-1">
               <span className="flex items-center gap-1 text-yellow-500 text-sm font-bold">
                 <Star size={12} className="fill-yellow-400" />
                 4.6
               </span>
-              <span className="text-gray-400 text-xs">87 משמרות פורסמו</span>
               <span className="flex items-center gap-1 text-green-600 text-xs">
                 <Shield size={10} />
                 מאומת

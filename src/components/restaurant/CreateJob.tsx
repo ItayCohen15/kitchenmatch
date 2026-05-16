@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { ChevronRight, Zap, ChefHat, Clock, DollarSign } from 'lucide-react';
+import { ChevronRight, Zap, Clock } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { api } from '../../api';
 import type { JobRole, ExperienceLevel } from '../../types';
 
 const ROLES: { id: JobRole; label: string; icon: string; desc: string }[] = [
@@ -16,7 +17,7 @@ const EXPERIENCE: { id: ExperienceLevel; label: string; desc: string }[] = [
 ];
 
 export const CreateJob: React.FC = () => {
-  const { navToRestaurant, setEmergencyMode } = useApp();
+  const { navToRestaurant, setEmergencyMode, userProfile } = useApp();
   const [step, setStep] = useState(1);
   const [role, setRole] = useState<JobRole | null>(null);
   const [startTime, setStartTime] = useState('18:00');
@@ -36,12 +37,34 @@ export const CreateJob: React.FC = () => {
 
   const totalPay = (parseFloat(totalHours) * parseFloat(wage || '0')).toFixed(0);
 
-  const handlePublish = () => {
+  const handlePublish = async () => {
     setPublishing(true);
     setEmergencyMode(emergency);
+    try {
+      const today = new Date();
+      const startDate = new Date(today);
+      const [sh, sm] = startTime.split(':').map(Number);
+      const [eh, em] = endTime.split(':').map(Number);
+      startDate.setHours(sh, sm, 0, 0);
+      const endDate = new Date(today);
+      endDate.setHours(eh, em, 0, 0);
+      if (endDate <= startDate) endDate.setDate(endDate.getDate() + 1);
+
+      await api.createJob({
+        restaurantId: userProfile?.Id || 1,
+        role: role || 'chef',
+        startTime: startDate.toISOString(),
+        endTime: endDate.toISOString(),
+        hourlyRate: parseFloat(wage),
+        isEmergency: emergency,
+        description: '',
+      });
+    } catch (e) {
+      // ממשיך גם אם יש שגיאה
+    }
     setTimeout(() => {
       navToRestaurant('worker_matching');
-    }, 1800);
+    }, 800);
   };
 
   const stepTitles = ['תפקיד', 'שעות', 'תגמול', 'פרסום'];

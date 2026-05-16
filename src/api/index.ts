@@ -1,0 +1,97 @@
+const BASE = 'http://localhost:3001';
+
+const getToken = () => localStorage.getItem('km_token') || '';
+
+const headers = () => ({
+  'Content-Type': 'application/json',
+  'Authorization': `Bearer ${getToken()}`
+});
+
+const handleResponse = async (res: Response) => {
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'שגיאה בשרת');
+  return data;
+};
+
+export const api = {
+
+  // ========== AUTH ==========
+  register: (email: string, password: string, role: string, name: string, city: string) =>
+    fetch(`${BASE}/auth/register`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({ email, password, role, name, city })
+    }).then(handleResponse),
+
+  login: (email: string, password: string) =>
+    fetch(`${BASE}/auth/login`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({ email, password })
+    }).then(handleResponse),
+
+  // ========== JOBS ==========
+  getJobs: () =>
+    fetch(`${BASE}/jobs`, { headers: headers() }).then(handleResponse),
+
+  getRestaurantJobs: (restaurantId: number) =>
+    fetch(`${BASE}/jobs/restaurant/${restaurantId}`, { headers: headers() }).then(handleResponse),
+
+  createJob: (job: object) =>
+    fetch(`${BASE}/jobs`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify(job)
+    }).then(handleResponse),
+
+  acceptJob: (jobId: number, workerId: number) =>
+    fetch(`${BASE}/jobs/${jobId}/accept`, {
+      method: 'PUT',
+      headers: headers(),
+      body: JSON.stringify({ workerId })
+    }).then(handleResponse),
+
+  startJob: (jobId: number) =>
+    fetch(`${BASE}/jobs/${jobId}/start`, {
+      method: 'PUT',
+      headers: headers()
+    }).then(handleResponse),
+
+  completeJob: (jobId: number) =>
+    fetch(`${BASE}/jobs/${jobId}/complete`, {
+      method: 'PUT',
+      headers: headers()
+    }).then(handleResponse),
+
+  cancelJob: (jobId: number) =>
+    fetch(`${BASE}/jobs/${jobId}/cancel`, {
+      method: 'PUT',
+      headers: headers()
+    }).then(handleResponse),
+
+  // ========== WORKERS ==========
+  getWorkers: (role?: string, city?: string) => {
+    const params = new URLSearchParams();
+    if (role) params.append('role', role);
+    if (city) params.append('city', city);
+    return fetch(`${BASE}/workers?${params}`, { headers: headers() }).then(handleResponse);
+  },
+
+  updateAvailability: (workerId: number, isAvailable: boolean) =>
+    fetch(`${BASE}/workers/${workerId}/availability`, {
+      method: 'PUT',
+      headers: headers(),
+      body: JSON.stringify({ isAvailable })
+    }).then(handleResponse),
+
+  getWorkerEarnings: (workerId: number) =>
+    fetch(`${BASE}/workers/${workerId}/earnings`, { headers: headers() }).then(handleResponse),
+
+  // ========== RATINGS ==========
+  sendRating: (jobId: number, fromUserId: number, toUserId: number, score: number, comment: string) =>
+    fetch(`${BASE}/ratings`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({ jobId, fromUserId, toUserId, score, comment })
+    }).then(handleResponse),
+};

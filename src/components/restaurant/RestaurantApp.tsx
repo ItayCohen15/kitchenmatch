@@ -10,7 +10,6 @@ import { ActiveShift } from './ActiveShift';
 import { RestaurantEndShift } from './EndShift';
 import { RestaurantWallet } from './Wallet';
 import { RestaurantAnalytics } from './Analytics';
-import { CURRENT_RESTAURANT } from '../../data/mockData';
 import type { RestaurantScreen } from '../../types';
 
 const SCREEN_TITLES: Record<RestaurantScreen, string> = {
@@ -27,8 +26,8 @@ const SCREEN_TITLES: Record<RestaurantScreen, string> = {
 const NAV_TABS: RestaurantScreen[] = ['home', 'create_job', 'analytics', 'wallet'];
 
 export const RestaurantApp: React.FC = () => {
-  const { restaurantScreen, navToRestaurant, resetToLanding } = useApp();
-  const r = CURRENT_RESTAURANT;
+  const { restaurantScreen, navToRestaurant, resetToLanding, userProfile } = useApp();
+  const initials = (userProfile?.Name || 'מ').slice(0, 2);
 
   const showNav = NAV_TABS.includes(restaurantScreen);
   const showTopBar = !['active_shift'].includes(restaurantScreen);
@@ -61,11 +60,8 @@ export const RestaurantApp: React.FC = () => {
           </div>
           <div className="flex items-center gap-2">
             <span className="font-black text-gray-900 text-base">{SCREEN_TITLES[restaurantScreen]}</span>
-            <div
-              className="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold"
-              style={{ backgroundColor: r.logoColor }}
-            >
-              {r.initials}
+            <div className="w-7 h-7 bg-orange-500 rounded-lg flex items-center justify-center text-white text-xs font-bold">
+              {initials}
             </div>
           </div>
           <button className="relative text-gray-500">

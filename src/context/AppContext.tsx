@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import type { UserRole, RestaurantScreen, WorkerScreen, Job, Message } from '../types';
-import { INITIAL_CHAT, NEARBY_JOBS } from '../data/mockData';
+import { INITIAL_CHAT } from '../data/mockData';
 
 interface AppState {
   userRole: UserRole;
@@ -11,6 +11,8 @@ interface AppState {
   shiftStartTime: Date | null;
   isEmergencyMode: boolean;
   workerSelectedJobId: string | null;
+  selectedJobData: any | null;
+  userProfile: any | null;
 }
 
 interface AppContextValue extends AppState {
@@ -21,9 +23,10 @@ interface AppContextValue extends AppState {
   sendMessage: (text: string, isOwn: boolean) => void;
   startShift: () => void;
   setEmergencyMode: (v: boolean) => void;
-  selectWorkerJob: (jobId: string) => void;
-  getSelectedJob: () => Job | undefined;
+  selectWorkerJob: (jobId: string, jobData?: any) => void;
+  getSelectedJob: () => any;
   resetToLanding: () => void;
+  setUserProfile: (profile: any) => void;
 }
 
 const AppContext = createContext<AppContextValue | null>(null);
@@ -37,6 +40,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [shiftStartTime, setShiftStartTime] = useState<Date | null>(null);
   const [isEmergencyMode, setIsEmergencyMode] = useState(false);
   const [workerSelectedJobId, setWorkerSelectedJobId] = useState<string | null>(null);
+  const [selectedJobData, setSelectedJobData] = useState<any | null>(null);
+  const [userProfile, setUserProfile] = useState<any | null>(() => {
+    try { return JSON.parse(localStorage.getItem('km_profile') || 'null'); } catch { return null; }
+  });
 
   const navToRestaurant = useCallback((screen: RestaurantScreen) => {
     setRestaurantScreen(screen);
@@ -62,13 +69,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setShiftStartTime(new Date());
   }, []);
 
-  const selectWorkerJob = useCallback((jobId: string) => {
+  const selectWorkerJob = useCallback((jobId: string, jobData?: any) => {
     setWorkerSelectedJobId(jobId);
+    if (jobData) setSelectedJobData(jobData);
   }, []);
 
   const getSelectedJob = useCallback(() => {
-    return NEARBY_JOBS.find(j => j.id === workerSelectedJobId);
-  }, [workerSelectedJobId]);
+    return selectedJobData;
+  }, [selectedJobData]);
 
   const resetToLanding = useCallback(() => {
     setUserRole(null);
@@ -78,16 +86,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setShiftStartTime(null);
     setIsEmergencyMode(false);
     setWorkerSelectedJobId(null);
+    setSelectedJobData(null);
     setChatMessages(INITIAL_CHAT);
+    localStorage.removeItem('km_token');
+    localStorage.removeItem('km_role');
+    localStorage.removeItem('km_profile');
   }, []);
 
   return (
     <AppContext.Provider value={{
       userRole, restaurantScreen, workerScreen, activeJob, chatMessages,
-      shiftStartTime, isEmergencyMode, workerSelectedJobId,
+      shiftStartTime, isEmergencyMode, workerSelectedJobId, selectedJobData, userProfile,
       setUserRole, navToRestaurant, navToWorker, setActiveJob,
       sendMessage, startShift, setEmergencyMode: setIsEmergencyMode,
-      selectWorkerJob, getSelectedJob, resetToLanding,
+      selectWorkerJob, getSelectedJob, resetToLanding, setUserProfile,
     }}>
       {children}
     </AppContext.Provider>

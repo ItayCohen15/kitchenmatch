@@ -1,14 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowUpRight, ArrowDownRight, CheckCircle2, TrendingUp } from 'lucide-react';
-import { CURRENT_WORKER, WORKER_TRANSACTIONS } from '../../data/mockData';
+import { useApp } from '../../context/AppContext';
+import { api } from '../../api';
 
 export const WorkerWallet: React.FC = () => {
-  const w = CURRENT_WORKER;
+  const { userProfile } = useApp();
+  const [transactions, setTransactions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [withdrawing, setWithdrawing] = useState(false);
   const [withdrawn, setWithdrawn] = useState(false);
   const [amount, setAmount] = useState('');
 
-  const available = w.totalEarnings % 5000 + 1240;
+  const totalEarnings = userProfile?.TotalEarnings || 0;
+  const completedShifts = userProfile?.CompletedShifts || 0;
+  const hourlyRate = userProfile?.HourlyRate || 0;
+  const available = totalEarnings > 0 ? totalEarnings * 0.3 : 0;
+
+  useEffect(() => {
+    if (userProfile?.Id) {
+      api.getWorkerEarnings(userProfile.Id)
+        .then(data => setTransactions(Array.isArray(data) ? data : []))
+        .catch(() => setTransactions([]))
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
+  }, [userProfile]);
 
   const handleWithdraw = () => {
     setWithdrawing(true);
@@ -40,9 +57,10 @@ export const WorkerWallet: React.FC = () => {
     return 'text-green-600';
   };
 
-  const fmtAmount = (t: typeof WORKER_TRANSACTIONS[0]) => {
-    const sign = t.amount > 0 ? '+' : '';
-    return `${sign}₪${Math.abs(t.amount)}`;
+  const fmtAmount = (t: any) => {
+    const amt = t.Amount || t.amount || 0;
+    const sign = amt > 0 ? '+' : '';
+    return `${sign}₪${Math.abs(amt)}`;
   };
 
   return (
@@ -52,9 +70,7 @@ export const WorkerWallet: React.FC = () => {
         <div className="text-gray-400 text-sm mb-1">זמין למשיכה</div>
         <div className="text-4xl font-black mb-1">₪{available.toLocaleString()}</div>
         <div className="text-gray-400 text-sm">
-          ממתין: <span className="text-yellow-400 font-bold">₪{w.pendingEarnings.toLocaleString()}</span>
-          {' · '}
-          סה״כ: <span className="text-white font-bold">₪{w.totalEarnings.toLocaleString()}</span>
+          סה״כ: <span className="text-white font-bold">₪{totalEarnings.toLocaleString()}</span>
         </div>
 
         <div className="flex gap-3 mt-4">
@@ -131,9 +147,9 @@ export const WorkerWallet: React.FC = () => {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: 'החודש', value: '₪3,200', color: 'text-green-500' },
-          { label: 'ממוצע/ש׳', value: `₪${w.hourlyRate}`, color: 'text-orange-500' },
-          { label: 'משמרות', value: w.completedShifts, color: 'text-blue-500' },
+          { label: 'סה״כ הכנסות', value: `₪${totalEarnings.toLocaleString()}`, color: 'text-green-500' },
+          { label: 'שכר/ש׳', value: `₪${hourlyRate}`, color: 'text-orange-500' },
+          { label: 'משמרות', value: completedShifts, color: 'text-blue-500' },
         ].map(s => (
           <div key={s.label} className="bg-white rounded-xl p-3 card-shadow text-center">
             <div className={`font-black text-lg ${s.color}`}>{s.value}</div>
@@ -145,21 +161,36 @@ export const WorkerWallet: React.FC = () => {
       {/* Transactions */}
       <div>
         <h3 className="font-bold text-gray-800 mb-3">פעולות אחרונות</h3>
+        {loading && <div className="text-center py-4"><div className="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto" /></div>}
+        {!loading && transactions.length === 0 && (
+          <div className="text-center py-8 bg-white rounded-2xl card-shadow">
+            <div className="text-3xl mb-2">💰</div>
+            <p className="text-gray-500 text-sm">אין עסקאות עדיין</p>
+            <p className="text-gray-400 text-xs mt-1">קבל משמרות כדי לצבור הכנסות</p>
+          </div>
+        )}
         <div className="space-y-2">
-          {WORKER_TRANSACTIONS.map(t => (
-            <div key={t.id} className="bg-white rounded-xl p-3 flex items-center gap-3 card-shadow">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${typeBg(t.type)}`}>
-                {typeIcon(t.type)}
+          {transactions.map((t, i) => {
+            const type = t.Type || t.type || 'earning';
+            return (
+              <div key={i} className="bg-white rounded-xl p-3 flex items-center gap-3 card-shadow">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${typeBg(type)}`}>
+                  {typeIcon(type)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-semibold text-gray-900 text-sm truncate">
+                    {t.RestaurantName ? `משמרת – ${t.RestaurantName}` : (t.description || 'תשלום')}
+                  </div>
+                  <div className="text-gray-400 text-xs">
+                    {t.CreatedAt ? new Date(t.CreatedAt).toLocaleDateString('he-IL') : t.date}
+                  </div>
+                </div>
+                <div className={`font-bold text-sm flex-shrink-0 ${amtColor(type)}`}>
+                  {fmtAmount(t)}
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="font-semibold text-gray-900 text-sm truncate">{t.description}</div>
-                <div className="text-gray-400 text-xs">{t.date}</div>
-              </div>
-              <div className={`font-bold text-sm flex-shrink-0 ${amtColor(t.type)}`}>
-                {fmtAmount(t)}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

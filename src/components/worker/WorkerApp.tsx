@@ -9,7 +9,6 @@ import { WorkerActiveShift } from './ActiveShift';
 import { WorkerEndShift } from './EndShift';
 import { WorkerWallet } from './Wallet';
 import { WorkerProfile } from './Profile';
-import { CURRENT_WORKER } from '../../data/mockData';
 import type { WorkerScreen } from '../../types';
 
 const SCREEN_TITLES: Record<WorkerScreen, string> = {
@@ -25,8 +24,9 @@ const SCREEN_TITLES: Record<WorkerScreen, string> = {
 const NAV_TABS: WorkerScreen[] = ['home', 'wallet', 'profile'];
 
 export const WorkerApp: React.FC = () => {
-  const { workerScreen, navToWorker, resetToLanding } = useApp();
-  const w = CURRENT_WORKER;
+  const { workerScreen, navToWorker, resetToLanding, userProfile } = useApp();
+  const name = userProfile?.Name || 'עובד';
+  const initials = name.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
 
   const showNav = NAV_TABS.includes(workerScreen);
   const showBack = !NAV_TABS.includes(workerScreen);
@@ -70,11 +70,8 @@ export const WorkerApp: React.FC = () => {
         </div>
         <div className="flex items-center gap-2">
           <span className="font-black text-gray-900 text-base">{SCREEN_TITLES[workerScreen]}</span>
-          <div
-            className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold"
-            style={{ backgroundColor: w.avatarColor }}
-          >
-            {w.initials}
+          <div className="w-7 h-7 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+            {initials}
           </div>
         </div>
         <button className="relative text-gray-500">
