@@ -44,12 +44,34 @@ export const api = {
       body: JSON.stringify(job)
     }).then(handleResponse),
 
-  acceptJob: (jobId: number, workerId: number) =>
-    fetch(`${BASE}/jobs/${jobId}/accept`, {
+  applyToJob: (jobId: number, workerId: number) =>
+    fetch(`${BASE}/jobs/${jobId}/apply`, {
       method: 'PUT',
       headers: headers(),
       body: JSON.stringify({ workerId })
     }).then(handleResponse),
+
+  acceptJob: (jobId: number, workerId: number) =>
+    fetch(`${BASE}/jobs/${jobId}/apply`, {
+      method: 'PUT',
+      headers: headers(),
+      body: JSON.stringify({ workerId })
+    }).then(handleResponse),
+
+  approveWorker: (jobId: number) =>
+    fetch(`${BASE}/jobs/${jobId}/approve`, {
+      method: 'PUT',
+      headers: headers()
+    }).then(handleResponse),
+
+  rejectWorker: (jobId: number) =>
+    fetch(`${BASE}/jobs/${jobId}/reject`, {
+      method: 'PUT',
+      headers: headers()
+    }).then(handleResponse),
+
+  getPendingApplications: (restaurantId: number) =>
+    fetch(`${BASE}/jobs/restaurant/${restaurantId}/pending`, { headers: headers() }).then(handleResponse),
 
   startJob: (jobId: number) =>
     fetch(`${BASE}/jobs/${jobId}/start`, {

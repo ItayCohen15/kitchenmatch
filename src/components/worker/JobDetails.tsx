@@ -37,23 +37,31 @@ export const JobDetails: React.FC = () => {
     setAccepting(true);
     try {
       const workerId = userProfile?.Id || 1;
-      await api.acceptJob(job.Id, workerId);
+      await api.applyToJob(job.Id, workerId);
       setAccepted(true);
-      setTimeout(() => navToWorker('navigation'), 1500);
     } catch {
       setAccepted(true);
-      setTimeout(() => navToWorker('navigation'), 1500);
     }
   };
 
   if (accepted) {
     return (
-      <div className="screen-enter flex flex-col items-center justify-center min-h-[70vh] text-center gap-4">
+      <div className="screen-enter flex flex-col items-center justify-center min-h-[70vh] text-center gap-4 px-6">
         <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center">
-          <span className="text-5xl">🎉</span>
+          <span className="text-5xl">📨</span>
         </div>
-        <h2 className="text-2xl font-black text-gray-900">אישרת את המשמרת!</h2>
-        <p className="text-gray-500">ניווט אל {job.restaurantName} מתחיל...</p>
+        <h2 className="text-2xl font-black text-gray-900">מועמדות נשלחה!</h2>
+        <p className="text-gray-500 leading-relaxed">
+          המסעדה תקבל התראה ותוכל לאשר אותך.
+          <br />
+          תקבל עדכון כשתאושר 🔔
+        </p>
+        <button
+          onClick={() => navToWorker('home')}
+          className="w-full bg-orange-500 text-white rounded-2xl py-4 font-bold mt-4"
+        >
+          חזור למשמרות
+        </button>
       </div>
     );
   }
@@ -62,8 +70,8 @@ export const JobDetails: React.FC = () => {
     return (
       <div className="screen-enter flex flex-col items-center justify-center min-h-[70vh] text-center gap-4">
         <div className="w-16 h-16 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin" />
-        <h2 className="text-xl font-black text-gray-900">שולח אישור...</h2>
-        <p className="text-gray-500">מחכים לאישור המסעדה</p>
+        <h2 className="text-xl font-black text-gray-900">שולח מועמדות...</h2>
+        <p className="text-gray-500">רגע אחד</p>
       </div>
     );
   }
@@ -169,10 +177,10 @@ export const JobDetails: React.FC = () => {
             <button
               onClick={handleAccept}
               className={`flex-1 text-white rounded-2xl py-4 font-bold text-lg shadow-lg active:scale-98 transition-transform ${
-                job.isEmergency ? 'bg-red-500 shadow-red-200' : 'bg-orange-500 shadow-orange-200'
+                job.IsEmergency ? 'bg-red-500 shadow-red-200' : 'bg-orange-500 shadow-orange-200'
               }`}
             >
-              {job.isEmergency ? '🚨 קבל חירום' : '✓ קבל משמרת'}
+              {job.IsEmergency ? '🚨 הגש מועמדות חירום' : '📨 הגש מועמדות'}
             </button>
           </>
         )}

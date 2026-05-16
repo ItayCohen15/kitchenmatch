@@ -1,112 +1,89 @@
 import React, { useEffect, useState } from 'react';
-import { Zap, Shield, MapPin, Star, ChevronLeft } from 'lucide-react';
+import { Zap, Shield, MapPin, Star, Check, X, Clock } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { LEVEL_LABELS, LEVEL_COLORS, ROLE_LABELS } from '../../data/mockData';
+import { LEVEL_LABELS, LEVEL_COLORS } from '../../data/mockData';
 import { api } from '../../api';
 
+// חישוב אחוז התאמה אמיתי
+const calcMatchScore = (worker: any, restaurantCuisine: string): number => {
+  let score = 50; // בסיס
+
+  // אמינות (20%)
+  const reliability = worker.ReliabilityScore || 100;
+  score += (reliability / 100) * 20;
+
+  // משמרות שהושלמו (15%)
+  const shifts = Math.min(worker.CompletedShifts || 0, 100);
+  score += (shifts / 100) * 15;
+
+  // דירוג (20%)
+  const rating = worker.Rating || 0;
+  score += (rating / 5) * 20;
+
+  // התאמת כישורים (25%)
+  const skills = (worker.Skills || '').toLowerCase();
+  const cuisine = restaurantCuisine.toLowerCase();
+  if (skills && cuisine) {
+    const cuisineWords = cuisine.split(/[,/\s]+/);
+    const skillWords = skills.split(/[,/\s]+/);
+    const overlap = cuisineWords.filter(w => skillWords.some(s => s.includes(w) || w.includes(s)));
+    score += Math.min((overlap.length / Math.max(cuisineWords.length, 1)) * 25, 25);
+  }
+
+  return Math.min(Math.round(score), 99);
+};
+
 export const WorkerMatching: React.FC = () => {
-  const { navToRestaurant, isEmergencyMode } = useApp();
-  const [phase, setPhase] = useState<'searching' | 'results' | 'confirming' | 'confirmed'>('searching');
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [selectedWorker, setSelectedWorker] = useState<any>(null);
-  const [workers, setWorkers] = useState<any[]>([]);
-  const [progress, setProgress] = useState(0);
-  const [dots, setDots] = useState('');
+  const { navToRestaurant, isEmergencyMode, userProfile } = useApp();
+  const [applicants, setApplicants] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [approving, setApproving] = useState<number | null>(null);
+  const [approved, setApproved] = useState<number | null>(null);
+
+  const restaurantCuisine = userProfile?.CuisineType || '';
 
   useEffect(() => {
-    // טען עובדים אמיתיים מהדאטאבייס
-    api.getWorkers().then(data => {
-      setWorkers(Array.isArray(data) ? data.slice(0, 3) : []);
-    }).catch(() => setWorkers([]));
+    if (!userProfile?.Id) { setLoading(false); return; }
+    loadApplicants();
+    // רענן כל 10 שניות
+    const interval = setInterval(loadApplicants, 10000);
+    return () => clearInterval(interval);
+  }, [userProfile]);
 
-    const dotsInterval = setInterval(() => {
-      setDots(d => d.length >= 3 ? '' : d + '.');
-    }, 400);
-
-    const progressInterval = setInterval(() => {
-      setProgress(p => {
-        if (p >= 100) {
-          clearInterval(progressInterval);
-          clearInterval(dotsInterval);
-          setTimeout(() => setPhase('results'), 300);
-          return 100;
-        }
-        return p + 5;
-      });
-    }, 80);
-
-    return () => {
-      clearInterval(dotsInterval);
-      clearInterval(progressInterval);
-    };
-  }, []);
-
-  const handleAssign = (workerId: string, worker: any) => {
-    setSelectedId(workerId);
-    setSelectedWorker(worker);
-    setPhase('confirming');
-    setTimeout(() => {
-      setPhase('confirmed');
-      setTimeout(() => navToRestaurant('live_tracking'), 1500);
-    }, 1800);
+  const loadApplicants = () => {
+    if (!userProfile?.Id) return;
+    api.getPendingApplications(userProfile.Id)
+      .then(data => setApplicants(Array.isArray(data) ? data : []))
+      .catch(() => {})
+      .finally(() => setLoading(false));
   };
 
-  const handleAutoAssign = () => {
-    if (workers.length > 0) handleAssign(String(workers[0].Id), workers[0]);
+  const handleApprove = async (jobId: number) => {
+    setApproving(jobId);
+    try {
+      await api.approveWorker(jobId);
+      setApproved(jobId);
+      setTimeout(() => {
+        navToRestaurant('live_tracking');
+      }, 1500);
+    } catch {
+      setApproving(null);
+    }
   };
 
-  if (phase === 'searching') {
-    return (
-      <div className="screen-enter flex flex-col items-center justify-center min-h-[60vh] text-center">
-        {isEmergencyMode && (
-          <div className="bg-red-100 text-red-600 rounded-full px-4 py-1.5 text-sm font-bold mb-6 flex items-center gap-2">
-            <Zap size={14} className="fill-red-500" />
-            מצב חירום פעיל
-          </div>
-        )}
-        <div className="relative w-32 h-32 mb-6">
-          <div className="absolute inset-0 rounded-full border-4 border-orange-100 animate-ping opacity-30" />
-          <div className="absolute inset-3 rounded-full border-4 border-orange-200 animate-ping opacity-50" style={{ animationDelay: '0.3s' }} />
-          <div className="absolute inset-6 rounded-full bg-orange-500 flex items-center justify-center">
-            <span className="text-3xl">🔍</span>
-          </div>
-        </div>
-        <h2 className="text-xl font-black text-gray-900 mb-2">מחפש שפים{dots}</h2>
-        <p className="text-gray-500 text-sm mb-6">מנתח מיקום, דירוג ואמינות</p>
-        <div className="w-full max-w-xs bg-gray-100 rounded-full h-2 mb-2">
-          <div
-            className="h-2 bg-orange-500 rounded-full transition-all duration-100"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-        <span className="text-xs text-gray-400">{progress}%</span>
-      </div>
-    );
-  }
+  const handleReject = async (jobId: number) => {
+    await api.rejectWorker(jobId).catch(() => {});
+    setApplicants(prev => prev.filter(a => a.Id !== jobId));
+  };
 
-  if (phase === 'confirming') {
-    const wName = selectedWorker?.Name || 'העובד';
-    const wInit = wName.split(' ').map((n: string) => n[0]).join('').slice(0,2);
+  if (approved !== null) {
+    const a = applicants.find(x => x.Id === approved);
     return (
-      <div className="screen-enter flex flex-col items-center justify-center min-h-[60vh] text-center">
-        <div className="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center text-white font-black text-2xl mb-4 shadow-xl">
-          {wInit}
-        </div>
-        <div className="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full animate-spin mb-4" />
-        <h2 className="text-xl font-black text-gray-900">מחכה לאישור {wName}...</h2>
-        <p className="text-gray-500 text-sm mt-2">שולח התראה לעובד</p>
-      </div>
-    );
-  }
-
-  if (phase === 'confirmed') {
-    const wName = selectedWorker?.Name || 'העובד';
-    return (
-      <div className="screen-enter flex flex-col items-center justify-center min-h-[60vh] text-center">
-        <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mb-4">
+      <div className="screen-enter flex flex-col items-center justify-center min-h-[70vh] text-center gap-4">
+        <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center">
           <span className="text-5xl">✅</span>
         </div>
-        <h2 className="text-2xl font-black text-gray-900 mb-1">{wName} אישר!</h2>
+        <h2 className="text-2xl font-black text-gray-900">{a?.WorkerName} אושר!</h2>
         <p className="text-gray-500">בדרך אליך עכשיו · ~5 דקות</p>
       </div>
     );
@@ -116,55 +93,66 @@ export const WorkerMatching: React.FC = () => {
     <div className="screen-enter space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-black text-gray-900">
-          {isEmergencyMode ? '🚨 ' : ''}3 שפים מתאימים
+          {isEmergencyMode ? '🚨 ' : ''}מועמדים למשמרת
         </h2>
-        <span className="text-xs text-gray-400">ממויין לפי התאמה</span>
+        <span className="text-xs text-gray-400">עובדים שנרשמו</span>
       </div>
 
-      {/* Auto-assign CTA */}
-      <button
-        onClick={handleAutoAssign}
-        className="w-full bg-gradient-to-l from-orange-600 to-orange-500 text-white rounded-2xl p-4 flex items-center gap-3 shadow-lg active:scale-98 transition-transform"
-      >
-        <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-          <Zap size={20} className="fill-white" />
-        </div>
-        <div className="text-right flex-1">
-          <div className="font-bold">שיבוץ אוטומטי</div>
-          <div className="text-orange-100 text-sm">הכי מתאים + הכי קרוב</div>
-        </div>
-        <ChevronLeft size={18} className="text-white/60" />
-      </button>
+      {/* הסבר הזרימה */}
+      <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 flex items-start gap-2">
+        <Clock size={16} className="text-blue-500 flex-shrink-0 mt-0.5" />
+        <p className="text-blue-700 text-xs leading-relaxed">
+          <strong>עובדים רואים את המשמרת שלך</strong> ויכולים להגיש מועמדות.
+          כשעובד נרשם — תוכל לאשר או לדחות אותו כאן.
+        </p>
+      </div>
 
-      {/* No workers */}
-      {workers.length === 0 && (
-        <div className="bg-white rounded-2xl p-8 text-center card-shadow">
-          <div className="text-4xl mb-3">👷</div>
-          <p className="font-bold text-gray-700">אין עובדים זמינים כרגע</p>
-          <p className="text-gray-400 text-sm mt-1">נסה שוב מאוחר יותר</p>
+      {loading && (
+        <div className="flex flex-col items-center justify-center py-12 gap-3">
+          <div className="w-10 h-10 border-3 border-orange-500 border-t-transparent rounded-full animate-spin" />
+          <p className="text-gray-500 text-sm">מחפש מועמדים...</p>
         </div>
       )}
 
-      {/* Worker cards */}
+      {!loading && applicants.length === 0 && (
+        <div className="bg-white rounded-2xl p-8 text-center card-shadow">
+          <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-3xl">⏳</span>
+          </div>
+          <h3 className="font-bold text-gray-800 mb-2">ממתין למועמדים</h3>
+          <p className="text-gray-400 text-sm leading-relaxed">
+            המשמרת פורסמה ועובדים זמינים קרובים יקבלו התראה.
+            הם יוכלו להגיש מועמדות ותוכל לאשר מכאן.
+          </p>
+          <div className="mt-4 flex items-center justify-center gap-2">
+            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
+            <span className="text-orange-500 text-sm font-semibold">מחפש בזמן אמת...</span>
+          </div>
+        </div>
+      )}
+
+      {/* רשימת מועמדים */}
       <div className="space-y-3">
-        {workers.map((worker: any, idx: number) => {
-          const matchScore = [97, 91, 84][idx] || 80;
+        {applicants.map((job: any, idx: number) => {
+          const matchScore = calcMatchScore(job, restaurantCuisine);
           const isTop = idx === 0;
-          const wName = worker.Name || 'עובד';
+          const wName = job.WorkerName || 'עובד';
           const wInit = wName.split(' ').map((n: string) => n[0]).join('').slice(0,2);
-          const level = worker.Level || 'bronze';
-          const skills = worker.Skills ? worker.Skills.split(',').filter(Boolean) : [];
+          const level = job.WorkerLevel || 'bronze';
+          const skills = job.Skills ? job.Skills.split(',').filter(Boolean) : [];
+          const isApproving = approving === job.Id;
+
           return (
-            <div
-              key={worker.Id}
-              className={`bg-white rounded-2xl p-4 card-shadow border-2 ${isTop ? 'border-orange-400' : 'border-transparent'}`}
-            >
-              {isTop && (
+            <div key={job.Id}
+              className={`bg-white rounded-2xl p-4 card-shadow border-2 ${isTop ? 'border-orange-400' : 'border-transparent'}`}>
+
+              {isTop && applicants.length > 1 && (
                 <div className="text-xs font-bold text-orange-500 mb-2 flex items-center gap-1">
                   <Star size={11} className="fill-orange-400 text-orange-400" />
-                  הכי מתאים
+                  הכי מתאים לפי כישורים
                 </div>
               )}
+
               <div className="flex items-start gap-3">
                 <div className="relative">
                   <div className="w-14 h-14 bg-orange-500 rounded-2xl flex items-center justify-center text-white font-black text-lg flex-shrink-0">
@@ -181,65 +169,88 @@ export const WorkerMatching: React.FC = () => {
                     </span>
                   </div>
                   <div className="flex items-center gap-3 mt-1 flex-wrap">
-                    {worker.Rating > 0 && <span className="text-yellow-500 text-sm font-bold">★{worker.Rating.toFixed(1)}</span>}
-                    {worker.City && (
+                    {job.WorkerRating > 0 && (
+                      <span className="text-yellow-500 text-sm font-bold">★{Number(job.WorkerRating).toFixed(1)}</span>
+                    )}
+                    {job.WorkerCity && (
                       <span className="flex items-center gap-1 text-gray-500 text-xs">
-                        <MapPin size={10} />{worker.City}
+                        <MapPin size={10} />{job.WorkerCity}
                       </span>
                     )}
-                    {worker.YearsExp > 0 && <span className="text-gray-500 text-xs">{worker.YearsExp} שנות ניסיון</span>}
+                    {job.YearsExp > 0 && (
+                      <span className="text-gray-500 text-xs">{job.YearsExp} שנות ניסיון</span>
+                    )}
                   </div>
                   {skills.length > 0 && (
-                    <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                    <div className="flex items-center gap-1 mt-1.5 flex-wrap">
                       {skills.slice(0, 3).map((s: string) => (
-                        <span key={s} className="text-xs bg-gray-100 text-gray-600 rounded-full px-2 py-0.5">{s}</span>
+                        <span key={s} className="text-xs bg-orange-50 text-orange-600 rounded-full px-2 py-0.5">{s}</span>
                       ))}
                     </div>
                   )}
                 </div>
 
                 <div className="text-right flex-shrink-0">
-                  <div className="text-orange-500 font-black text-lg">₪{worker.HourlyRate || 0}</div>
+                  <div className="text-orange-500 font-black text-lg">₪{job.WorkerRate || 0}</div>
                   <div className="text-gray-400 text-xs">/שעה</div>
                 </div>
               </div>
 
-              {/* Match scores */}
+              {/* ציוני התאמה אמיתיים */}
               <div className="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-gray-50">
                 <div className="text-center">
                   <div className="text-xs text-gray-400 mb-1">התאמה</div>
-                  <div className="font-black text-green-600">{matchScore}%</div>
+                  <div className={`font-black text-sm ${matchScore >= 80 ? 'text-green-600' : matchScore >= 60 ? 'text-yellow-500' : 'text-gray-500'}`}>
+                    {matchScore}%
+                  </div>
                 </div>
                 <div className="text-center">
                   <div className="text-xs text-gray-400 mb-1">אמינות</div>
-                  <div className="font-black text-blue-600">{worker.ReliabilityScore || 100}%</div>
+                  <div className="font-black text-blue-600 text-sm">{job.ReliabilityScore || 100}%</div>
                 </div>
                 <div className="text-center">
                   <div className="text-xs text-gray-400 mb-1">משמרות</div>
-                  <div className="font-black text-gray-700">{worker.CompletedShifts || 0}</div>
+                  <div className="font-black text-gray-700 text-sm">{job.CompletedShifts || 0}</div>
                 </div>
               </div>
 
-              <button
-                onClick={() => handleAssign(String(worker.Id), worker)}
-                className={`w-full mt-3 rounded-xl py-3 font-bold text-sm transition-all active:scale-98 ${
-                  isTop ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-700'
-                }`}
-              >
-                {isTop ? 'שבץ עכשיו' : 'בחר עובד זה'}
-              </button>
+              {/* כפתורי אישור / דחייה */}
+              <div className="flex gap-2 mt-3">
+                <button
+                  onClick={() => handleReject(job.Id)}
+                  disabled={isApproving}
+                  className="w-12 h-11 bg-gray-100 rounded-xl flex items-center justify-center text-gray-500 flex-shrink-0"
+                >
+                  <X size={18} />
+                </button>
+                <button
+                  onClick={() => handleApprove(job.Id)}
+                  disabled={isApproving}
+                  className="flex-1 bg-orange-500 text-white rounded-xl py-2.5 font-bold text-sm flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {isApproving ? (
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <Check size={16} />
+                      אשר עובד זה
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           );
         })}
       </div>
 
-      {/* Reliability badge */}
-      <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 flex items-center gap-3">
-        <Shield size={18} className="text-blue-500 flex-shrink-0" />
-        <p className="text-blue-700 text-xs">
-          כל העובדים עברו וריפיקציה. ציוני אמינות מחושבים מ-{'>'}100 משמרות.
-        </p>
-      </div>
+      {applicants.length > 0 && (
+        <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 flex items-center gap-3">
+          <Shield size={18} className="text-blue-500 flex-shrink-0" />
+          <p className="text-blue-700 text-xs">
+            אחוז ההתאמה מחושב לפי כישורי העובד, דירוג, אמינות והתאמה לסגנון המטבח שלך.
+          </p>
+        </div>
+      )}
     </div>
   );
 };
