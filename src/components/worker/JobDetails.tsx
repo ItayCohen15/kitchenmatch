@@ -28,8 +28,9 @@ export const JobDetails: React.FC = () => {
   const start = new Date(job.StartTime);
   const end = new Date(job.EndTime);
   const hours = ((end.getTime() - start.getTime()) / (1000 * 60 * 60)).toFixed(1);
-  const totalPay = (parseFloat(hours) * job.HourlyRate).toFixed(0);
-  const netPay = (parseFloat(totalPay) * 0.925).toFixed(0);
+  const baseAmount = parseFloat(hours) * job.HourlyRate;
+  const workerCommission = baseAmount * 0.065;       // 6.5% מהעובד
+  const netPay = (baseAmount - workerCommission).toFixed(0);
   const startStr = start.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
   const endStr = end.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
 
@@ -102,7 +103,7 @@ export const JobDetails: React.FC = () => {
           </div>
           <div className="bg-white/15 rounded-xl p-3 text-center">
             <div className="font-black text-xl text-green-300">₪{netPay}</div>
-            <div className="text-orange-100 text-xs">נטו</div>
+            <div className="text-orange-100 text-xs">לכיסך</div>
           </div>
         </div>
       </div>
@@ -113,10 +114,13 @@ export const JobDetails: React.FC = () => {
           { label: 'תפקיד', value: ROLE_LABELS[job.Role] || job.Role },
           { label: 'שעות', value: `${startStr} – ${endStr}` },
           { label: 'סה״כ שעות', value: `${hours} שעות` },
+          { label: 'שכר ברוטו', value: `₪${baseAmount.toFixed(0)}` },
+          { label: 'עמלת פלטפורמה (6.5%)', value: `-₪${workerCommission.toFixed(0)}` },
+          { label: 'תקבל נטו', value: `₪${netPay}`, bold: true },
         ].map(d => (
-          <div key={d.label} className="flex justify-between items-center py-2 border-b border-gray-50 last:border-0">
+          <div key={d.label} className={`flex justify-between items-center py-2 border-b border-gray-50 last:border-0 ${(d as any).bold ? 'border-t-2 border-orange-100 pt-3' : ''}`}>
             <span className="text-gray-500 text-sm">{d.label}</span>
-            <span className="font-semibold text-gray-900 text-sm">{d.value}</span>
+            <span className={`text-sm ${(d as any).bold ? 'font-black text-orange-600 text-base' : 'font-semibold text-gray-900'}`}>{d.value}</span>
           </div>
         ))}
       </div>

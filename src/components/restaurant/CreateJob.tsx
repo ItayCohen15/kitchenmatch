@@ -259,8 +259,18 @@ export const CreateJob: React.FC = () => {
               </div>
             ))}
 
-            <div className="bg-gray-50 rounded-xl p-3 text-center text-sm text-gray-500">
-              עמלת פלטפורמה: <span className="font-bold text-gray-700">₪{(parseFloat(totalPay) * 0.12).toFixed(0)}</span> (12%)
+            <div className="bg-orange-50 rounded-xl p-3 space-y-1.5">
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-500">עמלה שלך (6.5%)</span>
+                <span className="font-bold text-orange-600">+₪{(parseFloat(totalPay) * 0.065).toFixed(0)}</span>
+              </div>
+              <div className="flex justify-between text-sm font-bold border-t border-orange-100 pt-1.5">
+                <span className="text-gray-700">סה״כ תשלם</span>
+                <span className="text-orange-600">₪{(parseFloat(totalPay) * 1.065).toFixed(0)}</span>
+              </div>
+              <p className="text-gray-400 text-xs text-center pt-1">
+                העובד ישלם 6.5% נוסף מצידו
+              </p>
             </div>
           </div>
 
