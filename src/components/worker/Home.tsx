@@ -72,22 +72,24 @@ export const WorkerHome: React.FC = () => {
         </div>
       </div>
 
-      {/* Emergency alert */}
-      <div className="bg-red-500 rounded-2xl p-4 text-white flex items-center gap-3 animate-pulse-slow">
-        <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
-          <Zap size={22} className="fill-white" />
+      {/* Emergency alert — only if there's a real emergency job */}
+      {jobs.filter(j => j.IsEmergency).slice(0, 1).map(emergencyJob => (
+        <div key={emergencyJob.Id} className="bg-red-500 rounded-2xl p-4 text-white flex items-center gap-3">
+          <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
+            <Zap size={22} className="fill-white" />
+          </div>
+          <div className="flex-1">
+            <div className="font-bold text-sm">🚨 {emergencyJob.RestaurantName} – חירום!</div>
+            <div className="text-red-100 text-xs">{emergencyJob.RestaurantCity} · ₪{emergencyJob.HourlyRate}/ש׳</div>
+          </div>
+          <button
+            onClick={() => handleJobPress(String(emergencyJob.Id), emergencyJob)}
+            className="bg-white text-red-500 rounded-xl px-3 py-2 font-bold text-sm flex-shrink-0"
+          >
+            צפה
+          </button>
         </div>
-        <div className="flex-1">
-          <div className="font-bold text-sm">🚨 דרוש שף – חירום!</div>
-          <div className="text-red-100 text-xs">ביסטרו הצפון · 5 דקות ממך · ₪85/ש׳</div>
-        </div>
-        <button
-          onClick={() => { selectWorkerJob('j1'); navToWorker('job_details'); }}
-          className="bg-white text-red-500 rounded-xl px-3 py-2 font-bold text-sm flex-shrink-0"
-        >
-          צפה
-        </button>
-      </div>
+      ))}
 
       {/* Filters */}
       <div className="flex items-center gap-2">
