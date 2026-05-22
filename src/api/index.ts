@@ -92,6 +92,9 @@ export const api = {
   getShiftsToConfirm: (restaurantId: number) =>
     fetch(`${BASE}/jobs/restaurant/${restaurantId}/to-confirm`, { headers: headers() }).then(handleResponse),
 
+  getWorkerHistory: (workerId: number) =>
+    fetch(`${BASE}/jobs/worker/${workerId}`, { headers: headers() }).then(handleResponse),
+
   startJob: (jobId: number) =>
     fetch(`${BASE}/jobs/${jobId}/start`, {
       method: 'PUT',

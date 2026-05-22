@@ -67,10 +67,7 @@ export const JobDetails: React.FC = () => {
     if (!jobId) return;
     const check = async () => {
       try {
-        const res = await fetch(`http://localhost:3001/jobs/worker/${userProfile?.Id}`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('km_token') || ''}`, 'ngrok-skip-browser-warning': 'true' }
-        });
-        const data = await res.json();
+        const data = await api.getWorkerHistory(userProfile?.Id || 0);
         if (Array.isArray(data)) {
           const confirmed = data.find((j: any) => j.Id === jobId && ['confirmed','active'].includes(j.Status));
           if (confirmed) setApprovedByRestaurant(true);
