@@ -20,7 +20,7 @@ const calcMatchScore = (worker: any, restaurantCuisine: string): number => {
 };
 
 export const WorkerMatching: React.FC = () => {
-  const { navToRestaurant, userProfile } = useApp();
+  const { navToRestaurant, userProfile, selectWorkerJob } = useApp();
   const [applicants, setApplicants] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionJobId, setActionJobId] = useState<number | null>(null);
@@ -50,6 +50,20 @@ export const WorkerMatching: React.FC = () => {
     setError('');
     try {
       await api.approveWorker(job.Id);
+      // שמור את המשמרת בcontext כדי שמסך המשמרת הפעילה יקבל את הנתונים
+      selectWorkerJob(String(job.Id), {
+        Id: job.Id,
+        RestaurantId: job.RestaurantId,
+        WorkerId: job.WorkerId,
+        WorkerName: job.WorkerName,
+        Role: job.Role,
+        StartTime: job.StartTime,
+        EndTime: job.EndTime,
+        HourlyRate: job.HourlyRate,
+        RestaurantName: userProfile?.Name || 'המסעדה',
+        RestaurantCity: userProfile?.City || '',
+        Status: 'confirmed',
+      });
       setApproved(job);
       setTimeout(() => navToRestaurant('live_tracking'), 1800);
     } catch (e) {

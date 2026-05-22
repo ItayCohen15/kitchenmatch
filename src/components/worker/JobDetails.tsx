@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { MapPin, Clock, Star, Shield, Zap, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { MapPin, Star, Shield, Zap, X } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { ROLE_LABELS } from '../../data/mockData';
 import { api } from '../../api';
@@ -59,21 +59,64 @@ export const JobDetails: React.FC = () => {
     }
   };
 
+  // פולינג אחרי הגשת מועמדות — בדוק אם אושרת
+  const [approvedByRestaurant, setApprovedByRestaurant] = useState(false);
+  useEffect(() => {
+    if (!accepted || !job) return;
+    const jobId = Number(job.Id || job.id);
+    if (!jobId) return;
+    const check = async () => {
+      try {
+        const res = await fetch(`http://localhost:3001/jobs/worker/${userProfile?.Id}`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('km_token') || ''}`, 'ngrok-skip-browser-warning': 'true' }
+        });
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          const confirmed = data.find((j: any) => j.Id === jobId && ['confirmed','active'].includes(j.Status));
+          if (confirmed) setApprovedByRestaurant(true);
+        }
+      } catch {}
+    };
+    check();
+    const iv = setInterval(check, 4000);
+    return () => clearInterval(iv);
+  }, [accepted, job, userProfile?.Id]);
+
   if (accepted) {
     return (
       <div className="screen-enter flex flex-col items-center justify-center min-h-[70vh] text-center gap-4 px-6">
-        <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center">
-          <span className="text-5xl">📨</span>
-        </div>
-        <h2 className="text-2xl font-black text-gray-900">מועמדות נשלחה!</h2>
-        <p className="text-gray-500 leading-relaxed">
-          שלחנו בקשה ל<strong>{restaurantName}</strong>.
-          <br />ברגע שיאשרו — תקבל התראה 🔔
-        </p>
-        <div className="bg-green-50 rounded-2xl p-4 w-full text-center">
-          <div className="text-2xl font-black text-green-600">₪{netPay}</div>
-          <div className="text-gray-400 text-sm">עתיד לקבל (נטו לאחר 6.5% עמלה)</div>
-        </div>
+        {approvedByRestaurant ? (
+          <>
+            <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center">
+              <span className="text-5xl">✅</span>
+            </div>
+            <h2 className="text-2xl font-black text-gray-900">אושרת!</h2>
+            <p className="text-gray-500">{restaurantName} מחכה לך</p>
+            <button onClick={() => navToWorker('navigation')}
+              className="w-full bg-green-500 text-white rounded-2xl py-4 font-black text-lg">
+              נסע עכשיו 🚗
+            </button>
+          </>
+        ) : (
+          <>
+            <div className="w-24 h-24 bg-orange-50 rounded-full flex items-center justify-center">
+              <span className="text-5xl">📨</span>
+            </div>
+            <h2 className="text-2xl font-black text-gray-900">מועמדות נשלחה!</h2>
+            <p className="text-gray-500 leading-relaxed">
+              שלחנו בקשה ל<strong>{restaurantName}</strong>.
+              <br />ממתין לאישור...
+            </p>
+            <div className="flex items-center gap-2 text-orange-500">
+              <div className="w-4 h-4 border-2 border-orange-400 border-t-transparent rounded-full animate-spin" />
+              <span className="text-sm">בודק כל 4 שניות</span>
+            </div>
+            <div className="bg-green-50 rounded-2xl p-4 w-full text-center">
+              <div className="text-2xl font-black text-green-600">₪{netPay}</div>
+              <div className="text-gray-400 text-sm">עתיד לקבל (נטו לאחר 6.5% עמלה)</div>
+            </div>
+          </>
+        )}
         <button
           onClick={() => navToWorker('home')}
           className="w-full bg-orange-500 text-white rounded-2xl py-4 font-bold text-lg"

@@ -69,6 +69,13 @@ export const WorkerActiveShift: React.FC = () => {
     setShowConfirmDialog(false);
   };
 
+  // ניווט אוטומטי לדירוג כשהכל אושר
+  useEffect(() => {
+    if (!bothDone) return;
+    const t = setTimeout(() => navToWorker('end_shift'), 2500);
+    return () => clearTimeout(t);
+  }, [bothDone]);
+
   if (bothDone) {
     return (
       <div className="screen-enter flex flex-col items-center justify-center min-h-[70vh] text-center gap-4 px-6">
@@ -76,11 +83,12 @@ export const WorkerActiveShift: React.FC = () => {
           <span className="text-5xl">🎉</span>
         </div>
         <h2 className="text-2xl font-black text-gray-900">שני הצדדים אישרו!</h2>
-        <p className="text-gray-500">התשלום מעובד עכשיו 💰</p>
+        <p className="text-gray-500">התשלום מועבר... עוד רגע תעבור לדירוג 💰</p>
         <div className="bg-green-50 rounded-2xl p-4 w-full text-center">
           <div className="text-3xl font-black text-green-600">₪{netEarned}</div>
           <div className="text-gray-400 text-sm mt-1">נטו לאחר עמלה 6.5%</div>
         </div>
+        <div className="w-6 h-6 border-2 border-green-400 border-t-transparent rounded-full animate-spin" />
         <button onClick={() => navToWorker('end_shift')}
           className="w-full bg-orange-500 text-white rounded-2xl py-4 font-bold text-lg">
           דרג את המסעדה →

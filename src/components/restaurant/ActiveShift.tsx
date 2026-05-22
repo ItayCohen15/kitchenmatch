@@ -70,10 +70,12 @@ export const ActiveShift: React.FC = () => {
     setShowConfirmDialog(false);
   };
 
-  // כאשר שני הצדדים אישרו — השלם תשלום
+  // כאשר שני הצדדים אישרו — העבר תשלום + נווט אוטומטית
   useEffect(() => {
     if (!bothDone || !jobId) return;
     api.completeJob(jobId).catch(() => {});
+    const t = setTimeout(() => navToRestaurant('end_shift'), 2500);
+    return () => clearTimeout(t);
   }, [bothDone, jobId]);
 
   if (bothDone) {
@@ -83,11 +85,12 @@ export const ActiveShift: React.FC = () => {
           <span className="text-5xl">🎉</span>
         </div>
         <h2 className="text-2xl font-black text-gray-900">שני הצדדים אישרו!</h2>
-        <p className="text-gray-500">התשלום עובר לעובד כעת 💰</p>
+        <p className="text-gray-500">התשלום עובר... עוד רגע תעבור לדירוג 💰</p>
         <div className="bg-orange-50 rounded-2xl p-4 w-full text-center">
           <div className="text-3xl font-black text-orange-600">₪{totalWithFee}</div>
           <div className="text-gray-400 text-sm mt-1">סה״כ חויב (כולל 6.5% עמלה)</div>
         </div>
+        <div className="w-6 h-6 border-2 border-orange-400 border-t-transparent rounded-full animate-spin" />
         <button onClick={() => navToRestaurant('end_shift')}
           className="w-full bg-orange-500 text-white rounded-2xl py-4 font-bold text-lg">
           דרג את {workerName} →
