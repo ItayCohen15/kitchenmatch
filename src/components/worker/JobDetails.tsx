@@ -67,10 +67,9 @@ export const JobDetails: React.FC = () => {
     if (!jobId) return;
     const check = async () => {
       try {
-        const data = await api.getWorkerHistory(userProfile?.Id || 0);
-        if (Array.isArray(data)) {
-          const confirmed = data.find((j: any) => j.Id === jobId && ['confirmed','active'].includes(j.Status));
-          if (confirmed) setApprovedByRestaurant(true);
+        const status = await api.getEndStatus(jobId);
+        if (status?.Status && ['confirmed','active','pending_completion','completed'].includes(status.Status)) {
+          setApprovedByRestaurant(true);
         }
       } catch {}
     };
