@@ -7,7 +7,7 @@ export type RestaurantScreen =
   | 'home' | 'create_job' | 'worker_matching' | 'live_tracking'
   | 'active_shift' | 'end_shift' | 'wallet' | 'analytics';
 export type WorkerScreen =
-  | 'home' | 'job_details' | 'navigation' | 'active_shift'
+  | 'home' | 'job_details' | 'navigation' | 'active_shift' | 'history'
   | 'end_shift' | 'wallet' | 'profile';
 
 export interface Worker {

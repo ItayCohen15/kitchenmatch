@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, BarChart2, Wallet, User, PlusCircle } from 'lucide-react';
+import { Home, BarChart2, Wallet, User, PlusCircle, Clock } from 'lucide-react';
 
 interface NavItem {
   id: string;
@@ -21,9 +21,10 @@ const RESTAURANT_TABS: NavItem[] = [
 ];
 
 const WORKER_TABS: NavItem[] = [
-  { id: 'home',    label: 'משמרות', icon: <Home size={20} /> },
-  { id: 'wallet',  label: 'הכנסות', icon: <Wallet size={20} /> },
-  { id: 'profile', label: 'פרופיל', icon: <User size={20} /> },
+  { id: 'home',    label: 'משמרות',  icon: <Home size={20} /> },
+  { id: 'wallet',  label: 'הכנסות',  icon: <Wallet size={20} /> },
+  { id: 'history', label: 'היסטוריה', icon: <Clock size={20} /> },
+  { id: 'profile', label: 'פרופיל',  icon: <User size={20} /> },
 ];
 
 export const BottomNav: React.FC<Props> = ({ mode, active, onNav }) => {

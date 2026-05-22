@@ -11,9 +11,9 @@ const calcMatchScore = (worker: any, restaurantCuisine: string): number => {
   score += Math.min((Math.min(worker.CompletedShifts || 0, 100) / 100) * 15, 15);
   score += ((worker.WorkerRating || worker.Rating || 0) / 5) * 20;
   if (restaurantCuisine && worker.Skills) {
-    const cuisineWords = restaurantCuisine.toLowerCase().split(/[,/\s·]+/).filter(Boolean);
-    const skillWords = (worker.Skills || '').toLowerCase().split(/[,/\s·]+/).filter(Boolean);
-    const overlap = cuisineWords.filter(w => skillWords.some(s => s.includes(w) || w.includes(s)));
+    const cuisineWords = restaurantCuisine.toLowerCase().split(/[,/\s·]+/).filter((x: string) => Boolean(x));
+    const skillWords = (worker.Skills || '').toLowerCase().split(/[,/\s·]+/).filter((x: string) => Boolean(x));
+    const overlap = cuisineWords.filter((w: string) => skillWords.some((s: string) => s.includes(w) || w.includes(s)));
     score += Math.min((overlap.length / Math.max(cuisineWords.length, 1)) * 25, 25);
   }
   return Math.min(Math.round(score), 99);

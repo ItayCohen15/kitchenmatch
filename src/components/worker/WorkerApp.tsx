@@ -9,6 +9,7 @@ import { WorkerActiveShift } from './ActiveShift';
 import { WorkerEndShift } from './EndShift';
 import { WorkerWallet } from './Wallet';
 import { WorkerProfile } from './Profile';
+import { WorkerHistory } from './History';
 import type { WorkerScreen } from '../../types';
 
 const SCREEN_TITLES: Record<WorkerScreen, string> = {
@@ -19,9 +20,10 @@ const SCREEN_TITLES: Record<WorkerScreen, string> = {
   end_shift:     'סיים משמרת',
   wallet:        'הכנסות',
   profile:       'הפרופיל שלי',
+  history:       'ההיסטוריה שלי',
 };
 
-const NAV_TABS: WorkerScreen[] = ['home', 'wallet', 'profile'];
+const NAV_TABS: WorkerScreen[] = ['home', 'wallet', 'history', 'profile'];
 
 export const WorkerApp: React.FC = () => {
   const { workerScreen, navToWorker, resetToLanding, userProfile } = useApp();
@@ -52,6 +54,7 @@ export const WorkerApp: React.FC = () => {
       case 'active_shift': return <WorkerActiveShift />;
       case 'end_shift':    return <WorkerEndShift />;
       case 'wallet':       return <WorkerWallet />;
+      case 'history':      return <WorkerHistory />;
       case 'profile':      return <WorkerProfile />;
     }
   };

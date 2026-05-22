@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Navigation2, CheckCircle2 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { MapView } from '../common/MapView';
-import { NEARBY_JOBS } from '../../data/mockData';
+import { api } from '../../api';
 
 export const WorkerNavigation: React.FC = () => {
   const { navToWorker, getSelectedJob, startShift } = useApp();
-  const job = getSelectedJob() || NEARBY_JOBS[0];
+  const job = getSelectedJob();
   const [eta, setEta] = useState(6);
   const [arrived, setArrived] = useState(false);
 
@@ -25,8 +25,19 @@ export const WorkerNavigation: React.FC = () => {
     return () => clearInterval(iv);
   }, [arrived]);
 
-  const handleCheckIn = () => {
+  const restaurantName = job?.RestaurantName || job?.restaurantName || 'המסעדה';
+  const restaurantCity = job?.RestaurantCity || job?.restaurantCity || '';
+  const hourlyRate: number = job ? Number(job.HourlyRate ?? 0) : 0;
+  const jobId = job ? Number(job.Id || job.id) : 0;
+
+  const start = job?.StartTime ? new Date(job.StartTime) : null;
+  const end = job?.EndTime ? new Date(job.EndTime) : null;
+  const startStr = start ? start.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : '--:--';
+  const endStr = end ? end.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : '--:--';
+
+  const handleCheckIn = async () => {
     startShift();
+    if (jobId) await api.startJob(jobId).catch(() => {});
     navToWorker('active_shift');
   };
 
@@ -40,8 +51,8 @@ export const WorkerNavigation: React.FC = () => {
               <Navigation2 size={22} className="fill-white" />
             </div>
             <div>
-              <div className="font-bold">בדרך אל {job.restaurantName}</div>
-              <div className="text-blue-100 text-sm">{job.restaurantAddress}</div>
+              <div className="font-bold">בדרך אל {restaurantName}</div>
+              <div className="text-blue-100 text-sm">{restaurantCity}</div>
             </div>
           </div>
           <div className="flex gap-3">
@@ -54,7 +65,7 @@ export const WorkerNavigation: React.FC = () => {
               <div className="text-blue-100 text-xs">ק״מ</div>
             </div>
             <div className="flex-1 bg-white/15 rounded-xl p-3 text-center">
-              <div className="text-2xl font-black text-green-300">₪{job.hourlyRate}</div>
+              <div className="text-2xl font-black text-green-300">₪{hourlyRate}</div>
               <div className="text-blue-100 text-xs">/שעה</div>
             </div>
           </div>
@@ -76,7 +87,7 @@ export const WorkerNavigation: React.FC = () => {
         <MapView
           showWorker
           workerName="אני"
-          restaurantName={job.restaurantName}
+          restaurantName={restaurantName}
           mode="navigation"
         />
       </div>
@@ -85,15 +96,15 @@ export const WorkerNavigation: React.FC = () => {
       <div className="bg-white rounded-2xl p-4 card-shadow">
         <div className="flex items-center justify-between mb-2">
           <span className="font-bold text-gray-800">פרטי המשמרת</span>
-          <span className="text-orange-500 font-black text-lg">₪{job.hourlyRate}/ש׳</span>
+          <span className="text-orange-500 font-black text-lg">₪{hourlyRate}/ש׳</span>
         </div>
         <div className="grid grid-cols-3 gap-2 text-center">
           <div className="bg-gray-50 rounded-xl p-2">
-            <div className="font-bold text-gray-800 text-sm">{job.startTime}</div>
+            <div className="font-bold text-gray-800 text-sm">{startStr}</div>
             <div className="text-gray-400 text-xs">התחלה</div>
           </div>
           <div className="bg-gray-50 rounded-xl p-2">
-            <div className="font-bold text-gray-800 text-sm">{job.endTime}</div>
+            <div className="font-bold text-gray-800 text-sm">{endStr}</div>
             <div className="text-gray-400 text-xs">סיום</div>
           </div>
           <div className="bg-gray-50 rounded-xl p-2">
