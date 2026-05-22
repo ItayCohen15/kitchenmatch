@@ -75,32 +75,25 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
       let updatedProfile: any = { Id: profileId, Name: name, City: city };
 
       if (role === 'worker') {
-        await api.updateWorker(profileId, {
-          name, city,
-          role: workerRole,
-          hourlyRate: parseFloat(hourlyRate),
-          bio,
+        const res = await api.updateWorker(profileId, {
+          name, city, role: workerRole,
+          hourlyRate: parseFloat(hourlyRate), bio,
           yearsExp: parseInt(yearsExp),
           skills: selectedSpecialties.join(','),
         });
-        updatedProfile = {
+        // השתמש בפרופיל מהשרת אם קיים
+        updatedProfile = res?.profile || {
           ...updatedProfile,
-          Skills: selectedSpecialties.join(','),
-          Role: workerRole,
-          HourlyRate: parseFloat(hourlyRate),
-          Bio: bio,
-          YearsExp: parseInt(yearsExp),
-          Level: 'bronze',
-          Rating: 0,
-          CompletedShifts: 0,
-          ReliabilityScore: 100,
-          NoShows: 0,
-          IsAvailable: true,
+          Skills: selectedSpecialties.join(','), Role: workerRole,
+          HourlyRate: parseFloat(hourlyRate), Bio: bio,
+          YearsExp: parseInt(yearsExp), Level: 'bronze',
+          Rating: 0, CompletedShifts: 0, ReliabilityScore: 100,
+          NoShows: 0, IsAvailable: true,
         };
       } else {
         const cuisinesStr = selectedCuisines.join(',');
-        await api.updateRestaurant(profileId, { name, city, cuisineType: cuisinesStr, address });
-        updatedProfile = { ...updatedProfile, CuisineType: cuisinesStr, Address: address, WalletBalance: 0 };
+        const res = await api.updateRestaurant(profileId, { name, city, cuisineType: cuisinesStr, address });
+        updatedProfile = res?.profile || { ...updatedProfile, CuisineType: cuisinesStr, Address: address, WalletBalance: 0 };
       }
 
       onComplete(updatedProfile);

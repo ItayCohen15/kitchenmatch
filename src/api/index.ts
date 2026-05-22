@@ -1,4 +1,6 @@
-const BASE = 'http://localhost:3001';
+const BASE = window.location.hostname === 'localhost'
+  ? 'http://localhost:3001'
+  : `http://10.0.0.7:3001`;
 
 const getToken = () => localStorage.getItem('km_token') || '';
 

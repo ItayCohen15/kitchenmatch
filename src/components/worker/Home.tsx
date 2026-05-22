@@ -17,6 +17,7 @@ export const WorkerHome: React.FC = () => {
   const [filterRole, setFilterRole] = useState<string>('all');
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeShifts, setActiveShifts] = useState<any[]>([]);
 
   useEffect(() => {
     api.getJobs()
@@ -24,6 +25,27 @@ export const WorkerHome: React.FC = () => {
       .catch(() => setJobs([]))
       .finally(() => setLoading(false));
   }, []);
+
+  // בדוק כל 5 שניות אם יש משמרת פעילה/מאושרת לעובד
+  useEffect(() => {
+    if (!userProfile?.Id) return;
+    const checkActive = () => {
+      fetch(`http://localhost:3001/jobs/worker/${userProfile.Id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('km_token') || ''}` }
+      })
+        .then(r => r.json())
+        .then(data => {
+          const active = Array.isArray(data)
+            ? data.filter((j: any) => ['confirmed','active','pending_completion'].includes(j.Status))
+            : [];
+          setActiveShifts(active);
+        })
+        .catch(() => {});
+    };
+    checkActive();
+    const iv = setInterval(checkActive, 5000);
+    return () => clearInterval(iv);
+  }, [userProfile?.Id]);
 
   const filtered = jobs.filter(j => filterRole === 'all' || j.Role === filterRole);
 
@@ -71,6 +93,28 @@ export const WorkerHome: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* משמרות פעילות/מאושרות */}
+      {activeShifts.map((shift: any) => {
+        const statusLabel = shift.Status === 'confirmed' ? '✅ אושרת! בוא למסעדה' :
+                            shift.Status === 'active' ? '🟢 משמרת פעילה' : '⏳ ממתין לאישור סיום';
+        const btnLabel = shift.Status === 'confirmed' ? 'נסע עכשיו' :
+                         shift.Status === 'active' ? 'כנס למשמרת' : 'ראה סטטוס';
+        const btnScreen = shift.Status === 'confirmed' ? 'navigation' : 'active_shift';
+        return (
+          <div key={shift.Id} className="bg-gradient-to-l from-green-600 to-emerald-500 rounded-2xl p-4 text-white">
+            <div className="font-bold text-sm mb-1">{statusLabel}</div>
+            <div className="font-black text-lg">{shift.RestaurantName}</div>
+            <div className="text-green-100 text-sm mb-3">{shift.RestaurantCity} · ₪{shift.HourlyRate}/ש׳</div>
+            <button
+              onClick={() => { selectWorkerJob(String(shift.Id), shift); navToWorker(btnScreen as any); }}
+              className="w-full bg-white text-green-700 rounded-xl py-2.5 font-black text-sm"
+            >
+              {btnLabel} ›
+            </button>
+          </div>
+        );
+      })}
 
       {/* Emergency alert — only if there's a real emergency job */}
       {jobs.filter(j => j.IsEmergency).slice(0, 1).map(emergencyJob => (

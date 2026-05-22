@@ -52,8 +52,11 @@ export const ActiveShift: React.FC = () => {
     return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
   };
 
-  const baseAmount = (elapsed / 3600) * hourlyRate;
+  // חישוב בזמן אמת
+  const hoursWorked = elapsed / 3600;
+  const baseAmount = hoursWorked * hourlyRate;
   const totalWithFee = (baseAmount * 1.065).toFixed(2);
+  const perMinute = (hourlyRate / 60).toFixed(2);
   const QUICK = ['תודה!', 'אנחנו עמוסים', 'צריך עוד 30 דקות?', 'עשה טוב 👍'];
 
   const handleConfirmEnd = async () => {
@@ -118,7 +121,7 @@ export const ActiveShift: React.FC = () => {
           <div className="text-right">
             <div className="text-xs text-green-100">תשלם עד כה</div>
             <div className="font-black text-xl">₪{totalWithFee}</div>
-            <div className="text-green-200 text-xs">+6.5% עמלה</div>
+            <div className="text-green-200 text-xs">₪{perMinute}/דק׳ · +6.5%</div>
           </div>
         </div>
       </div>

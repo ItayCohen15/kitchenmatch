@@ -50,8 +50,12 @@ export const WorkerActiveShift: React.FC = () => {
     return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
   };
 
-  const netEarned = ((elapsed / 3600) * hourlyRate * 0.935).toFixed(2);
-  const grossEarned = ((elapsed / 3600) * hourlyRate).toFixed(2);
+  // חישוב הכנסה בזמן אמת לפי שניות
+  const hoursWorked = elapsed / 3600;
+  const ratePerSecond = hourlyRate / 3600;
+  const grossEarned = (hoursWorked * hourlyRate).toFixed(2);
+  const netEarned = (hoursWorked * hourlyRate * 0.935).toFixed(2);
+  const earnedThisMinute = (ratePerSecond * 60).toFixed(2);
   const QUICK = ['בדרך!', 'מוכן 👍', 'צריך עוד חומרים', '5 דקות ועוד'];
 
   const handleConfirmEnd = async () => {
@@ -103,7 +107,7 @@ export const WorkerActiveShift: React.FC = () => {
           <div>
             <div className="text-green-100 text-xs">הרוויח עד כה (נטו)</div>
             <div className="text-3xl font-black">₪{netEarned}</div>
-            <div className="text-green-200 text-xs">ברוטו: ₪{grossEarned}</div>
+            <div className="text-green-200 text-xs">ברוטו ₪{grossEarned} · ₪{earnedThisMinute}/דק׳</div>
           </div>
           <div className="text-right">
             <div className="text-green-100 text-xs">מסעדה</div>
