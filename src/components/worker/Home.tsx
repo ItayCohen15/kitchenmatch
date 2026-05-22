@@ -107,12 +107,9 @@ export const WorkerHome: React.FC = () => {
             <div className="font-black text-lg">{shift.RestaurantName}</div>
             <div className="text-green-100 text-sm mb-3">{shift.RestaurantCity} · ₪{shift.HourlyRate}/ש׳</div>
             <button
-              onClick={async () => {
+              onClick={() => {
                 selectWorkerJob(String(shift.Id), shift);
-                // אם confirmed — סמן כ-active בדאטאבייס
-                if (shift.Status === 'confirmed') {
-                  await api.startJob(Number(shift.Id)).catch(() => {});
-                }
+                // אל תתחיל משמרת — רק נווט לצ'ק-אין
                 navToWorker(btnScreen as any);
               }}
               className="w-full bg-white text-green-700 rounded-xl py-2.5 font-black text-sm"
