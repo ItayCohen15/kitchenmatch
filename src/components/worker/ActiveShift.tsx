@@ -35,13 +35,18 @@ export const WorkerActiveShift: React.FC = () => {
     const check = async () => {
       try {
         const status = await api.getEndStatus(jobId);
+        if (!status || status.error) return;
         setWorkerConfirmed(Boolean(status.WorkerConfirmedEnd));
         setRestaurantConfirmed(Boolean(status.RestaurantConfirmedEnd));
-        if (status.Status === 'pending_completion') setBothDone(true);
+        // אם שני הצדדים אישרו — עבור לסיום
+        if (status.Status === 'pending_completion' ||
+           (status.WorkerConfirmedEnd && status.RestaurantConfirmedEnd)) {
+          setBothDone(true);
+        }
       } catch {}
     };
     check();
-    const iv = setInterval(check, 8000);
+    const iv = setInterval(check, 5000); // כל 5 שניות (יותר מהיר)
     return () => clearInterval(iv);
   }, [jobId]);
 
