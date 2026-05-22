@@ -5,9 +5,10 @@ import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
 
 export const RestaurantHome: React.FC = () => {
-  const { navToRestaurant, userProfile, resetToLanding } = useApp();
+  const { navToRestaurant, navToWorker, userProfile, resetToLanding, selectWorkerJob } = useApp();
   const [workers, setWorkers] = useState<any[]>([]);
   const [recentJobs, setRecentJobs] = useState<any[]>([]);
+  const [activeShift, setActiveShift] = useState<any>(null);
   const [loadingWorkers, setLoadingWorkers] = useState(true);
 
   const name = userProfile?.Name || 'המסעדה שלי';
@@ -24,10 +25,30 @@ export const RestaurantHome: React.FC = () => {
 
     if (userProfile?.Id) {
       api.getRestaurantJobs(userProfile.Id)
-        .then(data => setRecentJobs(Array.isArray(data) ? data.slice(0, 3) : []))
+        .then(data => {
+          const all = Array.isArray(data) ? data : [];
+          // מצא משמרת פעילה/מאושרת
+          const active = all.find((j: any) => ['confirmed','active','pending_completion'].includes(j.Status));
+          setActiveShift(active || null);
+          setRecentJobs(all.filter((j: any) => !['confirmed','active','pending_completion'].includes(j.Status)).slice(0, 3));
+        })
         .catch(() => setRecentJobs([]));
     }
   }, [userProfile]);
+
+  const handleEnterActiveShift = () => {
+    if (!activeShift) return;
+    selectWorkerJob(String(activeShift.Id), {
+      ...activeShift,
+      RestaurantName: name,
+      RestaurantCity: city,
+    });
+    if (activeShift.Status === 'confirmed') {
+      navToRestaurant('live_tracking');
+    } else {
+      navToRestaurant('active_shift');
+    }
+  };
 
   return (
     <div className="screen-enter space-y-4 pb-2">
@@ -68,6 +89,28 @@ export const RestaurantHome: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* משמרת פעילה */}
+      {activeShift && (
+        <div className="bg-gradient-to-l from-green-600 to-emerald-500 rounded-2xl p-4 text-white">
+          <div className="flex items-center gap-2 mb-1">
+            <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+            <span className="font-bold text-sm">
+              {activeShift.Status === 'active' ? 'משמרת פעילה עכשיו' :
+               activeShift.Status === 'confirmed' ? '✅ עובד אושר — ממתין להגעה' :
+               '⏳ ממתין לאישור סיום'}
+            </span>
+          </div>
+          <div className="font-black text-lg">{activeShift.WorkerName || 'עובד'}</div>
+          <div className="text-green-100 text-sm mb-3">
+            {activeShift.Role} · ₪{activeShift.HourlyRate}/ש׳
+          </div>
+          <button onClick={handleEnterActiveShift}
+            className="w-full bg-white text-green-700 rounded-xl py-2.5 font-black text-sm">
+            {activeShift.Status === 'confirmed' ? 'מעקב עובד ›' : 'כנס למשמרת ›'}
+          </button>
+        </div>
+      )}
 
       {/* Quick actions */}
       <div>
