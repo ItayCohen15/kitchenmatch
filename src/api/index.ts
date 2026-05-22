@@ -1,12 +1,13 @@
 const BASE = window.location.hostname === 'localhost'
   ? 'http://localhost:3001'
-  : `http://10.0.0.7:3001`;
+  : 'https://deprive-shakable-fog.ngrok-free.dev';
 
 const getToken = () => localStorage.getItem('km_token') || '';
 
 const headers = () => ({
   'Content-Type': 'application/json',
-  'Authorization': `Bearer ${getToken()}`
+  'Authorization': `Bearer ${getToken()}`,
+  'ngrok-skip-browser-warning': 'true'
 });
 
 const handleResponse = async (res: Response) => {
