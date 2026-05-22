@@ -19,9 +19,9 @@ export const WorkerNavigation: React.FC = () => {
   const startStr = job?.StartTime ? new Date(job.StartTime).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : '--:--';
   const endStr = job?.EndTime ? new Date(job.EndTime).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : '--:--';
 
-  // פולינג — האם המסעדה יזמה התחלה?
+  // פולינג — האם המסעדה יזמה / אישרה?
   useEffect(() => {
-    if (!jobId || waitingForRestaurant) return;
+    if (!jobId) return;
     const check = async () => {
       try {
         const s = await api.getStartStatus(jobId);
