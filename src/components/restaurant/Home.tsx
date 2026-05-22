@@ -18,23 +18,30 @@ export const RestaurantHome: React.FC = () => {
   const rating = userProfile?.Rating || 0;
 
   useEffect(() => {
+    // עובדים — רענון חד פעמי
     api.getWorkers()
       .then(data => setWorkers(Array.isArray(data) ? data.slice(0, 3) : []))
       .catch(() => setWorkers([]))
       .finally(() => setLoadingWorkers(false));
+  }, [userProfile]);
 
-    if (userProfile?.Id) {
+  // משמרות + משמרת פעילה — רענון כל 5 שניות
+  useEffect(() => {
+    if (!userProfile?.Id) return;
+    const load = () => {
       api.getRestaurantJobs(userProfile.Id)
         .then(data => {
           const all = Array.isArray(data) ? data : [];
-          // מצא משמרת פעילה/מאושרת
           const active = all.find((j: any) => ['confirmed','active','pending_completion'].includes(j.Status));
           setActiveShift(active || null);
           setRecentJobs(all.filter((j: any) => !['confirmed','active','pending_completion'].includes(j.Status)).slice(0, 3));
         })
-        .catch(() => setRecentJobs([]));
-    }
-  }, [userProfile]);
+        .catch(() => {});
+    };
+    load();
+    const iv = setInterval(load, 5000);
+    return () => clearInterval(iv);
+  }, [userProfile?.Id]);
 
   const handleEnterActiveShift = () => {
     if (!activeShift) return;

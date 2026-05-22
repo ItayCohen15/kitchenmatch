@@ -19,11 +19,17 @@ export const WorkerHome: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [activeShifts, setActiveShifts] = useState<any[]>([]);
 
+  // רענון אוטומטי כל 6 שניות
   useEffect(() => {
-    api.getJobs()
-      .then(data => setJobs(Array.isArray(data) ? data : []))
-      .catch(() => setJobs([]))
-      .finally(() => setLoading(false));
+    const load = () => {
+      api.getJobs()
+        .then(data => setJobs(Array.isArray(data) ? data : []))
+        .catch(() => {})
+        .finally(() => setLoading(false));
+    };
+    load();
+    const iv = setInterval(load, 6000);
+    return () => clearInterval(iv);
   }, []);
 
   // בדוק כל 5 שניות אם יש משמרת פעילה/מאושרת לעובד
