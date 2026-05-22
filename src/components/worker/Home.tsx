@@ -94,8 +94,8 @@ export const WorkerHome: React.FC = () => {
         </div>
       </div>
 
-      {/* משמרות פעילות/מאושרות */}
-      {activeShifts.map((shift: any) => {
+      {/* משמרת פעילה — רק הכי אחרונה */}
+      {activeShifts.slice(0, 1).map((shift: any) => {
         const statusLabel = shift.Status === 'confirmed' ? '✅ אושרת! בוא למסעדה' :
                             shift.Status === 'active' ? '🟢 משמרת פעילה' : '⏳ ממתין לאישור סיום';
         const btnLabel = shift.Status === 'confirmed' ? 'נסע עכשיו' :
