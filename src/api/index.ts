@@ -95,6 +95,20 @@ export const api = {
   getWorkerHistory: (workerId: number) =>
     fetch(`${BASE}/jobs/worker/${workerId}`, { headers: headers() }).then(handleResponse),
 
+  getStartStatus: (jobId: number) =>
+    fetch(`${BASE}/jobs/${jobId}/start-status`, { headers: headers() }).then(handleResponse),
+
+  initiateStart: (jobId: number, side: 'worker' | 'restaurant') =>
+    fetch(`${BASE}/jobs/${jobId}/initiate-start`, {
+      method: 'PUT', headers: headers(),
+      body: JSON.stringify({ side })
+    }).then(handleResponse),
+
+  confirmStart: (jobId: number) =>
+    fetch(`${BASE}/jobs/${jobId}/confirm-start`, {
+      method: 'PUT', headers: headers()
+    }).then(handleResponse),
+
   startJob: (jobId: number) =>
     fetch(`${BASE}/jobs/${jobId}/start`, {
       method: 'PUT',

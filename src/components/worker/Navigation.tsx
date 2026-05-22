@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Navigation2, CheckCircle2 } from 'lucide-react';
+import { Navigation2, CheckCircle2, X } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { MapView } from '../common/MapView';
 import { api } from '../../api';
@@ -7,152 +7,159 @@ import { api } from '../../api';
 export const WorkerNavigation: React.FC = () => {
   const { navToWorker, getSelectedJob, startShift } = useApp();
   const job = getSelectedJob();
-  const [eta, setEta] = useState(6);
-  const [arrived, setArrived] = useState(false);
+  const [initiating, setInitiating] = useState(false);
+  const [waitingForRestaurant, setWaitingForRestaurant] = useState(false);
+  const [restaurantInitiated, setRestaurantInitiated] = useState(false);
+  const [confirming, setConfirming] = useState(false);
 
+  const restaurantName: string = job?.RestaurantName || job?.restaurantName || 'המסעדה';
+  const restaurantCity: string = job?.RestaurantCity || job?.restaurantCity || '';
+  const hourlyRate: number = job ? Number(job.HourlyRate ?? job.hourlyRate ?? 0) : 0;
+  const jobId: number = job ? Number(job.Id ?? job.id ?? 0) : 0;
+  const startStr = job?.StartTime ? new Date(job.StartTime).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : '--:--';
+  const endStr = job?.EndTime ? new Date(job.EndTime).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : '--:--';
+
+  // פולינג — האם המסעדה יזמה התחלה?
   useEffect(() => {
-    if (arrived) return;
-    const iv = setInterval(() => {
-      setEta(prev => {
-        if (prev <= 1) {
-          clearInterval(iv);
-          setArrived(true);
-          return 0;
+    if (!jobId || waitingForRestaurant) return;
+    const check = async () => {
+      try {
+        const s = await api.getStartStatus(jobId);
+        if (s.Status === 'active') {
+          // כבר התחיל (אולי המסעדה אישרה)
+          startShift();
+          navToWorker('active_shift');
+          return;
         }
-        return prev - 1;
-      });
-    }, 5000);
+        if (s.StartInitiatedBy === 'restaurant') {
+          setRestaurantInitiated(true);
+        }
+      } catch {}
+    };
+    check();
+    const iv = setInterval(check, 3000);
     return () => clearInterval(iv);
-  }, [arrived]);
+  }, [jobId, waitingForRestaurant]);
 
-  const restaurantName = job?.RestaurantName || job?.restaurantName || 'המסעדה';
-  const restaurantCity = job?.RestaurantCity || job?.restaurantCity || '';
-  const hourlyRate: number = job ? Number(job.HourlyRate ?? 0) : 0;
-  const jobId = job ? Number(job.Id || job.id) : 0;
+  const handleWorkerInitiate = async () => {
+    setInitiating(true);
+    try {
+      await api.initiateStart(jobId, 'worker');
+      setWaitingForRestaurant(true);
+    } catch {}
+    setInitiating(false);
+  };
 
-  const start = job?.StartTime ? new Date(job.StartTime) : null;
-  const end = job?.EndTime ? new Date(job.EndTime) : null;
-  const startStr = start ? start.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : '--:--';
-  const endStr = end ? end.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : '--:--';
+  const handleConfirmRestaurantStart = async () => {
+    setConfirming(true);
+    try {
+      await api.confirmStart(jobId);
+      startShift();
+      navToWorker('active_shift');
+    } catch {}
+    setConfirming(false);
+  };
 
-  const handleCheckIn = async () => {
-    startShift();
-    if (jobId) await api.startJob(jobId).catch(() => {});
-    navToWorker('active_shift');
+  const handleDecline = async () => {
+    // ביטול יוזמת ההתחלה
+    setRestaurantInitiated(false);
   };
 
   return (
     <div className="screen-enter flex flex-col gap-4">
       {/* Status */}
-      {!arrived ? (
-        <div className="bg-gradient-to-l from-blue-600 to-blue-500 rounded-2xl p-4 text-white">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-              <Navigation2 size={22} className="fill-white" />
-            </div>
-            <div>
-              <div className="font-bold">בדרך אל {restaurantName}</div>
-              <div className="text-blue-100 text-sm">{restaurantCity}</div>
-            </div>
+      <div className="bg-gradient-to-l from-blue-600 to-blue-500 rounded-2xl p-4 text-white">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+            <Navigation2 size={22} className="fill-white" />
           </div>
-          <div className="flex gap-3">
-            <div className="flex-1 bg-white/15 rounded-xl p-3 text-center">
-              <div className="text-2xl font-black">{eta}</div>
-              <div className="text-blue-100 text-xs">דקות</div>
-            </div>
-            <div className="flex-1 bg-white/15 rounded-xl p-3 text-center">
-              <div className="text-2xl font-black">{(eta * 0.35).toFixed(1)}</div>
-              <div className="text-blue-100 text-xs">ק״מ</div>
-            </div>
-            <div className="flex-1 bg-white/15 rounded-xl p-3 text-center">
-              <div className="text-2xl font-black text-green-300">₪{hourlyRate}</div>
-              <div className="text-blue-100 text-xs">/שעה</div>
-            </div>
+          <div>
+            <div className="font-bold">בדרך אל {restaurantName}</div>
+            <div className="text-blue-100 text-sm">{restaurantCity}</div>
           </div>
         </div>
-      ) : (
-        <div className="bg-gradient-to-l from-green-600 to-emerald-500 rounded-2xl p-4 text-white">
-          <div className="flex items-center gap-3">
-            <CheckCircle2 size={36} />
-            <div>
-              <div className="font-black text-xl">הגעת ליעד!</div>
-              <div className="text-green-100 text-sm">לחץ צ׳ק-אין להתחיל את המשמרת</div>
-            </div>
+        <div className="flex gap-3">
+          <div className="flex-1 bg-white/15 rounded-xl p-3 text-center">
+            <div className="text-2xl font-black text-green-300">₪{hourlyRate}</div>
+            <div className="text-blue-100 text-xs">/שעה</div>
+          </div>
+          <div className="flex-1 bg-white/15 rounded-xl p-3 text-center">
+            <div className="text-lg font-black">{startStr}</div>
+            <div className="text-blue-100 text-xs">התחלה</div>
+          </div>
+          <div className="flex-1 bg-white/15 rounded-xl p-3 text-center">
+            <div className="text-lg font-black">{endStr}</div>
+            <div className="text-blue-100 text-xs">סיום</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Map */}
+      <div className="h-56 rounded-2xl overflow-hidden">
+        <MapView showWorker workerName="אני" restaurantName={restaurantName} mode="navigation" />
+      </div>
+
+      {/* פופאפ — המסעדה יזמה התחלה */}
+      {restaurantInitiated && !waitingForRestaurant && (
+        <div className="bg-gradient-to-l from-green-600 to-emerald-500 rounded-2xl p-4 text-white screen-enter">
+          <div className="font-black text-lg mb-1">🔔 {restaurantName} רוצה להתחיל!</div>
+          <div className="text-green-100 text-sm mb-4">המסעדה מוכנה — האם הגעת?</div>
+          <div className="flex gap-3">
+            <button onClick={handleDecline}
+              className="flex-1 bg-white/20 rounded-xl py-3 font-semibold flex items-center justify-center gap-2">
+              <X size={16} /> עוד לא
+            </button>
+            <button onClick={handleConfirmRestaurantStart} disabled={confirming}
+              className="flex-1 bg-white text-green-700 rounded-xl py-3 font-black flex items-center justify-center gap-2">
+              {confirming
+                ? <div className="w-4 h-4 border-2 border-green-400 border-t-green-700 rounded-full animate-spin" />
+                : <><CheckCircle2 size={16} /> אני כאן! התחל</>}
+            </button>
           </div>
         </div>
       )}
 
-      {/* Map */}
-      <div className="h-64 rounded-2xl overflow-hidden">
-        <MapView
-          showWorker
-          workerName="אני"
-          restaurantName={restaurantName}
-          mode="navigation"
-        />
-      </div>
-
-      {/* Job reminder */}
-      <div className="bg-white rounded-2xl p-4 card-shadow">
-        <div className="flex items-center justify-between mb-2">
-          <span className="font-bold text-gray-800">פרטי המשמרת</span>
-          <span className="text-orange-500 font-black text-lg">₪{hourlyRate}/ש׳</span>
+      {/* ממתין לאישור מסעדה */}
+      {waitingForRestaurant && (
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-center">
+          <div className="text-2xl mb-2">⏳</div>
+          <div className="font-bold text-amber-800">ממתין לאישור {restaurantName}</div>
+          <div className="text-amber-600 text-sm mt-1">שלחנו התראה למסעדה</div>
+          <div className="w-5 h-5 border-2 border-amber-400 border-t-transparent rounded-full animate-spin mx-auto mt-2" />
         </div>
-        <div className="grid grid-cols-3 gap-2 text-center">
-          <div className="bg-gray-50 rounded-xl p-2">
-            <div className="font-bold text-gray-800 text-sm">{startStr}</div>
-            <div className="text-gray-400 text-xs">התחלה</div>
-          </div>
-          <div className="bg-gray-50 rounded-xl p-2">
-            <div className="font-bold text-gray-800 text-sm">{endStr}</div>
-            <div className="text-gray-400 text-xs">סיום</div>
-          </div>
-          <div className="bg-gray-50 rounded-xl p-2">
-            <div className="font-bold text-green-600 text-sm">מאומת</div>
-            <div className="text-gray-400 text-xs">סטטוס</div>
-          </div>
-        </div>
-      </div>
+      )}
 
-      {/* Steps */}
+      {/* הוראות הגעה */}
       <div className="bg-white rounded-2xl p-4 card-shadow">
         <h3 className="font-bold text-gray-800 mb-3 text-sm">מה לעשות כשמגיע?</h3>
         <div className="space-y-2">
-          {[
-            'הכנס דרך הכניסה הראשית / אחורית',
-            'בקש את המנהל המשמרת',
-            'לחץ על צ׳ק-אין באפליקציה',
-            'תתחיל לעבוד – בהצלחה! 👨‍🍳',
-          ].map((step, i) => (
+          {['הכנס דרך הכניסה הראשית / אחורית', 'בקש את מנהל המשמרת', 'לחץ "צ׳ק-אין" כאן', 'בהצלחה! 👨‍🍳'].map((step, i) => (
             <div key={i} className="flex items-start gap-3">
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${
-                arrived && i === 2 ? 'bg-green-500 text-white' : 'bg-orange-100 text-orange-600'
-              }`}>
+              <div className="w-6 h-6 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
                 {i + 1}
               </div>
-              <span className="text-gray-700 text-sm leading-relaxed">{step}</span>
+              <span className="text-gray-700 text-sm">{step}</span>
             </div>
           ))}
         </div>
       </div>
 
-      {arrived && (
-        <button
-          onClick={handleCheckIn}
-          className="w-full bg-green-500 text-white rounded-2xl py-4 font-black text-lg shadow-lg shadow-green-200 active:scale-98 transition-transform"
-        >
-          📍 צ׳ק-אין – התחל משמרת
+      {/* כפתור צ'ק-אין */}
+      {!waitingForRestaurant && !restaurantInitiated && (
+        <button onClick={handleWorkerInitiate} disabled={initiating}
+          className="w-full bg-orange-500 text-white rounded-2xl py-4 font-black text-lg shadow-lg shadow-orange-200 active:scale-98 transition-transform">
+          {initiating
+            ? <div className="flex items-center justify-center gap-2">
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                שולח התראה...
+              </div>
+            : '📍 הגעתי — צ׳ק-אין'}
         </button>
       )}
 
-      {!arrived && (
-        <button
-          onClick={() => navToWorker('home')}
-          className="w-full text-center text-gray-400 text-sm py-2"
-        >
-          ביטול משמרת
-        </button>
-      )}
+      <button onClick={() => navToWorker('home')} className="w-full text-gray-400 text-sm py-1 text-center">
+        ביטול
+      </button>
     </div>
   );
 };

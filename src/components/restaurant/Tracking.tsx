@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Phone, MessageCircle, CheckCircle2 } from 'lucide-react';
+import { Phone, MessageCircle, CheckCircle2, X } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { MapView } from '../common/MapView';
 import { api } from '../../api';
@@ -8,59 +8,82 @@ export const LiveTracking: React.FC = () => {
   const { navToRestaurant, startShift, getSelectedJob, userProfile } = useApp();
   const job = getSelectedJob();
   const [confirmedJobs, setConfirmedJobs] = useState<any[]>([]);
-  const [started, setStarted] = useState(false);
-
-  useEffect(() => {
-    if (!userProfile?.Id) return;
-    const load = () => {
-      api.getRestaurantJobs(userProfile.Id)
-        .then(data => {
-          const confirmed = Array.isArray(data)
-            ? data.filter((j: any) => ['confirmed','active'].includes(j.Status))
-            : [];
-          setConfirmedJobs(confirmed);
-          // אם העובד כבר צ'ק-אין (active) — עבור למשמרת פעילה
-          const active = confirmed.find((j: any) => j.Status === 'active');
-          if (active && !started) {
-            startShift();
-            navToRestaurant('active_shift');
-          }
-        })
-        .catch(() => {});
-    };
-    load();
-    const iv = setInterval(load, 5000);
-    return () => clearInterval(iv);
-  }, [userProfile?.Id, started]);
+  const [initiating, setInitiating] = useState(false);
+  const [waitingForWorker, setWaitingForWorker] = useState(false);
+  const [workerInitiated, setWorkerInitiated] = useState(false);
+  const [confirming, setConfirming] = useState(false);
 
   const activeJob = job || confirmedJobs[0];
-  const workerName = activeJob?.WorkerName || 'העובד';
+  const workerName: string = activeJob?.WorkerName || 'העובד';
   const workerInit = workerName.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
-  const hourlyRate = activeJob ? Number(activeJob.HourlyRate ?? 0) : 0;
+  const hourlyRate: number = activeJob ? Number(activeJob.HourlyRate ?? 0) : 0;
+  const jobId: number = activeJob ? Number(activeJob.Id ?? 0) : 0;
 
-  const handleStartShift = async () => {
-    setStarted(true);
-    startShift();
-    if (activeJob?.Id) await api.startJob(Number(activeJob.Id)).catch(() => {});
-    navToRestaurant('active_shift');
+  // טען משמרות מאושרות
+  useEffect(() => {
+    if (!userProfile?.Id) return;
+    api.getRestaurantJobs(userProfile.Id)
+      .then(data => {
+        const confirmed = Array.isArray(data)
+          ? data.filter((j: any) => ['confirmed'].includes(j.Status))
+          : [];
+        setConfirmedJobs(confirmed);
+      })
+      .catch(() => {});
+  }, [userProfile?.Id]);
+
+  // פולינג — האם העובד יזם התחלה? האם כבר active?
+  useEffect(() => {
+    if (!jobId || waitingForWorker) return;
+    const check = async () => {
+      try {
+        const s = await api.getStartStatus(jobId);
+        if (s.Status === 'active') {
+          startShift();
+          navToRestaurant('active_shift');
+          return;
+        }
+        if (s.StartInitiatedBy === 'worker') {
+          setWorkerInitiated(true);
+        }
+      } catch {}
+    };
+    check();
+    const iv = setInterval(check, 3000);
+    return () => clearInterval(iv);
+  }, [jobId, waitingForWorker]);
+
+  const handleRestaurantInitiate = async () => {
+    setInitiating(true);
+    try {
+      await api.initiateStart(jobId, 'restaurant');
+      setWaitingForWorker(true);
+    } catch {}
+    setInitiating(false);
+  };
+
+  const handleConfirmWorkerStart = async () => {
+    setConfirming(true);
+    try {
+      await api.confirmStart(jobId);
+      startShift();
+      navToRestaurant('active_shift');
+    } catch {}
+    setConfirming(false);
   };
 
   return (
     <div className="screen-enter flex flex-col gap-4">
-      {/* Status header */}
+      {/* Status */}
       <div className="bg-gradient-to-l from-blue-600 to-blue-500 rounded-2xl p-4 text-white">
-        <div className="flex items-center gap-3 mb-3">
+        <div className="flex items-center gap-3 mb-2">
           <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-white font-black">
             {workerInit}
           </div>
           <div>
             <div className="font-bold text-lg">{workerName} בדרך</div>
-            <div className="text-blue-100 text-sm">עובד אושר · ממתין להגעה</div>
+            <div className="text-blue-100 text-sm">₪{hourlyRate}/ש׳ · אושר ✅</div>
           </div>
-        </div>
-        <div className="bg-white/15 rounded-xl p-3 text-center">
-          <div className="text-blue-100 text-sm mb-1">כשהעובד יגיע — לחץ "התחל משמרת"</div>
-          <div className="text-white text-sm font-semibold">הוא גם יוכל לצ'ק-אין מהצד שלו</div>
         </div>
       </div>
 
@@ -70,19 +93,39 @@ export const LiveTracking: React.FC = () => {
           restaurantName={userProfile?.Name || 'המסעדה'} mode="tracking" />
       </div>
 
-      {/* Worker card */}
-      <div className="bg-white rounded-2xl p-4 card-shadow">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-14 h-14 bg-orange-500 rounded-2xl flex items-center justify-center text-white font-black text-xl">
-            {workerInit}
+      {/* פופאפ — העובד יזם צ'ק-אין */}
+      {workerInitiated && !waitingForWorker && (
+        <div className="bg-gradient-to-l from-green-600 to-emerald-500 rounded-2xl p-4 text-white screen-enter">
+          <div className="font-black text-lg mb-1">🔔 {workerName} הגיע!</div>
+          <div className="text-green-100 text-sm mb-4">העובד ביקש להתחיל משמרת — אשר?</div>
+          <div className="flex gap-3">
+            <button onClick={() => setWorkerInitiated(false)}
+              className="flex-1 bg-white/20 rounded-xl py-3 font-semibold flex items-center justify-center gap-2">
+              <X size={16} /> עוד לא
+            </button>
+            <button onClick={handleConfirmWorkerStart} disabled={confirming}
+              className="flex-1 bg-white text-green-700 rounded-xl py-3 font-black flex items-center justify-center gap-2">
+              {confirming
+                ? <div className="w-4 h-4 border-2 border-green-400 border-t-green-700 rounded-full animate-spin" />
+                : <><CheckCircle2 size={16} /> אשר — התחל</>}
+            </button>
           </div>
-          <div className="flex-1">
-            <div className="font-bold text-gray-900 text-base">{workerName}</div>
-            <div className="text-gray-500 text-sm">{activeJob?.Role || 'עובד'}</div>
-          </div>
-          <div className="text-orange-500 font-black text-lg">₪{hourlyRate}/ש׳</div>
         </div>
-        <div className="grid grid-cols-2 gap-3">
+      )}
+
+      {/* ממתין לאישור עובד */}
+      {waitingForWorker && (
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-center">
+          <div className="text-2xl mb-2">⏳</div>
+          <div className="font-bold text-amber-800">ממתין לאישור {workerName}</div>
+          <div className="text-amber-600 text-sm mt-1">שלחנו התראה לעובד</div>
+          <div className="w-5 h-5 border-2 border-amber-400 border-t-transparent rounded-full animate-spin mx-auto mt-2" />
+        </div>
+      )}
+
+      {/* כרטיס פעולות */}
+      <div className="bg-white rounded-2xl p-4 card-shadow">
+        <div className="grid grid-cols-2 gap-3 mb-4">
           <button className="flex items-center justify-center gap-2 bg-gray-100 rounded-xl py-3 text-gray-700 font-semibold text-sm">
             <Phone size={16} /> התקשר
           </button>
@@ -91,17 +134,16 @@ export const LiveTracking: React.FC = () => {
             <MessageCircle size={16} /> הודעה
           </button>
         </div>
+
+        {!waitingForWorker && !workerInitiated && (
+          <button onClick={handleRestaurantInitiate} disabled={initiating}
+            className="w-full bg-green-500 text-white rounded-2xl py-4 font-black text-lg active:scale-98 transition-transform flex items-center justify-center gap-2">
+            {initiating
+              ? <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> שולח...</>
+              : <><CheckCircle2 size={22} /> העובד הגיע — התחל משמרת</>}
+          </button>
+        )}
       </div>
-
-      {/* Start shift */}
-      <button onClick={handleStartShift}
-        className="w-full bg-green-500 text-white rounded-2xl py-4 font-black text-lg shadow-lg shadow-green-200 active:scale-98 transition-transform flex items-center justify-center gap-2">
-        <CheckCircle2 size={22} /> התחל משמרת
-      </button>
-
-      <p className="text-center text-xs text-gray-400">
-        גם העובד יכול לצ'ק-אין — ושניכם תעברו למשמרת הפעילה אוטומטית
-      </p>
     </div>
   );
 };
