@@ -36,7 +36,7 @@ export const WorkerHome: React.FC = () => {
         .then(r => r.json())
         .then(data => {
           const active = Array.isArray(data)
-            ? data.filter((j: any) => ['confirmed','active','pending_completion'].includes(j.Status))
+            ? data.filter((j: any) => ['confirmed','active'].includes(j.Status))
             : [];
           setActiveShifts(active);
         })
