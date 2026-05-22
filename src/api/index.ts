@@ -75,9 +75,16 @@ export const api = {
 
   workerEndShift: (jobId: number) =>
     fetch(`${BASE}/jobs/${jobId}/worker-end`, {
-      method: 'PUT',
-      headers: headers()
+      method: 'PUT', headers: headers()
     }).then(handleResponse),
+
+  restaurantEndShift: (jobId: number) =>
+    fetch(`${BASE}/jobs/${jobId}/restaurant-end`, {
+      method: 'PUT', headers: headers()
+    }).then(handleResponse),
+
+  getEndStatus: (jobId: number) =>
+    fetch(`${BASE}/jobs/${jobId}/end-status`, { headers: headers() }).then(handleResponse),
 
   getShiftsToConfirm: (restaurantId: number) =>
     fetch(`${BASE}/jobs/restaurant/${restaurantId}/to-confirm`, { headers: headers() }).then(handleResponse),
