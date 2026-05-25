@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Shield, MapPin, Star, Check, X, Clock, RefreshCw } from 'lucide-react';
+import { Shield, MapPin, Star, Check, X, Clock, RefreshCw, Phone } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { LEVEL_LABELS, LEVEL_COLORS } from '../../data/mockData';
 import { api } from '../../api';
@@ -227,6 +227,14 @@ export const WorkerMatching: React.FC = () => {
                   <div className="font-black text-gray-700 text-sm">{job.CompletedShifts || 0}</div>
                 </div>
               </div>
+
+              {/* טלפון העובד */}
+              {job.WorkerPhone && (
+                <a href={`tel:${job.WorkerPhone}`}
+                  className="flex items-center justify-center gap-2 bg-green-50 border border-green-200 rounded-xl py-2 mb-2 text-green-700 font-semibold text-sm">
+                  <Phone size={14} /> {job.WorkerPhone}
+                </a>
+              )}
 
               {/* כפתורים */}
               <div className="flex gap-2">

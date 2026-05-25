@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Edit3, Star, Award, LogOut } from 'lucide-react';
+import { Edit3, Star, Award, LogOut, Phone, Check, X } from 'lucide-react';
 import { LEVEL_LABELS, LEVEL_COLORS } from '../../data/mockData';
-import { StarRating } from '../common/StarRating';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 
@@ -13,10 +12,13 @@ const LEVEL_NEXT: Record<string, { next: string; progress: number; shiftsNeeded:
 };
 
 export const WorkerProfile: React.FC = () => {
-  const { userProfile, resetToLanding } = useApp();
+  const { userProfile, resetToLanding, setUserProfile } = useApp();
   const level = userProfile?.Level || 'bronze';
   const levelInfo = LEVEL_NEXT[level] || LEVEL_NEXT.bronze;
   const [available, setAvailable] = useState(userProfile?.IsAvailable !== false);
+  const [editingPhone, setEditingPhone] = useState(false);
+  const [phone, setPhone] = useState(userProfile?.Phone || '');
+  const [savingPhone, setSavingPhone] = useState(false);
   const name = userProfile?.Name || 'שם לא ידוע';
   const initials = name.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
   const rating = userProfile?.Rating || 0;
@@ -31,6 +33,24 @@ export const WorkerProfile: React.FC = () => {
     if (userProfile?.Id) {
       await api.updateAvailability(userProfile.Id, val).catch(() => {});
     }
+  };
+
+  const handleSavePhone = async () => {
+    if (!userProfile?.Id) return;
+    setSavingPhone(true);
+    try {
+      const res = await api.updateWorker(userProfile.Id, {
+        name: userProfile.Name, city: userProfile.City,
+        role: userProfile.Role, hourlyRate: userProfile.HourlyRate,
+        bio: userProfile.Bio, yearsExp: userProfile.YearsExp,
+        skills: userProfile.Skills, phone,
+      });
+      const updated = res?.profile || { ...userProfile, Phone: phone };
+      setUserProfile(updated);
+      localStorage.setItem('km_profile', JSON.stringify(updated));
+      setEditingPhone(false);
+    } catch {}
+    setSavingPhone(false);
   };
 
   return (
@@ -92,6 +112,38 @@ export const WorkerProfile: React.FC = () => {
             <div className="text-gray-400 text-xs">{s.label}</div>
           </div>
         ))}
+      </div>
+
+      {/* טלפון */}
+      <div className="bg-white rounded-2xl p-4 card-shadow">
+        <div className="flex items-center justify-between mb-1">
+          <h3 className="font-bold text-gray-800 text-sm">📞 מספר טלפון</h3>
+          {!editingPhone && (
+            <button onClick={() => setEditingPhone(true)} className="text-orange-500 text-sm font-semibold">ערוך</button>
+          )}
+        </div>
+        {editingPhone ? (
+          <div className="flex gap-2 mt-2">
+            <input type="tel" inputMode="tel" value={phone} onChange={e => setPhone(e.target.value)}
+              placeholder="05X-XXXXXXX"
+              className="flex-1 border border-gray-200 rounded-xl px-3 py-2.5 text-right text-sm focus:border-orange-400 outline-none" />
+            <button onClick={handleSavePhone} disabled={savingPhone}
+              className="bg-orange-500 text-white rounded-xl px-3 py-2.5">
+              {savingPhone ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Check size={16} />}
+            </button>
+            <button onClick={() => setEditingPhone(false)} className="bg-gray-100 text-gray-500 rounded-xl px-3 py-2.5">
+              <X size={16} />
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 mt-1">
+            <Phone size={14} className="text-gray-400" />
+            <span className={phone ? 'text-gray-900 font-semibold' : 'text-gray-400 text-sm'}>
+              {phone || 'לא הוזן — הוסף מספר'}
+            </span>
+          </div>
+        )}
+        <p className="text-xs text-gray-400 mt-2">המסעדה תוכל להתקשר אליך לאחר אישור המשמרת</p>
       </div>
 
       {/* Level progress */}
