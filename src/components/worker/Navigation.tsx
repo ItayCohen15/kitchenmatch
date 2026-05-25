@@ -14,6 +14,7 @@ export const WorkerNavigation: React.FC = () => {
   const restaurantName: string = job?.RestaurantName || job?.restaurantName || 'המסעדה';
   const restaurantCity: string = job?.RestaurantCity || job?.restaurantCity || '';
   const restaurantAddress: string = job?.RestaurantAddress || job?.restaurantAddress || '';
+  const instructions: string = job?.Instructions || job?.instructions || '';
   const hourlyRate: number = job ? Number(job.HourlyRate ?? job.hourlyRate ?? 0) : 0;
   const jobId: number = job ? Number(job.Id ?? job.id ?? 0) : 0;
   const startStr = job?.StartTime ? new Date(job.StartTime).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : '--:--';
@@ -152,17 +153,23 @@ export const WorkerNavigation: React.FC = () => {
 
       {/* הוראות הגעה */}
       <div className="bg-white rounded-2xl p-4 card-shadow">
-        <h3 className="font-bold text-gray-800 mb-3 text-sm">מה לעשות כשמגיע?</h3>
-        <div className="space-y-2">
-          {['הכנס דרך הכניסה הראשית / אחורית', 'בקש את מנהל המשמרת', 'לחץ "צ׳ק-אין" כאן', 'בהצלחה! 👨‍🍳'].map((step, i) => (
-            <div key={i} className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
-                {i + 1}
+        <h3 className="font-bold text-gray-800 mb-3 text-sm">📍 הוראות הגעה</h3>
+        {instructions ? (
+          <div className="bg-orange-50 rounded-xl p-3 text-right">
+            <p className="text-gray-800 text-sm leading-relaxed">{instructions}</p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {['הכנס דרך הכניסה הראשית / אחורית', 'בקש את מנהל המשמרת', 'לחץ "צ׳ק-אין" כאן', 'בהצלחה! 👨‍🍳'].map((step, i) => (
+              <div key={i} className="flex items-start gap-3">
+                <div className="w-6 h-6 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
+                  {i + 1}
+                </div>
+                <span className="text-gray-700 text-sm">{step}</span>
               </div>
-              <span className="text-gray-700 text-sm">{step}</span>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* כפתור צ'ק-אין */}

@@ -25,6 +25,7 @@ export const CreateJob: React.FC = () => {
   const [wage, setWage] = useState('75');
   const [experience, setExperience] = useState<ExperienceLevel | null>(null);
   const [emergency, setEmergency] = useState(false);
+  const [instructions, setInstructions] = useState('');
   const [publishing, setPublishing] = useState(false);
   const [publishError, setPublishError] = useState('');
 
@@ -63,7 +64,7 @@ export const CreateJob: React.FC = () => {
         endTime: endDate.toISOString(),
         hourlyRate: parseFloat(wage),
         isEmergency: emergency,
-        description: '',
+        description: instructions,
       });
 
       setTimeout(() => {
@@ -280,6 +281,24 @@ export const CreateJob: React.FC = () => {
                 העובד ישלם 6.5% נוסף מצידו
               </p>
             </div>
+          </div>
+
+          {/* הוראות הגעה */}
+          <div className="bg-white rounded-2xl p-4 card-shadow">
+            <label className="text-sm font-semibold text-gray-700 mb-2 block">
+              📍 הוראות הגעה לעובד <span className="text-gray-400 font-normal">(אופציונלי)</span>
+            </label>
+            <textarea
+              value={instructions}
+              onChange={e => setInstructions(e.target.value)}
+              placeholder={'לדוגמה: כניסה מאחורי הבניין, קומה 2, לבקש את דני במטבח'}
+              rows={3}
+              maxLength={300}
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right text-sm focus:border-orange-400 outline-none resize-none text-gray-900"
+            />
+            {instructions && (
+              <div className="text-xs text-gray-400 text-left mt-1">{instructions.length}/300</div>
+            )}
           </div>
 
           {/* Emergency toggle */}

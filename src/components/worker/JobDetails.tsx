@@ -40,6 +40,8 @@ export const JobDetails: React.FC = () => {
   const endStr = end.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
   const restaurantName = job.RestaurantName || job.restaurantName || 'מסעדה';
   const restaurantCity = job.RestaurantCity || job.restaurantCity || '';
+  const restaurantAddress = job.RestaurantAddress || job.restaurantAddress || '';
+  const jobInstructions = job.Instructions || job.instructions || '';
   const isEmergency = Boolean(job.IsEmergency || job.isEmergency);
   const role = job.Role || job.role || 'chef';
 
@@ -207,6 +209,21 @@ export const JobDetails: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* הוראות הגעה */}
+      {(jobInstructions || restaurantAddress) && (
+        <div className="bg-orange-50 border border-orange-100 rounded-2xl p-4">
+          <h3 className="font-bold text-orange-800 mb-2 text-sm">📍 הוראות הגעה</h3>
+          {restaurantAddress && (
+            <div className="text-gray-700 text-sm mb-1 font-medium">
+              כתובת: {restaurantAddress}{restaurantCity ? `, ${restaurantCity}` : ''}
+            </div>
+          )}
+          {jobInstructions && (
+            <p className="text-gray-700 text-sm leading-relaxed">{jobInstructions}</p>
+          )}
+        </div>
+      )}
 
       {/* Payment guarantee */}
       <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-sm text-blue-700">
