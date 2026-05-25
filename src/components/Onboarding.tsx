@@ -54,6 +54,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
   const [cuisineType, setCuisineType] = useState('');
   const [street, setStreet] = useState('');
   const [streetNumber, setStreetNumber] = useState('');
+  const [phone, setPhone] = useState('');
   const [saving, setSaving] = useState(false);
 
   const totalSteps = role === 'worker' ? 4 : 2;
@@ -81,6 +82,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
           hourlyRate: parseFloat(hourlyRate), bio,
           yearsExp: parseInt(yearsExp),
           skills: selectedSpecialties.join(','),
+          phone,
         });
         // השתמש בפרופיל מהשרת אם קיים
         updatedProfile = res?.profile || {
@@ -94,8 +96,8 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
       } else {
         const cuisinesStr = selectedCuisines.join(',');
         const fullAddress = `${street} ${streetNumber}`.trim();
-        const res = await api.updateRestaurant(profileId, { name, city, cuisineType: cuisinesStr, address: fullAddress });
-        updatedProfile = res?.profile || { ...updatedProfile, CuisineType: cuisinesStr, Address: fullAddress, WalletBalance: 0 };
+        const res = await api.updateRestaurant(profileId, { name, city, cuisineType: cuisinesStr, address: fullAddress, phone });
+        updatedProfile = res?.profile || { ...updatedProfile, CuisineType: cuisinesStr, Address: fullAddress, Phone: phone, WalletBalance: 0 };
       }
 
       onComplete(updatedProfile);
@@ -170,6 +172,18 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                   ))}
                 </div>
               </div>
+              <div>
+                <label className="text-sm font-semibold text-gray-600 mb-1.5 block">📞 מספר טלפון</label>
+                <input
+                  type="tel"
+                  inputMode="tel"
+                  value={phone}
+                  onChange={e => setPhone(e.target.value)}
+                  placeholder="05X-XXXXXXX"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-orange-400 outline-none"
+                />
+              </div>
+
               {role === 'restaurant' && (
                 <div>
                   <label className="text-sm font-semibold text-gray-600 mb-1.5 block">כתובת המסעדה</label>

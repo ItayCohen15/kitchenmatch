@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Clock, CheckCircle2 } from 'lucide-react';
+import { Send, Clock, CheckCircle2, Phone } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 
@@ -18,6 +18,7 @@ export const WorkerActiveShift: React.FC = () => {
   const startTime = shiftStartTime || new Date(Date.now() - 30 * 60000);
   const hourlyRate = job ? Number(job.HourlyRate ?? job.hourlyRate ?? 0) : 0;
   const restaurantName: string = job?.RestaurantName || job?.restaurantName || 'המסעדה';
+  const restaurantPhone: string = job?.RestaurantPhone || job?.restaurantPhone || '';
   const jobId: number = job ? Number(job.Id ?? job.id ?? 0) : 0;
 
   useEffect(() => {
@@ -167,7 +168,15 @@ export const WorkerActiveShift: React.FC = () => {
       <div className="bg-white rounded-2xl card-shadow flex flex-col" style={{ height: 230 }}>
         <div className="flex items-center justify-between p-3 border-b border-gray-50">
           <span className="font-bold text-gray-800 text-sm">צ׳אט עם {restaurantName}</span>
-          <div className="w-2 h-2 bg-green-500 rounded-full" />
+          <div className="flex items-center gap-2">
+            {restaurantPhone ? (
+              <a href={`tel:${restaurantPhone}`}
+                className="flex items-center gap-1 bg-green-100 text-green-700 rounded-lg px-2 py-1 text-xs font-bold">
+                <Phone size={12} /> התקשר
+              </a>
+            ) : null}
+            <div className="w-2 h-2 bg-green-500 rounded-full" />
+          </div>
         </div>
         <div ref={chatRef} className="flex-1 overflow-y-auto p-3 space-y-2">
           {chatMessages.map(msg => (

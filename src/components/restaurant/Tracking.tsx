@@ -15,6 +15,7 @@ export const LiveTracking: React.FC = () => {
   const activeJob = job || confirmedJobs[0];
   const workerName: string = activeJob?.WorkerName || 'העובד';
   const workerInit = workerName.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
+  const workerPhone: string = activeJob?.WorkerPhone || '';
   const hourlyRate: number = activeJob ? Number(activeJob.HourlyRate ?? 0) : 0;
   const jobId: number = activeJob ? Number(activeJob.Id ?? 0) : 0;
 
@@ -133,12 +134,19 @@ export const LiveTracking: React.FC = () => {
       {/* כרטיס פעולות */}
       <div className="bg-white rounded-2xl p-4 card-shadow">
         <div className="grid grid-cols-2 gap-3 mb-4">
-          <button className="flex items-center justify-center gap-2 bg-gray-100 rounded-xl py-3 text-gray-700 font-semibold text-sm">
-            <Phone size={16} /> התקשר
-          </button>
+          {workerPhone ? (
+            <a href={`tel:${workerPhone}`}
+              className="flex items-center justify-center gap-2 bg-green-50 border border-green-200 rounded-xl py-3 text-green-700 font-semibold text-sm">
+              <Phone size={16} /> {workerPhone}
+            </a>
+          ) : (
+            <div className="flex items-center justify-center gap-2 bg-gray-100 rounded-xl py-3 text-gray-400 font-semibold text-sm">
+              <Phone size={16} /> אין טלפון
+            </div>
+          )}
           <button onClick={() => navToRestaurant('active_shift')}
             className="flex items-center justify-center gap-2 bg-gray-100 rounded-xl py-3 text-gray-700 font-semibold text-sm">
-            <MessageCircle size={16} /> הודעה
+            <MessageCircle size={16} /> צ׳אט
           </button>
         </div>
 
