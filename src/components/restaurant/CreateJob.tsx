@@ -26,6 +26,7 @@ export const CreateJob: React.FC = () => {
   const [experience, setExperience] = useState<ExperienceLevel | null>(null);
   const [emergency, setEmergency] = useState(false);
   const [publishing, setPublishing] = useState(false);
+  const [publishError, setPublishError] = useState('');
 
   const totalHours = (() => {
     const [sh, sm] = startTime.split(':').map(Number);
@@ -38,7 +39,12 @@ export const CreateJob: React.FC = () => {
   const totalPay = (parseFloat(totalHours) * parseFloat(wage || '0')).toFixed(0);
 
   const handlePublish = async () => {
+    if (!userProfile?.Id) {
+      setPublishError('שגיאה: פרופיל מסעדה לא נמצא. נסה להתנתק ולהתחבר מחדש.');
+      return;
+    }
     setPublishing(true);
+    setPublishError('');
     setEmergencyMode(emergency);
     try {
       const today = new Date();
@@ -51,7 +57,7 @@ export const CreateJob: React.FC = () => {
       if (endDate <= startDate) endDate.setDate(endDate.getDate() + 1);
 
       await api.createJob({
-        restaurantId: userProfile?.Id || 1,
+        restaurantId: userProfile.Id,
         role: role || 'chef',
         startTime: startDate.toISOString(),
         endTime: endDate.toISOString(),
@@ -59,12 +65,14 @@ export const CreateJob: React.FC = () => {
         isEmergency: emergency,
         description: '',
       });
-    } catch (e) {
-      // ממשיך גם אם יש שגיאה
+
+      setTimeout(() => {
+        navToRestaurant('worker_matching');
+      }, 800);
+    } catch (e: any) {
+      setPublishing(false);
+      setPublishError(e.message || 'שגיאה בפרסום המשמרת. נסה שוב.');
     }
-    setTimeout(() => {
-      navToRestaurant('worker_matching');
-    }, 800);
   };
 
   const stepTitles = ['תפקיד', 'שעות', 'תגמול', 'פרסום'];
@@ -294,6 +302,12 @@ export const CreateJob: React.FC = () => {
               <div className={`w-6 h-6 bg-white rounded-full shadow transition-transform ${emergency ? '-translate-x-6' : ''}`} />
             </div>
           </button>
+
+          {publishError && (
+            <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3 text-center font-medium">
+              ⚠️ {publishError}
+            </div>
+          )}
 
           {publishing ? (
             <div className="bg-orange-500 rounded-2xl py-5 flex items-center justify-center gap-3">

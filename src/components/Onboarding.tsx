@@ -52,7 +52,8 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
   const [yearsExp, setYearsExp] = useState('1');
   const [bio, setBio] = useState('');
   const [cuisineType, setCuisineType] = useState('');
-  const [address, setAddress] = useState('');
+  const [street, setStreet] = useState('');
+  const [streetNumber, setStreetNumber] = useState('');
   const [saving, setSaving] = useState(false);
 
   const totalSteps = role === 'worker' ? 4 : 2;
@@ -92,8 +93,9 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
         };
       } else {
         const cuisinesStr = selectedCuisines.join(',');
-        const res = await api.updateRestaurant(profileId, { name, city, cuisineType: cuisinesStr, address });
-        updatedProfile = res?.profile || { ...updatedProfile, CuisineType: cuisinesStr, Address: address, WalletBalance: 0 };
+        const fullAddress = `${street} ${streetNumber}`.trim();
+        const res = await api.updateRestaurant(profileId, { name, city, cuisineType: cuisinesStr, address: fullAddress });
+        updatedProfile = res?.profile || { ...updatedProfile, CuisineType: cuisinesStr, Address: fullAddress, WalletBalance: 0 };
       }
 
       onComplete(updatedProfile);
@@ -170,14 +172,29 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
               </div>
               {role === 'restaurant' && (
                 <div>
-                  <label className="text-sm font-semibold text-gray-600 mb-1.5 block">כתובת</label>
-                  <input
-                    type="text"
-                    value={address}
-                    onChange={e => setAddress(e.target.value)}
-                    placeholder="רחוב ומספר"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-orange-400 outline-none"
-                  />
+                  <label className="text-sm font-semibold text-gray-600 mb-1.5 block">כתובת המסעדה</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={street}
+                      onChange={e => setStreet(e.target.value)}
+                      placeholder="שם הרחוב"
+                      className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-orange-400 outline-none"
+                    />
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={streetNumber}
+                      onChange={e => setStreetNumber(e.target.value)}
+                      placeholder="מס׳"
+                      className="w-20 border border-gray-200 rounded-xl px-3 py-3 text-right focus:border-orange-400 outline-none"
+                    />
+                  </div>
+                  {street && streetNumber && (
+                    <div className="mt-1.5 text-xs text-green-600 font-semibold flex items-center gap-1">
+                      📍 {street} {streetNumber}, {city}
+                    </div>
+                  )}
                 </div>
               )}
               <button

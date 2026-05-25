@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Navigation2, CheckCircle2, X } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { MapView } from '../common/MapView';
 import { api } from '../../api';
 
 export const WorkerNavigation: React.FC = () => {
@@ -14,6 +13,7 @@ export const WorkerNavigation: React.FC = () => {
 
   const restaurantName: string = job?.RestaurantName || job?.restaurantName || 'המסעדה';
   const restaurantCity: string = job?.RestaurantCity || job?.restaurantCity || '';
+  const restaurantAddress: string = job?.RestaurantAddress || job?.restaurantAddress || '';
   const hourlyRate: number = job ? Number(job.HourlyRate ?? job.hourlyRate ?? 0) : 0;
   const jobId: number = job ? Number(job.Id ?? job.id ?? 0) : 0;
   const startStr = job?.StartTime ? new Date(job.StartTime).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : '--:--';
@@ -61,9 +61,13 @@ export const WorkerNavigation: React.FC = () => {
   };
 
   const handleDecline = async () => {
-    // ביטול יוזמת ההתחלה
     setRestaurantInitiated(false);
   };
+
+  const wazeQuery = restaurantAddress
+    ? `${restaurantAddress}, ${restaurantCity}`
+    : restaurantCity;
+  const wazeUrl = `https://waze.com/ul?q=${encodeURIComponent(wazeQuery)}&navigate=yes`;
 
   return (
     <div className="screen-enter flex flex-col gap-4">
@@ -94,10 +98,27 @@ export const WorkerNavigation: React.FC = () => {
         </div>
       </div>
 
-      {/* Map */}
-      <div className="h-56 rounded-2xl overflow-hidden">
-        <MapView showWorker workerName="אני" restaurantName={restaurantName} mode="navigation" />
-      </div>
+      {/* כפתור וויז — ראשי */}
+      <a
+        href={wazeUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block w-full bg-[#05C3F9] text-white rounded-2xl p-5 shadow-lg shadow-blue-100 active:scale-98 transition-transform"
+        style={{ textDecoration: 'none' }}
+      >
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center flex-shrink-0">
+            <span className="text-3xl">🗺️</span>
+          </div>
+          <div className="flex-1 text-right">
+            <div className="font-black text-xl">נווט עם וויז</div>
+            <div className="text-blue-100 text-sm mt-0.5">
+              {restaurantAddress ? `${restaurantAddress}, ${restaurantCity}` : restaurantCity}
+            </div>
+          </div>
+          <div className="text-white/70 text-2xl">›</div>
+        </div>
+      </a>
 
       {/* פופאפ — המסעדה יזמה התחלה */}
       {restaurantInitiated && !waitingForRestaurant && (

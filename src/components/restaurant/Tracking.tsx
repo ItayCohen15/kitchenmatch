@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Phone, MessageCircle, CheckCircle2, X } from 'lucide-react';
+import { Phone, MessageCircle, CheckCircle2, X, Clock } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { MapView } from '../common/MapView';
 import { api } from '../../api';
 
 export const LiveTracking: React.FC = () => {
@@ -87,10 +86,18 @@ export const LiveTracking: React.FC = () => {
         </div>
       </div>
 
-      {/* Map */}
-      <div className="h-52 rounded-2xl overflow-hidden">
-        <MapView showWorker workerName={workerName}
-          restaurantName={userProfile?.Name || 'המסעדה'} mode="tracking" />
+      {/* כרטיס סטטוס המתנה */}
+      <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 flex items-center gap-4">
+        <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+          <Clock size={24} className="text-blue-500" />
+        </div>
+        <div>
+          <div className="font-bold text-blue-800">העובד בדרך אליך</div>
+          <div className="text-blue-500 text-sm">תקבל התראה כשיגיע לצ׳ק-אין</div>
+        </div>
+        <div className="mr-auto">
+          <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
+        </div>
       </div>
 
       {/* פופאפ — העובד יזם צ'ק-אין */}

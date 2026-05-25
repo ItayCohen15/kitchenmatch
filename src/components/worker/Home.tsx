@@ -111,7 +111,11 @@ export const WorkerHome: React.FC = () => {
           <div key={shift.Id} className="bg-gradient-to-l from-green-600 to-emerald-500 rounded-2xl p-4 text-white">
             <div className="font-bold text-sm mb-1">{statusLabel}</div>
             <div className="font-black text-lg">{shift.RestaurantName}</div>
-            <div className="text-green-100 text-sm mb-3">{shift.RestaurantCity} · ₪{shift.HourlyRate}/ש׳</div>
+            <div className="text-green-100 text-sm">{shift.RestaurantCity} · ₪{shift.HourlyRate}/ש׳</div>
+            {shift.RestaurantAddress && (
+              <div className="text-green-200 text-xs mb-1">📍 {shift.RestaurantAddress}, {shift.RestaurantCity}</div>
+            )}
+            <div className="mb-3" />
             <button
               onClick={() => {
                 selectWorkerJob(String(shift.Id), shift);
