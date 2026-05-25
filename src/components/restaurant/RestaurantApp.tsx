@@ -10,6 +10,7 @@ import { ActiveShift } from './ActiveShift';
 import { RestaurantEndShift } from './EndShift';
 import { RestaurantWallet } from './Wallet';
 import { RestaurantAnalytics } from './Analytics';
+import { RestaurantProfile } from './Profile';
 import type { RestaurantScreen } from '../../types';
 
 const SCREEN_TITLES: Record<RestaurantScreen, string> = {
@@ -21,9 +22,10 @@ const SCREEN_TITLES: Record<RestaurantScreen, string> = {
   end_shift:       'סיום משמרת',
   wallet:          'ארנק',
   analytics:       'ניתוח',
+  profile:         'הפרופיל שלי',
 };
 
-const NAV_TABS: RestaurantScreen[] = ['home', 'create_job', 'analytics', 'wallet'];
+const NAV_TABS: RestaurantScreen[] = ['home', 'create_job', 'analytics', 'wallet', 'profile'];
 
 export const RestaurantApp: React.FC = () => {
   const { restaurantScreen, navToRestaurant, resetToLanding, userProfile } = useApp();
@@ -46,6 +48,7 @@ export const RestaurantApp: React.FC = () => {
       case 'end_shift':       return <RestaurantEndShift />;
       case 'wallet':          return <RestaurantWallet />;
       case 'analytics':       return <RestaurantAnalytics />;
+      case 'profile':         return <RestaurantProfile />;
     }
   };
 

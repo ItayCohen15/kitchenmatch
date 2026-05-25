@@ -128,7 +128,7 @@ export const RestaurantAnalytics: React.FC = () => {
           },
           {
             title: 'חודשים פעילים',
-            value: `${chartData.length}`,
+            value: `${totalShifts > 0 ? chartData.length : 0}`,
             icon: <AlertCircle size={18} />,
             color: 'text-purple-500 bg-purple-50',
           },
