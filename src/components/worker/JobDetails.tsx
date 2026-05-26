@@ -64,21 +64,22 @@ export const JobDetails: React.FC = () => {
   // פולינג אחרי הגשת מועמדות — בדוק אם אושרת
   const [approvedByRestaurant, setApprovedByRestaurant] = useState(false);
   useEffect(() => {
-    if (!accepted || !job) return;
+    if (!accepted || !job || !userProfile?.Id) return;
     const jobId = Number(job.Id || job.id);
     if (!jobId) return;
     const check = async () => {
       try {
-        const status = await api.getEndStatus(jobId);
-        if (status?.Status && ['confirmed','active','pending_completion','completed'].includes(status.Status)) {
+        // שימוש ב-getStartStatus שמחזיר Status עדכני
+        const status = await api.getStartStatus(jobId);
+        if (status?.Status && ['confirmed','active'].includes(status.Status)) {
           setApprovedByRestaurant(true);
         }
       } catch {}
     };
     check();
-    const iv = setInterval(check, 4000);
+    const iv = setInterval(check, 3000);
     return () => clearInterval(iv);
-  }, [accepted, job, userProfile?.Id]);
+  }, [accepted, job?.Id, userProfile?.Id]);
 
   if (accepted) {
     return (
