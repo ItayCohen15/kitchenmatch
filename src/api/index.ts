@@ -167,6 +167,9 @@ export const api = {
   markNotificationsRead: () =>
     fetch(`${BASE}/push/notifications/read-all`, { method: 'PUT', headers: headers() }).then(handleResponse),
 
+  getRestaurantAnalytics: (restaurantId: number) =>
+    fetch(`${BASE}/restaurants/${restaurantId}/analytics`, { headers: headers() }).then(handleResponse),
+
   getRestaurantRatings: (restaurantId: number) =>
     fetch(`${BASE}/ratings/restaurant/${restaurantId}`, { headers: headers() }).then(handleResponse),
 
