@@ -164,6 +164,17 @@ export const api = {
   getRestaurantRatings: (restaurantId: number) =>
     fetch(`${BASE}/ratings/restaurant/${restaurantId}`, { headers: headers() }).then(handleResponse),
 
+  // ========== MESSAGES ==========
+  getMessages: (jobId: number) =>
+    fetch(`${BASE}/messages/${jobId}`, { headers: headers() }).then(handleResponse),
+
+  sendMessage: (jobId: number, text: string, senderName: string, senderRole: string) =>
+    fetch(`${BASE}/messages/${jobId}`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({ text, senderName, senderRole })
+    }).then(handleResponse),
+
   sendRating: (jobId: number, fromUserId: number, toUserId: number, score: number, comment: string) =>
     fetch(`${BASE}/ratings`, {
       method: 'POST',

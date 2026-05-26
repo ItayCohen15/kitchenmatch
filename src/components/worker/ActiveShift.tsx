@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Clock, CheckCircle2, Phone } from 'lucide-react';
+import { Clock, CheckCircle2, Phone } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
+import { Chat } from '../common/Chat';
 
 export const WorkerActiveShift: React.FC = () => {
-  const { navToWorker, chatMessages, sendMessage, shiftStartTime, getSelectedJob, userProfile } = useApp();
+  const { navToWorker, shiftStartTime, getSelectedJob, userProfile } = useApp();
   const job = getSelectedJob();
   const [input, setInput] = useState('');
   const [elapsed, setElapsed] = useState(0);
@@ -13,7 +14,6 @@ export const WorkerActiveShift: React.FC = () => {
   const [confirming, setConfirming] = useState(false);
   const [bothDone, setBothDone] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const chatRef = useRef<HTMLDivElement>(null);
 
   const startTime = shiftStartTime || new Date(Date.now() - 30 * 60000);
   const hourlyRate = job ? Number(job.HourlyRate ?? job.hourlyRate ?? 0) : 0;
@@ -39,9 +39,6 @@ export const WorkerActiveShift: React.FC = () => {
     return () => clearInterval(iv);
   }, [startTime]);
 
-  useEffect(() => {
-    chatRef.current?.scrollTo({ top: chatRef.current.scrollHeight, behavior: 'smooth' });
-  }, [chatMessages]);
 
   // בדוק סטטוס אישורים כל 8 שניות
   useEffect(() => {
@@ -190,52 +187,8 @@ export const WorkerActiveShift: React.FC = () => {
         )}
       </div>
 
-      {/* Chat */}
-      <div className="bg-white rounded-2xl card-shadow flex flex-col" style={{ height: 230 }}>
-        <div className="flex items-center justify-between p-3 border-b border-gray-50">
-          <span className="font-bold text-gray-800 text-sm">צ׳אט עם {restaurantName}</span>
-          <div className="flex items-center gap-2">
-            {restaurantPhone ? (
-              <a href={`tel:${restaurantPhone}`}
-                className="flex items-center gap-1 bg-green-100 text-green-700 rounded-lg px-2 py-1 text-xs font-bold">
-                <Phone size={12} /> התקשר
-              </a>
-            ) : null}
-            <div className="w-2 h-2 bg-green-500 rounded-full" />
-          </div>
-        </div>
-        <div ref={chatRef} className="flex-1 overflow-y-auto p-3 space-y-2">
-          {chatMessages.map(msg => (
-            <div key={msg.id} className={`flex ${!msg.isOwn ? 'justify-start' : 'justify-end'}`}>
-              <div className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${
-                !msg.isOwn ? 'bg-gray-100 text-gray-800 rounded-tr-sm' : 'bg-green-500 text-white rounded-tl-sm'
-              }`}>
-                {msg.text}
-                <div className={`text-xs mt-0.5 ${!msg.isOwn ? 'text-gray-400' : 'text-green-100'}`}>{msg.time}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="px-3 pb-1 flex gap-1 overflow-x-auto">
-          {QUICK.map(m => (
-            <button key={m} onClick={() => sendMessage(m, false)}
-              className="flex-shrink-0 text-xs bg-green-50 text-green-600 rounded-full px-2.5 py-1 font-medium whitespace-nowrap">
-              {m}
-            </button>
-          ))}
-        </div>
-        <div className="flex items-center gap-2 p-3 border-t border-gray-50">
-          <div className="flex-1 bg-gray-50 rounded-xl flex items-center pr-3">
-            <input value={input} onChange={e => setInput(e.target.value)}
-              onKeyDown={e => { if (e.key === 'Enter' && input.trim()) { sendMessage(input.trim(), false); setInput(''); } }}
-              placeholder="כתוב הודעה..." className="flex-1 bg-transparent py-2 text-sm text-right outline-none" />
-          </div>
-          <button onClick={() => { if (input.trim()) { sendMessage(input.trim(), false); setInput(''); } }}
-            className="w-9 h-9 bg-green-500 rounded-xl flex items-center justify-center text-white">
-            <Send size={16} />
-          </button>
-        </div>
-      </div>
+      {/* Chat אמיתי */}
+      <Chat jobId={jobId} myRole="worker" myName={userProfile?.Name || 'עובד'} />
 
       {/* כפתור סיום */}
       {!workerConfirmed ? (

@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Clock, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Clock, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
+import { Chat } from '../common/Chat';
 
 export const ActiveShift: React.FC = () => {
-  const { navToRestaurant, chatMessages, sendMessage, shiftStartTime, getSelectedJob, userProfile } = useApp();
+  const { navToRestaurant, shiftStartTime, getSelectedJob, userProfile } = useApp();
   const job = getSelectedJob();
-  const [input, setInput] = useState('');
   const [elapsed, setElapsed] = useState(0);
   const [workerConfirmed, setWorkerConfirmed] = useState(false);
   const [restaurantConfirmed, setRestaurantConfirmed] = useState(false);
@@ -14,8 +14,6 @@ export const ActiveShift: React.FC = () => {
   const [bothDone, setBothDone] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showReport, setShowReport] = useState(false);
-  const chatRef = useRef<HTMLDivElement>(null);
-
   const startTime = shiftStartTime || new Date(Date.now() - 42 * 60000);
   const hourlyRate: number = job ? Number(job.HourlyRate ?? job.hourlyRate ?? 0) : 0;
   const workerName: string = job?.WorkerName || 'העובד';
@@ -26,10 +24,6 @@ export const ActiveShift: React.FC = () => {
     const iv = setInterval(() => setElapsed(Math.floor((Date.now() - startTime.getTime()) / 1000)), 1000);
     return () => clearInterval(iv);
   }, [startTime]);
-
-  useEffect(() => {
-    chatRef.current?.scrollTo({ top: chatRef.current.scrollHeight, behavior: 'smooth' });
-  }, [chatMessages]);
 
   // בדוק סטטוס אישורים כל 8 שניות
   useEffect(() => {
@@ -61,8 +55,6 @@ export const ActiveShift: React.FC = () => {
   const baseAmount = hoursWorked * hourlyRate;
   const totalWithFee = (baseAmount * 1.065).toFixed(2);
   const perMinute = (hourlyRate / 60).toFixed(2);
-  const QUICK = ['תודה!', 'אנחנו עמוסים', 'צריך עוד 30 דקות?', 'עשה טוב 👍'];
-
   const handleConfirmEnd = async () => {
     setConfirming(true);
     try {
@@ -166,44 +158,8 @@ export const ActiveShift: React.FC = () => {
         )}
       </div>
 
-      {/* Chat */}
-      <div className="bg-white rounded-2xl card-shadow flex flex-col" style={{ height: 230 }}>
-        <div className="flex items-center justify-between p-3 border-b border-gray-50">
-          <span className="font-bold text-gray-800 text-sm">צ׳אט עם {workerName}</span>
-          <div className="w-2 h-2 bg-green-500 rounded-full" />
-        </div>
-        <div ref={chatRef} className="flex-1 overflow-y-auto p-3 space-y-2">
-          {chatMessages.map(msg => (
-            <div key={msg.id} className={`flex ${msg.isOwn ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${
-                msg.isOwn ? 'bg-orange-500 text-white rounded-tl-sm' : 'bg-gray-100 text-gray-800 rounded-tr-sm'
-              }`}>
-                {msg.text}
-                <div className={`text-xs mt-0.5 ${msg.isOwn ? 'text-orange-100' : 'text-gray-400'}`}>{msg.time}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="px-3 pb-1 flex gap-1 overflow-x-auto">
-          {QUICK.map(m => (
-            <button key={m} onClick={() => sendMessage(m, true)}
-              className="flex-shrink-0 text-xs bg-orange-50 text-orange-600 rounded-full px-2.5 py-1 font-medium whitespace-nowrap">
-              {m}
-            </button>
-          ))}
-        </div>
-        <div className="flex items-center gap-2 p-3 border-t border-gray-50">
-          <div className="flex-1 bg-gray-50 rounded-xl flex items-center pr-3">
-            <input value={input} onChange={e => setInput(e.target.value)}
-              onKeyDown={e => { if (e.key === 'Enter' && input.trim()) { sendMessage(input.trim(), true); setInput(''); } }}
-              placeholder="כתוב הודעה..." className="flex-1 bg-transparent py-2 text-sm text-right outline-none" />
-          </div>
-          <button onClick={() => { if (input.trim()) { sendMessage(input.trim(), true); setInput(''); } }}
-            className="w-9 h-9 bg-orange-500 rounded-xl flex items-center justify-center text-white">
-            <Send size={16} />
-          </button>
-        </div>
-      </div>
+      {/* Chat אמיתי */}
+      <Chat jobId={jobId} myRole="restaurant" myName={userProfile?.Name || 'המסעדה'} />
 
       {/* כפתור סיום */}
       {!restaurantConfirmed ? (
