@@ -34,7 +34,7 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
           style={{ background: '#e8a020', transform: 'translate(30%, 30%)' }} />
 
         {/* Logo */}
-        <div className="flex items-center gap-3 mb-8 relative">
+        <div className="flex items-center gap-3 mb-8 relative" style={{ marginTop: 'env(safe-area-inset-top)' }}>
           <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-lg">
             <img src="/logo.png" alt="KitchenMatch" className="w-full h-full object-cover" />
           </div>

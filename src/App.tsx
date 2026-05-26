@@ -126,6 +126,17 @@ const AppContent: React.FC = () => {
     setAuthChecked(true);
   }, []);
 
+  // כשuserRole מתאפס (logout) — חזור ל-Landing
+  useEffect(() => {
+    if (authChecked && !userRole && !token) {
+      setToken(null);
+      setShowLanding(true);
+      setNeedsOnboarding(false);
+      setPendingProfile(null);
+      setVerifyData(null);
+    }
+  }, [userRole, authChecked]);
+
   const handleLogin = (newToken: string, role: string, profile: any, isNew?: boolean) => {
     setToken(newToken);
     setUserRole(role as 'restaurant' | 'worker');

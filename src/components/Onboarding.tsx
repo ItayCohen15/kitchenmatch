@@ -109,7 +109,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
 
   return (
     <div className="h-full overflow-y-auto" style={{ background: 'linear-gradient(160deg, #0d1420 0%, #1a2744 100%)' }}>
-      <div className="min-h-full flex flex-col items-center justify-start p-6 pb-10">
+      <div className="min-h-full flex flex-col items-center justify-start p-6 pb-10" style={{ paddingTop: 'max(env(safe-area-inset-top), 24px)' }}>
       <div className="w-full max-w-sm">
         {/* Header */}
         <div className="text-center mb-6 pt-4">
