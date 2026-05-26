@@ -26,6 +26,8 @@ const AppContent: React.FC = () => {
         try { setUserProfile(JSON.parse(savedProfile)); } catch {}
       }
       if (!onboardingDone) setNeedsOnboarding(true);
+      // שמור role ב-localStorage לשחזור מסך
+      localStorage.setItem('km_role', savedRole);
     }
     setAuthChecked(true);
   }, []);
@@ -34,6 +36,8 @@ const AppContent: React.FC = () => {
     setToken(newToken);
     setUserRole(role as 'restaurant' | 'worker');
     setPendingProfile(profile);
+    localStorage.setItem('km_token', newToken);
+    localStorage.setItem('km_role', role);
     if (isNew) {
       setNeedsOnboarding(true);
     } else {

@@ -2,6 +2,9 @@ import React, { createContext, useContext, useState, useCallback } from 'react';
 import type { UserRole, RestaurantScreen, WorkerScreen, Job, Message } from '../types';
 import { INITIAL_CHAT } from '../data/mockData';
 
+// מסכים שלא כדאי לשחזר (חד-פעמיים)
+const NO_RESTORE_SCREENS = ['end_shift'];
+
 interface AppState {
   userRole: UserRole;
   restaurantScreen: RestaurantScreen;
@@ -33,24 +36,57 @@ const AppContext = createContext<AppContextValue | null>(null);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [userRole, setUserRole] = useState<UserRole>(null);
-  const [restaurantScreen, setRestaurantScreen] = useState<RestaurantScreen>('home');
-  const [workerScreen, setWorkerScreen] = useState<WorkerScreen>('home');
+
+  // שחזור מסך אחרון
+  const [restaurantScreen, setRestaurantScreen] = useState<RestaurantScreen>(() => {
+    try {
+      const s = localStorage.getItem('km_screen');
+      const r = localStorage.getItem('km_role');
+      if (s && r === 'restaurant' && !NO_RESTORE_SCREENS.includes(s)) return s as RestaurantScreen;
+    } catch {}
+    return 'home';
+  });
+
+  const [workerScreen, setWorkerScreen] = useState<WorkerScreen>(() => {
+    try {
+      const s = localStorage.getItem('km_screen');
+      const r = localStorage.getItem('km_role');
+      if (s && r === 'worker' && !NO_RESTORE_SCREENS.includes(s)) return s as WorkerScreen;
+    } catch {}
+    return 'home';
+  });
+
   const [activeJob, setActiveJob] = useState<Job | null>(null);
   const [chatMessages, setChatMessages] = useState<Message[]>(INITIAL_CHAT);
-  const [shiftStartTime, setShiftStartTime] = useState<Date | null>(null);
+
+  // שחזור זמן התחלת משמרת
+  const [shiftStartTime, setShiftStartTime] = useState<Date | null>(() => {
+    try {
+      const t = localStorage.getItem('km_shift_start');
+      return t ? new Date(t) : null;
+    } catch { return null; }
+  });
+
   const [isEmergencyMode, setIsEmergencyMode] = useState(false);
   const [workerSelectedJobId, setWorkerSelectedJobId] = useState<string | null>(null);
-  const [selectedJobData, setSelectedJobData] = useState<any | null>(null);
+
+  // שחזור נתוני משמרת פעילה
+  const [selectedJobData, setSelectedJobData] = useState<any | null>(() => {
+    try { return JSON.parse(localStorage.getItem('km_job') || 'null'); } catch { return null; }
+  });
+
   const [userProfile, setUserProfile] = useState<any | null>(() => {
     try { return JSON.parse(localStorage.getItem('km_profile') || 'null'); } catch { return null; }
   });
 
   const navToRestaurant = useCallback((screen: RestaurantScreen) => {
     setRestaurantScreen(screen);
+    localStorage.setItem('km_screen', screen);
   }, []);
 
   const navToWorker = useCallback((screen: WorkerScreen) => {
     setWorkerScreen(screen);
+    localStorage.setItem('km_screen', screen);
   }, []);
 
   const sendMessage = useCallback((text: string, isOwn: boolean) => {
@@ -66,12 +102,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, []);
 
   const startShift = useCallback(() => {
-    setShiftStartTime(new Date());
+    const now = new Date();
+    setShiftStartTime(now);
+    localStorage.setItem('km_shift_start', now.toISOString());
   }, []);
 
   const selectWorkerJob = useCallback((jobId: string, jobData?: any) => {
     setWorkerSelectedJobId(jobId);
-    if (jobData) setSelectedJobData(jobData);
+    if (jobData) {
+      setSelectedJobData(jobData);
+      localStorage.setItem('km_job', JSON.stringify(jobData));
+    }
   }, []);
 
   const getSelectedJob = useCallback(() => {
@@ -91,6 +132,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     localStorage.removeItem('km_token');
     localStorage.removeItem('km_role');
     localStorage.removeItem('km_profile');
+    localStorage.removeItem('km_screen');
+    localStorage.removeItem('km_job');
+    localStorage.removeItem('km_shift_start');
   }, []);
 
   return (
