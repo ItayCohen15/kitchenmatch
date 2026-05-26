@@ -1,7 +1,9 @@
-﻿import React from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Bell, LogOut } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { BottomNav } from '../common/BottomNav';
+import { NotificationPanel } from '../common/NotificationPanel';
+import { api } from '../../api';
 import { WorkerHome } from './Home';
 import { JobDetails } from './JobDetails';
 import { WorkerNavigation } from './Navigation';
@@ -29,6 +31,17 @@ export const WorkerApp: React.FC = () => {
   const { workerScreen, navToWorker, resetToLanding, userProfile } = useApp();
   const name = userProfile?.Name || 'עובד';
   const initials = name.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
+  const [showNotifs, setShowNotifs] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    const load = () => api.getNotifications()
+      .then((data: any[]) => setUnreadCount(data.filter((n: any) => !n.IsRead).length))
+      .catch(() => {});
+    load();
+    const iv = setInterval(load, 15000);
+    return () => clearInterval(iv);
+  }, []);
 
   const showNav = NAV_TABS.includes(workerScreen);
   const showBack = !NAV_TABS.includes(workerScreen);
@@ -77,10 +90,16 @@ export const WorkerApp: React.FC = () => {
             {initials}
           </div>
         </div>
-        <button className="relative text-gray-500">
+        <button className="relative text-gray-500" onClick={() => { setShowNotifs(true); setUnreadCount(0); }}>
           <Bell size={20} />
-          <div className="absolute -top-0.5 -left-0.5 w-2 h-2 bg-red-500 rounded-full" />
+          {unreadCount > 0 && (
+            <div className="absolute -top-1 -left-1 min-w-[16px] h-4 px-1 rounded-full flex items-center justify-center text-white font-bold"
+              style={{ fontSize: 9, background: '#e8a020' }}>
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </div>
+          )}
         </button>
+        {showNotifs && <NotificationPanel onClose={() => setShowNotifs(false)} />}
       </header>
 
       <main className="flex-1 overflow-y-auto px-4 pt-4 pb-24">

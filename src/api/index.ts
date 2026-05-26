@@ -161,6 +161,12 @@ export const api = {
     }).then(handleResponse),
 
   // ========== RATINGS ==========
+  getNotifications: () =>
+    fetch(`${BASE}/push/notifications`, { headers: headers() }).then(handleResponse),
+
+  markNotificationsRead: () =>
+    fetch(`${BASE}/push/notifications/read-all`, { method: 'PUT', headers: headers() }).then(handleResponse),
+
   getRestaurantRatings: (restaurantId: number) =>
     fetch(`${BASE}/ratings/restaurant/${restaurantId}`, { headers: headers() }).then(handleResponse),
 

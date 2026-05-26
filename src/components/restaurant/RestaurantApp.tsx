@@ -1,7 +1,9 @@
-﻿import React from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { ChefHat, LogOut, Bell } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { BottomNav } from '../common/BottomNav';
+import { NotificationPanel } from '../common/NotificationPanel';
+import { api } from '../../api';
 import { RestaurantHome } from './Home';
 import { CreateJob } from './CreateJob';
 import { WorkerMatching } from './WorkerMatching';
@@ -30,6 +32,17 @@ const NAV_TABS: RestaurantScreen[] = ['home', 'create_job', 'analytics', 'wallet
 export const RestaurantApp: React.FC = () => {
   const { restaurantScreen, navToRestaurant, resetToLanding, userProfile } = useApp();
   const initials = (userProfile?.Name || 'מ').slice(0, 2);
+  const [showNotifs, setShowNotifs] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    const load = () => api.getNotifications()
+      .then((data: any[]) => setUnreadCount(data.filter((n: any) => !n.IsRead).length))
+      .catch(() => {});
+    load();
+    const iv = setInterval(load, 15000);
+    return () => clearInterval(iv);
+  }, []);
 
   const showNav = NAV_TABS.includes(restaurantScreen);
   const showTopBar = !['active_shift'].includes(restaurantScreen);
@@ -67,12 +80,19 @@ export const RestaurantApp: React.FC = () => {
               {initials}
             </div>
           </div>
-          <button className="relative text-gray-500">
+          <button className="relative text-gray-500" onClick={() => { setShowNotifs(true); setUnreadCount(0); }}>
             <Bell size={20} />
-            <div className="absolute -top-0.5 -left-0.5 w-2 h-2 bg-red-500 rounded-full" />
+            {unreadCount > 0 && (
+              <div className="absolute -top-1 -left-1 min-w-[16px] h-4 px-1 rounded-full flex items-center justify-center text-white font-bold"
+                style={{ fontSize: 9, background: '#e8a020' }}>
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </div>
+            )}
           </button>
         </header>
       )}
+
+      {showNotifs && <NotificationPanel onClose={() => setShowNotifs(false)} />}
 
       <main className="flex-1 overflow-y-auto px-4 pt-4 pb-24">
         {renderScreen()}
