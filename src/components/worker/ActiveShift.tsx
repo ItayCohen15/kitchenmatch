@@ -131,6 +131,19 @@ export const WorkerActiveShift: React.FC = () => {
         </div>
       </div>
 
+      {/* כפתור התקשרות למסעדה */}
+      {restaurantPhone ? (
+        <a href={`tel:${restaurantPhone}`}
+          className="flex items-center justify-center gap-3 bg-green-500 text-white rounded-2xl py-3.5 font-bold text-base shadow-sm"
+          style={{ textDecoration: 'none' }}>
+          <Phone size={18} /> התקשר ל{restaurantName}
+        </a>
+      ) : (
+        <div className="flex items-center justify-center gap-2 bg-gray-100 text-gray-400 rounded-2xl py-3 text-sm">
+          <Phone size={16} /> המסעדה לא הוסיפה טלפון
+        </div>
+      )}
+
       {/* סטטוס אישורים */}
       <div className="bg-white rounded-2xl p-4 card-shadow">
         <h3 className="font-bold text-gray-800 mb-3 text-sm">אישורי סיום משמרת</h3>

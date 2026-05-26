@@ -133,19 +133,20 @@ export const LiveTracking: React.FC = () => {
 
       {/* כרטיס פעולות */}
       <div className="bg-white rounded-2xl p-4 card-shadow">
-        <div className="grid grid-cols-2 gap-3 mb-4">
+        <div className="flex gap-3 mb-4">
           {workerPhone ? (
             <a href={`tel:${workerPhone}`}
-              className="flex items-center justify-center gap-2 bg-green-50 border border-green-200 rounded-xl py-3 text-green-700 font-semibold text-sm">
-              <Phone size={16} /> {workerPhone}
+              className="flex-1 flex items-center justify-center gap-2 bg-green-500 text-white rounded-xl py-3 font-bold text-sm shadow-sm">
+              <Phone size={16} /> התקשר ל{workerName}
             </a>
           ) : (
-            <div className="flex items-center justify-center gap-2 bg-gray-100 rounded-xl py-3 text-gray-400 font-semibold text-sm">
-              <Phone size={16} /> אין טלפון
+            <div className="flex-1 flex flex-col items-center justify-center bg-gray-100 rounded-xl py-2.5 text-gray-400 text-xs text-center gap-0.5">
+              <Phone size={15} />
+              <span>העובד לא הוסיף טלפון</span>
             </div>
           )}
           <button onClick={() => navToRestaurant('active_shift')}
-            className="flex items-center justify-center gap-2 bg-gray-100 rounded-xl py-3 text-gray-700 font-semibold text-sm">
+            className="flex items-center justify-center gap-2 bg-gray-100 rounded-xl py-3 px-4 text-gray-700 font-semibold text-sm">
             <MessageCircle size={16} /> צ׳אט
           </button>
         </div>

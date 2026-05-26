@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Navigation2, CheckCircle2, X } from 'lucide-react';
+import { Navigation2, CheckCircle2, X, Phone } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 
@@ -99,27 +99,25 @@ export const WorkerNavigation: React.FC = () => {
         </div>
       </div>
 
-      {/* כפתור וויז — ראשי */}
-      <a
-        href={wazeUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="block w-full bg-[#05C3F9] text-white rounded-2xl p-5 shadow-lg shadow-blue-100 active:scale-98 transition-transform"
-        style={{ textDecoration: 'none' }}
-      >
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center flex-shrink-0">
-            <span className="text-3xl">🗺️</span>
+      {/* כפתורי ניווט + התקשרות */}
+      <div className="flex gap-3">
+        <a href={wazeUrl} target="_blank" rel="noopener noreferrer"
+          className="flex-1 flex items-center justify-center gap-2 bg-[#05C3F9] text-white rounded-2xl py-4 font-bold text-base shadow-lg active:scale-98 transition-transform"
+          style={{ textDecoration: 'none' }}>
+          🗺️ נווט בוויז
+        </a>
+        {job?.RestaurantPhone ? (
+          <a href={`tel:${job.RestaurantPhone}`}
+            className="flex items-center justify-center gap-3 bg-green-500 text-white rounded-2xl py-4 px-5 font-bold shadow-lg"
+            style={{ textDecoration: 'none' }}>
+            <Phone size={20} />
+          </a>
+        ) : (
+          <div className="flex items-center justify-center bg-gray-100 text-gray-400 rounded-2xl py-4 px-5">
+            <Phone size={20} />
           </div>
-          <div className="flex-1 text-right">
-            <div className="font-black text-xl">נווט עם וויז</div>
-            <div className="text-blue-100 text-sm mt-0.5">
-              {restaurantAddress ? `${restaurantAddress}, ${restaurantCity}` : restaurantCity}
-            </div>
-          </div>
-          <div className="text-white/70 text-2xl">›</div>
-        </div>
-      </a>
+        )}
+      </div>
 
       {/* פופאפ — המסעדה יזמה התחלה */}
       {restaurantInitiated && !waitingForRestaurant && (
