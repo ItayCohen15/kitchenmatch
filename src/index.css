@@ -2,15 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ===== BRAND COLORS ===== */
+/* ===== BRAND TOKENS ===== */
 :root {
-  --km-gold:   #e8a020;
-  --km-gold-l: #f0b832;
-  --km-dark:   #0d1420;
-  --km-navy:   #1a2744;
+  --gold:    #e8a020;
+  --gold-l:  #f0c050;
+  --dark:    #0d1420;
+  --navy:    #1a2744;
+  --radius:  18px;
 }
 
-/* ===== GLOBAL ===== */
+/* ===== BASE ===== */
 * {
   font-family: 'Heebo', sans-serif;
   -webkit-tap-highlight-color: transparent;
@@ -18,28 +19,23 @@
 }
 
 html {
-  height: 100%;
-  height: -webkit-fill-available;
+  height: 100%; height: -webkit-fill-available;
   direction: rtl;
-  background-color: #f8fafc;
+  background: #0d1420;
   overscroll-behavior: none;
 }
 
 body {
   min-height: 100dvh;
   direction: rtl;
-  background-color: #f8fafc;
+  background: #f0f2f7;
   overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
   position: fixed;
   width: 100%;
 }
 
-#root {
-  height: 100vh;
-  height: 100dvh;
-  overflow: hidden;
-}
+#root { height: 100dvh; overflow: hidden; }
 
 /* ===== SAFE AREAS ===== */
 .safe-bottom { padding-bottom: max(env(safe-area-inset-bottom), 8px); }
@@ -48,34 +44,87 @@ body {
 /* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 4px; }
 
 /* ===== ANIMATIONS ===== */
-.screen-enter { animation: slideUp 0.22s ease-out; }
+.screen-enter { animation: slideUp 0.28s cubic-bezier(0.16,1,0.3,1); }
+
 @keyframes slideUp {
-  from { transform: translateY(12px); opacity: 0; }
+  from { transform: translateY(18px); opacity: 0; }
   to   { transform: translateY(0);    opacity: 1; }
 }
 
-/* ===== SHADOWS ===== */
-.card-shadow { box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06); }
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to   { background-position:  200% 0; }
+}
+
+/* ===== GLASS ===== */
+.glass {
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.6);
+}
+
+.glass-dark {
+  background: rgba(13,20,32,0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ===== CARD ===== */
+.card-shadow {
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.04),
+    0 4px 20px rgba(0,0,0,0.07);
+}
+
+.card-glow {
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.05),
+    0 8px 30px rgba(232,160,32,0.15);
+}
+
+/* ===== GRADIENT BUTTONS ===== */
+.btn-gold {
+  background: linear-gradient(135deg, #e8a020 0%, #f0c050 100%);
+  box-shadow: 0 4px 20px rgba(232,160,32,0.4);
+}
+
+.btn-dark {
+  background: linear-gradient(135deg, #1a2744 0%, #0d1420 100%);
+  box-shadow: 0 4px 20px rgba(13,20,32,0.4);
+}
+
+.btn-green {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  box-shadow: 0 4px 20px rgba(5,150,105,0.3);
+}
 
 /* ===== INPUTS ===== */
 input:focus, textarea:focus, select:focus { outline: none; }
 input, textarea, select { font-size: 16px !important; }
-
-/* ===== BUTTONS ===== */
 button { touch-action: manipulation; }
 a      { -webkit-touch-callout: none; }
 button, .no-select { -webkit-user-select: none; user-select: none; }
 
-/* ===== BOTTOM NAV SAFE AREA ===== */
+/* ===== BOTTOM NAV ===== */
 nav.fixed { padding-bottom: env(safe-area-inset-bottom); }
 
-/* ===== BRAND OVERRIDES ===== */
-/* כפתורים ראשיים */
-.btn-primary {
-  background: var(--km-gold);
-  color: #fff;
+/* ===== BADGE ===== */
+.badge-emergency {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  box-shadow: 0 2px 8px rgba(239,68,68,0.4);
 }
-.btn-primary:hover { background: var(--km-gold-l); }
+
+/* ===== JOB CARD ===== */
+.job-card {
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.job-card:active { transform: scale(0.985); }

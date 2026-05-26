@@ -63,7 +63,8 @@ export const WorkerHome: React.FC = () => {
   return (
     <div className="screen-enter space-y-4 pb-2">
       {/* Worker header */}
-      <div className="bg-gradient-to-l from-gray-900 to-gray-800 rounded-2xl p-5 text-white">
+      <div className="rounded-3xl p-5 text-white relative overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #0d1420 0%, #1a2744 60%, #0f2444 100%)' }}>
         <div className="flex items-center gap-3 mb-4">
           <div className="w-14 h-14 bg-amber-500 rounded-2xl flex items-center justify-center font-black text-xl">
             {initials}
@@ -202,54 +203,71 @@ export const WorkerHome: React.FC = () => {
             const totalPay = parseFloat(hours) * job.HourlyRate;
             const startStr = start.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
             const endStr = end.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+            const dateStr = start.toLocaleDateString('he-IL', { weekday: 'short', day: 'numeric', month: 'numeric' });
 
             return (
-              <div
-                key={job.Id}
-                className={`bg-white rounded-2xl p-4 card-shadow border-2 ${
-                  job.IsEmergency ? 'border-red-200' : 'border-transparent'
-                }`}
-              >
-                {job.IsEmergency === true && (
-                  <div className="flex items-center gap-1.5 mb-2">
-                    <Zap size={12} className="text-red-500 fill-red-500" />
-                    <span className="text-red-500 text-xs font-bold">חירום – דרוש מיידי</span>
-                  </div>
-                )}
+              <div key={job.Id} className="job-card">
+                {/* פס צבע עליון */}
+                <div className="h-1.5 w-full" style={{
+                  background: job.IsEmergency
+                    ? 'linear-gradient(90deg,#ef4444,#f97316)'
+                    : 'linear-gradient(90deg,#e8a020,#f0c050)'
+                }} />
 
-                <div className="flex items-start justify-between gap-2 mb-3">
-                  <div className="flex-1">
-                    <div className="font-bold text-gray-900">{job.RestaurantName}</div>
-                    <div className="flex items-center gap-1 text-gray-500 text-sm mt-0.5">
-                      <MapPin size={12} />
-                      {job.RestaurantCity}
+                <div className="p-4">
+                  {job.IsEmergency && (
+                    <div className="inline-flex items-center gap-1.5 mb-2.5 px-2.5 py-1 rounded-full text-white text-xs font-bold badge-emergency">
+                      <Zap size={11} className="fill-white" /> חירום — דרוש מיידי!
+                    </div>
+                  )}
+
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      {/* אייקון מסעדה */}
+                      <div className="w-11 h-11 rounded-xl flex items-center justify-center font-black text-sm text-white flex-shrink-0"
+                        style={{ background: job.IsEmergency ? 'linear-gradient(135deg,#ef4444,#f97316)' : 'linear-gradient(135deg,#1a2744,#0d1420)' }}>
+                        {(job.RestaurantName || 'R').slice(0,2)}
+                      </div>
+                      <div className="min-w-0">
+                        <div className="font-black text-gray-900 truncate">{job.RestaurantName}</div>
+                        <div className="flex items-center gap-1 text-gray-400 text-xs mt-0.5">
+                          <MapPin size={10} />{job.RestaurantCity}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <div className="font-black text-xl" style={{ color: '#e8a020' }}>₪{job.HourlyRate}</div>
+                      <div className="text-gray-400 text-xs">/שעה</div>
                     </div>
                   </div>
-                  <div className="text-right flex-shrink-0">
-                    <div className="text-amber-500 font-black text-lg">₪{job.HourlyRate}/ש׳</div>
-                    <div className="text-green-600 text-xs font-semibold">₪{totalPay.toFixed(0)} סה״כ</div>
+
+                  {/* פרטים */}
+                  <div className="flex items-center gap-2 flex-wrap mb-3.5">
+                    <span className="text-xs font-bold px-2.5 py-1 rounded-full text-white"
+                      style={{ background: 'linear-gradient(135deg,#3b82f6,#6366f1)' }}>
+                      {ROLE_LABELS[job.Role] || job.Role}
+                    </span>
+                    <div className="flex items-center gap-1 bg-gray-50 rounded-full px-2.5 py-1 text-gray-500 text-xs">
+                      <Clock size={11} />{startStr}–{endStr}
+                    </div>
+                    <div className="bg-gray-50 rounded-full px-2.5 py-1 text-gray-500 text-xs">
+                      {dateStr}
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 bg-green-50 rounded-xl px-3 py-2 text-center">
+                      <div className="font-black text-green-600 text-base">₪{totalPay.toFixed(0)}</div>
+                      <div className="text-green-500 text-[10px]">סה״כ ({hours} ש׳)</div>
+                    </div>
+                    <button onClick={() => handleJobPress(String(job.Id), job)}
+                      className="flex-1 text-white rounded-xl py-2.5 font-bold text-sm flex items-center justify-center gap-1"
+                      style={{ background: job.IsEmergency ? 'linear-gradient(135deg,#ef4444,#f97316)' : 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
+                      צפה בפרטים <ChevronLeft size={15} />
+                    </button>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-3 flex-wrap mb-3">
-                  <span className="bg-blue-50 text-blue-600 text-xs font-semibold rounded-full px-2.5 py-1">
-                    {ROLE_LABELS[job.Role] || job.Role}
-                  </span>
-                  <div className="flex items-center gap-1 text-gray-500 text-xs">
-                    <Clock size={12} />
-                    {startStr}–{endStr} ({hours} ש׳)
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => handleJobPress(String(job.Id), job)}
-                  className={`w-full rounded-xl py-3 font-bold text-sm flex items-center justify-center gap-1 transition-all active:scale-98 ${
-                    job.IsEmergency ? 'bg-red-500 text-white' : 'bg-amber-500 text-white'
-                  }`}
-                >
-                  צפה בפרטים
-                  <ChevronLeft size={16} />
-                </button>
               </div>
             );
           })}

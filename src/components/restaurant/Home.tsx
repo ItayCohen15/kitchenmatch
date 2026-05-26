@@ -60,7 +60,8 @@ export const RestaurantHome: React.FC = () => {
   return (
     <div className="screen-enter space-y-4 pb-2">
       {/* Header */}
-      <div className="bg-gradient-to-l from-gray-900 to-gray-800 rounded-2xl p-5 text-white">
+      <div className="rounded-3xl p-5 text-white relative overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #0d1420 0%, #1a2744 60%, #0f2444 100%)' }}>
         <div className="flex items-center gap-3 mb-4">
           <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center font-black text-lg">
             {initials}
@@ -125,22 +126,24 @@ export const RestaurantHome: React.FC = () => {
         <div className="grid grid-cols-2 gap-3">
           <button
             onClick={() => navToRestaurant('create_job')}
-            className="bg-amber-500 text-white rounded-2xl p-4 text-right shadow-md active:scale-95 transition-transform"
+            className="text-white rounded-2xl p-4 text-right active:scale-95 transition-transform"
+            style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow: '0 4px 20px rgba(232,160,32,0.4)' }}
           >
             <ChefHat size={24} className="mb-2" />
-            <div className="font-bold">פרסם משמרת</div>
-            <div className="text-amber-100 text-xs mt-0.5">מצא עובד עכשיו</div>
+            <div className="font-black">פרסם משמרת</div>
+            <div className="text-white/75 text-xs mt-0.5">מצא עובד עכשיו</div>
           </button>
           <button
             onClick={() => { navToRestaurant('create_job'); }}
-            className="bg-red-500 text-white rounded-2xl p-4 text-right shadow-md active:scale-95 transition-transform"
+            className="text-white rounded-2xl p-4 text-right active:scale-95 transition-transform"
+            style={{ background: 'linear-gradient(135deg,#ef4444,#f97316)', boxShadow: '0 4px 20px rgba(239,68,68,0.4)' }}
           >
             <div className="flex items-center gap-1 mb-2">
               <Zap size={18} className="fill-white" />
               <span className="text-xs font-bold bg-white/20 px-2 py-0.5 rounded-full">חירום</span>
             </div>
-            <div className="font-bold">מצב חירום</div>
-            <div className="text-red-100 text-xs mt-0.5">עובד תוך 30 דקות</div>
+            <div className="font-black">מצב חירום</div>
+            <div className="text-white/75 text-xs mt-0.5">עובד תוך 30 דקות</div>
           </button>
         </div>
       </div>
