@@ -74,8 +74,8 @@ export const WorkerApp: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full">
-      <header className="px-4 py-3 flex items-center justify-between flex-shrink-0"
-        style={{ background:'linear-gradient(135deg, #080c14 0%, #0f1829 100%)', borderBottom:'1px solid rgba(255,255,255,0.06)' }}>
+      <header className="px-4 flex items-center justify-between flex-shrink-0"
+        style={{ background:'linear-gradient(135deg, #080c14 0%, #0f1829 100%)', borderBottom:'1px solid rgba(255,255,255,0.06)', paddingTop:'max(env(safe-area-inset-top), 12px)', paddingBottom:'12px' }}>
         <div className="flex items-center gap-2">
           {showBack ? (
             <button onClick={handleBack} className="font-bold text-xl" style={{color:'rgba(255,255,255,0.6)'}}>‹</button>
