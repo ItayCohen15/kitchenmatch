@@ -108,24 +108,24 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-500 to-amber-600 flex flex-col items-center justify-center p-6">
+    <div className="h-full overflow-y-auto" style={{ background: 'linear-gradient(160deg, #0d1420 0%, #1a2744 100%)' }}>
+      <div className="min-h-full flex flex-col items-center justify-start p-6 pb-10">
       <div className="w-full max-w-sm">
         {/* Header */}
-        <div className="text-center mb-6">
-          <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-3">
-            {role === 'worker' ? <ChefHat size={36} className="text-white" /> : <Store size={36} className="text-white" />}
+        <div className="text-center mb-6 pt-4">
+          <div className="w-16 h-16 rounded-2xl overflow-hidden mx-auto mb-3 shadow-lg"
+            style={{ boxShadow: '0 4px 20px rgba(232,160,32,0.3)' }}>
+            <img src="/logo.png" alt="KitchenMatch" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-2xl font-black text-white">ברוך הבא!</h1>
-          <p className="text-amber-100 text-sm mt-1">בוא נגדיר את הפרופיל שלך</p>
+          <p className="text-sm mt-1" style={{ color: '#8899bb' }}>בוא נגדיר את הפרופיל שלך</p>
         </div>
 
         {/* Progress */}
         <div className="flex gap-2 mb-6">
           {Array.from({ length: totalSteps }).map((_, i) => (
-            <div
-              key={i}
-              className={`flex-1 h-1.5 rounded-full transition-colors ${i + 1 <= step ? 'bg-white' : 'bg-white/30'}`}
-            />
+            <div key={i} className="flex-1 h-1.5 rounded-full transition-all"
+              style={{ background: i + 1 <= step ? '#e8a020' : 'rgba(255,255,255,0.15)' }} />
           ))}
         </div>
 
@@ -164,7 +164,8 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                       key={c}
                       onClick={() => setCity(c)}
                       className={`py-1.5 px-3 rounded-full text-xs font-semibold transition-colors ${
-                        city === c ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-600'
+                        city === c ? 'text-white' : 'bg-gray-100 text-gray-600'
+                      } style={city === c ? { background: 'linear-gradient(135deg,#e8a020,#f0c050)' } : {}}
                       }`}
                     >
                       {c}
@@ -214,7 +215,8 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
               <button
                 disabled={!name || !city}
                 onClick={() => role === 'restaurant' && totalSteps === 2 ? setStep(2) : setStep(2)}
-                className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-base disabled:opacity-40 mt-2"
+                className="w-full text-white rounded-2xl py-4 font-bold text-base disabled:opacity-40 mt-2"
+                style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}
               >
                 המשך
               </button>
@@ -235,7 +237,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                           key={r.id}
                           onClick={() => setWorkerRole(r.id)}
                           className={`w-full p-3 rounded-xl border-2 flex items-center gap-3 text-right transition-all ${
-                            workerRole === r.id ? 'border-orange-500 bg-amber-50' : 'border-gray-100'
+                            workerRole === r.id ? 'bg-amber-50' : 'border-gray-100'
                           }`}
                         >
                           <span className="text-2xl">{r.icon}</span>
@@ -255,7 +257,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                           key={v}
                           onClick={() => setHourlyRate(String(v))}
                           className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-colors ${
-                            hourlyRate === String(v) ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-700'
+                            hourlyRate === String(v) ? 'text-white' : 'bg-gray-100 text-gray-700'
                           }`}
                         >
                           ₪{v}
@@ -271,7 +273,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                           key={v}
                           onClick={() => setYearsExp(v.replace('+', ''))}
                           className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-colors ${
-                            yearsExp === v.replace('+', '') ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-700'
+                            yearsExp === v.replace('+', '') ? 'text-white' : 'bg-gray-100 text-gray-700'
                           }`}
                         >
                           {v}
@@ -312,13 +314,13 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                           const sel = selectedCuisines.includes(item.id);
                           return (
                             <button key={item.id} onClick={() => toggleCuisine(item.id)}
-                              className={`w-full p-3 rounded-xl border-2 flex items-center gap-3 text-right transition-all ${sel ? 'border-orange-500 bg-amber-50' : 'border-gray-100 bg-white'}`}>
+                              className={`w-full p-3 rounded-xl border-2 flex items-center gap-3 text-right transition-all ${sel ? 'bg-amber-50' : 'border-gray-100 bg-white'}`}>
                               <span className="text-2xl flex-shrink-0">{item.icon}</span>
                               <div className="flex-1">
                                 <div className={`font-bold text-sm ${sel ? 'text-orange-700' : 'text-gray-900'}`}>{item.id}</div>
                                 <div className="text-gray-400 text-xs">{item.desc}</div>
                               </div>
-                              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${sel ? 'border-orange-500 bg-amber-500' : 'border-gray-300'}`}>
+                              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${sel ? 'bg-amber-500' : 'border-gray-300'}`}>
                                 {sel && <span className="text-white text-xs">✓</span>}
                               </div>
                             </button>
@@ -343,7 +345,8 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                 <button
                   disabled={role === 'worker' ? !workerRole : selectedCuisines.length === 0}
                   onClick={() => role === 'worker' ? setStep(3) : handleComplete()}
-                  className="flex-1 bg-amber-500 text-white rounded-2xl py-4 font-bold disabled:opacity-40"
+                  className="flex-1 text-white rounded-2xl py-4 font-bold disabled:opacity-40"
+                  style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}
                 >
                   {role === 'restaurant' ? (saving ? 'שומר...' : 'סיים הגדרה') : 'המשך'}
                 </button>
@@ -365,7 +368,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                     const selected = selectedSpecialties.includes(s.id);
                     return (
                       <button key={s.id} onClick={() => toggleSpecialty(s.id)}
-                        className={`p-2.5 rounded-xl border-2 flex items-center gap-2 text-right transition-all ${selected ? 'border-orange-500 bg-amber-50' : 'border-gray-100 bg-white'}`}>
+                        className={`p-2.5 rounded-xl border-2 flex items-center gap-2 text-right transition-all ${selected ? 'bg-amber-50' : 'border-gray-100 bg-white'}`}>
                         <span className="text-lg">{s.icon}</span>
                         <span className={`text-xs font-semibold flex-1 leading-tight ${selected ? 'text-amber-600' : 'text-gray-700'}`}>{s.id}</span>
                         {selected && <span className="text-amber-500 text-xs">✓</span>}
@@ -383,7 +386,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                     const selected = selectedSpecialties.includes(s.id);
                     return (
                       <button key={s.id} onClick={() => toggleSpecialty(s.id)}
-                        className={`p-2.5 rounded-xl border-2 flex items-center gap-2 text-right transition-all ${selected ? 'border-orange-500 bg-amber-50' : 'border-gray-100 bg-white'}`}>
+                        className={`p-2.5 rounded-xl border-2 flex items-center gap-2 text-right transition-all ${selected ? 'bg-amber-50' : 'border-gray-100 bg-white'}`}>
                         <span className="text-lg">{s.icon}</span>
                         <span className={`text-xs font-semibold flex-1 leading-tight ${selected ? 'text-amber-600' : 'text-gray-700'}`}>{s.id}</span>
                         {selected && <span className="text-amber-500 text-xs">✓</span>}
@@ -401,7 +404,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                     const selected = selectedSpecialties.includes(s.id);
                     return (
                       <button key={s.id} onClick={() => toggleSpecialty(s.id)}
-                        className={`p-2.5 rounded-xl border-2 flex items-center gap-2 text-right transition-all ${selected ? 'border-orange-500 bg-amber-50' : 'border-gray-100 bg-white'}`}>
+                        className={`p-2.5 rounded-xl border-2 flex items-center gap-2 text-right transition-all ${selected ? 'bg-amber-50' : 'border-gray-100 bg-white'}`}>
                         <span className="text-lg">{s.icon}</span>
                         <span className={`text-xs font-semibold flex-1 leading-tight ${selected ? 'text-amber-600' : 'text-gray-700'}`}>{s.id}</span>
                         {selected && <span className="text-amber-500 text-xs">✓</span>}
@@ -424,7 +427,8 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                 </button>
                 <button
                   onClick={() => setStep(4)}
-                  className="flex-1 bg-amber-500 text-white rounded-2xl py-4 font-bold"
+                  className="flex-1 text-white rounded-2xl py-4 font-bold"
+                  style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}
                 >
                   המשך {selectedSpecialties.length === 0 ? '(דלג)' : ''}
                 </button>
@@ -451,7 +455,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                 <button
                   onClick={handleComplete}
                   disabled={saving}
-                  className="flex-1 bg-amber-500 text-white rounded-2xl py-4 font-bold disabled:opacity-50"
+                  className="flex-1 text-white rounded-2xl py-4 font-bold disabled:opacity-50"
                 >
                   {saving ? (
                     <div className="flex items-center justify-center gap-2">
@@ -464,6 +468,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
             </div>
           )}
         </div>
+      </div>
       </div>
     </div>
   );
