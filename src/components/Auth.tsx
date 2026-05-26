@@ -1,6 +1,7 @@
 ﻿import React, { useState } from 'react';
 import { ChefHat, Store, Eye, EyeOff } from 'lucide-react';
 import { api } from '../api';
+import { VerifyEmail } from './VerifyEmail';
 
 interface Props {
   onLogin: (token: string, role: string, profile: any, isNew?: boolean) => void;
@@ -16,6 +17,7 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [pendingVerify, setPendingVerify] = useState<{userId:number,email:string,data:any}|null>(null);
 
   const handleSubmit = async () => {
     if (!email || !password) return setError('נא למלא אימייל וסיסמא');
@@ -28,10 +30,16 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
       } else {
         data = await api.register(email, password, role, '', '');
       }
+      const isNew = mode === 'register';
+      if (isNew && data.needsVerification) {
+        // הצג מסך אימות לפני כניסה
+        setPendingVerify({ userId: data.userId, email, data });
+        setLoading(false);
+        return;
+      }
       localStorage.setItem('km_token', data.token);
       localStorage.setItem('km_role', data.role);
       if (data.profile) localStorage.setItem('km_profile', JSON.stringify(data.profile));
-      const isNew = mode === 'register';
       if (isNew) localStorage.removeItem('km_onboarding');
       onLogin(data.token, data.role, data.profile, isNew);
     } catch (err: any) {
@@ -40,6 +48,23 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
       setLoading(false);
     }
   };
+
+  if (pendingVerify) {
+    return (
+      <VerifyEmail
+        userId={pendingVerify.userId}
+        email={pendingVerify.email}
+        onVerified={() => {
+          const d = pendingVerify.data;
+          localStorage.setItem('km_token', d.token);
+          localStorage.setItem('km_role', d.role);
+          if (d.profile) localStorage.setItem('km_profile', JSON.stringify(d.profile));
+          localStorage.removeItem('km_onboarding');
+          onLogin(d.token, d.role, d.profile, true);
+        }}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6" style={{ background: 'linear-gradient(135deg, #0d1420 0%, #1a2744 100%)' }}>

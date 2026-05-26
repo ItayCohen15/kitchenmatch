@@ -8,6 +8,7 @@ import { WorkerApp } from './components/worker/WorkerApp';
 import { api } from './api';
 import { Splash } from './components/Splash';
 import { Landing } from './components/Landing';
+import { VerifyEmail } from './components/VerifyEmail';
 
 // ניווט חכם לפי סטטוס משמרת
 async function resolveScreen(role: string, profile: any,
@@ -93,6 +94,7 @@ const AppContent: React.FC = () => {
   usePush(userProfile?.UserId || userProfile?.userId);
   const [showSplash, setShowSplash] = useState(true);
   const [showLanding, setShowLanding] = useState(false);
+  const [verifyData, setVerifyData] = useState<{userId:number,email:string}|null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [needsOnboarding, setNeedsOnboarding] = useState(false);
