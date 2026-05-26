@@ -35,8 +35,9 @@ export const LiveTracking: React.FC = () => {
   }, [userProfile?.Id]);
 
   // פולינג — האם העובד יזם התחלה? האם כבר active?
+  // חשוב: ממשיכים לפלל גם כשממתינים לעובד!
   useEffect(() => {
-    if (!jobId || waitingForWorker) return;
+    if (!jobId) return;
     const check = async () => {
       try {
         const s = await api.getStartStatus(jobId);
@@ -53,7 +54,7 @@ export const LiveTracking: React.FC = () => {
     check();
     const iv = setInterval(check, 3000);
     return () => clearInterval(iv);
-  }, [jobId, waitingForWorker]);
+  }, [jobId]);
 
   const handleRestaurantInitiate = async () => {
     setInitiating(true);
