@@ -49,7 +49,7 @@ export const Chat: React.FC<Props> = ({ jobId, myRole, myName }) => {
         DisplayTime: localTime,
       }]);
     } catch (e: any) {
-      setError('׳©׳’׳™׳׳” ׳‘׳©׳׳™׳—׳”');
+      setError('שגיאה בשליחה');
       setInput(text);
     }
     setSending(false);
@@ -62,17 +62,17 @@ export const Chat: React.FC<Props> = ({ jobId, myRole, myName }) => {
 
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-100 flex-shrink-0">
-        <span className="font-bold text-gray-800 text-sm">נ’¬ ׳¦׳³׳׳˜</span>
+        <span className="font-bold text-gray-800 text-sm">💬 צ׳אט</span>
         <div className="flex items-center gap-2">
           {error && <span className="text-red-500 text-xs">{error}</span>}
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
         </div>
       </div>
 
-      {/* ׳”׳•׳“׳¢׳•׳× */}
+      {/* הודעות */}
       <div className="flex-1 overflow-y-auto px-3 py-2 space-y-2 min-h-0">
         {messages.length === 0 && (
-          <div className="text-center text-gray-300 text-sm py-8">׳׳™׳ ׳”׳•׳“׳¢׳•׳× ׳¢׳“׳™׳™׳ ג€” ׳©׳׳— ׳”׳•׳“׳¢׳” ׳¨׳׳©׳•׳ ׳”!</div>
+          <div className="text-center text-gray-300 text-sm py-8">אין הודעות עדיין — שלח הודעה ראשונה!</div>
         )}
         {messages.map((msg, i) => (
           <div key={msg.Id || i} className={`flex ${isMe(msg) ? 'justify-end' : 'justify-start'}`}>
@@ -94,7 +94,7 @@ export const Chat: React.FC<Props> = ({ jobId, myRole, myName }) => {
         <div ref={bottomRef} />
       </div>
 
-      {/* ׳©׳׳™׳—׳” */}
+      {/* שליחה */}
       <div className="flex items-center gap-2 px-3 py-2.5 border-t border-gray-100 flex-shrink-0 bg-white">
         <button
           onClick={handleSend}
@@ -110,7 +110,7 @@ export const Chat: React.FC<Props> = ({ jobId, myRole, myName }) => {
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-          placeholder="׳›׳×׳•׳‘ ׳”׳•׳“׳¢׳”..."
+          placeholder="כתוב הודעה..."
           className="flex-1 bg-gray-50 rounded-xl px-3 py-2.5 text-sm text-right outline-none border border-gray-100 focus:border-orange-300"
           style={{ fontSize: '16px' }}
         />
@@ -118,4 +118,3 @@ export const Chat: React.FC<Props> = ({ jobId, myRole, myName }) => {
     </div>
   );
 };
-

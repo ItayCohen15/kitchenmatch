@@ -60,17 +60,17 @@ export const WorkerWallet: React.FC = () => {
   const fmtAmount = (t: any) => {
     const amt = t.Amount || t.amount || 0;
     const sign = amt > 0 ? '+' : '';
-    return `${sign}ג‚×${Math.abs(amt)}`;
+    return `${sign}₪${Math.abs(amt)}`;
   };
 
   return (
     <div className="screen-enter space-y-4">
       {/* Balance */}
       <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-5 text-white">
-        <div className="text-gray-400 text-sm mb-1">׳–׳׳™׳ ׳׳׳©׳™׳›׳”</div>
-        <div className="text-4xl font-black mb-1">ג‚×{available.toLocaleString()}</div>
+        <div className="text-gray-400 text-sm mb-1">זמין למשיכה</div>
+        <div className="text-4xl font-black mb-1">₪{available.toLocaleString()}</div>
         <div className="text-gray-400 text-sm">
-          ׳¡׳”׳´׳›: <span className="text-white font-bold">ג‚×{totalEarnings.toLocaleString()}</span>
+          סה״כ: <span className="text-white font-bold">₪{totalEarnings.toLocaleString()}</span>
         </div>
 
         <div className="flex gap-3 mt-4">
@@ -78,17 +78,17 @@ export const WorkerWallet: React.FC = () => {
             onClick={() => { setAmount(''); setWithdrawing(false); setWithdrawn(false); }}
             className="flex-1 bg-white/15 rounded-xl py-3 font-bold text-sm"
           >
-            ׳׳©׳™׳›׳” ׳׳™׳™׳“׳™׳×
+            משיכה מיידית
           </button>
           <button className="flex-1 bg-amber-500 rounded-xl py-3 font-bold text-sm">
-            ׳׳©׳™׳›׳” ׳©׳‘׳•׳¢׳™׳×
+            משיכה שבועית
           </button>
         </div>
       </div>
 
       {/* Withdraw panel */}
       <div className="bg-white rounded-2xl p-4 card-shadow">
-        <h3 className="font-bold text-gray-800 mb-3">׳׳©׳•׳ ׳›׳¡׳£ ׳׳‘׳ ׳§</h3>
+        <h3 className="font-bold text-gray-800 mb-3">משוך כסף לבנק</h3>
         <div className="flex gap-2 mb-3">
           {[200, 500, 1000].map(a => (
             <button
@@ -98,7 +98,7 @@ export const WorkerWallet: React.FC = () => {
                 amount === String(a) ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-700'
               }`}
             >
-              ג‚×{a}
+              ₪{a}
             </button>
           ))}
           <button
@@ -107,23 +107,23 @@ export const WorkerWallet: React.FC = () => {
               amount === String(available) ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-700'
             }`}
           >
-            ׳”׳›׳
+            הכל
           </button>
         </div>
         <div className="relative mb-3">
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 font-bold">ג‚×</span>
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 font-bold">₪</span>
           <input
             type="number"
             value={amount}
             onChange={e => setAmount(e.target.value)}
-            placeholder="׳¡׳›׳•׳"
+            placeholder="סכום"
             className="w-full border border-gray-200 rounded-xl py-3 pr-8 pl-3 text-right font-semibold"
           />
         </div>
         {withdrawn ? (
           <div className="bg-green-500 text-white rounded-xl py-3 flex items-center justify-center gap-2 font-bold">
             <CheckCircle2 size={18} />
-            ׳”׳•׳¢׳‘׳¨ ׳‘׳”׳¦׳׳—׳”!
+            הועבר בהצלחה!
           </div>
         ) : (
           <button
@@ -134,22 +134,22 @@ export const WorkerWallet: React.FC = () => {
             {withdrawing ? (
               <>
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                ׳׳¢׳‘׳“...
+                מעבד...
               </>
-            ) : `׳׳©׳•׳ ג‚×${amount || 0}`}
+            ) : `משוך ₪${amount || 0}`}
           </button>
         )}
         <div className="text-xs text-gray-400 text-center mt-2">
-          ׳”׳¢׳‘׳¨׳” ׳‘׳ ׳§׳׳™׳× ֲ· ׳–׳׳™׳ ׳×׳•׳ 1ג€“2 ׳™׳׳™ ׳¢׳¡׳§׳™׳
+          העברה בנקאית · זמין תוך 1–2 ימי עסקים
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: '׳¡׳”׳´׳› ׳”׳›׳ ׳¡׳•׳×', value: `ג‚×${totalEarnings.toLocaleString()}`, color: 'text-green-500' },
-          { label: '׳©׳›׳¨/׳©׳³', value: `ג‚×${hourlyRate}`, color: 'text-amber-500' },
-          { label: '׳׳©׳׳¨׳•׳×', value: completedShifts, color: 'text-blue-500' },
+          { label: 'סה״כ הכנסות', value: `₪${totalEarnings.toLocaleString()}`, color: 'text-green-500' },
+          { label: 'שכר/ש׳', value: `₪${hourlyRate}`, color: 'text-amber-500' },
+          { label: 'משמרות', value: completedShifts, color: 'text-blue-500' },
         ].map(s => (
           <div key={s.label} className="bg-white rounded-xl p-3 card-shadow text-center">
             <div className={`font-black text-lg ${s.color}`}>{s.value}</div>
@@ -160,13 +160,13 @@ export const WorkerWallet: React.FC = () => {
 
       {/* Transactions */}
       <div>
-        <h3 className="font-bold text-gray-800 mb-3">׳₪׳¢׳•׳׳•׳× ׳׳—׳¨׳•׳ ׳•׳×</h3>
+        <h3 className="font-bold text-gray-800 mb-3">פעולות אחרונות</h3>
         {loading && <div className="text-center py-4"><div className="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto" /></div>}
         {!loading && transactions.length === 0 && (
           <div className="text-center py-8 bg-white rounded-2xl card-shadow">
-            <div className="text-3xl mb-2">נ’°</div>
-            <p className="text-gray-500 text-sm">׳׳™׳ ׳¢׳¡׳§׳׳•׳× ׳¢׳“׳™׳™׳</p>
-            <p className="text-gray-400 text-xs mt-1">׳§׳‘׳ ׳׳©׳׳¨׳•׳× ׳›׳“׳™ ׳׳¦׳‘׳•׳¨ ׳”׳›׳ ׳¡׳•׳×</p>
+            <div className="text-3xl mb-2">💰</div>
+            <p className="text-gray-500 text-sm">אין עסקאות עדיין</p>
+            <p className="text-gray-400 text-xs mt-1">קבל משמרות כדי לצבור הכנסות</p>
           </div>
         )}
         <div className="space-y-2">
@@ -179,7 +179,7 @@ export const WorkerWallet: React.FC = () => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="font-semibold text-gray-900 text-sm truncate">
-                    {t.RestaurantName ? `׳׳©׳׳¨׳× ג€“ ${t.RestaurantName}` : (t.description || '׳×׳©׳׳•׳')}
+                    {t.RestaurantName ? `משמרת – ${t.RestaurantName}` : (t.description || 'תשלום')}
                   </div>
                   <div className="text-gray-400 text-xs">
                     {t.CreatedAt ? new Date(t.CreatedAt).toLocaleDateString('he-IL') : t.date}
@@ -196,4 +196,3 @@ export const WorkerWallet: React.FC = () => {
     </div>
   );
 };
-

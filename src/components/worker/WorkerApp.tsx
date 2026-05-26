@@ -13,21 +13,21 @@ import { WorkerHistory } from './History';
 import type { WorkerScreen } from '../../types';
 
 const SCREEN_TITLES: Record<WorkerScreen, string> = {
-  home:          '׳׳©׳׳¨׳•׳×',
-  job_details:   '׳₪׳¨׳˜׳™ ׳׳©׳׳¨׳×',
-  navigation:    '׳ ׳™׳•׳•׳˜',
-  active_shift:  '׳׳©׳׳¨׳× ׳₪׳¢׳™׳׳”',
-  end_shift:     '׳¡׳™׳™׳ ׳׳©׳׳¨׳×',
-  wallet:        '׳”׳›׳ ׳¡׳•׳×',
-  profile:       '׳”׳₪׳¨׳•׳₪׳™׳ ׳©׳׳™',
-  history:       '׳”׳”׳™׳¡׳˜׳•׳¨׳™׳” ׳©׳׳™',
+  home:          'משמרות',
+  job_details:   'פרטי משמרת',
+  navigation:    'ניווט',
+  active_shift:  'משמרת פעילה',
+  end_shift:     'סיים משמרת',
+  wallet:        'הכנסות',
+  profile:       'הפרופיל שלי',
+  history:       'ההיסטוריה שלי',
 };
 
 const NAV_TABS: WorkerScreen[] = ['home', 'wallet', 'history', 'profile'];
 
 export const WorkerApp: React.FC = () => {
   const { workerScreen, navToWorker, resetToLanding, userProfile } = useApp();
-  const name = userProfile?.Name || '׳¢׳•׳‘׳“';
+  const name = userProfile?.Name || 'עובד';
   const initials = name.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
 
   const showNav = NAV_TABS.includes(workerScreen);
@@ -64,7 +64,7 @@ export const WorkerApp: React.FC = () => {
       <header className="bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-2">
           {showBack ? (
-            <button onClick={handleBack} className="text-gray-500 font-bold text-lg">ג€÷</button>
+            <button onClick={handleBack} className="text-gray-500 font-bold text-lg">›</button>
           ) : (
             <button onClick={resetToLanding} className="text-gray-400 hover:text-gray-600">
               <LogOut size={18} />
@@ -97,4 +97,3 @@ export const WorkerApp: React.FC = () => {
     </div>
   );
 };
-

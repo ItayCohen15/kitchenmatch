@@ -5,15 +5,15 @@ import { api } from '../../api';
 import type { JobRole, ExperienceLevel } from '../../types';
 
 const ROLES: { id: JobRole; label: string; icon: string; desc: string }[] = [
-  { id: 'chef',       label: '׳©׳£',      icon: 'נ‘¨ג€נ³', desc: '׳©׳£ ׳¨׳׳©׳™ / ׳¡׳•-׳©׳£' },
-  { id: 'line_cook',  label: '׳˜׳‘׳—',     icon: 'נ³', desc: '׳˜׳‘׳— ׳§׳• / ׳¢׳•׳–׳¨ ׳©׳£' },
-  { id: 'dishwasher', label: '׳׳“׳™׳—',    icon: 'נ«§', desc: '׳׳“׳™׳— ׳›׳׳™׳ / ׳¢׳•׳–׳¨ ׳׳˜׳‘׳—' },
+  { id: 'chef',       label: 'שף',      icon: '👨‍🍳', desc: 'שף ראשי / סו-שף' },
+  { id: 'line_cook',  label: 'טבח',     icon: '🍳', desc: 'טבח קו / עוזר שף' },
+  { id: 'dishwasher', label: 'מדיח',    icon: '🫧', desc: 'מדיח כלים / עוזר מטבח' },
 ];
 
 const EXPERIENCE: { id: ExperienceLevel; label: string; desc: string }[] = [
-  { id: 'entry',  label: '׳׳×׳—׳™׳',   desc: '׳¢׳“ ׳©׳ ׳×׳™׳™׳ ׳ ׳™׳¡׳™׳•׳' },
-  { id: 'mid',    label: '׳‘׳™׳ ׳•׳ ׳™',  desc: '2ג€“5 ׳©׳ ׳•׳× ׳ ׳™׳¡׳™׳•׳' },
-  { id: 'senior', label: '׳׳ ׳•׳¡׳”',   desc: '5+ ׳©׳ ׳•׳× ׳ ׳™׳¡׳™׳•׳' },
+  { id: 'entry',  label: 'מתחיל',   desc: 'עד שנתיים ניסיון' },
+  { id: 'mid',    label: 'בינוני',  desc: '2–5 שנות ניסיון' },
+  { id: 'senior', label: 'מנוסה',   desc: '5+ שנות ניסיון' },
 ];
 
 export const CreateJob: React.FC = () => {
@@ -42,7 +42,7 @@ export const CreateJob: React.FC = () => {
 
   const handlePublish = async () => {
     if (!userProfile?.Id) {
-      setPublishError('׳©׳’׳™׳׳”: ׳₪׳¨׳•׳₪׳™׳ ׳׳¡׳¢׳“׳” ׳׳ ׳ ׳׳¦׳. ׳ ׳¡׳” ׳׳”׳×׳ ׳×׳§ ׳•׳׳”׳×׳—׳‘׳¨ ׳׳—׳“׳©.');
+      setPublishError('שגיאה: פרופיל מסעדה לא נמצא. נסה להתנתק ולהתחבר מחדש.');
       return;
     }
     setPublishing(true);
@@ -70,11 +70,11 @@ export const CreateJob: React.FC = () => {
       }, 800);
     } catch (e: any) {
       setPublishing(false);
-      setPublishError(e.message || '׳©׳’׳™׳׳” ׳‘׳₪׳¨׳¡׳•׳ ׳”׳׳©׳׳¨׳×. ׳ ׳¡׳” ׳©׳•׳‘.');
+      setPublishError(e.message || 'שגיאה בפרסום המשמרת. נסה שוב.');
     }
   };
 
-  const stepTitles = ['׳×׳₪׳§׳™׳“', '׳©׳¢׳•׳×', '׳×׳’׳׳•׳', '׳₪׳¨׳¡׳•׳'];
+  const stepTitles = ['תפקיד', 'שעות', 'תגמול', 'פרסום'];
 
   return (
     <div className="screen-enter">
@@ -88,11 +88,11 @@ export const CreateJob: React.FC = () => {
         ))}
       </div>
 
-      {/* Step 1 ג€“ Role */}
+      {/* Step 1 – Role */}
       {step === 1 && (
         <div className="space-y-3 screen-enter">
-          <h2 className="text-xl font-black text-gray-900">׳׳™׳–׳” ׳×׳₪׳§׳™׳“ ׳¦׳¨׳™׳?</h2>
-          <p className="text-gray-500 text-sm">׳‘׳—׳¨ ׳׳× ׳”׳×׳₪׳§׳™׳“ ׳”׳ ׳“׳¨׳© ׳׳¡׳¨׳•׳•׳™׳¡</p>
+          <h2 className="text-xl font-black text-gray-900">איזה תפקיד צריך?</h2>
+          <p className="text-gray-500 text-sm">בחר את התפקיד הנדרש לסרוויס</p>
           <div className="space-y-3 mt-4">
             {ROLES.map(r => (
               <button
@@ -122,21 +122,21 @@ export const CreateJob: React.FC = () => {
             onClick={() => setStep(2)}
             className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg mt-4 disabled:opacity-40 disabled:cursor-not-allowed active:scale-98 transition-transform"
           >
-            ׳”׳׳©׳
+            המשך
           </button>
         </div>
       )}
 
-      {/* Step 2 ג€“ Times */}
+      {/* Step 2 – Times */}
       {step === 2 && (
         <div className="space-y-4 screen-enter">
-          <h2 className="text-xl font-black text-gray-900">׳׳×׳™ ׳”׳׳©׳׳¨׳×?</h2>
-          <p className="text-gray-500 text-sm">׳”׳’׳“׳¨ ׳©׳¢׳•׳× ׳”׳×׳—׳׳” ׳•׳¡׳™׳•׳</p>
+          <h2 className="text-xl font-black text-gray-900">מתי המשמרת?</h2>
+          <p className="text-gray-500 text-sm">הגדר שעות התחלה וסיום</p>
 
           <div className="bg-white rounded-2xl p-5 card-shadow space-y-4">
-            {/* ׳×׳׳¨׳™׳ */}
+            {/* תאריך */}
             <div>
-              <label className="text-sm font-semibold text-gray-700 mb-2 block">נ“… ׳×׳׳¨׳™׳ ׳”׳׳©׳׳¨׳×</label>
+              <label className="text-sm font-semibold text-gray-700 mb-2 block">📅 תאריך המשמרת</label>
               <input
                 type="date"
                 value={shiftDate}
@@ -146,7 +146,7 @@ export const CreateJob: React.FC = () => {
               />
             </div>
             <div>
-              <label className="text-sm font-semibold text-gray-700 mb-2 block">׳©׳¢׳× ׳”׳×׳—׳׳”</label>
+              <label className="text-sm font-semibold text-gray-700 mb-2 block">שעת התחלה</label>
               <div className="relative">
                 <Clock size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
@@ -158,7 +158,7 @@ export const CreateJob: React.FC = () => {
               </div>
             </div>
             <div>
-              <label className="text-sm font-semibold text-gray-700 mb-2 block">׳©׳¢׳× ׳¡׳™׳•׳</label>
+              <label className="text-sm font-semibold text-gray-700 mb-2 block">שעת סיום</label>
               <div className="relative">
                 <Clock size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
@@ -170,8 +170,8 @@ export const CreateJob: React.FC = () => {
               </div>
             </div>
             <div className="bg-amber-50 rounded-xl p-3 text-center">
-              <span className="text-amber-600 font-bold text-lg">{totalHours} ׳©׳¢׳•׳×</span>
-              <span className="text-gray-500 text-sm"> ֲ· ׳¡׳”׳´׳› ׳׳©׳׳¨׳×</span>
+              <span className="text-amber-600 font-bold text-lg">{totalHours} שעות</span>
+              <span className="text-gray-500 text-sm"> · סה״כ משמרת</span>
             </div>
           </div>
 
@@ -180,21 +180,21 @@ export const CreateJob: React.FC = () => {
               <ChevronRight size={20} />
             </button>
             <button onClick={() => setStep(3)} className="flex-1 bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg active:scale-98 transition-transform">
-              ׳”׳׳©׳
+              המשך
             </button>
           </div>
         </div>
       )}
 
-      {/* Step 3 ג€“ Wage + Experience */}
+      {/* Step 3 – Wage + Experience */}
       {step === 3 && (
         <div className="space-y-4 screen-enter">
-          <h2 className="text-xl font-black text-gray-900">׳×׳’׳׳•׳ ׳•׳¨׳׳× ׳ ׳™׳¡׳™׳•׳</h2>
+          <h2 className="text-xl font-black text-gray-900">תגמול ורמת ניסיון</h2>
 
           <div className="bg-white rounded-2xl p-5 card-shadow">
-            <label className="text-sm font-semibold text-gray-700 mb-2 block">׳©׳›׳¨ ׳׳©׳¢׳” (ג‚×)</label>
+            <label className="text-sm font-semibold text-gray-700 mb-2 block">שכר לשעה (₪)</label>
             <div className="relative">
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold text-lg">ג‚×</span>
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold text-lg">₪</span>
               <input
                 type="number"
                 value={wage}
@@ -213,20 +213,20 @@ export const CreateJob: React.FC = () => {
                     wage === String(v) ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-600'
                   }`}
                 >
-                  ג‚×{v}
+                  ₪{v}
                 </button>
               ))}
             </div>
             {wage && (
               <div className="mt-3 bg-green-50 rounded-xl p-3 text-center">
-                <span className="text-green-700 font-bold">ג‚×{totalPay}</span>
-                <span className="text-gray-500 text-sm"> ׳¡׳”׳´׳› ({totalHours} ׳©׳³ ֳ— ג‚×{wage})</span>
+                <span className="text-green-700 font-bold">₪{totalPay}</span>
+                <span className="text-gray-500 text-sm"> סה״כ ({totalHours} ש׳ × ₪{wage})</span>
               </div>
             )}
           </div>
 
           <div className="bg-white rounded-2xl p-5 card-shadow">
-            <label className="text-sm font-semibold text-gray-700 mb-3 block">׳¨׳׳× ׳ ׳™׳¡׳™׳•׳ ׳ ׳“׳¨׳©׳×</label>
+            <label className="text-sm font-semibold text-gray-700 mb-3 block">רמת ניסיון נדרשת</label>
             <div className="space-y-2">
               {EXPERIENCE.map(e => (
                 <button
@@ -252,25 +252,25 @@ export const CreateJob: React.FC = () => {
               onClick={() => setStep(4)}
               className="flex-1 bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg disabled:opacity-40 active:scale-98 transition-transform"
             >
-              ׳”׳׳©׳
+              המשך
             </button>
           </div>
         </div>
       )}
 
-      {/* Step 4 ג€“ Summary + Publish */}
+      {/* Step 4 – Summary + Publish */}
       {step === 4 && (
         <div className="space-y-4 screen-enter">
-          <h2 className="text-xl font-black text-gray-900">׳¡׳™׳›׳•׳ ׳•׳₪׳¨׳¡׳•׳</h2>
+          <h2 className="text-xl font-black text-gray-900">סיכום ופרסום</h2>
 
           <div className="bg-white rounded-2xl p-5 card-shadow space-y-4">
             {[
-              { label: '׳×׳₪׳§׳™׳“', value: ROLES.find(r => r.id === role)?.label },
-              { label: '׳×׳׳¨׳™׳', value: new Date(shiftDate).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' }) },
-              { label: '׳©׳¢׳•׳×', value: `${startTime} ג€“ ${endTime} (${totalHours} ׳©׳³)` },
-              { label: '׳©׳›׳¨ ׳׳©׳¢׳”', value: `ג‚×${wage}` },
-              { label: '׳¡׳”׳´׳›', value: `ג‚×${totalPay}` },
-              { label: '׳ ׳™׳¡׳™׳•׳', value: EXPERIENCE.find(e => e.id === experience)?.label },
+              { label: 'תפקיד', value: ROLES.find(r => r.id === role)?.label },
+              { label: 'תאריך', value: new Date(shiftDate).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' }) },
+              { label: 'שעות', value: `${startTime} – ${endTime} (${totalHours} ש׳)` },
+              { label: 'שכר לשעה', value: `₪${wage}` },
+              { label: 'סה״כ', value: `₪${totalPay}` },
+              { label: 'ניסיון', value: EXPERIENCE.find(e => e.id === experience)?.label },
             ].map(r => (
               <div key={r.label} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
                 <span className="text-gray-500 text-sm">{r.label}</span>
@@ -280,28 +280,28 @@ export const CreateJob: React.FC = () => {
 
             <div className="bg-amber-50 rounded-xl p-3 space-y-1.5">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">׳¢׳׳׳” ׳©׳׳ (6.5%)</span>
-                <span className="font-bold text-amber-600">+ג‚×{(parseFloat(totalPay) * 0.065).toFixed(0)}</span>
+                <span className="text-gray-500">עמלה שלך (6.5%)</span>
+                <span className="font-bold text-amber-600">+₪{(parseFloat(totalPay) * 0.065).toFixed(0)}</span>
               </div>
               <div className="flex justify-between text-sm font-bold border-t border-orange-100 pt-1.5">
-                <span className="text-gray-700">׳¡׳”׳´׳› ׳×׳©׳׳</span>
-                <span className="text-amber-600">ג‚×{(parseFloat(totalPay) * 1.065).toFixed(0)}</span>
+                <span className="text-gray-700">סה״כ תשלם</span>
+                <span className="text-amber-600">₪{(parseFloat(totalPay) * 1.065).toFixed(0)}</span>
               </div>
               <p className="text-gray-400 text-xs text-center pt-1">
-                ׳”׳¢׳•׳‘׳“ ׳™׳©׳׳ 6.5% ׳ ׳•׳¡׳£ ׳׳¦׳™׳“׳•
+                העובד ישלם 6.5% נוסף מצידו
               </p>
             </div>
           </div>
 
-          {/* ׳”׳•׳¨׳׳•׳× ׳”׳’׳¢׳” */}
+          {/* הוראות הגעה */}
           <div className="bg-white rounded-2xl p-4 card-shadow">
             <label className="text-sm font-semibold text-gray-700 mb-2 block">
-              נ“ ׳”׳•׳¨׳׳•׳× ׳”׳’׳¢׳” ׳׳¢׳•׳‘׳“ <span className="text-gray-400 font-normal">(׳׳•׳₪׳¦׳™׳•׳ ׳׳™)</span>
+              📍 הוראות הגעה לעובד <span className="text-gray-400 font-normal">(אופציונלי)</span>
             </label>
             <textarea
               value={instructions}
               onChange={e => setInstructions(e.target.value)}
-              placeholder={'׳׳“׳•׳’׳׳”: ׳›׳ ׳™׳¡׳” ׳׳׳—׳•׳¨׳™ ׳”׳‘׳ ׳™׳™׳, ׳§׳•׳׳” 2, ׳׳‘׳§׳© ׳׳× ׳“׳ ׳™ ׳‘׳׳˜׳‘׳—'}
+              placeholder={'לדוגמה: כניסה מאחורי הבניין, קומה 2, לבקש את דני במטבח'}
               rows={3}
               maxLength={300}
               className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right text-sm focus:border-amber-400 outline-none resize-none text-gray-900"
@@ -322,9 +322,9 @@ export const CreateJob: React.FC = () => {
           >
             <Zap size={22} className={emergency ? 'fill-white text-white' : 'text-red-500'} />
             <div className="text-right flex-1">
-              <div className="font-bold">׳׳¦׳‘ ׳—׳™׳¨׳•׳ נ¨</div>
+              <div className="font-bold">מצב חירום 🚨</div>
               <div className={`text-sm ${emergency ? 'text-red-100' : 'text-gray-500'}`}>
-                ׳¢׳•׳‘׳“ ׳×׳•׳ 30 ׳“׳§׳³ ג€“ ׳“׳—׳™׳₪׳•׳× ׳’׳‘׳•׳”׳” ׳׳¢׳•׳‘׳“׳™׳ ׳§׳¨׳•׳‘׳™׳
+                עובד תוך 30 דק׳ – דחיפות גבוהה לעובדים קרובים
               </div>
             </div>
             <div className={`w-12 h-6 rounded-full transition-colors ${emergency ? 'bg-white/30' : 'bg-gray-200'}`}>
@@ -334,14 +334,14 @@ export const CreateJob: React.FC = () => {
 
           {publishError && (
             <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3 text-center font-medium">
-              ג ן¸ {publishError}
+              ⚠️ {publishError}
             </div>
           )}
 
           {publishing ? (
             <div className="bg-amber-500 rounded-2xl py-5 flex items-center justify-center gap-3">
               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              <span className="text-white font-bold text-lg">׳׳—׳₪׳© ׳¢׳•׳‘׳“׳™׳...</span>
+              <span className="text-white font-bold text-lg">מחפש עובדים...</span>
             </div>
           ) : (
             <div className="flex gap-3">
@@ -352,7 +352,7 @@ export const CreateJob: React.FC = () => {
                 onClick={handlePublish}
                 className="flex-1 bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg active:scale-98 transition-transform shadow-lg shadow-amber-200"
               >
-                {emergency ? 'נ¨ ׳₪׳¨׳¡׳ ׳—׳™׳¨׳•׳' : '׳₪׳¨׳¡׳ ׳׳©׳׳¨׳×'}
+                {emergency ? '🚨 פרסם חירום' : 'פרסם משמרת'}
               </button>
             </div>
           )}
@@ -361,4 +361,3 @@ export const CreateJob: React.FC = () => {
     </div>
   );
 };
-

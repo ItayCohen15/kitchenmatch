@@ -14,7 +14,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         <p className="font-bold text-gray-800 text-sm">{label}</p>
         {payload.map((p: any, i: number) => (
           <p key={i} className="text-sm" style={{ color: p.color }}>
-            {p.name === 'spend' ? `ג‚×${p.value.toLocaleString()}` : `${p.value} ׳׳©׳׳¨׳•׳×`}
+            {p.name === 'spend' ? `₪${p.value.toLocaleString()}` : `${p.value} משמרות`}
           </p>
         ))}
       </div>
@@ -23,7 +23,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-const MONTH_NAMES = ['׳™׳ ׳•׳³','׳₪׳‘׳¨׳³','׳׳¨׳¥','׳׳₪׳¨׳³','׳׳׳™','׳™׳•׳ ׳™','׳™׳•׳׳™','׳׳•׳’׳³','׳¡׳₪׳˜׳³','׳׳•׳§׳³','׳ ׳•׳‘׳³','׳“׳¦׳׳³'];
+const MONTH_NAMES = ['ינו׳','פבר׳','מרץ','אפר׳','מאי','יוני','יולי','אוג׳','ספט׳','אוק׳','נוב׳','דצמ׳'];
 
 export const RestaurantAnalytics: React.FC = () => {
   const { userProfile } = useApp();
@@ -41,7 +41,7 @@ export const RestaurantAnalytics: React.FC = () => {
     }
   }, [userProfile]);
 
-  // ׳‘׳ ׳” ׳“׳׳˜׳ ׳׳’׳¨׳₪׳™׳ ׳׳”׳׳©׳׳¨׳•׳× ׳”׳׳׳™׳×׳™׳•׳×
+  // בנה דאטא לגרפים מהמשמרות האמיתיות
   const monthlyMap: Record<string, { spend: number; shifts: number }> = {};
   jobs.forEach(j => {
     const d = new Date(j.StartTime);
@@ -61,7 +61,7 @@ export const RestaurantAnalytics: React.FC = () => {
   }
 
   const totalShifts = jobs.length;
-  // ׳”׳•׳¦׳׳•׳× ׳׳׳™׳×׳™׳•׳× = ׳¡׳›׳•׳ ׳‘׳¡׳™׳¡ ֳ— 1.065 (׳›׳•׳׳ ׳¢׳׳׳× 6.5% ׳׳”׳׳¡׳¢׳“׳”)
+  // הוצאות אמיתיות = סכום בסיס × 1.065 (כולל עמלת 6.5% מהמסעדה)
   const totalSpend = jobs.reduce((s, j) => {
     const hours = j.StartTime && j.EndTime
       ? (new Date(j.EndTime).getTime() - new Date(j.StartTime).getTime()) / (1000 * 60 * 60)
@@ -71,18 +71,18 @@ export const RestaurantAnalytics: React.FC = () => {
   }, 0);
   const avgPerShift = totalShifts > 0 ? (totalSpend / totalShifts).toFixed(0) : 0;
 
-  // ׳”׳×׳₪׳׳’׳•׳× ׳×׳₪׳§׳™׳“׳™׳
+  // התפלגות תפקידים
   const roleCounts: Record<string, number> = {};
   jobs.forEach(j => { roleCounts[j.Role] = (roleCounts[j.Role] || 0) + 1; });
   const roleColors: Record<string, string> = { chef: '#f97316', line_cook: '#3b82f6', dishwasher: '#10b981' };
-  const roleLabels: Record<string, string> = { chef: '׳©׳₪׳™׳', line_cook: '׳˜׳‘׳—׳™׳', dishwasher: '׳׳“׳™׳—׳™׳' };
+  const roleLabels: Record<string, string> = { chef: 'שפים', line_cook: 'טבחים', dishwasher: 'מדיחים' };
   const roleDist = Object.entries(roleCounts).map(([role, count]) => ({
     name: roleLabels[role] || role,
     value: Math.round((count / totalShifts) * 100),
     color: roleColors[role] || '#9ca3af',
   }));
   if (roleDist.length === 0) {
-    roleDist.push({ name: '׳׳™׳ ׳¢׳“׳™׳™׳', value: 100, color: '#e5e7eb' });
+    roleDist.push({ name: 'אין עדיין', value: 100, color: '#e5e7eb' });
   }
 
   if (loading) {
@@ -95,13 +95,13 @@ export const RestaurantAnalytics: React.FC = () => {
 
   return (
     <div className="screen-enter space-y-4">
-      <h2 className="text-xl font-black text-gray-900">׳ ׳™׳×׳•׳— ׳‘׳™׳¦׳•׳¢׳™׳</h2>
+      <h2 className="text-xl font-black text-gray-900">ניתוח ביצועים</h2>
 
       {totalShifts === 0 && (
         <div className="bg-amber-50 border border-orange-100 rounded-2xl p-6 text-center">
-          <div className="text-4xl mb-3">נ“</div>
-          <p className="font-bold text-gray-700">׳׳™׳ ׳¢׳“׳™׳™׳ ׳ ׳×׳•׳ ׳™׳</p>
-          <p className="text-gray-400 text-sm mt-1">׳₪׳¨׳¡׳ ׳׳©׳׳¨׳•׳× ׳›׳“׳™ ׳׳¨׳׳•׳× ׳ ׳™׳×׳•׳—</p>
+          <div className="text-4xl mb-3">📊</div>
+          <p className="font-bold text-gray-700">אין עדיין נתונים</p>
+          <p className="text-gray-400 text-sm mt-1">פרסם משמרות כדי לראות ניתוח</p>
         </div>
       )}
 
@@ -109,25 +109,25 @@ export const RestaurantAnalytics: React.FC = () => {
       <div className="grid grid-cols-2 gap-3">
         {[
           {
-            title: '׳¡׳”׳´׳› ׳”׳•׳¦׳׳•׳×',
-            value: `ג‚×${totalSpend.toLocaleString()}`,
+            title: 'סה״כ הוצאות',
+            value: `₪${totalSpend.toLocaleString()}`,
             icon: <TrendingUp size={18} />,
             color: 'text-amber-500 bg-amber-50',
           },
           {
-            title: '׳¡׳”׳´׳› ׳׳©׳׳¨׳•׳×',
+            title: 'סה״כ משמרות',
             value: `${totalShifts}`,
             icon: <Users size={18} />,
             color: 'text-blue-500 bg-blue-50',
           },
           {
-            title: '׳׳׳•׳¦׳¢ ׳׳׳©׳׳¨׳×',
-            value: `ג‚×${avgPerShift}`,
+            title: 'ממוצע למשמרת',
+            value: `₪${avgPerShift}`,
             icon: <Clock size={18} />,
             color: 'text-green-500 bg-green-50',
           },
           {
-            title: '׳—׳•׳“׳©׳™׳ ׳₪׳¢׳™׳׳™׳',
+            title: 'חודשים פעילים',
             value: `${totalShifts > 0 ? chartData.length : 0}`,
             icon: <AlertCircle size={18} />,
             color: 'text-purple-500 bg-purple-50',
@@ -145,7 +145,7 @@ export const RestaurantAnalytics: React.FC = () => {
 
       {/* Spend chart */}
       <div className="bg-white rounded-2xl p-4 card-shadow">
-        <h3 className="font-bold text-gray-800 mb-4">׳”׳•׳¦׳׳•׳× ׳׳׳•׳¨׳ ׳–׳׳</h3>
+        <h3 className="font-bold text-gray-800 mb-4">הוצאות לאורך זמן</h3>
         <ResponsiveContainer width="100%" height={160}>
           <AreaChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
             <defs>
@@ -170,7 +170,7 @@ export const RestaurantAnalytics: React.FC = () => {
 
       {/* Shifts chart */}
       <div className="bg-white rounded-2xl p-4 card-shadow">
-        <h3 className="font-bold text-gray-800 mb-4">׳׳¡׳₪׳¨ ׳׳©׳׳¨׳•׳×</h3>
+        <h3 className="font-bold text-gray-800 mb-4">מספר משמרות</h3>
         <ResponsiveContainer width="100%" height={140}>
           <BarChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
             <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#9ca3af' }} axisLine={false} tickLine={false} />
@@ -182,9 +182,9 @@ export const RestaurantAnalytics: React.FC = () => {
       </div>
 
       {/* Role distribution */}
-      {roleDist[0].name !== '׳׳™׳ ׳¢׳“׳™׳™׳' && (
+      {roleDist[0].name !== 'אין עדיין' && (
         <div className="bg-white rounded-2xl p-4 card-shadow">
-          <h3 className="font-bold text-gray-800 mb-4">׳”׳×׳₪׳׳’׳•׳× ׳×׳₪׳§׳™׳“׳™׳</h3>
+          <h3 className="font-bold text-gray-800 mb-4">התפלגות תפקידים</h3>
           <div className="flex items-center gap-4">
             <div className="flex-shrink-0">
               <ResponsiveContainer width={120} height={120}>
@@ -212,13 +212,12 @@ export const RestaurantAnalytics: React.FC = () => {
       )}
 
       {/* Insight */}
-      <div className="bg-gradient-to-l from-km-navy to-km-dark rounded-2xl p-4 text-white">
-        <div className="text-sm font-bold mb-1">נ’¡ ׳×׳•׳‘׳ ׳” ׳—׳›׳׳”</div>
+      <div className="bg-gradient-to-l from-gray-900 to-gray-800 rounded-2xl p-4 text-white">
+        <div className="text-sm font-bold mb-1">💡 תובנה חכמה</div>
         <div className="text-amber-100 text-sm leading-relaxed">
-          ׳©׳™׳©׳™ ׳‘׳¢׳¨׳‘ ׳”׳•׳ ׳”׳–׳׳ ׳”׳›׳™ ׳¢׳׳•׳¡ ׳©׳׳. ׳׳•׳׳׳¥ ׳׳₪׳¨׳¡׳ ׳׳©׳׳¨׳•׳× ׳©׳™׳©׳™ ׳™׳•׳ ׳׳¨׳׳© ׳׳—׳¡׳•׳ ׳‘׳¢׳׳•׳™׳•׳×.
+          שישי בערב הוא הזמן הכי עמוס שלך. מומלץ לפרסם משמרות שישי יום מראש לחסוך בעלויות.
         </div>
       </div>
     </div>
   );
 };
-

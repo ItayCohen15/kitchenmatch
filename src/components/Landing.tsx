@@ -14,7 +14,7 @@ export const Landing: React.FC = () => {
             <ChefHat size={48} className="text-white" />
           </div>
           <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-amber-300 rounded-full flex items-center justify-center">
-            <span className="text-xs font-bold text-amber-800">ג“</span>
+            <span className="text-xs font-bold text-amber-800">✓</span>
           </div>
         </div>
 
@@ -22,18 +22,18 @@ export const Landing: React.FC = () => {
           KitchenMatch
         </h1>
         <p className="text-amber-100 text-lg font-medium mb-2">
-          ׳—׳™׳‘׳•׳¨ ׳׳™׳™׳“׳™ ׳¢׳ ׳©׳₪׳™׳
+          חיבור מיידי עם שפים
         </p>
         <p className="text-orange-200 text-sm max-w-xs leading-relaxed">
-          ׳׳¦׳ ׳׳× ׳”׳©׳£ ׳”׳ ׳›׳•׳ ׳‘׳“׳™׳•׳§ ׳›׳©׳׳×׳” ׳¦׳¨׳™׳ ׳׳•׳×׳• ג€” ׳×׳•׳ ׳“׳§׳•׳×.
+          מצא את השף הנכון בדיוק כשאתה צריך אותו — תוך דקות.
         </p>
 
         {/* Stats row */}
         <div className="flex gap-8 mt-10 mb-2">
           {[
-            { value: '2,400+', label: '׳©׳₪׳™׳ ׳₪׳¢׳™׳׳™׳' },
-            { value: '580+',   label: '׳׳¡׳¢׳“׳•׳×' },
-            { value: '4.8ג˜…',   label: '׳“׳™׳¨׳•׳’ ׳׳׳•׳¦׳¢' },
+            { value: '2,400+', label: 'שפים פעילים' },
+            { value: '580+',   label: 'מסעדות' },
+            { value: '4.8★',   label: 'דירוג ממוצע' },
           ].map(s => (
             <div key={s.label} className="text-center">
               <div className="text-white text-xl font-black">{s.value}</div>
@@ -46,7 +46,7 @@ export const Landing: React.FC = () => {
       {/* Role selection */}
       <div className="w-full max-w-sm space-y-3 pb-8">
         <p className="text-center text-amber-100 text-sm font-medium mb-4">
-          ׳‘׳—׳¨ ׳׳™׳ ׳׳×׳” ׳¨׳•׳¦׳” ׳׳”׳×׳—׳‘׳¨
+          בחר איך אתה רוצה להתחבר
         </p>
 
         <button
@@ -57,10 +57,10 @@ export const Landing: React.FC = () => {
             <Store size={28} className="text-amber-500" />
           </div>
           <div className="text-right">
-            <div className="font-bold text-gray-900 text-base">׳׳ ׳™ ׳׳¡׳¢׳“׳”</div>
-            <div className="text-gray-500 text-sm">׳׳—׳₪׳© ׳©׳₪׳™׳ ׳•׳¢׳•׳‘׳“׳™ ׳׳˜׳‘׳—</div>
+            <div className="font-bold text-gray-900 text-base">אני מסעדה</div>
+            <div className="text-gray-500 text-sm">מחפש שפים ועובדי מטבח</div>
           </div>
-          <div className="mr-auto text-gray-300 text-xl">ג€¹</div>
+          <div className="mr-auto text-gray-300 text-xl">‹</div>
         </button>
 
         <button
@@ -71,17 +71,16 @@ export const Landing: React.FC = () => {
             <ChefHat size={28} className="text-white" />
           </div>
           <div className="text-right">
-            <div className="font-bold text-white text-base">׳׳ ׳™ ׳©׳£ / ׳˜׳‘׳—</div>
-            <div className="text-amber-100 text-sm">׳׳—׳₪׳© ׳׳©׳׳¨׳•׳× ׳₪׳ ׳•׳™׳•׳×</div>
+            <div className="font-bold text-white text-base">אני שף / טבח</div>
+            <div className="text-amber-100 text-sm">מחפש משמרות פנויות</div>
           </div>
-          <div className="mr-auto text-white/50 text-xl">ג€¹</div>
+          <div className="mr-auto text-white/50 text-xl">‹</div>
         </button>
 
         <p className="text-center text-orange-200/70 text-xs pt-2">
-          ׳›׳ ׳™׳¡׳” = ׳”׳¡׳›׳׳” ׳׳×׳ ׳׳™ ׳”׳©׳™׳¨׳•׳× ׳•׳׳“׳™׳ ׳™׳•׳× ׳”׳₪׳¨׳˜׳™׳•׳×
+          כניסה = הסכמה לתנאי השירות ומדיניות הפרטיות
         </p>
       </div>
     </div>
   );
 };
-

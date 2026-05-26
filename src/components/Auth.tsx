@@ -18,7 +18,7 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
   const [error, setError] = useState('');
 
   const handleSubmit = async () => {
-    if (!email || !password) return setError('׳ ׳ ׳׳׳׳ ׳׳™׳׳™׳™׳ ׳•׳¡׳™׳¡׳׳');
+    if (!email || !password) return setError('נא למלא אימייל וסיסמא');
     setLoading(true);
     setError('');
     try {
@@ -46,13 +46,13 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="w-24 h-24 rounded-3xl overflow-hidden mx-auto mb-4 shadow-xl" style={{ boxShadow: '0 8px 32px rgba(232,160,32,0.3)' }}>
+          <div className="w-24 h-24 rounded-3xl overflow-hidden mx-auto mb-4" style={{ boxShadow: '0 8px 32px rgba(232,160,32,0.3)' }}>
             <img src="/logo.png" alt="KitchenMatch" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-3xl font-black">
             <span className="text-white">Kitchen</span><span style={{ color: '#e8a020' }}>Match</span>
           </h1>
-          <p className="text-sm mt-1" style={{ color: '#8899bb' }}>׳”׳׳©׳׳¨׳× ׳”׳‘׳׳” ׳©׳׳ ׳׳×׳—׳™׳׳” ׳›׳׳</p>
+          <p className="text-sm mt-1" style={{ color: '#8899bb' }}>המשמרת הבאה שלך מתחילה כאן</p>
         </div>
 
         {/* Card */}
@@ -67,7 +67,7 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
                   mode === m ? 'bg-white text-gray-900 shadow' : 'text-gray-400'
                 }`}
               >
-                {m === 'login' ? '׳›׳ ׳™׳¡׳”' : '׳”׳¨׳©׳׳”'}
+                {m === 'login' ? 'כניסה' : 'הרשמה'}
               </button>
             ))}
           </div>
@@ -82,7 +82,7 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
                 }`}
               >
                 <Store size={20} className={`mx-auto mb-1 ${role === 'restaurant' ? 'text-amber-500' : 'text-gray-400'}`} />
-                <div className="text-xs font-bold text-gray-700">׳׳¡׳¢׳“׳”</div>
+                <div className="text-xs font-bold text-gray-700">מסעדה</div>
               </button>
               <button
                 onClick={() => setRole('worker')}
@@ -91,7 +91,7 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
                 }`}
               >
                 <ChefHat size={20} className={`mx-auto mb-1 ${role === 'worker' ? 'text-amber-500' : 'text-gray-400'}`} />
-                <div className="text-xs font-bold text-gray-700">׳¢׳•׳‘׳“</div>
+                <div className="text-xs font-bold text-gray-700">עובד</div>
               </button>
             </div>
           )}
@@ -100,12 +100,12 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
           <div className="space-y-3">
             {mode === 'register' && (
               <p className="text-xs text-gray-400 text-center bg-gray-50 rounded-xl p-2">
-                נ“‹ ׳׳׳—׳¨ ׳”׳”׳¨׳©׳׳” ׳ ׳©׳׳™׳ ׳׳× ׳₪׳¨׳˜׳™ ׳”׳₪׳¨׳•׳₪׳™׳ ׳©׳׳
+                📋 לאחר ההרשמה נשלים את פרטי הפרופיל שלך
               </p>
             )}
             <input
               type="email"
-              placeholder="׳׳™׳׳™׳™׳"
+              placeholder="אימייל"
               value={email}
               onChange={e => setEmail(e.target.value)}
               className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right text-sm focus:border-amber-400 outline-none"
@@ -113,7 +113,7 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
             <div className="relative">
               <input
                 type={showPass ? 'text' : 'password'}
-                placeholder="׳¡׳™׳¡׳׳"
+                placeholder="סיסמא"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 className="w-full border border-gray-200 rounded-xl px-4 py-3 pr-4 pl-10 text-right text-sm focus:border-amber-400 outline-none"
@@ -143,13 +143,12 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
             {loading ? (
               <div className="flex items-center justify-center gap-2">
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                ׳˜׳•׳¢׳...
+                טוען...
               </div>
-            ) : mode === 'login' ? '׳›׳ ׳™׳¡׳”' : '׳”׳¨׳©׳׳”'}
+            ) : mode === 'login' ? 'כניסה' : 'הרשמה'}
           </button>
         </div>
       </div>
     </div>
   );
 };
-

@@ -6,9 +6,9 @@ import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
 
 const LEVEL_NEXT: Record<string, { next: string; progress: number; shiftsNeeded: number }> = {
-  bronze: { next: '׳›׳¡׳£',  progress: 65, shiftsNeeded: 35 },
-  silver: { next: '׳–׳”׳‘',  progress: 78, shiftsNeeded: 22 },
-  gold:   { next: '׳₪׳¨׳•',  progress: 52, shiftsNeeded: 57 },
+  bronze: { next: 'כסף',  progress: 65, shiftsNeeded: 35 },
+  silver: { next: 'זהב',  progress: 78, shiftsNeeded: 22 },
+  gold:   { next: 'פרו',  progress: 52, shiftsNeeded: 57 },
   pro:    { next: 'Pro',  progress: 100, shiftsNeeded: 0 },
 };
 
@@ -27,7 +27,7 @@ export const WorkerProfile: React.FC = () => {
   const [editRate, setEditRate] = useState(String(userProfile?.HourlyRate || ''));
   const [editBio, setEditBio] = useState(userProfile?.Bio || '');
   const [savingProfile, setSavingProfile] = useState(false);
-  const name = userProfile?.Name || '׳©׳ ׳׳ ׳™׳“׳•׳¢';
+  const name = userProfile?.Name || 'שם לא ידוע';
   const initials = name.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
   const rating = userProfile?.Rating || 0;
   const completedShifts = userProfile?.CompletedShifts || 0;
@@ -82,15 +82,15 @@ export const WorkerProfile: React.FC = () => {
   if (editingProfile) return (
     <div className="screen-enter space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-black text-gray-900">׳¢׳¨׳™׳›׳× ׳₪׳¨׳•׳₪׳™׳</h2>
-        <button onClick={() => setEditingProfile(false)} className="text-gray-400 text-sm">׳‘׳™׳˜׳•׳</button>
+        <h2 className="text-xl font-black text-gray-900">עריכת פרופיל</h2>
+        <button onClick={() => setEditingProfile(false)} className="text-gray-400 text-sm">ביטול</button>
       </div>
       <div className="bg-white rounded-2xl p-4 card-shadow space-y-4">
         {[
-          { label: '׳©׳ ׳׳׳', val: editName, set: setEditName, ph: '׳©׳ ׳׳׳', type: 'text' },
-          { label: '׳¢׳™׳¨', val: editCity, set: setEditCity, ph: '׳¢׳™׳¨', type: 'text' },
-          { label: 'נ“ ׳˜׳׳₪׳•׳', val: phone, set: setPhone, ph: '05X-XXXXXXX', type: 'tel' },
-          { label: '׳×׳¢׳¨׳™׳£ ׳©׳¢׳×׳™ (ג‚×)', val: editRate, set: setEditRate, ph: '75', type: 'number' },
+          { label: 'שם מלא', val: editName, set: setEditName, ph: 'שם מלא', type: 'text' },
+          { label: 'עיר', val: editCity, set: setEditCity, ph: 'עיר', type: 'text' },
+          { label: '📞 טלפון', val: phone, set: setPhone, ph: '05X-XXXXXXX', type: 'tel' },
+          { label: 'תעריף שעתי (₪)', val: editRate, set: setEditRate, ph: '75', type: 'number' },
         ].map(f => (
           <div key={f.label}>
             <label className="text-sm font-semibold text-gray-600 mb-1.5 block">{f.label}</label>
@@ -99,26 +99,26 @@ export const WorkerProfile: React.FC = () => {
           </div>
         ))}
         <div>
-          <label className="text-sm font-semibold text-gray-600 mb-1.5 block">׳×׳₪׳§׳™׳“</label>
+          <label className="text-sm font-semibold text-gray-600 mb-1.5 block">תפקיד</label>
           <select value={editRole} onChange={e => setEditRole(e.target.value)}
             className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-amber-400 outline-none bg-white">
-            <option value="chef">׳©׳£</option>
-            <option value="line_cook">׳˜׳‘׳—</option>
-            <option value="dishwasher">׳׳“׳™׳—</option>
+            <option value="chef">שף</option>
+            <option value="line_cook">טבח</option>
+            <option value="dishwasher">מדיח</option>
           </select>
         </div>
         <div>
-          <label className="text-sm font-semibold text-gray-600 mb-1.5 block">׳§׳¦׳× ׳¢׳׳™׳™</label>
+          <label className="text-sm font-semibold text-gray-600 mb-1.5 block">קצת עליי</label>
           <textarea value={editBio} onChange={e => setEditBio(e.target.value)} rows={3}
-            placeholder="׳ ׳™׳¡׳™׳•׳, ׳”׳×׳׳—׳•׳™׳•׳×, ׳׳” ׳׳ ׳™ ׳׳‘׳™׳ ׳׳׳˜׳‘׳—..."
+            placeholder="ניסיון, התמחויות, מה אני מביא למטבח..."
             className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-amber-400 outline-none resize-none" />
         </div>
       </div>
       <button onClick={handleSaveProfile} disabled={savingProfile || !editName}
         className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold disabled:opacity-50 shadow-lg shadow-amber-200">
         {savingProfile
-          ? <div className="flex items-center justify-center gap-2"><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />׳©׳•׳׳¨...</div>
-          : 'ג… ׳©׳׳•׳¨ ׳©׳™׳ ׳•׳™׳™׳'}
+          ? <div className="flex items-center justify-center gap-2"><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />שומר...</div>
+          : '✅ שמור שינויים'}
       </button>
     </div>
   );
@@ -133,7 +133,7 @@ export const WorkerProfile: React.FC = () => {
           </div>
           <div className="flex-1">
             <div className="font-black text-xl">{name}</div>
-            <div className="text-gray-400 text-xs mt-0.5">{userProfile?.City || ''} ֲ· {ROLE_LABELS[userProfile?.Role] || userProfile?.Role || ''}</div>
+            <div className="text-gray-400 text-xs mt-0.5">{userProfile?.City || ''} · {ROLE_LABELS[userProfile?.Role] || userProfile?.Role || ''}</div>
             <div className="flex items-center gap-2 mt-1">
               <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${LEVEL_COLORS[level] || 'text-gray-500 bg-gray-100'}`}>
                 {LEVEL_LABELS[level] || level}
@@ -142,17 +142,17 @@ export const WorkerProfile: React.FC = () => {
             <div className="flex items-center gap-3 mt-2">
               <span className="flex items-center gap-1 text-yellow-400 text-sm font-bold">
                 <Star size={12} className="fill-yellow-400" />
-                {rating > 0 ? rating.toFixed(1) : '׳—׳“׳©'}
+                {rating > 0 ? rating.toFixed(1) : 'חדש'}
               </span>
             </div>
           </div>
           <div className="flex gap-2">
             <button onClick={() => setEditingProfile(true)}
-              className="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center" title="׳¢׳¨׳•׳ ׳₪׳¨׳•׳₪׳™׳">
+              className="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center" title="ערוך פרופיל">
               <Edit3 size={15} />
             </button>
             <button onClick={resetToLanding}
-              className="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center" title="׳”׳×׳ ׳×׳§">
+              className="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center" title="התנתק">
               <LogOut size={15} />
             </button>
           </div>
@@ -161,7 +161,7 @@ export const WorkerProfile: React.FC = () => {
         {/* Availability toggle */}
         <div className={`flex items-center justify-between rounded-xl p-3 ${available ? 'bg-green-500/20' : 'bg-white/10'}`}>
           <span className={`font-semibold text-sm ${available ? 'text-green-300' : 'text-gray-400'}`}>
-            {available ? 'ג— ׳–׳׳™׳ ׳׳¢׳‘׳•׳“׳”' : 'ג—‹ ׳׳ ׳–׳׳™׳ ׳›׳¨׳’׳¢'}
+            {available ? '● זמין לעבודה' : '○ לא זמין כרגע'}
           </span>
           <button
             onClick={() => handleAvailability(!available)}
@@ -175,10 +175,10 @@ export const WorkerProfile: React.FC = () => {
       {/* Stats */}
       <div className="grid grid-cols-4 gap-2">
         {[
-          { label: '׳׳©׳׳¨׳•׳×', value: completedShifts, icon: 'ג…' },
-          { label: '׳׳׳™׳ ׳•׳×', value: `${reliabilityScore}%`, icon: 'נ›¡ן¸' },
-          { label: '׳ ׳™׳¡׳™׳•׳', value: `${yearsExp} ׳©׳ ׳³`, icon: 'ג­' },
-          { label: '׳‘׳™׳˜׳•׳׳™׳', value: noShows, icon: 'ג' },
+          { label: 'משמרות', value: completedShifts, icon: '✅' },
+          { label: 'אמינות', value: `${reliabilityScore}%`, icon: '🛡️' },
+          { label: 'ניסיון', value: `${yearsExp} שנ׳`, icon: '⭐' },
+          { label: 'ביטולים', value: noShows, icon: '❌' },
         ].map(s => (
           <div key={s.label} className="bg-white rounded-xl p-3 card-shadow text-center">
             <div className="text-lg mb-1">{s.icon}</div>
@@ -188,12 +188,12 @@ export const WorkerProfile: React.FC = () => {
         ))}
       </div>
 
-      {/* ׳˜׳׳₪׳•׳ */}
+      {/* טלפון */}
       <div className="bg-white rounded-2xl p-4 card-shadow">
         <div className="flex items-center justify-between mb-1">
-          <h3 className="font-bold text-gray-800 text-sm">נ“ ׳׳¡׳₪׳¨ ׳˜׳׳₪׳•׳</h3>
+          <h3 className="font-bold text-gray-800 text-sm">📞 מספר טלפון</h3>
           {!editingPhone && (
-            <button onClick={() => setEditingPhone(true)} className="text-amber-500 text-sm font-semibold">׳¢׳¨׳•׳</button>
+            <button onClick={() => setEditingPhone(true)} className="text-amber-500 text-sm font-semibold">ערוך</button>
           )}
         </div>
         {editingPhone ? (
@@ -213,11 +213,11 @@ export const WorkerProfile: React.FC = () => {
           <div className="flex items-center gap-2 mt-1">
             <Phone size={14} className="text-gray-400" />
             <span className={phone ? 'text-gray-900 font-semibold' : 'text-gray-400 text-sm'}>
-              {phone || '׳׳ ׳”׳•׳–׳ ג€” ׳”׳•׳¡׳£ ׳׳¡׳₪׳¨'}
+              {phone || 'לא הוזן — הוסף מספר'}
             </span>
           </div>
         )}
-        <p className="text-xs text-gray-400 mt-2">׳”׳׳¡׳¢׳“׳” ׳×׳•׳›׳ ׳׳”׳×׳§׳©׳¨ ׳׳׳™׳ ׳׳׳—׳¨ ׳׳™׳©׳•׳¨ ׳”׳׳©׳׳¨׳×</p>
+        <p className="text-xs text-gray-400 mt-2">המסעדה תוכל להתקשר אליך לאחר אישור המשמרת</p>
       </div>
 
       {/* Level progress */}
@@ -225,17 +225,17 @@ export const WorkerProfile: React.FC = () => {
         <div className="bg-white rounded-2xl p-4 card-shadow">
           <div className="flex items-center gap-2 mb-3">
             <Award size={18} className="text-yellow-500" />
-            <h3 className="font-bold text-gray-800">׳”׳×׳§׳“׳׳•׳× ׳׳¨׳׳” ׳”׳‘׳׳”</h3>
+            <h3 className="font-bold text-gray-800">התקדמות לרמה הבאה</h3>
           </div>
           <div className="flex justify-between text-sm mb-2">
             <span className={`font-bold px-2 py-0.5 rounded-full ${LEVEL_COLORS[level] || ''}`}>{LEVEL_LABELS[level] || level}</span>
-            <span className="text-gray-500">׳¢׳•׳“ {levelInfo.shiftsNeeded} ׳׳©׳׳¨׳•׳× ג†’ {levelInfo.next}</span>
+            <span className="text-gray-500">עוד {levelInfo.shiftsNeeded} משמרות → {levelInfo.next}</span>
           </div>
           <div className="bg-gray-100 rounded-full h-3">
-            <div className="h-3 bg-gradient-to-l from-yellow-500 to-orange-500 rounded-full transition-all"
+            <div className="h-3 bg-gradient-to-l from-yellow-500 to-gray-800 rounded-full transition-all"
               style={{ width: `${levelInfo.progress}%` }} />
           </div>
-          <div className="text-xs text-gray-400 mt-1 text-center">{levelInfo.progress}% ׳׳”׳“׳¨׳ ׳׳¨׳׳” ׳”׳‘׳׳”</div>
+          <div className="text-xs text-gray-400 mt-1 text-center">{levelInfo.progress}% מהדרך לרמה הבאה</div>
         </div>
       )}
 
@@ -243,8 +243,8 @@ export const WorkerProfile: React.FC = () => {
       {bio && (
         <div className="bg-white rounded-2xl p-4 card-shadow">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-bold text-gray-800">׳׳•׳“׳•׳×׳™</h3>
-            <button className="text-amber-500 text-sm font-semibold">׳¢׳¨׳•׳</button>
+            <h3 className="font-bold text-gray-800">אודותי</h3>
+            <button className="text-amber-500 text-sm font-semibold">ערוך</button>
           </div>
           <p className="text-gray-600 text-sm leading-relaxed">{bio}</p>
         </div>
@@ -252,9 +252,9 @@ export const WorkerProfile: React.FC = () => {
 
       {/* Info card */}
       <div className="bg-amber-50 border border-orange-100 rounded-2xl p-4">
-        <h3 className="font-bold text-amber-800 mb-2 text-sm">נ“‹ ׳”׳₪׳¨׳•׳₪׳™׳ ׳©׳׳</h3>
+        <h3 className="font-bold text-amber-800 mb-2 text-sm">📋 הפרופיל שלך</h3>
         <p className="text-orange-700 text-xs leading-relaxed">
-          ׳›׳›׳ ׳©׳×׳©׳׳™׳ ׳™׳•׳×׳¨ ׳׳©׳׳¨׳•׳× ׳•׳×׳§׳‘׳ ׳“׳™׳¨׳•׳’׳™׳ ׳˜׳•׳‘׳™׳ ג€” ׳›׳ ׳×׳¢׳׳” ׳‘׳¨׳׳” ׳•׳×׳§׳‘׳ ׳¢׳“׳™׳₪׳•׳× ׳‘׳©׳™׳‘׳•׳¦׳™׳.
+          ככל שתשלים יותר משמרות ותקבל דירוגים טובים — כך תעלה ברמה ותקבל עדיפות בשיבוצים.
         </p>
       </div>
 
@@ -264,9 +264,8 @@ export const WorkerProfile: React.FC = () => {
         className="w-full bg-gray-100 text-gray-600 rounded-2xl py-4 font-bold flex items-center justify-center gap-2"
       >
         <LogOut size={18} />
-        ׳”׳×׳ ׳×׳§
+        התנתק
       </button>
     </div>
   );
 };
-

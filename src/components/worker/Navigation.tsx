@@ -13,7 +13,7 @@ export const WorkerNavigation: React.FC = () => {
   const [error, setError]                        = useState('');
   const [restaurantPhone, setRestPhone]          = useState<string>(job?.RestaurantPhone || '');
 
-  const restaurantName    = job?.RestaurantName    || job?.restaurantName    || '׳”׳׳¡׳¢׳“׳”';
+  const restaurantName    = job?.RestaurantName    || job?.restaurantName    || 'המסעדה';
   const restaurantCity    = job?.RestaurantCity    || job?.restaurantCity    || '';
   const restaurantAddress = job?.RestaurantAddress || job?.restaurantAddress || '';
   const instructions      = job?.Instructions      || job?.instructions      || '';
@@ -22,7 +22,7 @@ export const WorkerNavigation: React.FC = () => {
   const startStr          = job?.StartTime ? new Date(job.StartTime).toLocaleTimeString('he-IL', { hour:'2-digit', minute:'2-digit' }) : '--:--';
   const endStr            = job?.EndTime   ? new Date(job.EndTime).toLocaleTimeString('he-IL',   { hour:'2-digit', minute:'2-digit' }) : '--:--';
 
-  // ׳˜׳¢׳™׳ ׳× ׳˜׳׳₪׳•׳ ׳׳¡׳¢׳“׳”
+  // טעינת טלפון מסעדה
   useEffect(() => {
     if (!userProfile?.Id || !jobId) return;
     const load = () => api.getWorkerHistory(userProfile.Id)
@@ -35,8 +35,8 @@ export const WorkerNavigation: React.FC = () => {
     return () => clearInterval(iv);
   }, [jobId, userProfile?.Id]);
 
-  // ׳₪׳•׳׳™׳ ׳’ ׳¨׳׳©׳™ ג€” ׳’׳׳” ׳׳ ׳”׳׳¡׳¢׳“׳” ׳™׳–׳׳” / ׳׳ ׳›׳‘׳¨ active
-  // ׳׳™׳ waitingForRestaurant ׳‘deps ג€” ׳”׳₪׳•׳׳™׳ ׳’ ׳׳׳©׳™׳ ׳×׳׳™׳“!
+  // פולינג ראשי — גלה אם המסעדה יזמה / אם כבר active
+  // אין waitingForRestaurant בdeps — הפולינג ממשיך תמיד!
   useEffect(() => {
     if (!jobId) return;
     const check = async () => {
@@ -53,14 +53,14 @@ export const WorkerNavigation: React.FC = () => {
     check();
     const iv = setInterval(check, 2500);
     return () => clearInterval(iv);
-  }, [jobId]); // ג† ׳¨׳§ jobId, ׳׳ waitingForRestaurant
+  }, [jobId]); // ← רק jobId, לא waitingForRestaurant
 
   const handleInitiate = async () => {
     setInitiating(true); setError('');
     try {
       await api.initiateStart(jobId, 'worker');
       setWaiting(true);
-    } catch { setError('׳©׳’׳™׳׳” ׳‘׳©׳׳™׳—׳”, ׳ ׳¡׳” ׳©׳•׳‘'); }
+    } catch { setError('שגיאה בשליחה, נסה שוב'); }
     setInitiating(false);
   };
 
@@ -71,12 +71,12 @@ export const WorkerNavigation: React.FC = () => {
       startShift();
       navToWorker('active_shift');
     } catch {
-      // ׳׳ confirmStart ׳ ׳›׳©׳ ג€” ׳׳•׳׳™ ׳›׳‘׳¨ active, ׳‘׳“׳•׳§ ׳•׳ ׳•׳•׳˜
+      // אם confirmStart נכשל — אולי כבר active, בדוק ונווט
       try {
         const s = await api.getStartStatus(jobId);
         if (s.Status === 'active') { startShift(); navToWorker('active_shift'); return; }
       } catch {}
-      setError('׳©׳’׳™׳׳” ג€” ׳ ׳¡׳” ׳©׳•׳‘');
+      setError('שגיאה — נסה שוב');
     }
     setConfirming(false);
   };
@@ -89,22 +89,22 @@ export const WorkerNavigation: React.FC = () => {
 
   return (
     <div className="screen-enter flex flex-col gap-4">
-      {/* ׳›׳¨׳˜׳™׳¡ ׳›׳—׳•׳ */}
+      {/* כרטיס כחול */}
       <div className="bg-gradient-to-l from-blue-600 to-blue-500 rounded-2xl p-4 text-white">
         <div className="flex items-center gap-3 mb-3">
           <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
             <Navigation2 size={22} className="fill-white" />
           </div>
           <div>
-            <div className="font-bold">׳‘׳“׳¨׳ ׳׳ {restaurantName}</div>
+            <div className="font-bold">בדרך אל {restaurantName}</div>
             <div className="text-blue-100 text-sm">{restaurantCity}</div>
           </div>
         </div>
         <div className="flex gap-3">
           {[
-            { v: `ג‚×${hourlyRate}`, l: '/׳©׳¢׳”', c: 'text-green-300' },
-            { v: startStr, l: '׳”׳×׳—׳׳”', c: 'text-white' },
-            { v: endStr,   l: '׳¡׳™׳•׳',   c: 'text-white' },
+            { v: `₪${hourlyRate}`, l: '/שעה', c: 'text-green-300' },
+            { v: startStr, l: 'התחלה', c: 'text-white' },
+            { v: endStr,   l: 'סיום',   c: 'text-white' },
           ].map(s => (
             <div key={s.l} className="flex-1 bg-white/15 rounded-xl p-3 text-center">
               <div className={`text-lg font-black ${s.c}`}>{s.v}</div>
@@ -114,12 +114,12 @@ export const WorkerNavigation: React.FC = () => {
         </div>
       </div>
 
-      {/* ׳•׳•׳™׳– + ׳˜׳׳₪׳•׳ */}
+      {/* וויז + טלפון */}
       <div className="flex gap-3">
         <a href={wazeUrl} target="_blank" rel="noopener noreferrer"
           className="flex-1 flex items-center justify-center gap-2 bg-[#05C3F9] text-white rounded-2xl py-4 font-bold shadow-lg"
           style={{ textDecoration: 'none' }}>
-          נ—÷ן¸ ׳ ׳•׳•׳˜ ׳‘׳•׳•׳™׳–
+          🗺️ נווט בוויז
         </a>
         {phone ? (
           <a href={`tel:${phone}`}
@@ -134,47 +134,47 @@ export const WorkerNavigation: React.FC = () => {
         )}
       </div>
 
-      {/* ׳©׳’׳™׳׳” */}
+      {/* שגיאה */}
       {error && <div className="bg-red-50 text-red-600 text-sm rounded-xl px-4 py-3 text-center">{error}</div>}
 
-      {/* ׳₪׳•׳₪׳׳₪ ג€” ׳”׳׳¡׳¢׳“׳” ׳™׳–׳׳” */}
+      {/* פופאפ — המסעדה יזמה */}
       {restaurantInitiated && !waitingForRestaurant && (
         <div className="bg-gradient-to-l from-green-600 to-emerald-500 rounded-2xl p-4 text-white screen-enter">
-          <div className="font-black text-lg mb-1">נ”” {restaurantName} ׳¨׳•׳¦׳” ׳׳”׳×׳—׳™׳!</div>
-          <div className="text-green-100 text-sm mb-4">׳”׳׳¡׳¢׳“׳” ׳׳•׳›׳ ׳” ג€” ׳”׳׳ ׳”׳’׳¢׳×?</div>
+          <div className="font-black text-lg mb-1">🔔 {restaurantName} רוצה להתחיל!</div>
+          <div className="text-green-100 text-sm mb-4">המסעדה מוכנה — האם הגעת?</div>
           <div className="flex gap-3">
             <button onClick={() => setRestInitiated(false)}
               className="flex-1 bg-white/20 rounded-xl py-3 font-semibold flex items-center justify-center gap-2">
-              <X size={16} /> ׳¢׳•׳“ ׳׳
+              <X size={16} /> עוד לא
             </button>
             <button onClick={handleConfirm} disabled={confirming}
               className="flex-1 bg-white text-green-700 rounded-xl py-3 font-black flex items-center justify-center gap-2">
               {confirming
                 ? <div className="w-4 h-4 border-2 border-green-400 border-t-green-700 rounded-full animate-spin" />
-                : <><CheckCircle2 size={16} /> ׳׳ ׳™ ׳›׳׳! ׳”׳×׳—׳</>}
+                : <><CheckCircle2 size={16} /> אני כאן! התחל</>}
             </button>
           </div>
         </div>
       )}
 
-      {/* ׳׳׳×׳™׳ ׳׳׳™׳©׳•׳¨ ׳׳¡׳¢׳“׳” */}
+      {/* ממתין לאישור מסעדה */}
       {waitingForRestaurant && (
         <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-center">
-          <div className="text-2xl mb-2">ג³</div>
-          <div className="font-bold text-amber-800">׳׳׳×׳™׳ ׳׳׳™׳©׳•׳¨ {restaurantName}</div>
-          <div className="text-amber-600 text-sm mt-1">׳©׳׳—׳ ׳• ׳”׳×׳¨׳׳” ׳׳׳¡׳¢׳“׳”</div>
+          <div className="text-2xl mb-2">⏳</div>
+          <div className="font-bold text-amber-800">ממתין לאישור {restaurantName}</div>
+          <div className="text-amber-600 text-sm mt-1">שלחנו התראה למסעדה</div>
           <div className="w-5 h-5 border-2 border-amber-400 border-t-transparent rounded-full animate-spin mx-auto mt-2" />
         </div>
       )}
 
-      {/* ׳”׳•׳¨׳׳•׳× */}
+      {/* הוראות */}
       <div className="bg-white rounded-2xl p-4 card-shadow">
-        <h3 className="font-bold text-gray-800 mb-3 text-sm">נ“ ׳”׳•׳¨׳׳•׳× ׳”׳’׳¢׳”</h3>
+        <h3 className="font-bold text-gray-800 mb-3 text-sm">📍 הוראות הגעה</h3>
         {instructions ? (
           <p className="text-gray-800 text-sm leading-relaxed bg-amber-50 rounded-xl p-3">{instructions}</p>
         ) : (
           <div className="space-y-2">
-            {['׳”׳›׳ ׳¡ ׳“׳¨׳ ׳”׳›׳ ׳™׳¡׳” ׳”׳¨׳׳©׳™׳× / ׳׳—׳•׳¨׳™׳×', '׳‘׳§׳© ׳׳× ׳׳ ׳”׳ ׳”׳׳©׳׳¨׳×', '׳׳—׳¥ "׳¦׳³׳§-׳׳™׳" ׳›׳׳', '׳‘׳”׳¦׳׳—׳”! נ‘¨ג€נ³'].map((s, i) => (
+            {['הכנס דרך הכניסה הראשית / אחורית', 'בקש את מנהל המשמרת', 'לחץ "צ׳ק-אין" כאן', 'בהצלחה! 👨‍🍳'].map((s, i) => (
               <div key={i} className="flex items-start gap-3">
                 <div className="w-6 h-6 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">{i+1}</div>
                 <span className="text-gray-700 text-sm">{s}</span>
@@ -184,20 +184,19 @@ export const WorkerNavigation: React.FC = () => {
         )}
       </div>
 
-      {/* ׳›׳₪׳×׳•׳¨ ׳¦'׳§-׳׳™׳ */}
+      {/* כפתור צ'ק-אין */}
       {!waitingForRestaurant && !restaurantInitiated && (
         <button onClick={handleInitiate} disabled={initiating}
           className="w-full bg-amber-500 text-white rounded-2xl py-4 font-black text-lg shadow-lg shadow-amber-200 active:scale-98 transition-transform">
           {initiating
             ? <div className="flex items-center justify-center gap-2">
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />׳©׳•׳׳—...
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />שולח...
               </div>
-            : 'נ“ ׳”׳’׳¢׳×׳™ ג€” ׳¦׳³׳§-׳׳™׳'}
+            : '📍 הגעתי — צ׳ק-אין'}
         </button>
       )}
 
-      <button onClick={() => navToWorker('home')} className="w-full text-gray-400 text-sm py-1 text-center">׳‘׳™׳˜׳•׳</button>
+      <button onClick={() => navToWorker('home')} className="w-full text-gray-400 text-sm py-1 text-center">ביטול</button>
     </div>
   );
 };
-

@@ -14,18 +14,18 @@ interface Props {
 }
 
 const RESTAURANT_TABS: NavItem[] = [
-  { id: 'home',      label: '׳‘׳™׳×',    icon: <Home size={20} /> },
-  { id: 'create_job',label: '׳׳©׳׳¨׳×', icon: <PlusCircle size={20} /> },
-  { id: 'analytics', label: '׳ ׳™׳×׳•׳—', icon: <BarChart2 size={20} /> },
-  { id: 'wallet',    label: '׳׳¨׳ ׳§',  icon: <Wallet size={20} /> },
-  { id: 'profile',   label: '׳₪׳¨׳•׳₪׳™׳',icon: <User size={20} /> },
+  { id: 'home',      label: 'בית',    icon: <Home size={20} /> },
+  { id: 'create_job',label: 'משמרת', icon: <PlusCircle size={20} /> },
+  { id: 'analytics', label: 'ניתוח', icon: <BarChart2 size={20} /> },
+  { id: 'wallet',    label: 'ארנק',  icon: <Wallet size={20} /> },
+  { id: 'profile',   label: 'פרופיל',icon: <User size={20} /> },
 ];
 
 const WORKER_TABS: NavItem[] = [
-  { id: 'home',    label: '׳׳©׳׳¨׳•׳×',  icon: <Home size={20} /> },
-  { id: 'wallet',  label: '׳”׳›׳ ׳¡׳•׳×',  icon: <Wallet size={20} /> },
-  { id: 'history', label: '׳”׳™׳¡׳˜׳•׳¨׳™׳”', icon: <Clock size={20} /> },
-  { id: 'profile', label: '׳₪׳¨׳•׳₪׳™׳',  icon: <User size={20} /> },
+  { id: 'home',    label: 'משמרות',  icon: <Home size={20} /> },
+  { id: 'wallet',  label: 'הכנסות',  icon: <Wallet size={20} /> },
+  { id: 'history', label: 'היסטוריה', icon: <Clock size={20} /> },
+  { id: 'profile', label: 'פרופיל',  icon: <User size={20} /> },
 ];
 
 export const BottomNav: React.FC<Props> = ({ mode, active, onNav }) => {
@@ -58,4 +58,3 @@ export const BottomNav: React.FC<Props> = ({ mode, active, onNav }) => {
     </nav>
   );
 };
-

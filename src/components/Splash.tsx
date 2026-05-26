@@ -17,10 +17,7 @@ export const Splash: React.FC<{ onDone: () => void }> = ({ onDone }) => {
       <div className="flex flex-col items-center gap-5">
         <div
           className="w-32 h-32 rounded-3xl overflow-hidden shadow-2xl"
-          style={{
-            animation: 'splashPop 0.6s cubic-bezier(0.34,1.56,0.64,1)',
-            boxShadow: '0 20px 60px rgba(212,160,23,0.35)'
-          }}
+          style={{ animation: 'splashPop 0.6s cubic-bezier(0.34,1.56,0.64,1)', boxShadow: '0 20px 60px rgba(232,160,32,0.35)' }}
         >
           <img src="/logo.png" alt="KitchenMatch" className="w-full h-full object-cover" />
         </div>
@@ -41,11 +38,11 @@ export const Splash: React.FC<{ onDone: () => void }> = ({ onDone }) => {
       <style>{`
         @keyframes splashPop {
           from { transform: scale(0.4) rotate(-5deg); opacity: 0; }
-          to   { transform: scale(1) rotate(0deg);   opacity: 1; }
+          to   { transform: scale(1) rotate(0deg); opacity: 1; }
         }
         @keyframes dotPulse {
           0%,100% { opacity:0.3; transform:scale(1); }
-          50%      { opacity:1;   transform:scale(1.4); }
+          50% { opacity:1; transform:scale(1.4); }
         }
       `}</style>
     </div>

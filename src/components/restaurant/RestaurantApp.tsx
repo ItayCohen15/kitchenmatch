@@ -14,22 +14,22 @@ import { RestaurantProfile } from './Profile';
 import type { RestaurantScreen } from '../../types';
 
 const SCREEN_TITLES: Record<RestaurantScreen, string> = {
-  home:            '׳¨׳׳©׳™',
-  create_job:      '׳₪׳¨׳¡׳•׳ ׳׳©׳׳¨׳×',
-  worker_matching: '׳”׳×׳׳׳× ׳¢׳•׳‘׳“׳™׳',
-  live_tracking:   '׳׳¢׳§׳‘ ׳—׳™',
-  active_shift:    '׳׳©׳׳¨׳× ׳₪׳¢׳™׳׳”',
-  end_shift:       '׳¡׳™׳•׳ ׳׳©׳׳¨׳×',
-  wallet:          '׳׳¨׳ ׳§',
-  analytics:       '׳ ׳™׳×׳•׳—',
-  profile:         '׳”׳₪׳¨׳•׳₪׳™׳ ׳©׳׳™',
+  home:            'ראשי',
+  create_job:      'פרסום משמרת',
+  worker_matching: 'התאמת עובדים',
+  live_tracking:   'מעקב חי',
+  active_shift:    'משמרת פעילה',
+  end_shift:       'סיום משמרת',
+  wallet:          'ארנק',
+  analytics:       'ניתוח',
+  profile:         'הפרופיל שלי',
 };
 
 const NAV_TABS: RestaurantScreen[] = ['home', 'create_job', 'analytics', 'wallet', 'profile'];
 
 export const RestaurantApp: React.FC = () => {
   const { restaurantScreen, navToRestaurant, resetToLanding, userProfile } = useApp();
-  const initials = (userProfile?.Name || '׳').slice(0, 2);
+  const initials = (userProfile?.Name || 'מ').slice(0, 2);
 
   const showNav = NAV_TABS.includes(restaurantScreen);
   const showTopBar = !['active_shift'].includes(restaurantScreen);
@@ -88,4 +88,3 @@ export const RestaurantApp: React.FC = () => {
     </div>
   );
 };
-

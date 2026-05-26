@@ -45,8 +45,8 @@ export const RestaurantWallet: React.FC = () => {
     <div className="screen-enter space-y-4">
       {/* Balance card */}
       <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-5 text-white">
-        <div className="text-gray-400 text-sm mb-1">׳™׳×׳¨׳” ׳‘׳׳¨׳ ׳§</div>
-        <div className="text-4xl font-black mb-1">ג‚×{walletBalance.toLocaleString()}</div>
+        <div className="text-gray-400 text-sm mb-1">יתרה בארנק</div>
+        <div className="text-4xl font-black mb-1">₪{walletBalance.toLocaleString()}</div>
         <div className="text-gray-400 text-sm">
           {name && <span className="text-gray-300">{name}</span>}
         </div>
@@ -57,11 +57,11 @@ export const RestaurantWallet: React.FC = () => {
             className="bg-white/15 rounded-xl py-3 flex items-center justify-center gap-2 font-semibold text-sm"
           >
             <Plus size={16} />
-            ׳˜׳¢׳ ׳›׳¡׳£
+            טען כסף
           </button>
           <button className="bg-amber-500 rounded-xl py-3 flex items-center justify-center gap-2 font-semibold text-sm">
             <CreditCard size={16} />
-            ׳›׳¨׳˜׳™׳¡ ׳׳©׳¨׳׳™
+            כרטיס אשראי
           </button>
         </div>
       </div>
@@ -69,7 +69,7 @@ export const RestaurantWallet: React.FC = () => {
       {/* Top-up panel */}
       {showTopUp && (
         <div className="bg-white rounded-2xl p-4 card-shadow screen-enter">
-          <h3 className="font-bold text-gray-800 mb-3">׳˜׳¢׳™׳ ׳× ׳׳¨׳ ׳§</h3>
+          <h3 className="font-bold text-gray-800 mb-3">טעינת ארנק</h3>
           <div className="flex gap-2 mb-3">
             {[500, 1000, 2000, 5000].map(a => (
               <button
@@ -79,17 +79,17 @@ export const RestaurantWallet: React.FC = () => {
                   topUpAmount === String(a) ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-700'
                 }`}
               >
-                ג‚×{a}
+                ₪{a}
               </button>
             ))}
           </div>
           <div className="relative mb-3">
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 font-bold">ג‚×</span>
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 font-bold">₪</span>
             <input
               type="number"
               value={topUpAmount}
               onChange={e => setTopUpAmount(e.target.value)}
-              placeholder="׳¡׳›׳•׳ ׳׳—׳¨"
+              placeholder="סכום אחר"
               className="w-full border border-gray-200 rounded-xl py-3 pr-8 pl-3 text-right font-semibold"
             />
           </div>
@@ -101,9 +101,9 @@ export const RestaurantWallet: React.FC = () => {
             {topping ? (
               <>
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                ׳׳¢׳‘׳“...
+                מעבד...
               </>
-            ) : `׳˜׳¢׳ ג‚×${topUpAmount}`}
+            ) : `טען ₪${topUpAmount}`}
           </button>
         </div>
       )}
@@ -112,16 +112,16 @@ export const RestaurantWallet: React.FC = () => {
       {topped && (
         <div className="bg-green-500 rounded-2xl p-3 text-white flex items-center gap-3 screen-enter">
           <CheckCircle2 size={20} />
-          <span className="font-semibold">׳”׳׳¨׳ ׳§ ׳ ׳˜׳¢׳ ׳‘׳”׳¦׳׳—׳”! ג‚×{topUpAmount}</span>
+          <span className="font-semibold">הארנק נטען בהצלחה! ₪{topUpAmount}</span>
         </div>
       )}
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: '׳¡׳”׳´׳› ׳”׳•׳¦׳׳•׳×', value: `ג‚×${totalSpend.toLocaleString()}`, color: 'text-amber-500' },
-          { label: '׳׳׳•׳¦׳¢ ׳׳׳©׳׳¨׳×', value: `ג‚×${avgPerShift}`, color: 'text-blue-500' },
-          { label: '׳׳©׳׳¨׳•׳×', value: jobs.length, color: 'text-green-500' },
+          { label: 'סה״כ הוצאות', value: `₪${totalSpend.toLocaleString()}`, color: 'text-amber-500' },
+          { label: 'ממוצע למשמרת', value: `₪${avgPerShift}`, color: 'text-blue-500' },
+          { label: 'משמרות', value: jobs.length, color: 'text-green-500' },
         ].map(s => (
           <div key={s.label} className="bg-white rounded-xl p-3 card-shadow text-center">
             <div className={`font-black text-lg ${s.color}`}>{s.value}</div>
@@ -132,18 +132,18 @@ export const RestaurantWallet: React.FC = () => {
 
       {/* Subscription banner */}
       <div className="bg-gradient-to-l from-purple-600 to-purple-500 rounded-2xl p-4 text-white">
-        <div className="font-bold mb-1">׳׳ ׳•׳™ Pro ׳׳¡׳¢׳“׳•׳× נ€</div>
+        <div className="font-bold mb-1">מנוי Pro מסעדות 🚀</div>
         <div className="text-purple-100 text-sm mb-3">
-          ׳—׳¡׳•׳ ׳¢׳“ 5% ׳¢׳׳׳•׳× ֲ· ׳¢׳“׳™׳₪׳•׳× ׳‘׳©׳™׳‘׳•׳¥ ֲ· ׳×׳׳™׳›׳” 24/7
+          חסוך עד 5% עמלות · עדיפות בשיבוץ · תמיכה 24/7
         </div>
         <button className="bg-white text-purple-600 rounded-xl px-4 py-2 font-bold text-sm">
-          ׳¨׳§ ג‚×199/׳—׳•׳“׳© ג€“ ׳ ׳¡׳” ׳—׳™׳ ׳
+          רק ₪199/חודש – נסה חינם
         </button>
       </div>
 
       {/* Transactions */}
       <div>
-        <h3 className="font-bold text-gray-800 mb-3">׳”׳™׳¡׳˜׳•׳¨׳™׳™׳× ׳׳©׳׳¨׳•׳×</h3>
+        <h3 className="font-bold text-gray-800 mb-3">היסטוריית משמרות</h3>
         {loading && (
           <div className="text-center py-4">
             <div className="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto" />
@@ -151,9 +151,9 @@ export const RestaurantWallet: React.FC = () => {
         )}
         {!loading && jobs.length === 0 && (
           <div className="bg-white rounded-xl p-6 text-center card-shadow">
-            <div className="text-3xl mb-2">נ“‹</div>
-            <p className="text-gray-500 text-sm">׳׳™׳ ׳׳©׳׳¨׳•׳× ׳¢׳“׳™׳™׳</p>
-            <p className="text-gray-400 text-xs mt-1">׳₪׳¨׳¡׳ ׳׳©׳׳¨׳× ׳¨׳׳©׳•׳ ׳” ׳׳”׳×׳—׳™׳</p>
+            <div className="text-3xl mb-2">📋</div>
+            <p className="text-gray-500 text-sm">אין משמרות עדיין</p>
+            <p className="text-gray-400 text-xs mt-1">פרסם משמרת ראשונה להתחיל</p>
           </div>
         )}
         <div className="space-y-2">
@@ -163,7 +163,7 @@ export const RestaurantWallet: React.FC = () => {
             const hours = ((end.getTime() - start.getTime()) / (1000 * 60 * 60)).toFixed(1);
             const pay = j.TotalPay || (parseFloat(hours) * j.HourlyRate);
             const statusColor = j.Status === 'completed' ? 'text-green-500' : j.Status === 'searching' ? 'text-amber-400' : 'text-blue-400';
-            const statusLabel = j.Status === 'completed' ? '׳”׳•׳©׳׳' : j.Status === 'searching' ? '׳׳—׳₪׳©' : j.Status === 'active' ? '׳₪׳¢׳™׳' : j.Status;
+            const statusLabel = j.Status === 'completed' ? 'הושלם' : j.Status === 'searching' ? 'מחפש' : j.Status === 'active' ? 'פעיל' : j.Status;
             return (
               <div key={i} className="bg-white rounded-xl p-3 flex items-center gap-3 card-shadow">
                 <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center flex-shrink-0">
@@ -171,7 +171,7 @@ export const RestaurantWallet: React.FC = () => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="font-semibold text-gray-900 text-sm">
-                    {ROLE_LABELS[j.Role] || j.Role} ֲ· {hours} ׳©׳³
+                    {ROLE_LABELS[j.Role] || j.Role} · {hours} ש׳
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-gray-400 text-xs">
@@ -180,7 +180,7 @@ export const RestaurantWallet: React.FC = () => {
                     <span className={`text-xs font-semibold ${statusColor}`}>{statusLabel}</span>
                   </div>
                 </div>
-                <div className="text-red-500 font-bold text-sm flex-shrink-0">-ג‚×{pay.toFixed(0)}</div>
+                <div className="text-red-500 font-bold text-sm flex-shrink-0">-₪{pay.toFixed(0)}</div>
               </div>
             );
           })}
@@ -189,4 +189,3 @@ export const RestaurantWallet: React.FC = () => {
     </div>
   );
 };
-
