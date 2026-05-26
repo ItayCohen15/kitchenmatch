@@ -4,7 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 
 export const WorkerActiveShift: React.FC = () => {
-  const { navToWorker, chatMessages, sendMessage, shiftStartTime, getSelectedJob } = useApp();
+  const { navToWorker, chatMessages, sendMessage, shiftStartTime, getSelectedJob, userProfile } = useApp();
   const job = getSelectedJob();
   const [input, setInput] = useState('');
   const [elapsed, setElapsed] = useState(0);
@@ -18,8 +18,21 @@ export const WorkerActiveShift: React.FC = () => {
   const startTime = shiftStartTime || new Date(Date.now() - 30 * 60000);
   const hourlyRate = job ? Number(job.HourlyRate ?? job.hourlyRate ?? 0) : 0;
   const restaurantName: string = job?.RestaurantName || job?.restaurantName || 'המסעדה';
-  const restaurantPhone: string = job?.RestaurantPhone || job?.restaurantPhone || '';
   const jobId: number = job ? Number(job.Id ?? job.id ?? 0) : 0;
+  const [restaurantPhone, setRestaurantPhone] = useState<string>(job?.RestaurantPhone || '');
+
+  useEffect(() => {
+    if (!userProfile?.Id || !jobId) return;
+    fetch(`http://localhost:3001/jobs/worker/${userProfile.Id}`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('km_token') || ''}` }
+    })
+      .then(r => r.json())
+      .then(data => {
+        const found = Array.isArray(data) ? data.find((j: any) => Number(j.Id) === jobId) : null;
+        if (found?.RestaurantPhone) setRestaurantPhone(found.RestaurantPhone);
+      })
+      .catch(() => {});
+  }, [jobId, userProfile?.Id]);
 
   useEffect(() => {
     const iv = setInterval(() => setElapsed(Math.floor((Date.now() - startTime.getTime()) / 1000)), 1000);

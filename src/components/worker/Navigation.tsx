@@ -4,7 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 
 export const WorkerNavigation: React.FC = () => {
-  const { navToWorker, getSelectedJob, startShift } = useApp();
+  const { navToWorker, getSelectedJob, startShift, userProfile } = useApp();
   const job = getSelectedJob();
   const [initiating, setInitiating] = useState(false);
   const [waitingForRestaurant, setWaitingForRestaurant] = useState(false);
@@ -17,6 +17,21 @@ export const WorkerNavigation: React.FC = () => {
   const instructions: string = job?.Instructions || job?.instructions || '';
   const hourlyRate: number = job ? Number(job.HourlyRate ?? job.hourlyRate ?? 0) : 0;
   const jobId: number = job ? Number(job.Id ?? job.id ?? 0) : 0;
+  const [restaurantPhone, setRestaurantPhone] = useState<string>(job?.RestaurantPhone || '');
+
+  // טעינת טלפון מסעדה טרי
+  useEffect(() => {
+    if (!userProfile?.Id) return;
+    fetch(`http://localhost:3001/jobs/worker/${userProfile.Id}`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('km_token') || ''}` }
+    })
+      .then(r => r.json())
+      .then(data => {
+        const found = Array.isArray(data) ? data.find((j: any) => Number(j.Id) === jobId) : null;
+        if (found?.RestaurantPhone) setRestaurantPhone(found.RestaurantPhone);
+      })
+      .catch(() => {});
+  }, [jobId, userProfile?.Id]);
   const startStr = job?.StartTime ? new Date(job.StartTime).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : '--:--';
   const endStr = job?.EndTime ? new Date(job.EndTime).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : '--:--';
 

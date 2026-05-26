@@ -11,23 +11,25 @@ export const LiveTracking: React.FC = () => {
   const [waitingForWorker, setWaitingForWorker] = useState(false);
   const [workerInitiated, setWorkerInitiated] = useState(false);
   const [confirming, setConfirming] = useState(false);
+  const [workerPhone, setWorkerPhone] = useState<string>('');
 
-  const activeJob = job || confirmedJobs[0];
+  const activeJob = confirmedJobs[0] || job;
   const workerName: string = activeJob?.WorkerName || 'העובד';
   const workerInit = workerName.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
-  const workerPhone: string = activeJob?.WorkerPhone || '';
   const hourlyRate: number = activeJob ? Number(activeJob.HourlyRate ?? 0) : 0;
   const jobId: number = activeJob ? Number(activeJob.Id ?? 0) : 0;
 
-  // טען משמרות מאושרות
+  // טען משמרות מאושרות + טלפון עובד
   useEffect(() => {
     if (!userProfile?.Id) return;
     api.getRestaurantJobs(userProfile.Id)
       .then(data => {
-        const confirmed = Array.isArray(data)
-          ? data.filter((j: any) => ['confirmed'].includes(j.Status))
-          : [];
-        setConfirmedJobs(confirmed);
+        const all = Array.isArray(data) ? data : [];
+        const active = all.find((j: any) => ['confirmed','active','pending_completion'].includes(j.Status));
+        if (active) {
+          setConfirmedJobs([active]);
+          if (active.WorkerPhone) setWorkerPhone(active.WorkerPhone);
+        }
       })
       .catch(() => {});
   }, [userProfile?.Id]);
