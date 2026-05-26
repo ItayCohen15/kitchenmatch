@@ -19,15 +19,20 @@ export const WorkerNavigation: React.FC = () => {
   const jobId: number = job ? Number(job.Id ?? job.id ?? 0) : 0;
   const [restaurantPhone, setRestaurantPhone] = useState<string>(job?.RestaurantPhone || '');
 
-  // טעינת טלפון מסעדה טרי
+  // טעינת טלפון מסעדה — polling כל 5 שניות עד שמוצא
   useEffect(() => {
     if (!userProfile?.Id) return;
-    api.getWorkerHistory(userProfile.Id)
-      .then((data: any[]) => {
-        const found = Array.isArray(data) ? data.find((j: any) => Number(j.Id) === jobId) : null;
-        if (found?.RestaurantPhone) setRestaurantPhone(found.RestaurantPhone);
-      })
-      .catch(() => {});
+    const load = () => {
+      api.getWorkerHistory(userProfile.Id)
+        .then((data: any[]) => {
+          const found = Array.isArray(data) ? data.find((j: any) => Number(j.Id) === jobId) : null;
+          if (found?.RestaurantPhone) setRestaurantPhone(found.RestaurantPhone);
+        })
+        .catch(() => {});
+    };
+    load();
+    const iv = setInterval(load, 5000);
+    return () => clearInterval(iv);
   }, [jobId, userProfile?.Id]);
   const startStr = job?.StartTime ? new Date(job.StartTime).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : '--:--';
   const endStr = job?.EndTime ? new Date(job.EndTime).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : '--:--';

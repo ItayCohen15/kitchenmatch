@@ -46,7 +46,7 @@ export const Chat: React.FC<Props> = ({ jobId, myRole, myName }) => {
         SenderRole: myRole,
         SenderName: myName,
         Text: text,
-        CreatedAt: `2000-01-01T${localTime}:00`,
+        DisplayTime: localTime,
       }]);
     } catch (e: any) {
       setError('שגיאה בשליחה');
@@ -86,7 +86,7 @@ export const Chat: React.FC<Props> = ({ jobId, myRole, myName }) => {
               )}
               <div>{msg.Text}</div>
               <div className={`text-xs mt-0.5 ${isMe(msg) ? 'text-orange-200' : 'text-gray-400'}`}>
-                {msg.CreatedAt?.slice(11, 16) || new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}
+                {msg.DisplayTime || msg.CreatedAt?.slice(11, 16) || ''}
               </div>
             </div>
           </div>
