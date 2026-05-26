@@ -21,11 +21,6 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
     ],
   };
 
-  const stats = [
-    { value: '500+', label: 'עובדים רשומים' },
-    { value: '30 דק׳', label: 'זמן מיצוי ממוצע' },
-    { value: '4.8★', label: 'דירוג ממוצע' },
-  ];
 
   return (
     <div className="h-full overflow-y-auto" style={{ background: '#f0f2f7' }}>
@@ -59,16 +54,6 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
           <p className="text-gray-400 text-sm leading-relaxed">
             הפלטפורמה שמחברת מסעדות עם עובדי מטבח מקצועיים — בזמן אמת, בלחיצת כפתור.
           </p>
-        </div>
-
-        {/* Stats */}
-        <div className="flex gap-4 mb-8">
-          {stats.map(s => (
-            <div key={s.label} className="flex-1 text-center">
-              <div className="font-black text-lg" style={{ color: '#e8a020' }}>{s.value}</div>
-              <div className="text-gray-500 text-xs">{s.label}</div>
-            </div>
-          ))}
         </div>
 
         <button onClick={onStart}
@@ -146,27 +131,6 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
           </div>
         </div>
 
-        {/* Testimonial */}
-        <div className="bg-white rounded-2xl p-4 card-shadow mb-6">
-          <div className="flex items-center gap-0.5 mb-2">
-            {[1,2,3,4,5].map(i => <Star key={i} size={14} className="fill-yellow-400 text-yellow-400"/>)}
-          </div>
-          {activeRole === 'restaurant' ? (
-            <>
-              <p className="text-gray-700 text-sm leading-relaxed">
-                "פרסמתי משמרת חירום בשישי בצהריים — תוך 20 דקות היה לי שף. הציל לי את הסרוויס."
-              </p>
-              <div className="text-gray-400 text-xs mt-2">— דנה, בעלת מסעדה · תל אביב</div>
-            </>
-          ) : (
-            <>
-              <p className="text-gray-700 text-sm leading-relaxed">
-                "עובד ראשי במסעדה ועושה 3-4 משמרות בחודש דרך האפליקציה. מוסיף לי ₪3,000 בלי מאמץ."
-              </p>
-              <div className="text-gray-400 text-xs mt-2">— איתי, טבח · רמלה</div>
-            </>
-          )}
-        </div>
 
         {/* Final CTA */}
         <button onClick={onStart}
