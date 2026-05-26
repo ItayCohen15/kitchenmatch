@@ -161,6 +161,9 @@ export const api = {
     }).then(handleResponse),
 
   // ========== RATINGS ==========
+  getRestaurantRatings: (restaurantId: number) =>
+    fetch(`${BASE}/ratings/restaurant/${restaurantId}`, { headers: headers() }).then(handleResponse),
+
   sendRating: (jobId: number, fromUserId: number, toUserId: number, score: number, comment: string) =>
     fetch(`${BASE}/ratings`, {
       method: 'POST',
