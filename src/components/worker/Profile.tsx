@@ -79,7 +79,6 @@ export const WorkerProfile: React.FC = () => {
     setSavingPhone(false);
   };
 
-  return (
   if (editingProfile) return (
     <div className="screen-enter space-y-4">
       <div className="flex items-center justify-between">
