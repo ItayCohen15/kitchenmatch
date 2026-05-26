@@ -12,8 +12,7 @@ export const Splash: React.FC<{ onDone: () => void }> = ({ onDone }) => {
   return (
     <div
       className={`fixed inset-0 flex flex-col items-center justify-center z-50 transition-opacity duration-500 ${fade ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
-      style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}
-      style={{ background: 'linear-gradient(135deg, #0d1420 0%, #1a2744 100%)' }}
+      style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)', background: 'linear-gradient(135deg, #0d1420 0%, #1a2744 100%)' }}
     >
       <div className="flex flex-col items-center gap-5">
         <div

@@ -51,8 +51,7 @@ export const NotificationPanel: React.FC<Props> = ({ onClose }) => {
       <div className="fixed top-0 left-0 right-0 z-50 max-w-sm mx-auto"
         style={{ animation: 'slideDown 0.3s cubic-bezier(0.16,1,0.3,1)' }}>
         <div className="bg-white rounded-b-3xl shadow-2xl overflow-hidden"
-        style={{ marginTop: 'env(safe-area-inset-top)' }}
-          style={{ maxHeight: '80dvh' }}>
+          style={{ marginTop: 'env(safe-area-inset-top)', maxHeight: '80dvh' }}>
 
           {/* Header */}
           <div className="flex items-center justify-between px-5 pt-5 pb-4"
