@@ -6,6 +6,7 @@ import { Onboarding } from './components/Onboarding';
 import { RestaurantApp } from './components/restaurant/RestaurantApp';
 import { WorkerApp } from './components/worker/WorkerApp';
 import { api } from './api';
+import { Splash } from './components/Splash';
 
 // ניווט חכם לפי סטטוס משמרת
 async function resolveScreen(role: string, profile: any,
@@ -89,6 +90,7 @@ const AppContent: React.FC = () => {
   const { userRole, setUserRole, setUserProfile, userProfile,
           navToWorker, navToRestaurant, selectWorkerJob, startShift } = useApp();
   usePush(userProfile?.UserId || userProfile?.userId);
+  const [showSplash, setShowSplash] = useState(true);
   const [token, setToken] = useState<string | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [needsOnboarding, setNeedsOnboarding] = useState(false);
@@ -150,6 +152,7 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="bg-gray-50 flex items-start justify-center" style={{ height: '100dvh', overflow: 'hidden' }}>
+      {showSplash && <Splash onDone={() => setShowSplash(false)} />}
       <div className="w-full max-w-sm bg-white relative shadow-2xl flex flex-col" style={{ height: '100dvh' }}>
         {!token && <Auth onLogin={handleLogin} />}
         {showOnboarding && (

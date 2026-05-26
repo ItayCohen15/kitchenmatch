@@ -98,21 +98,37 @@ export const JobDetails: React.FC = () => {
           </>
         ) : (
           <>
-            <div className="w-24 h-24 bg-orange-50 rounded-full flex items-center justify-center">
-              <span className="text-5xl">📨</span>
+            <div className="relative w-28 h-28">
+              <div className="w-28 h-28 bg-orange-50 rounded-full flex items-center justify-center">
+                <span className="text-5xl">📨</span>
+              </div>
+              <div className="absolute inset-0 rounded-full border-4 border-orange-200 border-t-orange-500 animate-spin" />
             </div>
-            <h2 className="text-2xl font-black text-gray-900">מועמדות נשלחה!</h2>
-            <p className="text-gray-500 leading-relaxed">
-              שלחנו בקשה ל<strong>{restaurantName}</strong>.
-              <br />ממתין לאישור...
-            </p>
-            <div className="flex items-center gap-2 text-orange-500">
-              <div className="w-4 h-4 border-2 border-orange-400 border-t-transparent rounded-full animate-spin" />
-              <span className="text-sm">בודק כל 4 שניות</span>
+            <div className="text-center">
+              <h2 className="text-2xl font-black text-gray-900">מועמדות נשלחה!</h2>
+              <p className="text-gray-500 mt-1">ממתין לאישור <strong>{restaurantName}</strong></p>
             </div>
-            <div className="bg-green-50 rounded-2xl p-4 w-full text-center">
-              <div className="text-2xl font-black text-green-600">₪{netPay}</div>
-              <div className="text-gray-400 text-sm">עתיד לקבל (נטו לאחר 6.5% עמלה)</div>
+            <div className="w-full bg-white rounded-2xl p-4 card-shadow space-y-3">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-gray-500">מסעדה</span>
+                <span className="font-semibold text-gray-900">{restaurantName}</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-gray-500">שכר</span>
+                <span className="font-semibold text-orange-500">₪{hourlyRate}/ש׳</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-gray-500">שעות</span>
+                <span className="font-semibold text-gray-900">{startStr}–{endStr}</span>
+              </div>
+              <div className="border-t pt-3 flex items-center justify-between">
+                <span className="font-bold text-gray-900">תקבל נטו</span>
+                <span className="font-black text-green-600 text-xl">₪{netPay}</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 text-gray-400 text-sm">
+              <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" />
+              <span>בודק אישור אוטומטית...</span>
             </div>
           </>
         )}

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Edit3, Star, Award, LogOut, Phone, Check, X } from 'lucide-react';
+import { Edit3, Star, Award, LogOut, Phone, Check, X, ChevronRight } from 'lucide-react';
 import { LEVEL_LABELS, LEVEL_COLORS } from '../../data/mockData';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
+import { ROLE_LABELS } from '../../data/mockData';
 
 const LEVEL_NEXT: Record<string, { next: string; progress: number; shiftsNeeded: number }> = {
   bronze: { next: 'כסף',  progress: 65, shiftsNeeded: 35 },
@@ -19,6 +20,13 @@ export const WorkerProfile: React.FC = () => {
   const [editingPhone, setEditingPhone] = useState(false);
   const [phone, setPhone] = useState(userProfile?.Phone || '');
   const [savingPhone, setSavingPhone] = useState(false);
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [editName, setEditName] = useState(userProfile?.Name || '');
+  const [editCity, setEditCity] = useState(userProfile?.City || '');
+  const [editRole, setEditRole] = useState(userProfile?.Role || 'line_cook');
+  const [editRate, setEditRate] = useState(String(userProfile?.HourlyRate || ''));
+  const [editBio, setEditBio] = useState(userProfile?.Bio || '');
+  const [savingProfile, setSavingProfile] = useState(false);
   const name = userProfile?.Name || 'שם לא ידוע';
   const initials = name.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
   const rating = userProfile?.Rating || 0;
@@ -33,6 +41,24 @@ export const WorkerProfile: React.FC = () => {
     if (userProfile?.Id) {
       await api.updateAvailability(userProfile.Id, val).catch(() => {});
     }
+  };
+
+  const handleSaveProfile = async () => {
+    if (!userProfile?.Id) return;
+    setSavingProfile(true);
+    try {
+      const res = await api.updateWorker(userProfile.Id, {
+        name: editName, city: editCity, role: editRole,
+        hourlyRate: parseFloat(editRate) || 0,
+        bio: editBio, yearsExp: userProfile?.YearsExp || 0,
+        skills: userProfile?.Skills || '', phone,
+      });
+      const updated = res?.profile || { ...userProfile, Name: editName, City: editCity, Role: editRole, HourlyRate: parseFloat(editRate), Bio: editBio };
+      setUserProfile(updated);
+      localStorage.setItem('km_profile', JSON.stringify(updated));
+      setEditingProfile(false);
+    } catch {}
+    setSavingProfile(false);
   };
 
   const handleSavePhone = async () => {
@@ -54,6 +80,51 @@ export const WorkerProfile: React.FC = () => {
   };
 
   return (
+  if (editingProfile) return (
+    <div className="screen-enter space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-black text-gray-900">עריכת פרופיל</h2>
+        <button onClick={() => setEditingProfile(false)} className="text-gray-400 text-sm">ביטול</button>
+      </div>
+      <div className="bg-white rounded-2xl p-4 card-shadow space-y-4">
+        {[
+          { label: 'שם מלא', val: editName, set: setEditName, ph: 'שם מלא', type: 'text' },
+          { label: 'עיר', val: editCity, set: setEditCity, ph: 'עיר', type: 'text' },
+          { label: '📞 טלפון', val: phone, set: setPhone, ph: '05X-XXXXXXX', type: 'tel' },
+          { label: 'תעריף שעתי (₪)', val: editRate, set: setEditRate, ph: '75', type: 'number' },
+        ].map(f => (
+          <div key={f.label}>
+            <label className="text-sm font-semibold text-gray-600 mb-1.5 block">{f.label}</label>
+            <input type={f.type} value={f.val} onChange={e => f.set(e.target.value)} placeholder={f.ph}
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-orange-400 outline-none" />
+          </div>
+        ))}
+        <div>
+          <label className="text-sm font-semibold text-gray-600 mb-1.5 block">תפקיד</label>
+          <select value={editRole} onChange={e => setEditRole(e.target.value)}
+            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-orange-400 outline-none bg-white">
+            <option value="chef">שף</option>
+            <option value="line_cook">טבח</option>
+            <option value="dishwasher">מדיח</option>
+          </select>
+        </div>
+        <div>
+          <label className="text-sm font-semibold text-gray-600 mb-1.5 block">קצת עליי</label>
+          <textarea value={editBio} onChange={e => setEditBio(e.target.value)} rows={3}
+            placeholder="ניסיון, התמחויות, מה אני מביא למטבח..."
+            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-orange-400 outline-none resize-none" />
+        </div>
+      </div>
+      <button onClick={handleSaveProfile} disabled={savingProfile || !editName}
+        className="w-full bg-orange-500 text-white rounded-2xl py-4 font-bold disabled:opacity-50 shadow-lg shadow-orange-200">
+        {savingProfile
+          ? <div className="flex items-center justify-center gap-2"><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />שומר...</div>
+          : '✅ שמור שינויים'}
+      </button>
+    </div>
+  );
+
+  return (
     <div className="screen-enter space-y-4">
       {/* Profile header */}
       <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-5 text-white">
@@ -63,6 +134,7 @@ export const WorkerProfile: React.FC = () => {
           </div>
           <div className="flex-1">
             <div className="font-black text-xl">{name}</div>
+            <div className="text-gray-400 text-xs mt-0.5">{userProfile?.City || ''} · {ROLE_LABELS[userProfile?.Role] || userProfile?.Role || ''}</div>
             <div className="flex items-center gap-2 mt-1">
               <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${LEVEL_COLORS[level] || 'text-gray-500 bg-gray-100'}`}>
                 {LEVEL_LABELS[level] || level}
@@ -75,13 +147,16 @@ export const WorkerProfile: React.FC = () => {
               </span>
             </div>
           </div>
-          <button
-            onClick={resetToLanding}
-            className="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center"
-            title="התנתק"
-          >
-            <LogOut size={16} />
-          </button>
+          <div className="flex gap-2">
+            <button onClick={() => setEditingProfile(true)}
+              className="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center" title="ערוך פרופיל">
+              <Edit3 size={15} />
+            </button>
+            <button onClick={resetToLanding}
+              className="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center" title="התנתק">
+              <LogOut size={15} />
+            </button>
+          </div>
         </div>
 
         {/* Availability toggle */}

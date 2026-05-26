@@ -20,6 +20,7 @@ export const CreateJob: React.FC = () => {
   const { navToRestaurant, setEmergencyMode, userProfile } = useApp();
   const [step, setStep] = useState(1);
   const [role, setRole] = useState<JobRole | null>(null);
+  const [shiftDate, setShiftDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [startTime, setStartTime] = useState('18:00');
   const [endTime, setEndTime] = useState('23:00');
   const [wage, setWage] = useState('75');
@@ -48,13 +49,10 @@ export const CreateJob: React.FC = () => {
     setPublishError('');
     setEmergencyMode(emergency);
     try {
-      const today = new Date();
-      const startDate = new Date(today);
       const [sh, sm] = startTime.split(':').map(Number);
       const [eh, em] = endTime.split(':').map(Number);
-      startDate.setHours(sh, sm, 0, 0);
-      const endDate = new Date(today);
-      endDate.setHours(eh, em, 0, 0);
+      const startDate = new Date(`${shiftDate}T${startTime}:00`);
+      const endDate   = new Date(`${shiftDate}T${endTime}:00`);
       if (endDate <= startDate) endDate.setDate(endDate.getDate() + 1);
 
       await api.createJob({
@@ -136,6 +134,17 @@ export const CreateJob: React.FC = () => {
           <p className="text-gray-500 text-sm">הגדר שעות התחלה וסיום</p>
 
           <div className="bg-white rounded-2xl p-5 card-shadow space-y-4">
+            {/* תאריך */}
+            <div>
+              <label className="text-sm font-semibold text-gray-700 mb-2 block">📅 תאריך המשמרת</label>
+              <input
+                type="date"
+                value={shiftDate}
+                min={new Date().toISOString().slice(0, 10)}
+                onChange={e => setShiftDate(e.target.value)}
+                className="w-full border border-gray-200 rounded-xl py-3 px-4 text-gray-900 font-semibold"
+              />
+            </div>
             <div>
               <label className="text-sm font-semibold text-gray-700 mb-2 block">שעת התחלה</label>
               <div className="relative">
@@ -257,6 +266,7 @@ export const CreateJob: React.FC = () => {
           <div className="bg-white rounded-2xl p-5 card-shadow space-y-4">
             {[
               { label: 'תפקיד', value: ROLES.find(r => r.id === role)?.label },
+              { label: 'תאריך', value: new Date(shiftDate).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' }) },
               { label: 'שעות', value: `${startTime} – ${endTime} (${totalHours} ש׳)` },
               { label: 'שכר לשעה', value: `₪${wage}` },
               { label: 'סה״כ', value: `₪${totalPay}` },

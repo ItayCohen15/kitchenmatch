@@ -22,11 +22,7 @@ export const WorkerHistory: React.FC = () => {
   useEffect(() => {
     if (!userProfile?.Id) { setLoading(false); return; }
 
-    // שלוף משמרות שהעובד השתתף בהן
-    fetch(`http://localhost:3001/jobs/worker/${userProfile.Id}`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('km_token') || ''}` }
-    })
-      .then(r => r.json())
+    api.getWorkerHistory(userProfile.Id)
       .then(data => setShifts(Array.isArray(data) ? data : []))
       .catch(() => setShifts([]))
       .finally(() => setLoading(false));
