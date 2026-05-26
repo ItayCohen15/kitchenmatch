@@ -7,7 +7,6 @@ import { Chat } from '../common/Chat';
 export const WorkerActiveShift: React.FC = () => {
   const { navToWorker, shiftStartTime, getSelectedJob, userProfile } = useApp();
   const job = getSelectedJob();
-  const [input, setInput] = useState('');
   const [elapsed, setElapsed] = useState(0);
   const [workerConfirmed, setWorkerConfirmed] = useState(false);
   const [restaurantConfirmed, setRestaurantConfirmed] = useState(false);
