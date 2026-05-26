@@ -74,23 +74,25 @@ export const WorkerApp: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full">
-      <header className="bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between flex-shrink-0">
+      <header className="px-4 py-3 flex items-center justify-between flex-shrink-0"
+        style={{ background:'linear-gradient(135deg, #080c14 0%, #0f1829 100%)', borderBottom:'1px solid rgba(255,255,255,0.06)' }}>
         <div className="flex items-center gap-2">
           {showBack ? (
-            <button onClick={handleBack} className="text-gray-500 font-bold text-lg">›</button>
+            <button onClick={handleBack} className="font-bold text-xl" style={{color:'rgba(255,255,255,0.6)'}}>‹</button>
           ) : (
-            <button onClick={resetToLanding} className="text-gray-400 hover:text-gray-600">
+            <button onClick={resetToLanding} style={{color:'rgba(255,255,255,0.4)'}}>
               <LogOut size={18} />
             </button>
           )}
         </div>
         <div className="flex items-center gap-2">
-          <span className="font-black text-gray-900 text-base">{SCREEN_TITLES[workerScreen]}</span>
-          <div className="w-7 h-7 bg-amber-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+          <span className="font-black text-base text-white">{SCREEN_TITLES[workerScreen]}</span>
+          <div className="w-8 h-8 rounded-xl flex items-center justify-center text-white text-xs font-black"
+            style={{ background:'linear-gradient(135deg,#e8a020,#f5c842)', boxShadow:'0 2px 8px rgba(232,160,32,0.4)' }}>
             {initials}
           </div>
         </div>
-        <button className="relative text-gray-500" onClick={() => { setShowNotifs(true); setUnreadCount(0); }}>
+        <button className="relative" style={{color:'rgba(255,255,255,0.5)'}} onClick={() => { setShowNotifs(true); setUnreadCount(0); }}>
           <Bell size={20} />
           {unreadCount > 0 && (
             <div className="absolute -top-1 -left-1 min-w-[16px] h-4 px-1 rounded-full flex items-center justify-center text-white font-bold"

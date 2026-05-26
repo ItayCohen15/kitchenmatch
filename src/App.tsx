@@ -169,7 +169,7 @@ const AppContent: React.FC = () => {
   return (
     <div className="bg-gray-50 flex items-start justify-center" style={{ height: '100dvh', overflow: 'hidden' }}>
       {showSplash && <Splash onDone={() => setShowSplash(false)} />}
-      <div className="w-full max-w-sm bg-gray-50 relative flex flex-col" style={{ height: '100dvh', boxShadow: '0 0 60px rgba(232,160,32,0.1)' }}>
+      <div className="w-full max-w-sm relative flex flex-col" style={{ height:'100dvh', background:'#f0f2f7', boxShadow:'0 0 80px rgba(232,160,32,0.15), 0 0 0 1px rgba(232,160,32,0.08)' }}>
         {!token && showLanding && <Landing onStart={() => setShowLanding(false)} />}
         {!token && !showLanding && <Auth onLogin={handleLogin} />}
         {showOnboarding && (() => {

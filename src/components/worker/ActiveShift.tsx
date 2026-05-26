@@ -129,7 +129,7 @@ export const WorkerActiveShift: React.FC = () => {
         <div className="flex items-center justify-between">
           <div>
             <div className="text-green-100 text-xs">הרוויח עד כה (נטו)</div>
-            <div className="text-3xl font-black">₪{netEarned}</div>
+            <div className="text-3xl font-black glow-green">₪{netEarned}</div>
             <div className="text-green-200 text-xs">ברוטו ₪{grossEarned} · ₪{earnedThisMinute}/דק׳</div>
           </div>
           <div className="text-right">

@@ -61,7 +61,9 @@ export const WorkerHome: React.FC = () => {
     <div className="screen-enter space-y-4 pb-2">
       {/* Worker header */}
       <div className="rounded-3xl p-5 text-white relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #0d1420 0%, #1a2744 60%, #0f2444 100%)' }}>
+        style={{ background: 'linear-gradient(135deg, #060a10 0%, #0d1829 50%, #091020 100%)',
+                 border: '1px solid rgba(255,255,255,0.07)',
+                 boxShadow: '0 8px 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center gap-3 mb-4">
           <div className="w-14 h-14 bg-amber-500 rounded-2xl flex items-center justify-center font-black text-xl">
             {initials}
@@ -203,12 +205,21 @@ export const WorkerHome: React.FC = () => {
             const dateStr = start.toLocaleDateString('he-IL', { weekday: 'short', day: 'numeric', month: 'numeric' });
 
             return (
-              <div key={job.Id} className="job-card">
-                {/* פס צבע עליון */}
-                <div className="h-1.5 w-full" style={{
+              <div key={job.Id} className="overflow-hidden"
+                style={{
+                  borderRadius: 20,
+                  background: 'linear-gradient(145deg, #0f1829 0%, #0a1020 100%)',
+                  border: job.IsEmergency ? '1px solid rgba(239,68,68,0.3)' : '1px solid rgba(232,160,32,0.15)',
+                  boxShadow: job.IsEmergency
+                    ? '0 4px 24px rgba(239,68,68,0.15), 0 1px 0 rgba(255,255,255,0.04) inset'
+                    : '0 4px 24px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.04) inset',
+                  transition: 'transform 0.15s ease',
+                }}>
+                {/* פס גלו עליון */}
+                <div className="h-0.5 w-full" style={{
                   background: job.IsEmergency
-                    ? 'linear-gradient(90deg,#ef4444,#f97316)'
-                    : 'linear-gradient(90deg,#e8a020,#f0c050)'
+                    ? 'linear-gradient(90deg,transparent,#ef4444,transparent)'
+                    : 'linear-gradient(90deg,transparent,#e8a020,transparent)'
                 }} />
 
                 <div className="p-4">
@@ -226,15 +237,15 @@ export const WorkerHome: React.FC = () => {
                         {(job.RestaurantName || 'R').slice(0,2)}
                       </div>
                       <div className="min-w-0">
-                        <div className="font-black text-gray-900 truncate">{job.RestaurantName}</div>
-                        <div className="flex items-center gap-1 text-gray-400 text-xs mt-0.5">
+                        <div className="font-black text-white truncate">{job.RestaurantName}</div>
+                        <div className="flex items-center gap-1 text-xs mt-0.5" style={{color:'rgba(255,255,255,0.4)'}}>
                           <MapPin size={10} />{job.RestaurantCity}
                         </div>
                       </div>
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <div className="font-black text-xl" style={{ color: '#e8a020' }}>₪{job.HourlyRate}</div>
-                      <div className="text-gray-400 text-xs">/שעה</div>
+                      <div className="font-black text-xl glow-gold" style={{ color: '#e8a020' }}>₪{job.HourlyRate}</div>
+                      <div className="text-xs" style={{color:'rgba(255,255,255,0.3)'}}>/שעה</div>
                     </div>
                   </div>
 
@@ -254,9 +265,10 @@ export const WorkerHome: React.FC = () => {
 
                   {/* Footer */}
                   <div className="flex items-center gap-2">
-                    <div className="flex-1 bg-green-50 rounded-xl px-3 py-2 text-center">
-                      <div className="font-black text-green-600 text-base">₪{totalPay.toFixed(0)}</div>
-                      <div className="text-green-500 text-[10px]">סה״כ ({hours} ש׳)</div>
+                    <div className="flex-1 rounded-xl px-3 py-2 text-center"
+                      style={{background:'rgba(52,211,153,0.08)', border:'1px solid rgba(52,211,153,0.15)'}}>
+                      <div className="font-black text-base glow-green" style={{color:'#34d399'}}>₪{totalPay.toFixed(0)}</div>
+                      <div className="text-[10px]" style={{color:'rgba(52,211,153,0.6)'}}>סה״כ ({hours} ש׳)</div>
                     </div>
                     <button onClick={() => handleJobPress(String(job.Id), job)}
                       className="flex-1 text-white rounded-xl py-2.5 font-bold text-sm flex items-center justify-center gap-1"
