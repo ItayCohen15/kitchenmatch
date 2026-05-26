@@ -132,6 +132,7 @@ const AppContent: React.FC = () => {
     setPendingProfile(profile);
     localStorage.setItem('km_token', newToken);
     localStorage.setItem('km_role', role);
+    if (profile) localStorage.setItem('km_profile', JSON.stringify(profile));
     if (isNew) {
       setNeedsOnboarding(true);
     } else {
@@ -163,14 +164,19 @@ const AppContent: React.FC = () => {
       <div className="w-full max-w-sm bg-gray-50 relative flex flex-col" style={{ height: '100dvh', boxShadow: '0 0 60px rgba(232,160,32,0.1)' }}>
         {!token && showLanding && <Landing onStart={() => setShowLanding(false)} />}
         {!token && !showLanding && <Auth onLogin={handleLogin} />}
-        {showOnboarding && (
-          <Onboarding
-            role={userRole as 'restaurant' | 'worker'}
-            userId={pendingProfile?.UserId || 1}
-            profileId={pendingProfile?.Id || 1}
-            onComplete={handleOnboardingComplete}
-          />
-        )}
+        {showOnboarding && (() => {
+          // קרא profileId מ-pendingProfile או מ-localStorage
+          const savedProf = (() => { try { return JSON.parse(localStorage.getItem('km_profile') || 'null'); } catch { return null; } })();
+          const prof = pendingProfile || savedProf;
+          return (
+            <Onboarding
+              role={userRole as 'restaurant' | 'worker'}
+              userId={prof?.UserId || prof?.userId || 1}
+              profileId={prof?.Id || prof?.id || 1}
+              onComplete={handleOnboardingComplete}
+            />
+          );
+        })()}
         {showApp && userRole === 'restaurant' && <RestaurantApp />}
         {showApp && userRole === 'worker'     && <WorkerApp />}
       </div>
