@@ -7,6 +7,7 @@ import { RestaurantApp } from './components/restaurant/RestaurantApp';
 import { WorkerApp } from './components/worker/WorkerApp';
 import { api } from './api';
 import { Splash } from './components/Splash';
+import { Landing } from './components/Landing';
 
 // ניווט חכם לפי סטטוס משמרת
 async function resolveScreen(role: string, profile: any,
@@ -91,6 +92,7 @@ const AppContent: React.FC = () => {
           navToWorker, navToRestaurant, selectWorkerJob, startShift } = useApp();
   usePush(userProfile?.UserId || userProfile?.userId);
   const [showSplash, setShowSplash] = useState(true);
+  const [showLanding, setShowLanding] = useState(false);
   const [token, setToken] = useState<string | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [needsOnboarding, setNeedsOnboarding] = useState(false);
@@ -102,6 +104,9 @@ const AppContent: React.FC = () => {
     const savedProfile = localStorage.getItem('km_profile');
     const onboardingDone = localStorage.getItem('km_onboarding');
 
+    if (!savedToken) {
+      setShowLanding(true);
+    }
     if (savedToken && savedRole) {
       setToken(savedToken);
       setUserRole(savedRole as 'restaurant' | 'worker');
@@ -154,7 +159,8 @@ const AppContent: React.FC = () => {
     <div className="bg-gray-50 flex items-start justify-center" style={{ height: '100dvh', overflow: 'hidden' }}>
       {showSplash && <Splash onDone={() => setShowSplash(false)} />}
       <div className="w-full max-w-sm bg-gray-50 relative flex flex-col" style={{ height: '100dvh', boxShadow: '0 0 60px rgba(232,160,32,0.1)' }}>
-        {!token && <Auth onLogin={handleLogin} />}
+        {!token && showLanding && <Landing onStart={() => setShowLanding(false)} />}
+        {!token && !showLanding && <Auth onLogin={handleLogin} />}
         {showOnboarding && (
           <Onboarding
             role={userRole as 'restaurant' | 'worker'}

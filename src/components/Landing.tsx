@@ -1,84 +1,185 @@
-﻿import React from 'react';
-import { ChefHat, Store } from 'lucide-react';
-import { useApp } from '../context/AppContext';
+import React, { useState } from 'react';
+import { ChevronLeft, Star, Zap, Shield, Clock } from 'lucide-react';
 
-export const Landing: React.FC = () => {
-  const { setUserRole } = useApp();
+interface Props {
+  onStart: () => void;
+}
+
+export const Landing: React.FC<Props> = ({ onStart }) => {
+  const [activeRole, setActiveRole] = useState<'restaurant' | 'worker'>('restaurant');
+
+  const features = {
+    restaurant: [
+      { icon: <Zap size={18} />, title: 'עובד תוך 30 דקות', desc: 'פרסם משמרת ותקבל עובד מוסמך במהירות שיא' },
+      { icon: <Shield size={18} />, title: 'עובדים מאומתים', desc: 'כל עובד עבר אימות — דירוגים, ניסיון, אמינות' },
+      { icon: <Clock size={18} />, title: 'תשלום אוטומטי', desc: 'ללא מזומן, ללא שיקים — הכל דיגיטלי ומאובטח' },
+    ],
+    worker: [
+      { icon: <Clock size={18} />, title: 'גמישות מלאה', desc: 'בחר משמרות בזמן הפנוי שלך — בלי התחייבות' },
+      { icon: <Shield size={18} />, title: 'תשלום מובטח', desc: 'הכסף מועבר אוטומטית אחרי כל משמרת' },
+      { icon: <Star size={18} />, title: 'בנה מוניטין', desc: 'צבור דירוגים וקבל עדיפות במשמרות הטובות' },
+    ],
+  };
+
+  const stats = [
+    { value: '500+', label: 'עובדים רשומים' },
+    { value: '30 דק׳', label: 'זמן מיצוי ממוצע' },
+    { value: '4.8★', label: 'דירוג ממוצע' },
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-500 via-orange-600 to-amber-600 flex flex-col items-center justify-between p-6">
-      {/* Logo area */}
-      <div className="flex-1 flex flex-col items-center justify-center text-center pt-8">
-        <div className="relative mb-6">
-          <div className="w-24 h-24 bg-white/20 rounded-3xl flex items-center justify-center backdrop-blur-sm">
-            <ChefHat size={48} className="text-white" />
+    <div className="h-full overflow-y-auto" style={{ background: '#f0f2f7' }}>
+
+      {/* Hero */}
+      <div className="relative overflow-hidden px-5 pt-10 pb-8"
+        style={{ background: 'linear-gradient(160deg, #0d1420 0%, #1a2744 60%, #162040 100%)' }}>
+        <div className="absolute top-0 left-0 w-64 h-64 rounded-full opacity-5"
+          style={{ background: '#e8a020', transform: 'translate(-40%, -40%)' }} />
+        <div className="absolute bottom-0 right-0 w-48 h-48 rounded-full opacity-5"
+          style={{ background: '#e8a020', transform: 'translate(30%, 30%)' }} />
+
+        {/* Logo */}
+        <div className="flex items-center gap-3 mb-8 relative">
+          <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-lg">
+            <img src="/logo.png" alt="KitchenMatch" className="w-full h-full object-cover" />
           </div>
-          <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-amber-300 rounded-full flex items-center justify-center">
-            <span className="text-xs font-bold text-amber-800">✓</span>
+          <div className="font-black text-xl">
+            <span className="text-white">Kitchen</span>
+            <span style={{ color: '#e8a020' }}>Match</span>
           </div>
         </div>
 
-        <h1 className="text-4xl font-black text-white mb-2 tracking-tight">
-          KitchenMatch
-        </h1>
-        <p className="text-amber-100 text-lg font-medium mb-2">
-          חיבור מיידי עם שפים
-        </p>
-        <p className="text-orange-200 text-sm max-w-xs leading-relaxed">
-          מצא את השף הנכון בדיוק כשאתה צריך אותו — תוך דקות.
-        </p>
+        {/* Headline */}
+        <div className="relative mb-6">
+          <h1 className="text-3xl font-black text-white leading-tight mb-3">
+            המשמרת הבאה שלך
+            <br />
+            <span style={{ color: '#e8a020' }}>מתחילה כאן</span>
+          </h1>
+          <p className="text-gray-400 text-sm leading-relaxed">
+            הפלטפורמה שמחברת מסעדות עם עובדי מטבח מקצועיים — בזמן אמת, בלחיצת כפתור.
+          </p>
+        </div>
 
-        {/* Stats row */}
-        <div className="flex gap-8 mt-10 mb-2">
-          {[
-            { value: '2,400+', label: 'שפים פעילים' },
-            { value: '580+',   label: 'מסעדות' },
-            { value: '4.8★',   label: 'דירוג ממוצע' },
-          ].map(s => (
-            <div key={s.label} className="text-center">
-              <div className="text-white text-xl font-black">{s.value}</div>
-              <div className="text-orange-200 text-xs">{s.label}</div>
+        {/* Stats */}
+        <div className="flex gap-4 mb-8">
+          {stats.map(s => (
+            <div key={s.label} className="flex-1 text-center">
+              <div className="font-black text-lg" style={{ color: '#e8a020' }}>{s.value}</div>
+              <div className="text-gray-500 text-xs">{s.label}</div>
             </div>
           ))}
         </div>
+
+        <button onClick={onStart}
+          className="w-full text-white font-black text-lg rounded-2xl py-4 flex items-center justify-center gap-2"
+          style={{ background: 'linear-gradient(135deg, #e8a020, #f0c050)', boxShadow: '0 6px 24px rgba(232,160,32,0.4)' }}>
+          התחל עכשיו — בחינם
+          <ChevronLeft size={20} />
+        </button>
+        <p className="text-center text-gray-500 text-xs mt-2">ללא כרטיס אשראי · תוך דקה</p>
       </div>
 
-      {/* Role selection */}
-      <div className="w-full max-w-sm space-y-3 pb-8">
-        <p className="text-center text-amber-100 text-sm font-medium mb-4">
-          בחר איך אתה רוצה להתחבר
-        </p>
+      {/* Content */}
+      <div className="px-5 py-6">
 
-        <button
-          onClick={() => setUserRole('restaurant')}
-          className="w-full bg-white rounded-2xl p-4 flex items-center gap-4 shadow-xl active:scale-98 transition-transform"
-        >
-          <div className="w-14 h-14 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
-            <Store size={28} className="text-amber-500" />
+        {/* Role tabs */}
+        <div className="flex bg-white rounded-2xl p-1 card-shadow mb-5">
+          {[
+            { id: 'restaurant', label: '🍽️ אני מסעדה' },
+            { id: 'worker',     label: '👨‍🍳 אני עובד' },
+          ].map(r => (
+            <button key={r.id} onClick={() => setActiveRole(r.id as any)}
+              className="flex-1 py-3 rounded-xl text-sm font-bold transition-all"
+              style={{
+                background: activeRole === r.id ? 'linear-gradient(135deg,#0d1420,#1a2744)' : 'transparent',
+                color: activeRole === r.id ? '#fff' : '#94a3b8',
+              }}>
+              {r.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Features */}
+        <div className="space-y-3 mb-6">
+          {features[activeRole].map((f, i) => (
+            <div key={i} className="bg-white rounded-2xl p-4 card-shadow flex items-start gap-4">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-white"
+                style={{ background: 'linear-gradient(135deg, #e8a020, #f0c050)' }}>
+                {f.icon}
+              </div>
+              <div>
+                <div className="font-bold text-gray-900 text-sm">{f.title}</div>
+                <div className="text-gray-500 text-xs mt-0.5 leading-relaxed">{f.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* How it works */}
+        <div className="rounded-2xl p-5 mb-5 text-white"
+          style={{ background: 'linear-gradient(135deg,#0d1420,#1a2744)' }}>
+          <h3 className="font-black text-base mb-4" style={{ color: '#e8a020' }}>⚡ איך זה עובד?</h3>
+          <div className="space-y-3">
+            {(activeRole === 'restaurant' ? [
+              { n:'1', t:'פרסם משמרת', d:'בחר תפקיד, שעות ושכר' },
+              { n:'2', t:'קבל מועמדים', d:'עובדים מוסמכים יגישו מועמדות' },
+              { n:'3', t:'אשר עובד', d:'בחר ואשר — העובד בדרך' },
+              { n:'4', t:'משמרת ותשלום', d:'מעקב חי + תשלום אוטומטי' },
+            ] : [
+              { n:'1', t:'הגדר פרופיל', d:'תפקיד, ניסיון ותעריף' },
+              { n:'2', t:'גלה משמרות', d:'הזדמנויות קרובות אליך' },
+              { n:'3', t:'הגש מועמדות', d:'בלחיצה אחת — תוך שניות' },
+              { n:'4', t:'עבוד ותרוויח', d:'תשלום ישיר אחרי כל משמרת' },
+            ]).map(s => (
+              <div key={s.n} className="flex items-center gap-3">
+                <div className="w-7 h-7 rounded-full flex items-center justify-center font-black text-sm flex-shrink-0"
+                  style={{ background: 'rgba(232,160,32,0.2)', color: '#e8a020' }}>
+                  {s.n}
+                </div>
+                <div>
+                  <span className="font-semibold text-white text-sm">{s.t}</span>
+                  <span className="text-gray-400 text-xs mr-2"> — {s.d}</span>
+                </div>
+              </div>
+            ))}
           </div>
-          <div className="text-right">
-            <div className="font-bold text-gray-900 text-base">אני מסעדה</div>
-            <div className="text-gray-500 text-sm">מחפש שפים ועובדי מטבח</div>
+        </div>
+
+        {/* Testimonial */}
+        <div className="bg-white rounded-2xl p-4 card-shadow mb-6">
+          <div className="flex items-center gap-0.5 mb-2">
+            {[1,2,3,4,5].map(i => <Star key={i} size={14} className="fill-yellow-400 text-yellow-400"/>)}
           </div>
-          <div className="mr-auto text-gray-300 text-xl">‹</div>
+          {activeRole === 'restaurant' ? (
+            <>
+              <p className="text-gray-700 text-sm leading-relaxed">
+                "פרסמתי משמרת חירום בשישי בצהריים — תוך 20 דקות היה לי שף. הציל לי את הסרוויס."
+              </p>
+              <div className="text-gray-400 text-xs mt-2">— דנה, בעלת מסעדה · תל אביב</div>
+            </>
+          ) : (
+            <>
+              <p className="text-gray-700 text-sm leading-relaxed">
+                "עובד ראשי במסעדה ועושה 3-4 משמרות בחודש דרך האפליקציה. מוסיף לי ₪3,000 בלי מאמץ."
+              </p>
+              <div className="text-gray-400 text-xs mt-2">— איתי, טבח · רמלה</div>
+            </>
+          )}
+        </div>
+
+        {/* Final CTA */}
+        <button onClick={onStart}
+          className="w-full text-white font-black text-base rounded-2xl py-4 mb-3"
+          style={{ background: 'linear-gradient(135deg,#0d1420,#1a2744)', boxShadow: '0 4px 20px rgba(13,20,32,0.3)' }}>
+          הצטרף עכשיו — בחינם 🚀
         </button>
 
-        <button
-          onClick={() => setUserRole('worker')}
-          className="w-full bg-white/15 backdrop-blur-sm border border-white/30 rounded-2xl p-4 flex items-center gap-4 active:scale-98 transition-transform"
-        >
-          <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
-            <ChefHat size={28} className="text-white" />
-          </div>
-          <div className="text-right">
-            <div className="font-bold text-white text-base">אני שף / טבח</div>
-            <div className="text-amber-100 text-sm">מחפש משמרות פנויות</div>
-          </div>
-          <div className="mr-auto text-white/50 text-xl">‹</div>
-        </button>
-
-        <p className="text-center text-orange-200/70 text-xs pt-2">
-          כניסה = הסכמה לתנאי השירות ומדיניות הפרטיות
+        <p className="text-center text-gray-400 text-xs pb-8">
+          כבר יש לך חשבון?{' '}
+          <button onClick={onStart} className="font-bold" style={{ color: '#e8a020' }}>
+            כנס כאן
+          </button>
         </p>
       </div>
     </div>
