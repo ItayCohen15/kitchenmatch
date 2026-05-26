@@ -2,45 +2,90 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===== GLOBAL ===== */
 * {
   font-family: 'Heebo', sans-serif;
   -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
 }
 
-html, body, #root {
+html {
   height: 100%;
+  height: -webkit-fill-available;
   direction: rtl;
   background-color: #f8fafc;
+  overscroll-behavior: none;
 }
 
-::-webkit-scrollbar {
-  width: 4px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 4px;
+body {
+  min-height: 100%;
+  min-height: -webkit-fill-available;
+  min-height: 100dvh;
+  direction: rtl;
+  background-color: #f8fafc;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+  /* מניעת bounce ב-iOS */
+  position: fixed;
+  width: 100%;
 }
 
+#root {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* ===== SAFE AREAS (iPhone notch / bottom bar) ===== */
+.safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom), 8px);
+}
+
+.safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 4px; }
+
+/* ===== ANIMATIONS ===== */
 .screen-enter {
-  animation: slideUp 0.25s ease-out;
+  animation: slideUp 0.22s ease-out;
 }
 
 @keyframes slideUp {
-  from { transform: translateY(16px); opacity: 0; }
+  from { transform: translateY(12px); opacity: 0; }
   to   { transform: translateY(0);    opacity: 1; }
 }
 
+/* ===== SHADOWS ===== */
 .card-shadow {
   box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06);
 }
 
-.bottom-safe {
-  padding-bottom: env(safe-area-inset-bottom, 16px);
+/* ===== INPUTS ===== */
+input:focus, textarea:focus, select:focus { outline: none; }
+
+/* מניעת zoom ב-iOS על input */
+input, textarea, select {
+  font-size: 16px !important;
 }
 
-input:focus, textarea:focus, select:focus {
-  outline: none;
+/* ===== BUTTONS ===== */
+button { touch-action: manipulation; }
+
+/* ===== LINKS ===== */
+a { -webkit-touch-callout: none; }
+
+/* ===== PREVENT TEXT SELECT ===== */
+button, .no-select {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ===== BOTTOM NAV SAFE AREA ===== */
+nav.fixed {
+  padding-bottom: env(safe-area-inset-bottom);
 }

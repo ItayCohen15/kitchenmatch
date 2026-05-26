@@ -62,9 +62,8 @@ const AppContent: React.FC = () => {
   const showApp = token && userRole && !needsOnboarding;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-start justify-center">
-      <div className="w-full max-w-sm min-h-screen bg-white relative overflow-hidden shadow-2xl flex flex-col"
-        style={{ minHeight: '100svh' }}>
+    <div className="bg-gray-50 flex items-start justify-center" style={{ height: '100dvh', overflow: 'hidden' }}>
+      <div className="w-full max-w-sm bg-white relative shadow-2xl flex flex-col" style={{ height: '100dvh' }}>
         {!token && <Auth onLogin={handleLogin} />}
         {showOnboarding && (
           <Onboarding
