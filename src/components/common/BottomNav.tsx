@@ -24,9 +24,9 @@ export const BottomNav: React.FC<Props> = ({ mode, active, onNav }) => {
 
   return (
     <nav className="fixed bottom-0 right-0 left-0 z-50"
-      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
-      <div className="max-w-md mx-auto px-3 pb-2">
-        <div className="flex overflow-hidden rounded-2xl"
+      style={{ background: 'linear-gradient(to top, #080c14 0%, transparent 100%)', paddingBottom: 0 }}>
+      <div className="max-w-md mx-auto px-3" style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 8px)' }}>
+        <div className="flex overflow-hidden rounded-2xl mb-2"
           style={{
             background: 'rgba(10,14,24,0.92)',
             backdropFilter: 'blur(24px)',

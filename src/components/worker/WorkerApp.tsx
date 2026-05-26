@@ -104,7 +104,7 @@ export const WorkerApp: React.FC = () => {
         {showNotifs && <NotificationPanel onClose={() => setShowNotifs(false)} />}
       </header>
 
-      <main className="flex-1 overflow-y-auto px-4 pt-4 pb-24">
+      <main className="flex-1 overflow-y-auto px-4 pt-4" style={{ paddingBottom: 'calc(90px + env(safe-area-inset-bottom))' }}>
         {renderScreen()}
       </main>
 
