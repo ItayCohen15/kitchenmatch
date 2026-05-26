@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { ChefHat, LogOut, Bell } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { BottomNav } from '../common/BottomNav';
@@ -14,22 +14,22 @@ import { RestaurantProfile } from './Profile';
 import type { RestaurantScreen } from '../../types';
 
 const SCREEN_TITLES: Record<RestaurantScreen, string> = {
-  home:            'ראשי',
-  create_job:      'פרסום משמרת',
-  worker_matching: 'התאמת עובדים',
-  live_tracking:   'מעקב חי',
-  active_shift:    'משמרת פעילה',
-  end_shift:       'סיום משמרת',
-  wallet:          'ארנק',
-  analytics:       'ניתוח',
-  profile:         'הפרופיל שלי',
+  home:            '׳¨׳׳©׳™',
+  create_job:      '׳₪׳¨׳¡׳•׳ ׳׳©׳׳¨׳×',
+  worker_matching: '׳”׳×׳׳׳× ׳¢׳•׳‘׳“׳™׳',
+  live_tracking:   '׳׳¢׳§׳‘ ׳—׳™',
+  active_shift:    '׳׳©׳׳¨׳× ׳₪׳¢׳™׳׳”',
+  end_shift:       '׳¡׳™׳•׳ ׳׳©׳׳¨׳×',
+  wallet:          '׳׳¨׳ ׳§',
+  analytics:       '׳ ׳™׳×׳•׳—',
+  profile:         '׳”׳₪׳¨׳•׳₪׳™׳ ׳©׳׳™',
 };
 
 const NAV_TABS: RestaurantScreen[] = ['home', 'create_job', 'analytics', 'wallet', 'profile'];
 
 export const RestaurantApp: React.FC = () => {
   const { restaurantScreen, navToRestaurant, resetToLanding, userProfile } = useApp();
-  const initials = (userProfile?.Name || 'מ').slice(0, 2);
+  const initials = (userProfile?.Name || '׳').slice(0, 2);
 
   const showNav = NAV_TABS.includes(restaurantScreen);
   const showTopBar = !['active_shift'].includes(restaurantScreen);
@@ -63,7 +63,7 @@ export const RestaurantApp: React.FC = () => {
           </div>
           <div className="flex items-center gap-2">
             <span className="font-black text-gray-900 text-base">{SCREEN_TITLES[restaurantScreen]}</span>
-            <div className="w-7 h-7 bg-orange-500 rounded-lg flex items-center justify-center text-white text-xs font-bold">
+            <div className="w-7 h-7 bg-amber-500 rounded-lg flex items-center justify-center text-white text-xs font-bold">
               {initials}
             </div>
           </div>
@@ -88,3 +88,4 @@ export const RestaurantApp: React.FC = () => {
     </div>
   );
 };
+

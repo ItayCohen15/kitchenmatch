@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Bell, LogOut } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { BottomNav } from '../common/BottomNav';
@@ -13,21 +13,21 @@ import { WorkerHistory } from './History';
 import type { WorkerScreen } from '../../types';
 
 const SCREEN_TITLES: Record<WorkerScreen, string> = {
-  home:          'משמרות',
-  job_details:   'פרטי משמרת',
-  navigation:    'ניווט',
-  active_shift:  'משמרת פעילה',
-  end_shift:     'סיים משמרת',
-  wallet:        'הכנסות',
-  profile:       'הפרופיל שלי',
-  history:       'ההיסטוריה שלי',
+  home:          '׳׳©׳׳¨׳•׳×',
+  job_details:   '׳₪׳¨׳˜׳™ ׳׳©׳׳¨׳×',
+  navigation:    '׳ ׳™׳•׳•׳˜',
+  active_shift:  '׳׳©׳׳¨׳× ׳₪׳¢׳™׳׳”',
+  end_shift:     '׳¡׳™׳™׳ ׳׳©׳׳¨׳×',
+  wallet:        '׳”׳›׳ ׳¡׳•׳×',
+  profile:       '׳”׳₪׳¨׳•׳₪׳™׳ ׳©׳׳™',
+  history:       '׳”׳”׳™׳¡׳˜׳•׳¨׳™׳” ׳©׳׳™',
 };
 
 const NAV_TABS: WorkerScreen[] = ['home', 'wallet', 'history', 'profile'];
 
 export const WorkerApp: React.FC = () => {
   const { workerScreen, navToWorker, resetToLanding, userProfile } = useApp();
-  const name = userProfile?.Name || 'עובד';
+  const name = userProfile?.Name || '׳¢׳•׳‘׳“';
   const initials = name.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
 
   const showNav = NAV_TABS.includes(workerScreen);
@@ -64,7 +64,7 @@ export const WorkerApp: React.FC = () => {
       <header className="bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-2">
           {showBack ? (
-            <button onClick={handleBack} className="text-gray-500 font-bold text-lg">›</button>
+            <button onClick={handleBack} className="text-gray-500 font-bold text-lg">ג€÷</button>
           ) : (
             <button onClick={resetToLanding} className="text-gray-400 hover:text-gray-600">
               <LogOut size={18} />
@@ -73,7 +73,7 @@ export const WorkerApp: React.FC = () => {
         </div>
         <div className="flex items-center gap-2">
           <span className="font-black text-gray-900 text-base">{SCREEN_TITLES[workerScreen]}</span>
-          <div className="w-7 h-7 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+          <div className="w-7 h-7 bg-amber-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
             {initials}
           </div>
         </div>
@@ -97,3 +97,4 @@ export const WorkerApp: React.FC = () => {
     </div>
   );
 };
+

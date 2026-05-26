@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { CheckCircle2, Clock, XCircle, Star } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
-  completed:          { label: 'הושלם',      color: 'text-green-600 bg-green-50',  icon: <CheckCircle2 size={14} /> },
-  active:             { label: 'פעיל',        color: 'text-blue-600 bg-blue-50',    icon: <Clock size={14} /> },
-  confirmed:          { label: 'אושר',        color: 'text-orange-600 bg-orange-50', icon: <Clock size={14} /> },
-  pending_approval:   { label: 'ממתין',       color: 'text-yellow-600 bg-yellow-50', icon: <Clock size={14} /> },
-  pending_completion: { label: 'ממתין לאישור', color: 'text-purple-600 bg-purple-50', icon: <Clock size={14} /> },
-  cancelled:          { label: 'בוטל',        color: 'text-red-500 bg-red-50',      icon: <XCircle size={14} /> },
+  completed:          { label: '׳”׳•׳©׳׳',      color: 'text-green-600 bg-green-50',  icon: <CheckCircle2 size={14} /> },
+  active:             { label: '׳₪׳¢׳™׳',        color: 'text-blue-600 bg-blue-50',    icon: <Clock size={14} /> },
+  confirmed:          { label: '׳׳•׳©׳¨',        color: 'text-amber-600 bg-amber-50', icon: <Clock size={14} /> },
+  pending_approval:   { label: '׳׳׳×׳™׳',       color: 'text-yellow-600 bg-yellow-50', icon: <Clock size={14} /> },
+  pending_completion: { label: '׳׳׳×׳™׳ ׳׳׳™׳©׳•׳¨', color: 'text-purple-600 bg-purple-50', icon: <Clock size={14} /> },
+  cancelled:          { label: '׳‘׳•׳˜׳',        color: 'text-red-500 bg-red-50',      icon: <XCircle size={14} /> },
 };
 
 export const WorkerHistory: React.FC = () => {
@@ -47,18 +47,18 @@ export const WorkerHistory: React.FC = () => {
       <div className="bg-gradient-to-l from-gray-900 to-gray-800 rounded-2xl p-4 text-white">
         <div className="grid grid-cols-3 gap-3 text-center">
           <div>
-            <div className="text-xl font-black text-green-400">₪{totalEarned.toFixed(0)}</div>
-            <div className="text-gray-400 text-xs">סה״כ הכנסות</div>
+            <div className="text-xl font-black text-green-400">ג‚×{totalEarned.toFixed(0)}</div>
+            <div className="text-gray-400 text-xs">׳¡׳”׳´׳› ׳”׳›׳ ׳¡׳•׳×</div>
           </div>
           <div>
             <div className="text-xl font-black">{shifts.filter(s => s.Status === 'completed').length}</div>
-            <div className="text-gray-400 text-xs">משמרות הושלמו</div>
+            <div className="text-gray-400 text-xs">׳׳©׳׳¨׳•׳× ׳”׳•׳©׳׳׳•</div>
           </div>
           <div>
-            <div className="text-xl font-black text-orange-400">
+            <div className="text-xl font-black text-amber-400">
               {shifts.filter(s => ['confirmed','active'].includes(s.Status)).length}
             </div>
-            <div className="text-gray-400 text-xs">משמרות קרובות</div>
+            <div className="text-gray-400 text-xs">׳׳©׳׳¨׳•׳× ׳§׳¨׳•׳‘׳•׳×</div>
           </div>
         </div>
       </div>
@@ -66,15 +66,15 @@ export const WorkerHistory: React.FC = () => {
       {/* Filters */}
       <div className="flex gap-2">
         {[
-          { id: 'all',       label: 'הכל' },
-          { id: 'upcoming',  label: 'קרובות' },
-          { id: 'completed', label: 'הושלמו' },
+          { id: 'all',       label: '׳”׳›׳' },
+          { id: 'upcoming',  label: '׳§׳¨׳•׳‘׳•׳×' },
+          { id: 'completed', label: '׳”׳•׳©׳׳׳•' },
         ].map(f => (
           <button
             key={f.id}
             onClick={() => setFilter(f.id as any)}
             className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-colors ${
-              filter === f.id ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-600'
+              filter === f.id ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-600'
             }`}
           >
             {f.label}
@@ -90,9 +90,9 @@ export const WorkerHistory: React.FC = () => {
 
       {!loading && filtered.length === 0 && (
         <div className="bg-white rounded-2xl p-8 text-center card-shadow">
-          <div className="text-4xl mb-3">📋</div>
-          <p className="font-bold text-gray-700">אין משמרות עדיין</p>
-          <p className="text-gray-400 text-sm mt-1">הגש מועמדות למשמרות כדי להתחיל</p>
+          <div className="text-4xl mb-3">נ“‹</div>
+          <p className="font-bold text-gray-700">׳׳™׳ ׳׳©׳׳¨׳•׳× ׳¢׳“׳™׳™׳</p>
+          <p className="text-gray-400 text-sm mt-1">׳”׳’׳© ׳׳•׳¢׳׳“׳•׳× ׳׳׳©׳׳¨׳•׳× ׳›׳“׳™ ׳׳”׳×׳—׳™׳</p>
         </div>
       )}
 
@@ -104,13 +104,13 @@ export const WorkerHistory: React.FC = () => {
           const net = (parseFloat(hours) * shift.HourlyRate * 0.935).toFixed(0);
           const cfg = STATUS_CONFIG[shift.Status] || STATUS_CONFIG.completed;
           const dateStr = start.toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' });
-          const timeStr = `${start.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })} – ${end.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}`;
+          const timeStr = `${start.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })} ג€“ ${end.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}`;
 
           return (
             <div key={shift.Id} className="bg-white rounded-2xl p-4 card-shadow">
               <div className="flex items-start justify-between mb-2">
                 <div>
-                  <div className="font-bold text-gray-900">{shift.RestaurantName || 'מסעדה'}</div>
+                  <div className="font-bold text-gray-900">{shift.RestaurantName || '׳׳¡׳¢׳“׳”'}</div>
                   <div className="text-gray-500 text-xs">{shift.RestaurantCity || ''}</div>
                 </div>
                 <span className={`text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1 ${cfg.color}`}>
@@ -124,29 +124,29 @@ export const WorkerHistory: React.FC = () => {
                 </span>
                 <span>{dateStr}</span>
                 <span>{timeStr}</span>
-                <span>{hours} ש׳</span>
+                <span>{hours} ׳©׳³</span>
               </div>
 
               <div className="flex items-center justify-between border-t border-gray-50 pt-3">
                 <div>
-                  <div className="text-xs text-gray-400">שכר שעתי</div>
-                  <div className="font-bold text-gray-700">₪{shift.HourlyRate}/ש׳</div>
+                  <div className="text-xs text-gray-400">׳©׳›׳¨ ׳©׳¢׳×׳™</div>
+                  <div className="font-bold text-gray-700">ג‚×{shift.HourlyRate}/׳©׳³</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-xs text-gray-400">ברוטו</div>
-                  <div className="font-bold text-gray-700">₪{(parseFloat(hours) * shift.HourlyRate).toFixed(0)}</div>
+                  <div className="text-xs text-gray-400">׳‘׳¨׳•׳˜׳•</div>
+                  <div className="font-bold text-gray-700">ג‚×{(parseFloat(hours) * shift.HourlyRate).toFixed(0)}</div>
                 </div>
                 <div className="text-right">
-                  <div className="text-xs text-gray-400">נטו (לאחר עמלה)</div>
+                  <div className="text-xs text-gray-400">׳ ׳˜׳• (׳׳׳—׳¨ ׳¢׳׳׳”)</div>
                   <div className={`font-black text-lg ${shift.Status === 'completed' ? 'text-green-600' : 'text-gray-400'}`}>
-                    ₪{net}
+                    ג‚×{net}
                   </div>
                 </div>
               </div>
 
               {shift.Status === 'completed' && shift.Rating && (
                 <div className="flex items-center gap-1 mt-2 pt-2 border-t border-gray-50">
-                  <span className="text-xs text-gray-400">הדירוג שלך:</span>
+                  <span className="text-xs text-gray-400">׳”׳“׳™׳¨׳•׳’ ׳©׳׳:</span>
                   {Array.from({ length: shift.Rating }).map((_, i) => (
                     <Star key={i} size={12} className="text-yellow-400 fill-yellow-400" />
                   ))}
@@ -159,3 +159,4 @@ export const WorkerHistory: React.FC = () => {
     </div>
   );
 };
+

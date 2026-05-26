@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Home, BarChart2, Wallet, User, PlusCircle, Clock } from 'lucide-react';
 
 interface NavItem {
@@ -14,18 +14,18 @@ interface Props {
 }
 
 const RESTAURANT_TABS: NavItem[] = [
-  { id: 'home',      label: 'בית',    icon: <Home size={20} /> },
-  { id: 'create_job',label: 'משמרת', icon: <PlusCircle size={20} /> },
-  { id: 'analytics', label: 'ניתוח', icon: <BarChart2 size={20} /> },
-  { id: 'wallet',    label: 'ארנק',  icon: <Wallet size={20} /> },
-  { id: 'profile',   label: 'פרופיל',icon: <User size={20} /> },
+  { id: 'home',      label: '׳‘׳™׳×',    icon: <Home size={20} /> },
+  { id: 'create_job',label: '׳׳©׳׳¨׳×', icon: <PlusCircle size={20} /> },
+  { id: 'analytics', label: '׳ ׳™׳×׳•׳—', icon: <BarChart2 size={20} /> },
+  { id: 'wallet',    label: '׳׳¨׳ ׳§',  icon: <Wallet size={20} /> },
+  { id: 'profile',   label: '׳₪׳¨׳•׳₪׳™׳',icon: <User size={20} /> },
 ];
 
 const WORKER_TABS: NavItem[] = [
-  { id: 'home',    label: 'משמרות',  icon: <Home size={20} /> },
-  { id: 'wallet',  label: 'הכנסות',  icon: <Wallet size={20} /> },
-  { id: 'history', label: 'היסטוריה', icon: <Clock size={20} /> },
-  { id: 'profile', label: 'פרופיל',  icon: <User size={20} /> },
+  { id: 'home',    label: '׳׳©׳׳¨׳•׳×',  icon: <Home size={20} /> },
+  { id: 'wallet',  label: '׳”׳›׳ ׳¡׳•׳×',  icon: <Wallet size={20} /> },
+  { id: 'history', label: '׳”׳™׳¡׳˜׳•׳¨׳™׳”', icon: <Clock size={20} /> },
+  { id: 'profile', label: '׳₪׳¨׳•׳₪׳™׳',  icon: <User size={20} /> },
 ];
 
 export const BottomNav: React.FC<Props> = ({ mode, active, onNav }) => {
@@ -41,7 +41,7 @@ export const BottomNav: React.FC<Props> = ({ mode, active, onNav }) => {
               key={tab.id}
               onClick={() => onNav(tab.id)}
               className={`flex-1 flex flex-col items-center gap-0.5 py-3 transition-colors ${
-                isActive ? 'text-orange-500' : 'text-gray-400'
+                isActive ? 'text-amber-500' : 'text-gray-400'
               }`}
             >
               <span className={`transition-transform ${isActive ? 'scale-110' : ''}`}>
@@ -49,7 +49,7 @@ export const BottomNav: React.FC<Props> = ({ mode, active, onNav }) => {
               </span>
               <span className="text-[10px] font-medium">{tab.label}</span>
               {isActive && (
-                <span className="absolute bottom-0 w-6 h-0.5 bg-orange-500 rounded-full" />
+                <span className="absolute bottom-0 w-6 h-0.5 bg-amber-500 rounded-full" />
               )}
             </button>
           );
@@ -58,3 +58,4 @@ export const BottomNav: React.FC<Props> = ({ mode, active, onNav }) => {
     </nav>
   );
 };
+

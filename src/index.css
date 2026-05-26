@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===== BRAND COLORS ===== */
+:root {
+  --km-gold:   #e8a020;
+  --km-gold-l: #f0b832;
+  --km-dark:   #0d1420;
+  --km-navy:   #1a2744;
+}
+
 /* ===== GLOBAL ===== */
 * {
   font-family: 'Heebo', sans-serif;
@@ -18,14 +26,11 @@ html {
 }
 
 body {
-  min-height: 100%;
-  min-height: -webkit-fill-available;
   min-height: 100dvh;
   direction: rtl;
   background-color: #f8fafc;
   overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
-  /* מניעת bounce ב-iOS */
   position: fixed;
   width: 100%;
 }
@@ -36,14 +41,9 @@ body {
   overflow: hidden;
 }
 
-/* ===== SAFE AREAS (iPhone notch / bottom bar) ===== */
-.safe-bottom {
-  padding-bottom: max(env(safe-area-inset-bottom), 8px);
-}
-
-.safe-top {
-  padding-top: env(safe-area-inset-top);
-}
+/* ===== SAFE AREAS ===== */
+.safe-bottom { padding-bottom: max(env(safe-area-inset-bottom), 8px); }
+.safe-top    { padding-top: env(safe-area-inset-top); }
 
 /* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar { width: 3px; }
@@ -51,41 +51,31 @@ body {
 ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 4px; }
 
 /* ===== ANIMATIONS ===== */
-.screen-enter {
-  animation: slideUp 0.22s ease-out;
-}
-
+.screen-enter { animation: slideUp 0.22s ease-out; }
 @keyframes slideUp {
   from { transform: translateY(12px); opacity: 0; }
   to   { transform: translateY(0);    opacity: 1; }
 }
 
 /* ===== SHADOWS ===== */
-.card-shadow {
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06);
-}
+.card-shadow { box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06); }
 
 /* ===== INPUTS ===== */
 input:focus, textarea:focus, select:focus { outline: none; }
-
-/* מניעת zoom ב-iOS על input */
-input, textarea, select {
-  font-size: 16px !important;
-}
+input, textarea, select { font-size: 16px !important; }
 
 /* ===== BUTTONS ===== */
 button { touch-action: manipulation; }
-
-/* ===== LINKS ===== */
-a { -webkit-touch-callout: none; }
-
-/* ===== PREVENT TEXT SELECT ===== */
-button, .no-select {
-  -webkit-user-select: none;
-  user-select: none;
-}
+a      { -webkit-touch-callout: none; }
+button, .no-select { -webkit-user-select: none; user-select: none; }
 
 /* ===== BOTTOM NAV SAFE AREA ===== */
-nav.fixed {
-  padding-bottom: env(safe-area-inset-bottom);
+nav.fixed { padding-bottom: env(safe-area-inset-bottom); }
+
+/* ===== BRAND OVERRIDES ===== */
+/* כפתורים ראשיים */
+.btn-primary {
+  background: var(--km-gold);
+  color: #fff;
 }
+.btn-primary:hover { background: var(--km-gold-l); }
