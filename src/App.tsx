@@ -128,12 +128,11 @@ const AppContent: React.FC = () => {
 
   // כשuserRole מתאפס (logout) — חזור ל-Landing
   useEffect(() => {
-    if (authChecked && !userRole && !token) {
+    if (authChecked && !userRole) {
       setToken(null);
       setShowLanding(true);
       setNeedsOnboarding(false);
       setPendingProfile(null);
-      setVerifyData(null);
     }
   }, [userRole, authChecked]);
 
