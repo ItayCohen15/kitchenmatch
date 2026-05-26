@@ -46,6 +46,7 @@ export const WorkerMatching: React.FC = () => {
   }, [loadApplicants]);
 
   const handleApprove = async (job: any) => {
+    if (!job?.Id || !job?.WorkerId) { setError('נתוני משמרת חסרים'); return; }
     setActionJobId(job.Id);
     setError('');
     try {

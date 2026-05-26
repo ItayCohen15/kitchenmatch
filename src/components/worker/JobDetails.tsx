@@ -48,6 +48,7 @@ export const JobDetails: React.FC = () => {
   const handleAccept = async () => {
     if (!userProfile?.Id) {
       setError('שגיאה: משתמש לא מזוהה. התנתק והתחבר מחדש.');
+      setAccepting(false);
       return;
     }
     setAccepting(true);

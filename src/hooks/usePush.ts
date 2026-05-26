@@ -37,7 +37,8 @@ export function usePush(userId?: number) {
         }
 
         // שלח ל-API
-        await fetch(`${window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://deprive-shakable-fog.ngrok-free.dev'}/push/subscribe`, {
+        const BASE = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://deprive-shakable-fog.ngrok-free.dev';
+      await fetch(`${BASE}/push/subscribe`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

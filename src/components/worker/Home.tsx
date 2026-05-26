@@ -36,11 +36,8 @@ export const WorkerHome: React.FC = () => {
   useEffect(() => {
     if (!userProfile?.Id) return;
     const checkActive = () => {
-      fetch(`http://localhost:3001/jobs/worker/${userProfile.Id}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('km_token') || ''}` }
-      })
-        .then(r => r.json())
-        .then(data => {
+      api.getWorkerHistory(userProfile.Id)
+        .then((data: any[]) => {
           const active = Array.isArray(data)
             ? data.filter((j: any) => ['confirmed','active'].includes(j.Status))
             : [];

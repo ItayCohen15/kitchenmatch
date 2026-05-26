@@ -146,6 +146,14 @@ const AppContent: React.FC = () => {
     }
   };
 
+  const handleLogout = () => {
+    setToken(null);
+    setShowLanding(true);
+    setVerifyData(null);
+    setNeedsOnboarding(false);
+    setPendingProfile(null);
+  };
+
   const handleOnboardingComplete = (updatedProfile: any) => {
     setUserProfile(updatedProfile);
     localStorage.setItem('km_profile', JSON.stringify(updatedProfile));

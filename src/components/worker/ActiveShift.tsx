@@ -75,7 +75,10 @@ export const WorkerActiveShift: React.FC = () => {
     try {
       const res = await api.workerEndShift(jobId);
       setWorkerConfirmed(true);
-      if (res.bothConfirmed) setBothDone(true);
+      if (res.bothConfirmed) { setBothDone(true); return; }
+      // בדוק מיד מה הסטטוס בDB
+      const status = await api.getEndStatus(jobId);
+      if (status?.WorkerConfirmedEnd && status?.RestaurantConfirmedEnd) setBothDone(true);
     } catch {}
     setConfirming(false);
     setShowConfirmDialog(false);
