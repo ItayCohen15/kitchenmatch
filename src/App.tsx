@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
+import { usePush } from './hooks/usePush';
 import { Auth } from './components/Auth';
 import { Onboarding } from './components/Onboarding';
 import { RestaurantApp } from './components/restaurant/RestaurantApp';
@@ -7,6 +8,7 @@ import { WorkerApp } from './components/worker/WorkerApp';
 
 const AppContent: React.FC = () => {
   const { userRole, setUserRole, setUserProfile, userProfile } = useApp();
+  usePush(userProfile?.UserId || userProfile?.userId);
   const [token, setToken] = useState<string | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [needsOnboarding, setNeedsOnboarding] = useState(false);
