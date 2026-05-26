@@ -39,12 +39,14 @@ export const Chat: React.FC<Props> = ({ jobId, myRole, myName }) => {
     setInput('');
     try {
       await api.sendMessage(jobId, text, myName, myRole);
+      const now = new Date();
+      const localTime = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
       setMessages(prev => [...prev, {
         Id: Date.now(),
         SenderRole: myRole,
         SenderName: myName,
         Text: text,
-        CreatedAt: new Date().toISOString(),
+        CreatedAt: `2000-01-01T${localTime}:00`,
       }]);
     } catch (e: any) {
       setError('שגיאה בשליחה');
@@ -84,7 +86,7 @@ export const Chat: React.FC<Props> = ({ jobId, myRole, myName }) => {
               )}
               <div>{msg.Text}</div>
               <div className={`text-xs mt-0.5 ${isMe(msg) ? 'text-orange-200' : 'text-gray-400'}`}>
-                {new Date(msg.CreatedAt).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}
+                {msg.CreatedAt?.slice(11, 16) || new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}
               </div>
             </div>
           </div>

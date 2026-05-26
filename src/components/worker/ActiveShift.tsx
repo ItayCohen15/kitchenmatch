@@ -22,11 +22,8 @@ export const WorkerActiveShift: React.FC = () => {
 
   useEffect(() => {
     if (!userProfile?.Id || !jobId) return;
-    fetch(`http://localhost:3001/jobs/worker/${userProfile.Id}`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('km_token') || ''}` }
-    })
-      .then(r => r.json())
-      .then(data => {
+    api.getWorkerHistory(userProfile.Id)
+      .then((data: any[]) => {
         const found = Array.isArray(data) ? data.find((j: any) => Number(j.Id) === jobId) : null;
         if (found?.RestaurantPhone) setRestaurantPhone(found.RestaurantPhone);
       })
