@@ -94,66 +94,72 @@ const ShiftSummaryDoc = ({ shift, onClose }: { shift: any; onClose: () => void }
   return (
     <>
       <div className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm" onClick={onClose} />
-      <div className="fixed inset-x-4 top-1/2 -translate-y-1/2 z-50 bg-white rounded-3xl shadow-2xl max-w-sm mx-auto"
-        style={{ maxHeight:'85dvh', overflowY:'scroll', WebkitOverflowScrolling:'touch' as any }}>
+      {/* מיכל: ממוצב בין ה-notch לבין ה-bottom-nav */}
+      <div className="fixed z-50 flex flex-col bg-white rounded-3xl shadow-2xl overflow-hidden max-w-sm mx-auto"
+        style={{
+          insetInline: '16px',
+          top: 'max(env(safe-area-inset-top) + 16px, 50px)',
+          bottom: 'calc(90px + env(safe-area-inset-bottom) + 12px)',
+        }}>
 
-        {/* Header */}
-        <div className="p-5 text-white rounded-t-3xl" style={{ background:'linear-gradient(135deg,#0d1420,#1a2744)' }}>
-          <div className="flex items-center justify-between mb-3">
+        {/* Header – דביק */}
+        <div className="flex-shrink-0 p-4 text-white" style={{ background:'linear-gradient(135deg,#0d1420,#1a2744)' }}>
+          <div className="flex items-center justify-between mb-2">
             <div>
-              <div className="font-black text-base">Kitchen<span style={{ color:'#e8a020' }}>Match</span></div>
-              <div className="text-gray-400 text-xs mt-0.5">סיכום משמרת · {docId}</div>
+              <div className="font-black text-sm">Kitchen<span style={{ color:'#e8a020' }}>Match</span> · סיכום משמרת</div>
+              <div className="text-gray-400 text-xs mt-0.5">{docId}</div>
             </div>
             <button onClick={onClose} className="w-8 h-8 rounded-xl flex items-center justify-center bg-white/10">
               <X size={16} />
             </button>
           </div>
-          <div className="text-center py-3">
-            <div className="text-4xl font-black" style={{ color:'#e8a020' }}>₪{net}</div>
-            <div className="text-gray-400 text-sm mt-1">נטו לקבלה</div>
+          <div className="flex items-center justify-between">
+            <div className="text-gray-400 text-xs">נטו לקבלה</div>
+            <div className="text-2xl font-black" style={{ color:'#e8a020' }}>₪{net}</div>
           </div>
         </div>
 
-        {/* Disclaimer */}
-        <div className="mx-4 mt-4 p-3 rounded-xl text-xs leading-relaxed"
-          style={{ background:'#fff8e1', border:'1px solid #f59e0b', color:'#92400e' }}>
-          ⚠️ <strong>מסמך זה אינו חשבונית רשמית.</strong> לדיווח מס, הוצא חשבונית עצמאית למסעדה על סכום ₪{gross}.
-        </div>
+        {/* תוכן גלילתי */}
+        <div className="flex-1 overflow-y-auto" style={{ WebkitOverflowScrolling:'touch' as any }}>
+          <div className="mx-4 mt-3 p-3 rounded-xl text-xs leading-relaxed"
+            style={{ background:'#fff8e1', border:'1px solid #f59e0b', color:'#92400e' }}>
+            ⚠️ <strong>מסמך זה אינו חשבונית רשמית.</strong> לדיווח מס, הוצא חשבונית עצמאית למסעדה על סכום ₪{gross}.
+          </div>
 
-        {/* Details */}
-        <div className="p-4 space-y-0">
-          {[
-            { l:'מסעדה', v: shift.RestaurantName ?? '' },
-            { l:'תפקיד', v: ROLE_LABELS[shift.Role] ?? shift.Role ?? '' },
-            { l:'תאריך', v: dateStr },
-            { l:'שעות',  v: `${hours} ש׳` },
-            { l:'תעריף', v: `₪${shift.HourlyRate}/ש׳` },
-          ].map(r => (
-            <div key={r.l} className="flex justify-between py-2.5 border-b border-gray-50 text-sm">
-              <span className="text-gray-400">{r.l}</span>
-              <span className="font-semibold text-gray-900">{r.v}</span>
+          <div className="p-4 space-y-0">
+            {[
+              { l:'מסעדה', v: shift.RestaurantName ?? '' },
+              { l:'תפקיד', v: ROLE_LABELS[shift.Role] ?? shift.Role ?? '' },
+              { l:'תאריך', v: dateStr },
+              { l:'שעות',  v: `${hours} ש׳` },
+              { l:'תעריף', v: `₪${shift.HourlyRate}/ש׳` },
+            ].map(r => (
+              <div key={r.l} className="flex justify-between py-2.5 border-b border-gray-50 text-sm">
+                <span className="text-gray-400">{r.l}</span>
+                <span className="font-semibold text-gray-900">{r.v}</span>
+              </div>
+            ))}
+            <div className="flex justify-between py-2.5 border-b border-gray-50 text-sm">
+              <span className="text-gray-400">סכום משמרת (ברוטו)</span>
+              <span className="font-semibold text-gray-900">₪{gross}</span>
             </div>
-          ))}
-
-          <div className="flex justify-between py-2.5 border-b border-gray-50 text-sm">
-            <span className="text-gray-400">סכום משמרת (ברוטו)</span>
-            <span className="font-semibold text-gray-900">₪{gross}</span>
-          </div>
-          <div className="flex justify-between py-2.5 border-b border-gray-50 text-sm">
-            <span className="text-gray-400">עמלת KitchenMatch (6.5%)</span>
-            <span className="font-semibold text-red-500">-₪{commission}</span>
-          </div>
-          <div className="flex justify-between pt-3 pb-1">
-            <span className="font-bold text-gray-900">נטו לקבלה</span>
-            <span className="font-black text-green-600 text-xl">₪{net}</span>
+            <div className="flex justify-between py-2.5 border-b border-gray-50 text-sm">
+              <span className="text-gray-400">עמלת KitchenMatch (6.5%)</span>
+              <span className="font-semibold text-red-500">-₪{commission}</span>
+            </div>
+            <div className="flex justify-between pt-3 pb-1">
+              <span className="font-bold text-gray-900">נטו לקבלה</span>
+              <span className="font-black text-green-600 text-xl">₪{net}</span>
+            </div>
           </div>
         </div>
 
-        <div className="px-4 pb-5">
+        {/* כפתור – דביק */}
+        <div className="flex-shrink-0 px-4 py-3 border-t border-gray-100">
           <button onClick={handlePrint}
-            className="w-full text-white rounded-2xl py-3.5 font-bold flex items-center justify-center gap-2 text-sm"
-            style={{ background:'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow:'0 4px 20px rgba(232,160,32,0.3)' }}>
-            <Printer size={17} /> הדפס סיכום
+            className="w-full text-white rounded-2xl py-3 font-bold flex items-center justify-center gap-2 text-sm"
+            style={{ background:'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow:'0 4px 16px rgba(232,160,32,0.3)' }}>
+            <Printer size={16} /> הדפס סיכום
           </button>
         </div>
       </div>
@@ -260,27 +266,32 @@ const WorkerInvoiceDoc = ({ shift, worker, onClose }: { shift: any; worker: any;
   return (
     <>
       <div className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm" onClick={onClose} />
-      <div className="fixed inset-x-4 top-1/2 -translate-y-1/2 z-50 bg-white rounded-3xl shadow-2xl max-w-sm mx-auto"
-        style={{ maxHeight:'85dvh', overflowY:'scroll', WebkitOverflowScrolling:'touch' as any }}>
+      <div className="fixed z-50 flex flex-col bg-white rounded-3xl shadow-2xl overflow-hidden max-w-sm mx-auto"
+        style={{
+          insetInline: '16px',
+          top: 'max(env(safe-area-inset-top) + 16px, 50px)',
+          bottom: 'calc(90px + env(safe-area-inset-bottom) + 12px)',
+        }}>
 
-        {/* Header */}
-        <div className="p-5 text-white rounded-t-3xl" style={{ background:'linear-gradient(135deg,#0d1420,#1a2744)' }}>
-          <div className="flex items-center justify-between mb-3">
+        {/* Header – דביק */}
+        <div className="flex-shrink-0 p-4 text-white" style={{ background:'linear-gradient(135deg,#0d1420,#1a2744)' }}>
+          <div className="flex items-center justify-between mb-2">
             <div>
-              <div className="font-black text-base">חשבונית שירות</div>
+              <div className="font-black text-sm">חשבונית שירות</div>
               <div className="text-gray-400 text-xs mt-0.5">מס׳ {invoiceNum}</div>
             </div>
             <button onClick={onClose} className="w-8 h-8 rounded-xl flex items-center justify-center bg-white/10">
               <X size={16} />
             </button>
           </div>
-          <div className="text-center py-2">
-            <div className="text-3xl font-black text-white">₪{gross}</div>
-            <div className="text-xs mt-1" style={{ color:'#e8a020' }}>סכום מלא למסעדה (לפני עמלת פלטפורמה)</div>
+          <div className="flex items-center justify-between">
+            <div className="text-xs" style={{ color:'#e8a020' }}>סכום מלא למסעדה</div>
+            <div className="text-2xl font-black text-white">₪{gross}</div>
           </div>
         </div>
 
-        <div className="p-4 space-y-3">
+        {/* תוכן גלילתי */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-3" style={{ WebkitOverflowScrolling:'touch' as any }}>
           {/* Supplier */}
           <div className="rounded-xl p-3" style={{ background:'#f0f9ff', border:'1px solid #bae6fd' }}>
             <div className="flex items-center gap-2 mb-2">
@@ -325,17 +336,17 @@ const WorkerInvoiceDoc = ({ shift, worker, onClose }: { shift: any; worker: any;
           </div>
 
           <div className="text-xs text-gray-400 text-center bg-gray-50 rounded-xl p-2.5">
-            📌 זוהי תבנית חשבונית. הוסף מס׳ עוסק ומע"מ (אם רלוונטי) לפני שליחה למסעדה.
+            📌 זוהי תבנית. הוסף מס׳ עוסק ומע"מ לפני שליחה למסעדה.
           </div>
         </div>
 
-        <div className="px-4 pb-5">
+        {/* כפתור – דביק */}
+        <div className="flex-shrink-0 px-4 py-3 border-t border-gray-100">
           <button onClick={handlePrint}
-            className="w-full text-white rounded-2xl py-3.5 font-bold flex items-center justify-center gap-2 text-sm"
-            style={{ background:'linear-gradient(135deg,#3b82f6,#6366f1)', boxShadow:'0 4px 20px rgba(99,102,241,0.3)' }}>
-            <Printer size={17} /> הדפס חשבונית למסעדה
+            className="w-full text-white rounded-2xl py-3 font-bold flex items-center justify-center gap-2 text-sm"
+            style={{ background:'linear-gradient(135deg,#3b82f6,#6366f1)', boxShadow:'0 4px 16px rgba(99,102,241,0.3)' }}>
+            <Printer size={16} /> הדפס חשבונית למסעדה
           </button>
-          <p className="text-center text-xs text-gray-400 mt-2">מלא מס׳ עוסק לפני שליחה</p>
         </div>
       </div>
     </>

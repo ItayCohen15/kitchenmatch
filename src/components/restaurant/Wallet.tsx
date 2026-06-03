@@ -122,75 +122,80 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
   return (
     <>
       <div className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm" onClick={onClose} />
-      <div className="fixed inset-x-4 top-1/2 -translate-y-1/2 z-50 bg-white rounded-3xl shadow-2xl max-w-sm mx-auto"
-        style={{ maxHeight:'85dvh', overflowY:'scroll', WebkitOverflowScrolling:'touch' as any }}>
+      <div className="fixed z-50 flex flex-col bg-white rounded-3xl shadow-2xl overflow-hidden max-w-sm mx-auto"
+        style={{
+          insetInline: '16px',
+          top: 'max(env(safe-area-inset-top) + 16px, 50px)',
+          bottom: 'calc(90px + env(safe-area-inset-bottom) + 12px)',
+        }}>
 
-        {/* Header */}
-        <div className="p-5 text-white rounded-t-3xl" style={{ background:'linear-gradient(135deg,#0d1420,#1a2744)' }}>
-          <div className="flex items-center justify-between mb-3">
+        {/* Header – דביק */}
+        <div className="flex-shrink-0 p-4 text-white" style={{ background:'linear-gradient(135deg,#0d1420,#1a2744)' }}>
+          <div className="flex items-center justify-between mb-2">
             <div>
-              <div className="font-black text-base">קבלת עמלת תיווך</div>
+              <div className="font-black text-sm">קבלת עמלת תיווך</div>
               <div className="text-gray-400 text-xs mt-0.5">KitchenMatch · {receiptNum}</div>
             </div>
             <button onClick={onClose} className="w-8 h-8 rounded-xl flex items-center justify-center bg-white/10">
               <X size={16} />
             </button>
           </div>
-          <div className="text-center py-2">
-            <div className="text-3xl font-black" style={{ color:'#e8a020' }}>₪{commStr}</div>
-            <div className="text-gray-400 text-xs mt-1">עמלת תיווך KitchenMatch (6.5%)</div>
+          <div className="flex items-center justify-between">
+            <div className="text-gray-400 text-xs">עמלת תיווך (6.5%)</div>
+            <div className="text-2xl font-black" style={{ color:'#e8a020' }}>₪{commStr}</div>
           </div>
         </div>
 
-        {/* Legal note */}
-        <div className="mx-4 mt-4 p-3 rounded-xl text-xs leading-relaxed"
-          style={{ background:'#fef9ec', border:'1px solid #fcd34d', color:'#92400e' }}>
-          ⚖️ <strong>קבלה זו לעמלת תיווך בלבד.</strong> KitchenMatch אינה המעסיקה. חוזה העבודה הוא בינך לבין העובד.
-        </div>
+        {/* תוכן גלילתי */}
+        <div className="flex-1 overflow-y-auto" style={{ WebkitOverflowScrolling:'touch' as any }}>
+          <div className="mx-4 mt-3 p-3 rounded-xl text-xs leading-relaxed"
+            style={{ background:'#fef9ec', border:'1px solid #fcd34d', color:'#92400e' }}>
+            ⚖️ <strong>קבלה זו לעמלת תיווך בלבד.</strong> KitchenMatch אינה המעסיקה. חוזה העבודה הוא בינך לבין העובד.
+          </div>
 
-        {/* Details */}
-        <div className="p-4 space-y-3">
-          <div className="rounded-xl p-3" style={{ background:'#f9fafb', border:'1px solid #e5e7eb' }}>
-            <div className="text-xs font-bold text-gray-500 mb-2">📋 פירוט שיבוץ</div>
-            {[
-              { l:'תפקיד',    v: ROLE_LABELS[job.Role] ?? job.Role ?? '' },
-              { l:'עובד',     v: job.WorkerName ?? '—' },
-              { l:'תאריך',   v: dateStr },
-              { l:'שעות',    v: `${hoursNum.toFixed(2)} ש׳` },
-            ].map(r => (
-              <div key={r.l} className="flex justify-between py-1.5 border-b border-gray-100 text-sm last:border-0">
-                <span className="text-gray-400">{r.l}</span>
-                <span className="font-semibold text-gray-900">{r.v}</span>
+          <div className="p-4 space-y-3">
+            <div className="rounded-xl p-3" style={{ background:'#f9fafb', border:'1px solid #e5e7eb' }}>
+              <div className="text-xs font-bold text-gray-500 mb-2">📋 פירוט שיבוץ</div>
+              {[
+                { l:'תפקיד', v: ROLE_LABELS[job.Role] ?? job.Role ?? '' },
+                { l:'עובד',  v: job.WorkerName ?? '—' },
+                { l:'תאריך', v: dateStr },
+                { l:'שעות',  v: `${hoursNum.toFixed(2)} ש׳` },
+              ].map(r => (
+                <div key={r.l} className="flex justify-between py-1.5 border-b border-gray-100 text-sm last:border-0">
+                  <span className="text-gray-400">{r.l}</span>
+                  <span className="font-semibold text-gray-900">{r.v}</span>
+                </div>
+              ))}
+            </div>
+
+            <div>
+              <div className="flex justify-between py-2.5 border-b border-gray-50 text-sm">
+                <span className="text-gray-400">סכום משמרת בסיסי</span>
+                <span className="font-semibold text-gray-900">₪{baseStr}</span>
               </div>
-            ))}
-          </div>
-
-          {/* Calculation */}
-          <div>
-            <div className="flex justify-between py-2.5 border-b border-gray-50 text-sm">
-              <span className="text-gray-400">סכום משמרת בסיסי</span>
-              <span className="font-semibold text-gray-900">₪{baseStr}</span>
-            </div>
-            <div className="flex justify-between py-2.5 border-b border-gray-50 text-sm">
-              <span className="text-gray-400">שיעור עמלה</span>
-              <span className="font-semibold text-gray-900">6.5%</span>
-            </div>
-            <div className="flex justify-between py-2.5 border-b border-gray-50 text-sm">
-              <span className="text-gray-400">עמלת KitchenMatch</span>
-              <span className="font-semibold text-red-500">₪{commStr}</span>
-            </div>
-            <div className="flex justify-between pt-3 pb-1">
-              <span className="font-bold text-gray-900">סה"כ ששילמת</span>
-              <span className="font-black text-gray-900 text-lg">₪{totalStr}</span>
+              <div className="flex justify-between py-2.5 border-b border-gray-50 text-sm">
+                <span className="text-gray-400">שיעור עמלה</span>
+                <span className="font-semibold text-gray-900">6.5%</span>
+              </div>
+              <div className="flex justify-between py-2.5 border-b border-gray-50 text-sm">
+                <span className="text-gray-400">עמלת KitchenMatch</span>
+                <span className="font-semibold text-red-500">₪{commStr}</span>
+              </div>
+              <div className="flex justify-between pt-3 pb-1">
+                <span className="font-bold text-gray-900">סה"כ ששילמת</span>
+                <span className="font-black text-gray-900 text-lg">₪{totalStr}</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="px-4 pb-5">
+        {/* כפתור – דביק */}
+        <div className="flex-shrink-0 px-4 py-3 border-t border-gray-100">
           <button onClick={handlePrint}
-            className="w-full text-white rounded-2xl py-3.5 font-bold flex items-center justify-center gap-2 text-sm"
-            style={{ background:'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow:'0 4px 20px rgba(232,160,32,0.3)' }}>
-            <Printer size={17} /> הדפס קבלת עמלה
+            className="w-full text-white rounded-2xl py-3 font-bold flex items-center justify-center gap-2 text-sm"
+            style={{ background:'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow:'0 4px 16px rgba(232,160,32,0.3)' }}>
+            <Printer size={16} /> הדפס קבלת עמלה
           </button>
         </div>
       </div>
