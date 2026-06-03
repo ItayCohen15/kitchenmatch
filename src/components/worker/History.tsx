@@ -137,9 +137,9 @@ export const WorkerHistory: React.FC = () => {
                   <div className="font-bold text-gray-700">₪{(parseFloat(hours) * shift.HourlyRate).toFixed(0)}</div>
                 </div>
                 <div className="text-right">
-                  <div className="text-xs text-gray-400">נטו (לאחר עמלה)</div>
-                  <div className={`font-black text-lg ${shift.Status === 'completed' ? 'text-green-600' : 'text-gray-400'}`}>
-                    ₪{net}
+                  <div className="text-xs text-gray-400">{shift.Status === 'cancelled' ? 'בוטל' : 'נטו (לאחר עמלה)'}</div>
+                  <div className={`font-black text-lg ${shift.Status === 'completed' ? 'text-green-600' : shift.Status === 'cancelled' ? 'text-red-300' : 'text-gray-400'}`}>
+                    {shift.Status === 'cancelled' ? '—' : `₪${net}`}
                   </div>
                 </div>
               </div>

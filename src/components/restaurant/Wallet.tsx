@@ -385,10 +385,14 @@ export const RestaurantWallet: React.FC = () => {
             const end       = new Date(j.EndTime);
             const hours     = ((end.getTime() - start.getTime()) / (1000 * 60 * 60)).toFixed(1);
             const base      = parseFloat(hours) * j.HourlyRate;
-            const totalPaid = base * 1.065; // כולל עמלת מסעדה
             const isCompleted = j.Status === 'completed';
-            const statusColor = isCompleted ? 'text-green-500' : j.Status === 'searching' ? 'text-amber-400' : 'text-blue-400';
-            const statusLabel = isCompleted ? 'הושלם' : j.Status === 'searching' ? 'מחפש' : j.Status === 'active' ? 'פעיל' : j.Status === 'confirmed' ? 'מאושר' : j.Status;
+            const isCancelled = j.Status === 'cancelled';
+            // משמרת מבוטלת: רק קנס (אם היה ביטול מאוחר), אחרת ₪0
+            // משמרת שהושלמה: עלות מלאה כולל עמלה. אחרת: עדיין לא חויב
+            const cancelFee = Number(j.CancellationFee ?? 0);
+            const charged   = isCompleted ? base * 1.065 : isCancelled ? cancelFee : 0;
+            const statusColor = isCompleted ? 'text-green-500' : isCancelled ? 'text-red-400' : j.Status === 'searching' ? 'text-amber-400' : 'text-blue-400';
+            const statusLabel = isCompleted ? 'הושלם' : isCancelled ? 'בוטל' : j.Status === 'searching' ? 'מחפש' : j.Status === 'active' ? 'פעיל' : j.Status === 'confirmed' ? 'מאושר' : j.Status;
 
             return (
               <div key={i} className="bg-white rounded-xl p-3 card-shadow">
@@ -409,7 +413,12 @@ export const RestaurantWallet: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-1">
-                    <div className="text-red-500 font-bold text-sm">-₪{totalPaid.toFixed(0)}</div>
+                    {charged > 0
+                      ? <div className="text-red-500 font-bold text-sm">-₪{charged.toFixed(0)}</div>
+                      : <div className="text-gray-300 font-bold text-sm">₪0</div>}
+                    {isCancelled && cancelFee > 0 && (
+                      <span className="text-[10px] text-red-400">קנס ביטול</span>
+                    )}
                     {isCompleted && (
                       <button onClick={() => setReceiptJob(j)}
                         className="flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-lg"

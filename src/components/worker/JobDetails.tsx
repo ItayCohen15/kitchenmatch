@@ -3,6 +3,7 @@ import { MapPin, Star, Shield, Zap, X } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { ROLE_LABELS } from '../../data/mockData';
 import { api } from '../../api';
+import { CancelShiftModal } from '../common/CancelShiftModal';
 
 export const JobDetails: React.FC = () => {
   const { navToWorker, getSelectedJob, userProfile } = useApp();
@@ -62,8 +63,10 @@ export const JobDetails: React.FC = () => {
     }
   };
 
-  // פולינג אחרי הגשת מועמדות — בדוק אם אושרת
+  // פולינג אחרי הגשת מועמדות — בדוק אם אושרת / בוטל
   const [approvedByRestaurant, setApprovedByRestaurant] = useState(false);
+  const [cancelledByRestaurant, setCancelledByRestaurant] = useState(false);
+  const [showCancel, setShowCancel] = useState(false);
   useEffect(() => {
     if (!accepted || !job || !userProfile?.Id) return;
     const jobId = Number(job.Id || job.id);
@@ -72,7 +75,9 @@ export const JobDetails: React.FC = () => {
       try {
         // שימוש ב-getStartStatus שמחזיר Status עדכני
         const status = await api.getStartStatus(jobId);
-        if (status?.Status && ['confirmed','active'].includes(status.Status)) {
+        if (status?.Status === 'cancelled') {
+          setCancelledByRestaurant(true);
+        } else if (status?.Status && ['confirmed','active'].includes(status.Status)) {
           setApprovedByRestaurant(true);
         }
       } catch {}
@@ -81,6 +86,23 @@ export const JobDetails: React.FC = () => {
     const iv = setInterval(check, 3000);
     return () => clearInterval(iv);
   }, [accepted, job?.Id, userProfile?.Id]);
+
+  // מסך — המסעדה ביטלה
+  if (cancelledByRestaurant) {
+    return (
+      <div className="screen-enter flex flex-col items-center justify-center min-h-[70vh] text-center gap-4 px-6">
+        <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center">
+          <span className="text-5xl">❌</span>
+        </div>
+        <h2 className="text-2xl font-black text-gray-900">המשמרת בוטלה</h2>
+        <p className="text-gray-500">המסעדה ביטלה את המשמרת. אם הביטול היה מאוחר, קיבלת פיצוי לארנק.</p>
+        <button onClick={() => navToWorker('home')}
+          className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg">
+          חזור למשמרות
+        </button>
+      </div>
+    );
+  }
 
   if (accepted) {
     return (
@@ -96,6 +118,20 @@ export const JobDetails: React.FC = () => {
               className="w-full bg-green-500 text-white rounded-2xl py-4 font-black text-lg">
               נסע עכשיו 🚗
             </button>
+            <button onClick={() => setShowCancel(true)}
+              className="w-full text-red-400 text-sm py-1 font-semibold">
+              בטל משמרת
+            </button>
+            {showCancel && (
+              <CancelShiftModal
+                jobId={Number(job.Id || job.id)}
+                cancelledBy="worker"
+                startTime={job.StartTime || job.startTime}
+                isConfirmed={true}
+                onClose={() => setShowCancel(false)}
+                onCancelled={() => { setShowCancel(false); navToWorker('home'); }}
+              />
+            )}
           </>
         ) : (
           <>

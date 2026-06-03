@@ -13,6 +13,7 @@ export const WorkerNavigation: React.FC = () => {
   const [confirming, setConfirming]              = useState(false);
   const [error, setError]                        = useState('');
   const [showCancel, setShowCancel]              = useState(false);
+  const [cancelledByRest, setCancelledByRest]    = useState(false);
   const [restaurantPhone, setRestPhone]          = useState<string>(job?.RestaurantPhone || '');
 
   const restaurantName    = job?.RestaurantName    || job?.restaurantName    || 'המסעדה';
@@ -47,6 +48,8 @@ export const WorkerNavigation: React.FC = () => {
         if (s.Status === 'active') {
           startShift();
           navToWorker('active_shift');
+        } else if (s.Status === 'cancelled') {
+          setCancelledByRest(true);
         } else if (s.StartInitiatedBy === 'restaurant') {
           setRestInitiated(true);
         }
@@ -88,6 +91,23 @@ export const WorkerNavigation: React.FC = () => {
   )}&navigate=yes`;
 
   const phone = restaurantPhone || job?.RestaurantPhone || '';
+
+  // המסעדה ביטלה את המשמרת
+  if (cancelledByRest) {
+    return (
+      <div className="screen-enter flex flex-col items-center justify-center min-h-[70vh] text-center gap-4 px-6">
+        <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center">
+          <span className="text-5xl">❌</span>
+        </div>
+        <h2 className="text-2xl font-black text-gray-900">המשמרת בוטלה</h2>
+        <p className="text-gray-500">{restaurantName} ביטלה את המשמרת. אם הביטול היה מאוחר, קיבלת פיצוי לארנק.</p>
+        <button onClick={() => navToWorker('home')}
+          className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg">
+          חזור למשמרות
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="screen-enter flex flex-col gap-4">

@@ -1,8 +1,9 @@
 ﻿import React, { useEffect, useState, useCallback } from 'react';
-import { Shield, MapPin, Star, Check, X, Clock, RefreshCw, Phone } from 'lucide-react';
+import { Shield, MapPin, Star, Check, X, Clock, RefreshCw, Phone, Trash2 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { LEVEL_LABELS, LEVEL_COLORS } from '../../data/mockData';
 import { api } from '../../api';
+import { CancelShiftModal } from '../common/CancelShiftModal';
 
 // חישוב אחוז התאמה אמיתי
 const calcMatchScore = (worker: any, restaurantCuisine: string): number => {
@@ -26,6 +27,8 @@ export const WorkerMatching: React.FC = () => {
   const [actionJobId, setActionJobId] = useState<number | null>(null);
   const [approved, setApproved] = useState<any>(null);
   const [error, setError] = useState('');
+  const [openJob, setOpenJob] = useState<any>(null);   // משמרת פתוחה (searching) לביטול
+  const [showCancel, setShowCancel] = useState(false);
   const restaurantCuisine = userProfile?.CuisineType || '';
 
   const loadApplicants = useCallback(() => {
@@ -37,6 +40,15 @@ export const WorkerMatching: React.FC = () => {
       })
       .catch(() => setError('שגיאה בטעינת המועמדים'))
       .finally(() => setLoading(false));
+    // טען גם את המשמרת הפתוחה (לביטול ללא קנס)
+    api.getRestaurantJobs(userProfile.Id)
+      .then((data: any[]) => {
+        const open = Array.isArray(data)
+          ? data.find(j => j.Status === 'searching' || j.Status === 'pending_approval')
+          : null;
+        setOpenJob(open || null);
+      })
+      .catch(() => {});
   }, [userProfile?.Id]);
 
   useEffect(() => {
@@ -107,6 +119,14 @@ export const WorkerMatching: React.FC = () => {
           <RefreshCw size={16} />
         </button>
       </div>
+
+      {/* ביטול משמרת פתוחה — ללא קנס (טרם אושר עובד) */}
+      {openJob && (
+        <button onClick={() => setShowCancel(true)}
+          className="w-full flex items-center justify-center gap-2 bg-red-50 border border-red-100 text-red-500 rounded-xl py-2.5 font-semibold text-sm active:bg-red-100">
+          <Trash2 size={15} /> בטל משמרת זו
+        </button>
+      )}
 
       {/* הסבר הזרימה */}
       <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 flex items-start gap-2">
@@ -270,6 +290,17 @@ export const WorkerMatching: React.FC = () => {
             אחוז ההתאמה מחושב לפי כישורי העובד, דירוג, אמינות, ומספר משמרות שהושלמו.
           </p>
         </div>
+      )}
+
+      {showCancel && openJob && (
+        <CancelShiftModal
+          jobId={Number(openJob.Id)}
+          cancelledBy="restaurant"
+          startTime={openJob.StartTime}
+          isConfirmed={false}
+          onClose={() => setShowCancel(false)}
+          onCancelled={() => { setShowCancel(false); navToRestaurant('home'); }}
+        />
       )}
     </div>
   );

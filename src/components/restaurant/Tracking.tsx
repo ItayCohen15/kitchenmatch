@@ -15,6 +15,7 @@ export const LiveTracking: React.FC = () => {
   const [confirming, setConfirming]        = useState(false);
   const [error, setError]                  = useState('');
   const [showCancel, setShowCancel]        = useState(false);
+  const [cancelledByWorker, setCancelledByWorker] = useState(false);
   const [jobData, setJobData]              = useState<any>(job || null);
 
   const workerName  = jobData?.WorkerName || 'העובד';
@@ -49,6 +50,8 @@ export const LiveTracking: React.FC = () => {
         if (s.Status === 'active') {
           startShift();
           navToRestaurant('active_shift');
+        } else if (s.Status === 'cancelled') {
+          setCancelledByWorker(true);
         } else if (s.StartInitiatedBy === 'worker') {
           setWorkerInit(true);
         }
@@ -83,6 +86,23 @@ export const LiveTracking: React.FC = () => {
     }
     setConfirming(false);
   };
+
+  // העובד ביטל את המשמרת
+  if (cancelledByWorker) {
+    return (
+      <div className="screen-enter flex flex-col items-center justify-center min-h-[70vh] text-center gap-4 px-6">
+        <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center">
+          <span className="text-5xl">❌</span>
+        </div>
+        <h2 className="text-2xl font-black text-gray-900">העובד ביטל</h2>
+        <p className="text-gray-500">{workerName} ביטל את המשמרת. אם הביטול היה מאוחר, קיבלת ₪50 פיצוי לארנק.</p>
+        <button onClick={() => navToRestaurant('home')}
+          className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg">
+          חזור לבית
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="screen-enter flex flex-col gap-4">
