@@ -292,27 +292,28 @@ const WorkerInvoiceDoc = ({ shift, worker, onClose }: { shift: any; worker: any;
 
         {/* תוכן גלילתי */}
         <div className="flex-1 overflow-y-auto p-4 space-y-3" style={{ WebkitOverflowScrolling:'touch' as any }}>
-          {/* Supplier */}
-          <div className="rounded-xl p-3" style={{ background:'#f0f9ff', border:'1px solid #bae6fd' }}>
-            <div className="flex items-center gap-2 mb-2">
-              <User size={13} className="text-blue-600" />
-              <span className="text-xs font-bold text-blue-700">מספק שירות (אתה – עוסק עצמאי)</span>
+          {/* Supplier + Client – grid שווה-גובה */}
+          <div className="grid grid-cols-2 gap-2">
+            <div className="rounded-xl p-3 flex flex-col gap-1" style={{ background:'#f0f9ff', border:'1px solid #bae6fd' }}>
+              <div className="flex items-center gap-1.5 mb-0.5">
+                <User size={11} className="text-blue-600 flex-shrink-0" />
+                <span className="text-[10px] font-bold text-blue-700 leading-tight">עוסק עצמאי</span>
+              </div>
+              <div className="text-sm font-bold text-gray-900 leading-tight">{worker?.Name ?? '—'}</div>
+              <div className="text-xs text-gray-500">{worker?.Phone ?? '—'}</div>
+              <div className="text-[10px] font-medium mt-auto pt-1" style={{ color:'#d97706' }}>
+                ⚠️ הוסף מס׳ עוסק
+              </div>
             </div>
-            <div className="text-sm font-semibold text-gray-900">{worker?.Name ?? '—'}</div>
-            <div className="text-xs text-gray-500 mt-0.5">{worker?.Phone ?? '—'}</div>
-            <div className="text-xs mt-1.5 font-medium" style={{ color:'#d97706' }}>
-              ⚠️ הוסף מס׳ עוסק ידנית לפני שליחה
-            </div>
-          </div>
 
-          {/* Client */}
-          <div className="rounded-xl p-3" style={{ background:'#f0fdf4', border:'1px solid #86efac' }}>
-            <div className="flex items-center gap-2 mb-2">
-              <Building2 size={13} className="text-green-600" />
-              <span className="text-xs font-bold text-green-700">ללקוח (מסעדה)</span>
+            <div className="rounded-xl p-3 flex flex-col gap-1" style={{ background:'#f0fdf4', border:'1px solid #86efac' }}>
+              <div className="flex items-center gap-1.5 mb-0.5">
+                <Building2 size={11} className="text-green-600 flex-shrink-0" />
+                <span className="text-[10px] font-bold text-green-700 leading-tight">מסעדה (לקוח)</span>
+              </div>
+              <div className="text-sm font-bold text-gray-900 leading-tight">{shift.RestaurantName ?? '—'}</div>
+              <div className="text-xs text-gray-500">{shift.RestaurantCity ?? '—'}</div>
             </div>
-            <div className="text-sm font-semibold text-gray-900">{shift.RestaurantName ?? '—'}</div>
-            <div className="text-xs text-gray-500 mt-0.5">{shift.RestaurantCity ?? '—'}</div>
           </div>
 
           {/* Description */}
