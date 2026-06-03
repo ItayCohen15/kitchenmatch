@@ -124,8 +124,8 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
       <div className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm" onClick={onClose} />
       <div className="fixed inset-x-0 z-50 flex items-center justify-center px-4 pointer-events-none"
         style={{
-          top: 'env(safe-area-inset-top)',
-          bottom: 'calc(80px + env(safe-area-inset-bottom))',
+          top: 'calc(env(safe-area-inset-top) + 64px)',
+          bottom: 'calc(78px + env(safe-area-inset-bottom))',
         }}>
       <div className="flex flex-col bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-sm pointer-events-auto"
         style={{ maxHeight: '100%' }}>
