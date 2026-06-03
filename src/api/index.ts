@@ -121,10 +121,11 @@ export const api = {
       headers: headers()
     }).then(handleResponse),
 
-  cancelJob: (jobId: number) =>
+  cancelJob: (jobId: number, reason?: string, cancelledBy?: 'worker' | 'restaurant') =>
     fetch(`${BASE}/jobs/${jobId}/cancel`, {
       method: 'PUT',
-      headers: headers()
+      headers: headers(),
+      body: JSON.stringify({ reason, cancelledBy })
     }).then(handleResponse),
 
   // ========== WORKERS ==========

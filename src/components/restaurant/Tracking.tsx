@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Phone, MessageCircle, CheckCircle2, X, Clock } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
+import { CancelShiftModal } from '../common/CancelShiftModal';
 
 export const LiveTracking: React.FC = () => {
   const { navToRestaurant, startShift, getSelectedJob, userProfile } = useApp();
@@ -13,6 +14,7 @@ export const LiveTracking: React.FC = () => {
   const [workerInitiated, setWorkerInit]   = useState(false);
   const [confirming, setConfirming]        = useState(false);
   const [error, setError]                  = useState('');
+  const [showCancel, setShowCancel]        = useState(false);
   const [jobData, setJobData]              = useState<any>(job || null);
 
   const workerName  = jobData?.WorkerName || 'העובד';
@@ -171,6 +173,25 @@ export const LiveTracking: React.FC = () => {
           </button>
         )}
       </div>
+
+      {/* ביטול משמרת */}
+      {!waitingForWorker && !workerInitiated && (
+        <button onClick={() => setShowCancel(true)}
+          className="w-full text-red-400 text-sm py-1 text-center font-semibold">
+          בטל משמרת
+        </button>
+      )}
+
+      {showCancel && (
+        <CancelShiftModal
+          jobId={jobId}
+          cancelledBy="restaurant"
+          startTime={jobData?.StartTime}
+          isConfirmed={true}
+          onClose={() => setShowCancel(false)}
+          onCancelled={() => { setShowCancel(false); navToRestaurant('home'); }}
+        />
+      )}
     </div>
   );
 };

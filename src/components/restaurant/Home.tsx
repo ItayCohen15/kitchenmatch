@@ -1,8 +1,9 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Zap, ChefHat, CheckCircle, Star, LogOut } from 'lucide-react';
+import { Zap, ChefHat, CheckCircle, Star, LogOut, X } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
+import { CancelShiftModal } from '../common/CancelShiftModal';
 
 export const RestaurantHome: React.FC = () => {
   const { navToRestaurant, navToWorker, userProfile, resetToLanding, selectWorkerJob } = useApp();
@@ -10,6 +11,7 @@ export const RestaurantHome: React.FC = () => {
   const [recentJobs, setRecentJobs] = useState<any[]>([]);
   const [activeShift, setActiveShift] = useState<any>(null);
   const [loadingWorkers, setLoadingWorkers] = useState(true);
+  const [cancelJob, setCancelJob] = useState<any>(null);
 
   const name = userProfile?.Name || 'המסעדה שלי';
   const city = userProfile?.City || '';
@@ -206,20 +208,42 @@ export const RestaurantHome: React.FC = () => {
           <div className="space-y-2">
             {recentJobs.map((j: any) => (
               <div key={j.Id} className="bg-white rounded-xl p-3 flex items-center gap-3 card-shadow">
-                <CheckCircle size={18} className={`flex-shrink-0 ${j.Status === 'completed' ? 'text-green-500' : 'text-amber-400'}`} />
+                <CheckCircle size={18} className={`flex-shrink-0 ${j.Status === 'completed' ? 'text-green-500' : j.Status === 'cancelled' ? 'text-red-400' : 'text-amber-400'}`} />
                 <div className="flex-1">
                   <span className="font-semibold text-gray-800 text-sm">{ROLE_LABELS[j.Role] || j.Role}</span>
-                  <span className="text-gray-400 text-xs"> · {j.Status === 'searching' ? 'מחפש' : j.Status === 'completed' ? 'הושלם' : j.Status}</span>
+                  <span className="text-gray-400 text-xs"> · {j.Status === 'searching' ? 'מחפש' : j.Status === 'completed' ? 'הושלם' : j.Status === 'cancelled' ? 'בוטל' : j.Status}</span>
                 </div>
                 <div className="text-right">
                   <div className="text-gray-700 font-bold text-sm">₪{j.HourlyRate}/ש׳</div>
                   {j.TotalPay && <div className="text-green-600 text-xs">₪{j.TotalPay} סה״כ</div>}
                 </div>
+                {j.Status === 'searching' && (
+                  <button onClick={() => setCancelJob(j)}
+                    className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-red-50 text-red-400 active:bg-red-100"
+                    title="בטל משמרת">
+                    <X size={15} />
+                  </button>
+                )}
               </div>
             ))}
           </div>
         )}
       </div>
+
+      {cancelJob && (
+        <CancelShiftModal
+          jobId={Number(cancelJob.Id)}
+          cancelledBy="restaurant"
+          startTime={cancelJob.StartTime}
+          isConfirmed={false}
+          onClose={() => setCancelJob(null)}
+          onCancelled={() => {
+            setCancelJob(null);
+            setRecentJobs(prev => prev.map(j =>
+              j.Id === cancelJob.Id ? { ...j, Status: 'cancelled' } : j));
+          }}
+        />
+      )}
     </div>
   );
 };
