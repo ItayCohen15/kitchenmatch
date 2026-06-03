@@ -11,6 +11,7 @@ export const JobDetails: React.FC = () => {
   const [declining, setDeclining] = useState(false);
   const [accepting, setAccepting] = useState(false);
   const [accepted, setAccepted] = useState(false);
+  const [withdrawing, setWithdrawing] = useState(false);
   const [error, setError] = useState('');
 
   if (!job) {
@@ -167,7 +168,29 @@ export const JobDetails: React.FC = () => {
               <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" />
               <span>בודק אישור אוטומטית...</span>
             </div>
+
+            {/* ביטול מועמדות — ללא קנס, לפני אישור */}
+            <button
+              onClick={async () => {
+                setWithdrawing(true);
+                try {
+                  await api.withdrawApplication(Number(job.Id || job.id));
+                  navToWorker('home');
+                } catch (e: any) {
+                  setError(e.message || 'שגיאה בביטול המועמדות');
+                  setWithdrawing(false);
+                }
+              }}
+              disabled={withdrawing}
+              className="w-full border border-red-200 text-red-500 rounded-2xl py-3 font-bold text-sm disabled:opacity-50"
+            >
+              {withdrawing ? 'מבטל...' : 'בטל מועמדות'}
+            </button>
+            <p className="text-gray-400 text-xs -mt-1">ביטול לפני אישור — ללא קנס</p>
           </>
+        )}
+        {!approvedByRestaurant && error && (
+          <div className="w-full bg-red-50 text-red-600 rounded-xl p-3 text-sm text-center">{error}</div>
         )}
         <button
           onClick={() => navToWorker('home')}

@@ -390,7 +390,10 @@ export const RestaurantWallet: React.FC = () => {
             // משמרת מבוטלת: רק קנס (אם היה ביטול מאוחר), אחרת ₪0
             // משמרת שהושלמה: עלות מלאה כולל עמלה. אחרת: עדיין לא חויב
             const cancelFee = Number(j.CancellationFee ?? 0);
-            const charged   = isCompleted ? base * 1.065 : isCancelled ? cancelFee : 0;
+            // ביטול: אם המסעדה ביטלה מאוחר → שילמה קנס (-). אם העובד ביטל מאוחר → המסעדה קיבלה פיצוי (+)
+            const restaurantPaidFee = isCancelled && cancelFee > 0 && j.CancelledBy === 'restaurant';
+            const restaurantGotComp = isCancelled && cancelFee > 0 && j.CancelledBy === 'worker';
+            const charged   = isCompleted ? base * 1.065 : 0;
             const statusColor = isCompleted ? 'text-green-500' : isCancelled ? 'text-red-400' : j.Status === 'searching' ? 'text-amber-400' : 'text-blue-400';
             const statusLabel = isCompleted ? 'הושלם' : isCancelled ? 'בוטל' : j.Status === 'searching' ? 'מחפש' : j.Status === 'active' ? 'פעיל' : j.Status === 'confirmed' ? 'מאושר' : j.Status;
 
@@ -413,11 +416,20 @@ export const RestaurantWallet: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-1">
-                    {charged > 0
-                      ? <div className="text-red-500 font-bold text-sm">-₪{charged.toFixed(0)}</div>
-                      : <div className="text-gray-300 font-bold text-sm">₪0</div>}
-                    {isCancelled && cancelFee > 0 && (
-                      <span className="text-[10px] text-red-400">קנס ביטול</span>
+                    {charged > 0 ? (
+                      <div className="text-red-500 font-bold text-sm">-₪{charged.toFixed(0)}</div>
+                    ) : restaurantPaidFee ? (
+                      <>
+                        <div className="text-red-500 font-bold text-sm">-₪{cancelFee.toFixed(0)}</div>
+                        <span className="text-[10px] text-red-400">קנס ביטול</span>
+                      </>
+                    ) : restaurantGotComp ? (
+                      <>
+                        <div className="text-green-600 font-bold text-sm">+₪{cancelFee.toFixed(0)}</div>
+                        <span className="text-[10px] text-green-500">פיצוי ביטול</span>
+                      </>
+                    ) : (
+                      <div className="text-gray-300 font-bold text-sm">₪0</div>
                     )}
                     {isCompleted && (
                       <button onClick={() => setReceiptJob(j)}

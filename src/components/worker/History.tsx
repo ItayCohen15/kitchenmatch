@@ -137,10 +137,33 @@ export const WorkerHistory: React.FC = () => {
                   <div className="font-bold text-gray-700">₪{(parseFloat(hours) * shift.HourlyRate).toFixed(0)}</div>
                 </div>
                 <div className="text-right">
-                  <div className="text-xs text-gray-400">{shift.Status === 'cancelled' ? 'בוטל' : 'נטו (לאחר עמלה)'}</div>
-                  <div className={`font-black text-lg ${shift.Status === 'completed' ? 'text-green-600' : shift.Status === 'cancelled' ? 'text-red-300' : 'text-gray-400'}`}>
-                    {shift.Status === 'cancelled' ? '—' : `₪${net}`}
-                  </div>
+                  {(() => {
+                    if (shift.Status === 'cancelled') {
+                      const fee = Number(shift.CancellationFee ?? 0);
+                      // המסעדה ביטלה מאוחר → העובד קיבל פיצוי
+                      if (fee > 0 && shift.CancelledBy === 'restaurant') {
+                        return (<>
+                          <div className="text-xs text-gray-400">פיצוי ביטול</div>
+                          <div className="font-black text-lg text-green-600">+₪{fee.toFixed(0)}</div>
+                        </>);
+                      }
+                      // העובד ביטל מאוחר → שילם קנס
+                      if (fee > 0 && shift.CancelledBy === 'worker') {
+                        return (<>
+                          <div className="text-xs text-gray-400">קנס ביטול</div>
+                          <div className="font-black text-lg text-red-500">-₪{fee.toFixed(0)}</div>
+                        </>);
+                      }
+                      return (<>
+                        <div className="text-xs text-gray-400">בוטל</div>
+                        <div className="font-black text-lg text-red-300">—</div>
+                      </>);
+                    }
+                    return (<>
+                      <div className="text-xs text-gray-400">נטו (לאחר עמלה)</div>
+                      <div className={`font-black text-lg ${shift.Status === 'completed' ? 'text-green-600' : 'text-gray-400'}`}>₪{net}</div>
+                    </>);
+                  })()}
                 </div>
               </div>
 

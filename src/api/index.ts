@@ -128,6 +128,12 @@ export const api = {
       body: JSON.stringify({ reason, cancelledBy })
     }).then(handleResponse),
 
+  withdrawApplication: (jobId: number) =>
+    fetch(`${BASE}/jobs/${jobId}/withdraw`, {
+      method: 'PUT',
+      headers: headers()
+    }).then(handleResponse),
+
   // ========== WORKERS ==========
   getWorkers: (role?: string, city?: string) => {
     const params = new URLSearchParams();
