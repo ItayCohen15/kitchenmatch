@@ -40,11 +40,12 @@ export const CancelShiftModal: React.FC<Props> = ({
 
   const reasons = cancelledBy === 'worker' ? WORKER_REASONS : RESTAURANT_REASONS;
 
-  // האם ביטול מאוחר (פחות משעתיים לפני התחלה ומשמרת מאושרת)
+  // האם ביטול מאוחר (פחות מ-4 שעות לפני התחלה ומשמרת מאושרת)
+  const LATE_FEE = 50;
   const hoursUntilStart = startTime
     ? (new Date(startTime).getTime() - Date.now()) / 3600000
     : Infinity;
-  const isLate = Boolean(isConfirmed) && hoursUntilStart < 2;
+  const isLate = Boolean(isConfirmed) && hoursUntilStart < 4;
 
   const handleConfirm = async () => {
     const finalReason = reason === 'אחר' ? (custom.trim() || 'אחר') : reason;
@@ -89,10 +90,12 @@ export const CancelShiftModal: React.FC<Props> = ({
             {isLate && (
               <div className="rounded-xl p-3 text-xs leading-relaxed"
                 style={{ background:'#fef2f2', border:'1px solid #fecaca', color:'#991b1b' }}>
-                ⚠️ <strong>ביטול מאוחר!</strong> נותרו פחות משעתיים לתחילת המשמרת.
-                {cancelledBy === 'worker'
-                  ? ' ביטול כעת יפגע בציון האמינות שלך ועלול להשפיע על שיבוצים עתידיים.'
-                  : ' מומלץ לתאם עם העובד לפני ביטול.'}
+                <div className="font-black text-sm mb-1">⚠️ ביטול מאוחר!</div>
+                נותרו פחות מ-4 שעות לתחילת המשמרת. אם תבטל כעת:
+                <ul className="mt-1.5 space-y-1 pr-1">
+                  <li>💸 <strong>קנס ₪{LATE_FEE}</strong> שיועבר ישירות {cancelledBy === 'worker' ? 'למסעדה' : 'לעובד'}</li>
+                  <li>⭐ <strong>הדירוג שלך יירד בכוכב אחד</strong></li>
+                </ul>
               </div>
             )}
 
@@ -139,7 +142,7 @@ export const CancelShiftModal: React.FC<Props> = ({
               style={{ background:'linear-gradient(135deg,#dc2626,#b91c1c)' }}>
               {loading
                 ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                : 'בטל משמרת'}
+                : isLate ? `בטל ושלם ₪${LATE_FEE}` : 'בטל משמרת'}
             </button>
           </div>
         </div>
