@@ -3,6 +3,7 @@ import { Plus, ArrowUpRight, CreditCard, CheckCircle2, FileText, X, Printer } fr
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
+import { printHTML } from '../../utils/print';
 
 /* ═══════════════════════════════════════════════════════════
    מסמך 3 – קבלת עמלת תיווך (KitchenMatch → מסעדה)
@@ -22,9 +23,7 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
   const receiptNum = `KM-COM-${(job.Id ?? 0).toString().padStart(6, '0')}`;
 
   const handlePrint = () => {
-    const w = window.open('', '_blank');
-    if (!w) return;
-    w.document.write(`
+    printHTML(`
       <html dir="rtl"><head><meta charset="UTF-8"><title>קבלת עמלה ${receiptNum}</title>
       <style>
         *{box-sizing:border-box}
@@ -114,9 +113,7 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
         קבלה זו הופקה אוטומטית עם סיום המשמרת.<br/>
         לשאלות: support@kitchenmatch.co.il
       </div>
-      <script>window.onload=()=>{window.print();window.close()}</script>
       </body></html>`);
-    w.document.close();
   };
 
   return (

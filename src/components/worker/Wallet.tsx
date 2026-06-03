@@ -4,6 +4,7 @@ import { FileText, X, Printer, Building2, User } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
+import { printHTML } from '../../utils/print';
 
 const MONTH_NAMES = ['ינו׳','פבר׳','מרץ','אפר׳','מאי','יוני','יולי','אוג׳','ספט׳','אוק׳','נוב׳','דצמ׳'];
 
@@ -33,9 +34,7 @@ const ShiftSummaryDoc = ({ shift, onClose }: { shift: any; onClose: () => void }
   const docId = `SUM-${(shift.Id ?? 0).toString().padStart(5, '0')}`;
 
   const handlePrint = () => {
-    const w = window.open('', '_blank');
-    if (!w) return;
-    w.document.write(`
+    printHTML(`
       <html dir="rtl"><head><meta charset="UTF-8"><title>סיכום משמרת ${docId}</title>
       <style>
         *{box-sizing:border-box}
@@ -86,9 +85,7 @@ const ShiftSummaryDoc = ({ shift, onClose }: { shift: any; onClose: () => void }
         KitchenMatch אינה המעסיקה. העובד הינו עוסק עצמאי.<br/>
         יש להוציא חשבונית עצמאית למסעדה על מלוא סכום המשמרת (₪${gross}).
       </div>
-      <script>window.onload=()=>{window.print();window.close()}</script>
       </body></html>`);
-    w.document.close();
   };
 
   return (
@@ -178,9 +175,7 @@ const WorkerInvoiceDoc = ({ shift, worker, onClose }: { shift: any; worker: any;
   const invoiceNum = `WRK-${(worker?.Id ?? 0)}-${(shift.Id ?? 0).toString().padStart(5,'0')}`;
 
   const handlePrint = () => {
-    const w = window.open('', '_blank');
-    if (!w) return;
-    w.document.write(`
+    printHTML(`
       <html dir="rtl"><head><meta charset="UTF-8"><title>חשבונית ${invoiceNum}</title>
       <style>
         *{box-sizing:border-box}
@@ -260,9 +255,7 @@ const WorkerInvoiceDoc = ({ shift, worker, onClose }: { shift: any; worker: any;
         חשבונית זו הופקה בסיוע פלטפורמת KitchenMatch.<br/>
         האחריות על הגשת החשבונית לרשויות המס חלה על העוסק בלבד.
       </div>
-      <script>window.onload=()=>{window.print();window.close()}</script>
       </body></html>`);
-    w.document.close();
   };
 
   return (
