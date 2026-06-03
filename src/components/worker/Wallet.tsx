@@ -94,13 +94,14 @@ const ShiftSummaryDoc = ({ shift, onClose }: { shift: any; onClose: () => void }
   return (
     <>
       <div className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm" onClick={onClose} />
-      {/* מיכל: ממוצב בין ה-notch לבין ה-bottom-nav */}
-      <div className="fixed z-50 flex flex-col bg-white rounded-3xl shadow-2xl overflow-hidden max-w-sm mx-auto"
+      {/* מיכל ממרכז: מותח flex בין ה-notch ל-nav וממרכז את החלון */}
+      <div className="fixed inset-x-0 z-50 flex items-center justify-center px-4 pointer-events-none"
         style={{
-          insetInline: '16px',
-          top: 'max(env(safe-area-inset-top) + 16px, 50px)',
-          bottom: 'calc(90px + env(safe-area-inset-bottom) + 12px)',
+          top: 'env(safe-area-inset-top)',
+          bottom: 'calc(80px + env(safe-area-inset-bottom))',
         }}>
+      <div className="flex flex-col bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-sm pointer-events-auto"
+        style={{ maxHeight: '100%' }}>
 
         {/* Header – דביק */}
         <div className="flex-shrink-0 p-4 text-white" style={{ background:'linear-gradient(135deg,#0d1420,#1a2744)' }}>
@@ -162,6 +163,7 @@ const ShiftSummaryDoc = ({ shift, onClose }: { shift: any; onClose: () => void }
             <Printer size={16} /> הדפס סיכום
           </button>
         </div>
+      </div>
       </div>
     </>
   );
@@ -266,12 +268,13 @@ const WorkerInvoiceDoc = ({ shift, worker, onClose }: { shift: any; worker: any;
   return (
     <>
       <div className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm" onClick={onClose} />
-      <div className="fixed z-50 flex flex-col bg-white rounded-3xl shadow-2xl overflow-hidden max-w-sm mx-auto"
+      <div className="fixed inset-x-0 z-50 flex items-center justify-center px-4 pointer-events-none"
         style={{
-          insetInline: '16px',
-          top: 'max(env(safe-area-inset-top) + 16px, 50px)',
-          bottom: 'calc(90px + env(safe-area-inset-bottom) + 12px)',
+          top: 'env(safe-area-inset-top)',
+          bottom: 'calc(80px + env(safe-area-inset-bottom))',
         }}>
+      <div className="flex flex-col bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-sm pointer-events-auto"
+        style={{ maxHeight: '100%' }}>
 
         {/* Header – דביק */}
         <div className="flex-shrink-0 p-4 text-white" style={{ background:'linear-gradient(135deg,#0d1420,#1a2744)' }}>
@@ -349,6 +352,7 @@ const WorkerInvoiceDoc = ({ shift, worker, onClose }: { shift: any; worker: any;
             <Printer size={16} /> הדפס חשבונית למסעדה
           </button>
         </div>
+      </div>
       </div>
     </>
   );
