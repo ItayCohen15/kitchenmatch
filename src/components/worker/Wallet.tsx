@@ -94,11 +94,11 @@ const ShiftSummaryDoc = ({ shift, onClose }: { shift: any; onClose: () => void }
   return (
     <>
       <div className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm" onClick={onClose} />
-      <div className="fixed inset-x-4 top-1/2 -translate-y-1/2 z-50 bg-white rounded-3xl shadow-2xl overflow-hidden max-w-sm mx-auto"
-        style={{ maxHeight:'85dvh', overflowY:'auto' }}>
+      <div className="fixed inset-x-4 top-1/2 -translate-y-1/2 z-50 bg-white rounded-3xl shadow-2xl max-w-sm mx-auto"
+        style={{ maxHeight:'85dvh', overflowY:'scroll', WebkitOverflowScrolling:'touch' as any }}>
 
         {/* Header */}
-        <div className="p-5 text-white" style={{ background:'linear-gradient(135deg,#0d1420,#1a2744)' }}>
+        <div className="p-5 text-white rounded-t-3xl" style={{ background:'linear-gradient(135deg,#0d1420,#1a2744)' }}>
           <div className="flex items-center justify-between mb-3">
             <div>
               <div className="font-black text-base">Kitchen<span style={{ color:'#e8a020' }}>Match</span></div>
@@ -260,11 +260,11 @@ const WorkerInvoiceDoc = ({ shift, worker, onClose }: { shift: any; worker: any;
   return (
     <>
       <div className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm" onClick={onClose} />
-      <div className="fixed inset-x-4 top-1/2 -translate-y-1/2 z-50 bg-white rounded-3xl shadow-2xl overflow-hidden max-w-sm mx-auto"
-        style={{ maxHeight:'85dvh', overflowY:'auto' }}>
+      <div className="fixed inset-x-4 top-1/2 -translate-y-1/2 z-50 bg-white rounded-3xl shadow-2xl max-w-sm mx-auto"
+        style={{ maxHeight:'85dvh', overflowY:'scroll', WebkitOverflowScrolling:'touch' as any }}>
 
         {/* Header */}
-        <div className="p-5 text-white" style={{ background:'linear-gradient(135deg,#0d1420,#1a2744)' }}>
+        <div className="p-5 text-white rounded-t-3xl" style={{ background:'linear-gradient(135deg,#0d1420,#1a2744)' }}>
           <div className="flex items-center justify-between mb-3">
             <div>
               <div className="font-black text-base">חשבונית שירות</div>
