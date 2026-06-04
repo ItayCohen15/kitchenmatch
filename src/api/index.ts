@@ -11,8 +11,15 @@ const headers = () => ({
 });
 
 const handleResponse = async (res: Response) => {
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || 'שגיאה בשרת');
+  // נסה לפענח JSON; אם הגוף אינו JSON (למשל שגיאת שרת/גודל) — תן הודעה ברורה
+  let data: any = null;
+  const text = await res.text();
+  try { data = text ? JSON.parse(text) : null; }
+  catch {
+    if (res.status === 413) throw new Error('הקובץ גדול מדי');
+    throw new Error(`שגיאת שרת (${res.status})`);
+  }
+  if (!res.ok) throw new Error(data?.error || `שגיאת שרת (${res.status})`);
   return data;
 };
 
