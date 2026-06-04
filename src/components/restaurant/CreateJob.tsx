@@ -8,9 +8,10 @@ import { SHIFT_ROLES } from '../../utils/roles';
 const ROLES = SHIFT_ROLES.map(r => ({ id: r.key as JobRole, label: r.label, icon: r.emoji, desc: r.desc }));
 
 const EXPERIENCE: { id: ExperienceLevel; label: string; desc: string }[] = [
-  { id: 'entry',  label: 'מתחיל',   desc: 'עד שנתיים ניסיון' },
-  { id: 'mid',    label: 'בינוני',  desc: '2–5 שנות ניסיון' },
-  { id: 'senior', label: 'מנוסה',   desc: '5+ שנות ניסיון' },
+  { id: 'any',    label: 'כל הרמות', desc: 'לא משנה — כל ניסיון מתקבל' },
+  { id: 'entry',  label: 'מתחיל',    desc: 'עד שנתיים ניסיון' },
+  { id: 'mid',    label: 'בינוני',   desc: '2–5 שנות ניסיון' },
+  { id: 'senior', label: 'מנוסה',    desc: '5+ שנות ניסיון' },
 ];
 
 export const CreateJob: React.FC = () => {
@@ -21,7 +22,7 @@ export const CreateJob: React.FC = () => {
   const [startTime, setStartTime] = useState('18:00');
   const [endTime, setEndTime] = useState('23:00');
   const [wage, setWage] = useState('75');
-  const [experience, setExperience] = useState<ExperienceLevel | null>(null);
+  const [experience, setExperience] = useState<ExperienceLevel>('any');
   const [emergency, setEmergency] = useState(false);
   const [instructions, setInstructions] = useState('');
   const [publishing, setPublishing] = useState(false);
