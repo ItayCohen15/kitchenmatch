@@ -184,9 +184,10 @@ export const RestaurantHome: React.FC = () => {
                   </div>
                   <div className="text-gray-500 text-xs">{w.City} · {ROLE_LABELS[w.Role] || w.Role}</div>
                 </div>
-                <div className="text-right flex-shrink-0">
-                  <div className="text-amber-500 font-bold text-sm">₪{w.HourlyRate}/ש׳</div>
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-auto mt-1" />
+                <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                  <span className="text-[10px] font-semibold text-green-600 flex items-center gap-1">
+                    <span className="w-2 h-2 bg-green-500 rounded-full" /> זמין
+                  </span>
                 </div>
               </div>
             );
