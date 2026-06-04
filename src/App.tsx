@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { usePush } from './hooks/usePush';
 import { Auth } from './components/Auth';
 import { Onboarding } from './components/Onboarding';
-import { RestaurantApp } from './components/restaurant/RestaurantApp';
-import { WorkerApp } from './components/worker/WorkerApp';
 import { api } from './api';
+
+// טעינה עצלה — כל תפקיד מוריד רק את הקוד שלו (כולל גרפים כבדים)
+const RestaurantApp = lazy(() => import('./components/restaurant/RestaurantApp').then(m => ({ default: m.RestaurantApp })));
+const WorkerApp = lazy(() => import('./components/worker/WorkerApp').then(m => ({ default: m.WorkerApp })));
 import { Splash } from './components/Splash';
 import { Landing } from './components/Landing';
 import { VerifyEmail } from './components/VerifyEmail';
@@ -195,8 +197,16 @@ const AppContent: React.FC = () => {
             />
           );
         })()}
-        {showApp && userRole === 'restaurant' && <RestaurantApp />}
-        {showApp && userRole === 'worker'     && <WorkerApp />}
+        {showApp && (
+          <Suspense fallback={
+            <div className="flex items-center justify-center" style={{ height: '100dvh' }}>
+              <div className="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+            </div>
+          }>
+            {userRole === 'restaurant' && <RestaurantApp />}
+            {userRole === 'worker'     && <WorkerApp />}
+          </Suspense>
+        )}
       </div>
     </div>
   );

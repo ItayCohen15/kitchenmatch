@@ -19,7 +19,16 @@ const handleResponse = async (res: Response) => {
     if (res.status === 413) throw new Error('הקובץ גדול מדי');
     throw new Error(`שגיאת שרת (${res.status})`);
   }
-  if (!res.ok) throw new Error(data?.error || `שגיאת שרת (${res.status})`);
+  if (!res.ok) {
+    const msg = data?.error || `שגיאת שרת (${res.status})`;
+    // טוקן פג/לא תקין — נקה והחזר למסך כניסה (לא חל על "סיסמא שגויה" בכניסה)
+    if (res.status === 401 && (msg === 'טוקן לא תקין' || msg === 'נדרש אימות')) {
+      ['km_token', 'km_role', 'km_profile', 'km_onboarding', 'km_screen', 'km_job']
+        .forEach(k => localStorage.removeItem(k));
+      location.reload();
+    }
+    throw new Error(msg);
+  }
   return data;
 };
 
