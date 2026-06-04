@@ -124,8 +124,8 @@ const AppContent: React.FC = () => {
       }
       if (!onboardingDone) {
         setNeedsOnboarding(true);
-      } else {
-        // בדוק סטטוס משמרת ונווט בהתאם
+      } else if (!new URLSearchParams(window.location.search).get('job')) {
+        // בדוק סטטוס משמרת ונווט בהתאם (אלא אם הגענו דרך התראת PUSH למשמרת ספציפית)
         resolveScreen(savedRole, profile, navToWorker, navToRestaurant, selectWorkerJob, startShift);
       }
     }

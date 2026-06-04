@@ -1,3 +1,7 @@
+// אפשר לגרסה חדשה של ה-SW להשתלט מיד (כדי שתיקונים ייכנסו לתוקף בפתיחה הבאה)
+self.addEventListener('install', () => self.skipWaiting());
+self.addEventListener('activate', event => event.waitUntil(self.clients.claim()));
+
 self.addEventListener('push', event => {
   if (!event.data) return;
   const data = event.data.json();

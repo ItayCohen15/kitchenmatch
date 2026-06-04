@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { ChevronRight, Zap, Clock } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
@@ -24,6 +24,8 @@ export const CreateJob: React.FC = () => {
   const [wage, setWage] = useState('75');
   const [experience, setExperience] = useState<ExperienceLevel>('any');
   const [emergency, setEmergency] = useState(isEmergencyMode); // נדלק אוטומטית בכניסה דרך כפתור חירום
+  // אם נכנסים דרך כפתור חירום — ודא שהמתג דלוק
+  useEffect(() => { if (isEmergencyMode) setEmergency(true); }, [isEmergencyMode]);
   const [duties, setDuties] = useState('');
   const [instructions, setInstructions] = useState('');
   const [publishing, setPublishing] = useState(false);
@@ -86,6 +88,14 @@ export const CreateJob: React.FC = () => {
 
   return (
     <div className="screen-enter">
+      {/* באנר מצב חירום — כשנכנסים דרך כפתור החירום */}
+      {emergency && (
+        <div className="mb-4 rounded-2xl p-3 flex items-center gap-2 text-white"
+          style={{ background: 'linear-gradient(135deg,#ef4444,#f97316)', boxShadow: '0 4px 16px rgba(239,68,68,0.35)' }}>
+          <Zap size={18} className="fill-white" />
+          <span className="font-bold text-sm">🚨 מצב חירום פעיל — עובד דרוש תוך 30 דקות</span>
+        </div>
+      )}
       {/* Progress */}
       <div className="flex gap-2 mb-6">
         {stepTitles.map((t, i) => (
