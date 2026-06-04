@@ -4,6 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
 import { printHTML } from '../../utils/print';
+import { CompensationDoc } from '../common/CompensationDoc';
 
 /* ═══════════════════════════════════════════════════════════
    מסמך 3 – קבלת עמלת תיווך (KitchenMatch → מסעדה)
@@ -214,6 +215,7 @@ export const RestaurantWallet: React.FC = () => {
   const [jobs, setJobs]               = useState<any[]>([]);
   const [loading, setLoading]         = useState(true);
   const [receiptJob, setReceiptJob]   = useState<any>(null);
+  const [compJob, setCompJob]         = useState<any>(null);
 
   const walletBalance = userProfile?.WalletBalance ?? 0;
   const name          = userProfile?.Name ?? '';
@@ -438,6 +440,13 @@ export const RestaurantWallet: React.FC = () => {
                         <FileText size={11} /> עמלה
                       </button>
                     )}
+                    {(restaurantPaidFee || restaurantGotComp) && (
+                      <button onClick={() => setCompJob(j)}
+                        className="flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-lg"
+                        style={{ background:'rgba(5,150,105,0.08)', color:'#059669' }}>
+                        <FileText size={11} /> אסמכתא
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -451,6 +460,15 @@ export const RestaurantWallet: React.FC = () => {
           job={receiptJob}
           restaurant={userProfile}
           onClose={() => setReceiptJob(null)}
+        />
+      )}
+      {compJob && (
+        <CompensationDoc
+          job={compJob}
+          viewer="restaurant"
+          workerName={compJob.WorkerName ?? 'העובד'}
+          restaurantName={userProfile?.Name ?? 'המסעדה'}
+          onClose={() => setCompJob(null)}
         />
       )}
     </div>

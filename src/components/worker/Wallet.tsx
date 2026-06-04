@@ -5,6 +5,7 @@ import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
 import { printHTML } from '../../utils/print';
+import { CompensationDoc } from '../common/CompensationDoc';
 
 const MONTH_NAMES = ['ינו׳','פבר׳','מרץ','אפר׳','מאי','יוני','יולי','אוג׳','ספט׳','אוק׳','נוב׳','דצמ׳'];
 
@@ -360,6 +361,7 @@ export const WorkerWallet: React.FC = () => {
   const [loading, setLoading]       = useState(true);
   const [summaryShift, setSummary]  = useState<any>(null);
   const [invoiceShift, setInvoice]  = useState<any>(null);
+  const [compShift, setCompShift]   = useState<any>(null);
   const [activeTab, setActiveTab]   = useState<'overview'|'docs'>('overview');
 
   const totalEarnings   = userProfile?.TotalEarnings   ?? 0;
@@ -375,6 +377,9 @@ export const WorkerWallet: React.FC = () => {
   }, [userProfile?.Id]);
 
   const completed = history.filter(j => j.Status === 'completed');
+  // משמרות שבוטלו עם פיצוי/קנס (₪) — לאסמכתאות
+  const compensations = history.filter(j =>
+    j.Status === 'cancelled' && Number(j.CancellationFee ?? 0) > 0);
 
   /* הכנסות חודשיות */
   const monthlyMap: Record<string, number> = {};
@@ -501,13 +506,42 @@ export const WorkerWallet: React.FC = () => {
             </div>
           )}
 
-          {!loading && completed.length === 0 && (
+          {!loading && completed.length === 0 && compensations.length === 0 && (
             <div className="text-center py-10 bg-white rounded-2xl card-shadow">
               <div className="text-4xl mb-3">📄</div>
               <p className="font-bold text-gray-700">אין מסמכים עדיין</p>
               <p className="text-gray-400 text-sm mt-1">מסמכים יופיעו לאחר השלמת משמרות</p>
             </div>
           )}
+
+          {/* אסמכתאות פיצוי/קנס ביטול */}
+          {compensations.map(shift => {
+            const fee = Number(shift.CancellationFee ?? 0);
+            const received = shift.CancelledBy === 'restaurant'; // המסעדה ביטלה → העובד קיבל
+            const dateStr = new Date(shift.CancelledAt || shift.StartTime)
+              .toLocaleDateString('he-IL', { day:'2-digit', month:'2-digit', year:'2-digit' });
+            return (
+              <div key={`comp-${shift.Id}`} className="bg-white rounded-2xl p-4 card-shadow">
+                <div className="flex items-start justify-between mb-3">
+                  <div>
+                    <div className="font-bold text-gray-900 text-sm">{shift.RestaurantName}</div>
+                    <div className="text-gray-400 text-xs mt-0.5">{dateStr} · משמרת בוטלה</div>
+                  </div>
+                  <div className="text-right">
+                    <div className={`font-black ${received ? 'text-green-600' : 'text-red-500'}`}>
+                      {received ? '+' : '-'}₪{fee.toFixed(0)}
+                    </div>
+                    <div className="text-gray-400 text-xs">{received ? 'פיצוי' : 'קנס'}</div>
+                  </div>
+                </div>
+                <button onClick={() => setCompShift(shift)}
+                  className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold"
+                  style={{ background:'rgba(5,150,105,0.08)', color:'#059669', border:'1px solid rgba(5,150,105,0.2)' }}>
+                  <FileText size={12} /> {received ? 'אסמכתת פיצוי' : 'אסמכתת קנס'}
+                </button>
+              </div>
+            );
+          })}
 
           {completed.map(shift => {
             const start = new Date(shift.StartTime);
@@ -562,6 +596,15 @@ export const WorkerWallet: React.FC = () => {
 
       {summaryShift && <ShiftSummaryDoc shift={summaryShift} onClose={() => setSummary(null)} />}
       {invoiceShift && <WorkerInvoiceDoc shift={invoiceShift} worker={userProfile} onClose={() => setInvoice(null)} />}
+      {compShift && (
+        <CompensationDoc
+          job={compShift}
+          viewer="worker"
+          workerName={userProfile?.Name ?? 'העובד'}
+          restaurantName={compShift.RestaurantName ?? 'המסעדה'}
+          onClose={() => setCompShift(null)}
+        />
+      )}
     </div>
   );
 };
