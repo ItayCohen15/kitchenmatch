@@ -5,6 +5,7 @@ import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
 import { CancelShiftModal } from '../common/CancelShiftModal';
 import { NewWorkerBadge } from '../common/NewWorkerBadge';
+import { isWithinKm } from '../../utils/cities';
 
 export const RestaurantHome: React.FC = () => {
   const { navToRestaurant, navToWorker, userProfile, resetToLanding, selectWorkerJob, refreshProfile } = useApp();
@@ -21,12 +22,20 @@ export const RestaurantHome: React.FC = () => {
   const rating = userProfile?.Rating || 0;
 
   useEffect(() => {
-    // עובדים — רענון חד פעמי
+    // עובדים — רענון חד פעמי (שומרים את כולם, מסננים לפי אזור בהמשך)
     api.getWorkers()
-      .then(data => setWorkers(Array.isArray(data) ? data.slice(0, 3) : []))
+      .then(data => setWorkers(Array.isArray(data) ? data : []))
       .catch(() => setWorkers([]))
       .finally(() => setLoadingWorkers(false));
   }, [userProfile]);
+
+  // עובדים זמינים באזור המסעדה (עד 30 ק"מ), ממוינים לפי דירוג — מציגים את 3 הגבוהים
+  const RADIUS_KM = 30;
+  const areaWorkers = workers
+    .filter(w => isWithinKm(city, w.City, RADIUS_KM))
+    .sort((a, b) => (b.Rating || 0) - (a.Rating || 0));
+  const topWorkers = areaWorkers.slice(0, 3);
+  const areaCount = areaWorkers.length;
 
   // רענן פרופיל מסעדה (ארנק/דירוג) מהשרת בכניסה למסך
   useEffect(() => { refreshProfile(); }, [refreshProfile]);
@@ -93,7 +102,7 @@ export const RestaurantHome: React.FC = () => {
           {[
             { label: 'ארנק', value: `₪${walletBalance.toLocaleString()}`, icon: '💳' },
             { label: 'משמרות', value: `${recentJobs.length}`, icon: '📋' },
-            { label: 'עובדים זמינים', value: `${workers.length}`, icon: '👷' },
+            { label: 'עובדים זמינים', value: `${areaCount}`, icon: '👷' },
           ].map(s => (
             <div key={s.label} className="bg-white/15 rounded-xl p-3 text-center">
               <div className="text-xl mb-1">{s.icon}</div>
@@ -157,9 +166,9 @@ export const RestaurantHome: React.FC = () => {
       {/* Available workers nearby */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-bold text-gray-800 text-base">עובדים זמינים</h2>
+          <h2 className="font-bold text-gray-800 text-base">עובדים זמינים באזורך ({areaCount})</h2>
           <span className="text-xs text-green-600 font-semibold bg-green-50 px-2 py-1 rounded-full">
-            {workers.length} זמינים
+            עד 30 ק״מ
           </span>
         </div>
         {loadingWorkers && (
@@ -167,13 +176,13 @@ export const RestaurantHome: React.FC = () => {
             <div className="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto" />
           </div>
         )}
-        {!loadingWorkers && workers.length === 0 && (
+        {!loadingWorkers && areaWorkers.length === 0 && (
           <div className="bg-white rounded-xl p-4 text-center card-shadow">
-            <p className="text-gray-400 text-sm">אין עובדים זמינים כרגע</p>
+            <p className="text-gray-400 text-sm">אין עובדים זמינים באזורך כרגע</p>
           </div>
         )}
         <div className="space-y-2">
-          {workers.map((w: any) => {
+          {topWorkers.map((w: any) => {
             const wName = w.Name || 'עובד';
             const wInitials = wName.split(' ').map((n: string) => n[0]).join('').slice(0,2);
             return (
