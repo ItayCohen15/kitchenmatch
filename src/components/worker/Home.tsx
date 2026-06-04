@@ -4,6 +4,8 @@ import { useApp } from '../../context/AppContext';
 import { ROLE_LABELS, LEVEL_LABELS, LEVEL_COLORS } from '../../data/mockData';
 import { api } from '../../api';
 import { visibleShiftRoles, isCookRole } from '../../utils/roles';
+import { isNewWorker, shiftsUntilEstablished } from '../../utils/levels';
+import { NewWorkerBadge } from '../common/NewWorkerBadge';
 
 export const WorkerHome: React.FC = () => {
   const { navToWorker, selectWorkerJob, userProfile, refreshProfile } = useApp();
@@ -84,10 +86,11 @@ export const WorkerHome: React.FC = () => {
           </div>
           <div className="flex-1">
             <div className="font-bold text-lg">{name}</div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${LEVEL_COLORS[level] || 'text-gray-500 bg-gray-100'}`}>
                 {LEVEL_LABELS[level] || level}
               </span>
+              <NewWorkerBadge completedShifts={completedShifts} size="sm" />
               {rating > 0 && <span className="text-yellow-400 text-sm font-bold">★{rating.toFixed(1)}</span>}
             </div>
           </div>
@@ -113,6 +116,17 @@ export const WorkerHome: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* באנר עובד חדש — עד 3 משמרות */}
+      {isNewWorker(completedShifts) && (
+        <div className="rounded-2xl p-3 flex items-center gap-2.5"
+          style={{ background:'rgba(59,130,246,0.1)', border:'1px solid rgba(59,130,246,0.25)' }}>
+          <span className="text-xl">🆕</span>
+          <span className="text-blue-700 font-semibold text-sm">
+            אתה עובד חדש — עוד {shiftsUntilEstablished(completedShifts)} משמרות מוצלחות כדי לבסס את הפרופיל ולהסיר את התג
+          </span>
+        </div>
+      )}
 
       {/* משמרת פעילה — רק הכי אחרונה */}
       {activeShifts.slice(0, 1).map((shift: any) => {

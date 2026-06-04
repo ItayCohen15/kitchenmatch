@@ -240,10 +240,14 @@ export const api = {
       body: JSON.stringify({ text, senderName, senderRole })
     }).then(handleResponse),
 
-  sendRating: (jobId: number, fromUserId: number, toUserId: number, score: number, comment: string, toRole: 'worker' | 'restaurant' = 'worker') =>
+  sendRating: (
+    jobId: number, fromUserId: number, toUserId: number, score: number, comment: string,
+    toRole: 'worker' | 'restaurant' = 'worker',
+    extra?: { wouldHireAgain?: string; skillsAsClaimed?: string }
+  ) =>
     fetch(`${BASE}/ratings`, {
       method: 'POST',
       headers: headers(),
-      body: JSON.stringify({ jobId, fromUserId, toUserId, score, comment, toRole })
+      body: JSON.stringify({ jobId, fromUserId, toUserId, score, comment, toRole, ...(extra || {}) })
     }).then(handleResponse),
 };

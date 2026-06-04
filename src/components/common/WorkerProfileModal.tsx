@@ -4,6 +4,7 @@ import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
 import { getLevel, levelFromShifts } from '../../utils/levels';
 import { WorkerGallery } from './WorkerGallery';
+import { NewWorkerBadge } from './NewWorkerBadge';
 
 interface Props {
   workerId: number;
@@ -72,7 +73,8 @@ export const WorkerProfileModal: React.FC<Props> = ({ workerId, initial, onClose
                   <div className="text-gray-400 text-xs">
                     {city}{role ? ` · ${ROLE_LABELS[role] || role}` : ''}
                   </div>
-                  <div className="flex items-center gap-2 mt-1">
+                  <div className="flex items-center gap-2 mt-1 flex-wrap">
+                    <NewWorkerBadge completedShifts={completed} size="sm" />
                     <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full"
                       style={{ background: lvl.gradient, color: 'white' }}>
                       {lvl.emoji} {lvl.label}

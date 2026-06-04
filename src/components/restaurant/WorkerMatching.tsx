@@ -5,6 +5,7 @@ import { LEVEL_LABELS, LEVEL_COLORS } from '../../data/mockData';
 import { api } from '../../api';
 import { CancelShiftModal } from '../common/CancelShiftModal';
 import { WorkerProfileModal } from '../common/WorkerProfileModal';
+import { NewWorkerBadge } from '../common/NewWorkerBadge';
 import { getLevel } from '../../utils/levels';
 
 // חישוב אחוז התאמה אמיתי (כולל חשיפה לפי רמה)
@@ -208,6 +209,7 @@ export const WorkerMatching: React.FC = () => {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-bold text-gray-900">{wName}</span>
+                    <NewWorkerBadge completedShifts={job.CompletedShifts} size="sm" />
                     <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${LEVEL_COLORS[level] || 'text-gray-500 bg-gray-100'}`}>
                       {LEVEL_LABELS[level] || level}
                     </span>
@@ -241,7 +243,7 @@ export const WorkerMatching: React.FC = () => {
                       <div className="text-gray-400 text-xs">דירוג</div>
                     </>
                   ) : (
-                    <div className="text-gray-300 text-xs font-semibold">עובד חדש</div>
+                    <div className="text-gray-300 text-xs font-semibold">אין דירוג</div>
                   )}
                 </div>
               </div>

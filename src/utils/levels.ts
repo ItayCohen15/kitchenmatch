@@ -37,6 +37,16 @@ export function unlockedPerks(levelKey?: string): string[] {
   return LEVELS.slice(0, idx + 1).flatMap(l => l.perks);
 }
 
+// ── עובד חדש ── עד שמסיים את המשמרת השלישית הוא מסומן כ"חדש"
+export const NEW_WORKER_SHIFTS = 3;
+export function isNewWorker(completedShifts?: number): boolean {
+  return (Number(completedShifts) || 0) < NEW_WORKER_SHIFTS;
+}
+// כמה משמרות נותרו עד להסרת תג "עובד חדש"
+export function shiftsUntilEstablished(completedShifts?: number): number {
+  return Math.max(NEW_WORKER_SHIFTS - (Number(completedShifts) || 0), 0);
+}
+
 export function getLevel(key?: string): LevelInfo {
   return LEVELS.find(l => l.key === key) || LEVELS[0];
 }

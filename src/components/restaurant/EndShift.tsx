@@ -1,9 +1,10 @@
-﻿import React, { useState } from 'react';
-import { CheckCircle } from 'lucide-react';
+﻿import React, { useState, useEffect } from 'react';
+import { CheckCircle, Sparkles } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { StarRating } from '../common/StarRating';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
+import { NEW_WORKER_SHIFTS } from '../../utils/levels';
 
 export const RestaurantEndShift: React.FC = () => {
   const { navToRestaurant, getSelectedJob, shiftStartTime, userProfile } = useApp();
@@ -12,6 +13,20 @@ export const RestaurantEndShift: React.FC = () => {
   const [comment, setComment] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  // דירוג מורחב לעובד חדש
+  const [workerShifts, setWorkerShifts] = useState<number | null>(null);
+  const [skillsAsClaimed, setSkillsAsClaimed] = useState('');
+  const [wouldHireAgain, setWouldHireAgain] = useState('');
+
+  // שלוף את מספר המשמרות של העובד כדי לדעת אם הוא "חדש" (3 ראשונות)
+  useEffect(() => {
+    const wid = job?.WorkerId;
+    if (!wid) return;
+    api.getWorker(wid)
+      .then(w => { if (w) setWorkerShifts(Number(w.CompletedShifts) || 0); })
+      .catch(() => {});
+  }, [job?.WorkerId]);
+  const isNew = workerShifts !== null && workerShifts <= NEW_WORKER_SHIFTS;
 
   const startTime = shiftStartTime || new Date(Date.now() - 5 * 3600000);
   const endTime = new Date();
@@ -44,7 +59,11 @@ export const RestaurantEndShift: React.FC = () => {
           job.WorkerId || 0,                    // יעד = Workers.Id
           rating,
           comment,
-          'worker'                              // מסעדה מדרגת עובד
+          'worker',                             // מסעדה מדרגת עובד
+          isNew ? {                             // דירוג מורחב — רק לעובד חדש
+            skillsAsClaimed: skillsAsClaimed || undefined,
+            wouldHireAgain: wouldHireAgain || undefined,
+          } : undefined
         );
       }
     } catch {
@@ -158,6 +177,47 @@ export const RestaurantEndShift: React.FC = () => {
           className="w-full mt-3 border border-gray-200 rounded-xl p-3 text-sm text-right resize-none focus:border-amber-400 outline-none"
         />
       </div>
+
+      {/* דירוג מורחב — רק לעובד חדש (3 משמרות ראשונות) */}
+      {isNew && (
+        <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4">
+          <div className="flex items-center gap-1.5 mb-1">
+            <Sparkles size={15} className="text-blue-500 fill-blue-500" />
+            <h3 className="font-bold text-blue-800 text-sm">עובד חדש — עזור לנו לוודא שהוא אמין</h3>
+          </div>
+          <p className="text-blue-600 text-xs mb-3">התשובות עוזרות לסנן מי שלא באמת יודע את העבודה (אופציונלי)</p>
+
+          {/* האם התמחה במה שהצהיר */}
+          <div className="mb-3">
+            <div className="text-sm font-semibold text-gray-700 mb-1.5">האם התמחה במה שהצהיר?</div>
+            <div className="flex gap-2">
+              {[{ k:'yes', l:'כן לגמרי' }, { k:'partial', l:'חלקית' }, { k:'no', l:'לא' }].map(o => (
+                <button key={o.k} onClick={() => setSkillsAsClaimed(skillsAsClaimed === o.k ? '' : o.k)}
+                  className={`flex-1 py-2 rounded-xl text-sm font-semibold border transition-colors ${
+                    skillsAsClaimed === o.k ? 'bg-blue-500 text-white border-blue-500' : 'bg-white text-gray-600 border-gray-200'
+                  }`}>
+                  {o.l}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* האם תזמין שוב */}
+          <div>
+            <div className="text-sm font-semibold text-gray-700 mb-1.5">האם תזמין אותו שוב?</div>
+            <div className="flex gap-2">
+              {[{ k:'yes', l:'בהחלט' }, { k:'maybe', l:'אולי' }, { k:'no', l:'לא' }].map(o => (
+                <button key={o.k} onClick={() => setWouldHireAgain(wouldHireAgain === o.k ? '' : o.k)}
+                  className={`flex-1 py-2 rounded-xl text-sm font-semibold border transition-colors ${
+                    wouldHireAgain === o.k ? 'bg-blue-500 text-white border-blue-500' : 'bg-white text-gray-600 border-gray-200'
+                  }`}>
+                  {o.l}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       <button
         onClick={handleSubmit}

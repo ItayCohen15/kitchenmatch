@@ -4,6 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
 import { CancelShiftModal } from '../common/CancelShiftModal';
+import { NewWorkerBadge } from '../common/NewWorkerBadge';
 
 export const RestaurantHome: React.FC = () => {
   const { navToRestaurant, navToWorker, userProfile, resetToLanding, selectWorkerJob, refreshProfile } = useApp();
@@ -181,8 +182,9 @@ export const RestaurantHome: React.FC = () => {
                   {wInitials}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-semibold text-gray-900 text-sm">{wName}</span>
+                    <NewWorkerBadge completedShifts={w.CompletedShifts} size="sm" />
                     {w.Rating > 0 && <span className="text-xs text-yellow-500 font-bold">★{w.Rating.toFixed(1)}</span>}
                   </div>
                   <div className="text-gray-500 text-xs">{w.City} · {ROLE_LABELS[w.Role] || w.Role}</div>
