@@ -1,4 +1,4 @@
-﻿import React, { useState, useRef } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import { Edit3, Star, Award, LogOut, Phone, Check, X, FileText, Trash2, Upload } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
@@ -9,7 +9,9 @@ import { WorkerGallery } from '../common/WorkerGallery';
 import { fileToDataUrl } from '../../utils/image';
 
 export const WorkerProfile: React.FC = () => {
-  const { userProfile, resetToLanding, setUserProfile } = useApp();
+  const { userProfile, resetToLanding, setUserProfile, refreshProfile } = useApp();
+  // רענן נתוני פרופיל (משמרות/רמה) מהשרת בכניסה למסך
+  useEffect(() => { refreshProfile(); }, [refreshProfile]);
   const completedForLevel = userProfile?.CompletedShifts || 0;
   // הרמה נקבעת לפי מספר המשמרות (מקור אמת אחיד), עם נפילה לערך מהשרת
   const currentLevel = levelFromShifts(completedForLevel);

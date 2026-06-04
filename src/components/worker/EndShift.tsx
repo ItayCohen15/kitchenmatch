@@ -3,6 +3,7 @@ import { CheckCircle, Wallet } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { StarRating } from '../common/StarRating';
 import { api } from '../../api';
+import { workerCommissionRate, levelFromShifts } from '../../utils/levels';
 
 export const WorkerEndShift: React.FC = () => {
   const { navToWorker, getSelectedJob, shiftStartTime, userProfile } = useApp();
@@ -13,13 +14,19 @@ export const WorkerEndShift: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
 
-  // חישוב שעות אמיתיות
+  // חישוב לפי זמן עבודה בפועל (מוגבל לשעות שנקבעו מראש)
   const startTime = shiftStartTime || new Date(Date.now() - 5 * 3600000);
   const endTime = new Date();
-  const shiftHours = Math.max(((endTime.getTime() - startTime.getTime()) / 3600000), 0.5);
+  const schedHours = job?.StartTime && job?.EndTime
+    ? Math.max((new Date(job.EndTime).getTime() - new Date(job.StartTime).getTime()) / 3600000, 0)
+    : Infinity;
+  const rawHours = (endTime.getTime() - startTime.getTime()) / 3600000;
+  const shiftHours = Math.max(Math.min(rawHours, schedHours), 0.5);
   const hourlyRate = job ? Number(job.HourlyRate || job.hourlyRate || 0) : 0;
+  const workerRate = workerCommissionRate(levelFromShifts(userProfile?.CompletedShifts || 0).key);
+  const ratePct = (workerRate * 100).toFixed(1);
   const grossPay = shiftHours * hourlyRate;
-  const commission = grossPay * 0.065;
+  const commission = grossPay * workerRate;
   const netPay = (grossPay - commission).toFixed(0);
   const restaurantName = job?.RestaurantName || job?.restaurantName || 'המסעדה';
 
@@ -87,7 +94,7 @@ export const WorkerEndShift: React.FC = () => {
             <div className="text-green-100 text-xs">/שעה</div>
           </div>
           <div className="bg-white/15 rounded-xl p-3">
-            <div className="font-black text-lg text-yellow-300">-6.5%</div>
+            <div className="font-black text-lg text-yellow-300">-{ratePct}%</div>
             <div className="text-green-100 text-xs">עמלה</div>
           </div>
         </div>
@@ -99,7 +106,7 @@ export const WorkerEndShift: React.FC = () => {
         <div className="space-y-0">
           {[
             { label: `₪${hourlyRate} × ${shiftHours.toFixed(1)} שעות`,  value: `₪${grossPay.toFixed(0)}`,      color: 'text-gray-800' },
-            { label: 'עמלת פלטפורמה (6.5%)',                            value: `-₪${commission.toFixed(0)}`,    color: 'text-red-500'  },
+            { label: `עמלת פלטפורמה (${ratePct}%)`,                     value: `-₪${commission.toFixed(0)}`,    color: 'text-red-500'  },
           ].map(r => (
             <div key={r.label} className="flex justify-between text-sm py-2 border-b border-gray-50">
               <span className="text-gray-500">{r.label}</span>

@@ -6,7 +6,7 @@ import { ROLE_LABELS } from '../../data/mockData';
 import { CancelShiftModal } from '../common/CancelShiftModal';
 
 export const RestaurantHome: React.FC = () => {
-  const { navToRestaurant, navToWorker, userProfile, resetToLanding, selectWorkerJob } = useApp();
+  const { navToRestaurant, navToWorker, userProfile, resetToLanding, selectWorkerJob, refreshProfile } = useApp();
   const [workers, setWorkers] = useState<any[]>([]);
   const [recentJobs, setRecentJobs] = useState<any[]>([]);
   const [activeShift, setActiveShift] = useState<any>(null);
@@ -26,6 +26,9 @@ export const RestaurantHome: React.FC = () => {
       .catch(() => setWorkers([]))
       .finally(() => setLoadingWorkers(false));
   }, [userProfile]);
+
+  // רענן פרופיל מסעדה (ארנק/דירוג) מהשרת בכניסה למסך
+  useEffect(() => { refreshProfile(); }, [refreshProfile]);
 
   // משמרות + משמרת פעילה — רענון כל 5 שניות
   useEffect(() => {

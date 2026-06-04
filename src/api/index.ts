@@ -206,6 +206,9 @@ export const api = {
     }).then(handleResponse),
 
   // ========== RESTAURANTS ==========
+  getRestaurant: (restaurantId: number) =>
+    fetch(`${BASE}/restaurants/${restaurantId}`, { headers: headers() }).then(handleResponse),
+
   updateRestaurant: (restaurantId: number, data: object) =>
     fetch(`${BASE}/restaurants/${restaurantId}`, {
       method: 'PUT',

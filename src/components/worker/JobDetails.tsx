@@ -47,6 +47,7 @@ export const JobDetails: React.FC = () => {
   const restaurantCity = job.RestaurantCity || job.restaurantCity || '';
   const restaurantAddress = job.RestaurantAddress || job.restaurantAddress || '';
   const jobInstructions = job.Instructions || job.instructions || '';
+  const jobDuties = job.Duties || job.duties || '';
   const isEmergency = Boolean(job.IsEmergency || job.isEmergency);
   const role = job.Role || job.role || 'chef';
 
@@ -269,6 +270,14 @@ export const JobDetails: React.FC = () => {
           <span className="font-black text-green-600 text-lg">₪{netPay}</span>
         </div>
       </div>
+
+      {/* מה כוללת המשמרת */}
+      {jobDuties && (
+        <div className="bg-white rounded-2xl p-4 card-shadow">
+          <h3 className="font-bold text-gray-800 mb-2 text-sm">📋 מה כוללת המשמרת</h3>
+          <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-line">{jobDuties}</p>
+        </div>
+      )}
 
       {/* Restaurant info */}
       <div className="bg-white rounded-2xl p-4 card-shadow">

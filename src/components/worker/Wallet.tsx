@@ -358,7 +358,7 @@ const WorkerInvoiceDoc = ({ shift, worker, onClose }: { shift: any; worker: any;
    ראשי – ארנק עובד
 ═══════════════════════════════════════════════════════════ */
 export const WorkerWallet: React.FC = () => {
-  const { userProfile } = useApp();
+  const { userProfile, refreshProfile } = useApp();
   const [history, setHistory]       = useState<any[]>([]);
   const [loading, setLoading]       = useState(true);
   const [summaryShift, setSummary]  = useState<any>(null);
@@ -382,6 +382,9 @@ export const WorkerWallet: React.FC = () => {
       .catch(() => [])
       .finally(() => setLoading(false));
   }, [userProfile?.Id]);
+
+  // רענן סטטיסטיקות (הכנסות/רמה) מהשרת בכניסה למסך
+  useEffect(() => { refreshProfile(); }, [refreshProfile]);
 
   const completed = history.filter(j => j.Status === 'completed');
   // משמרות שבוטלו עם פיצוי/קנס (₪) — לאסמכתאות

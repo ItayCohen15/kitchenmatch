@@ -6,7 +6,7 @@ import { api } from '../../api';
 import { visibleShiftRoles, isCookRole } from '../../utils/roles';
 
 export const WorkerHome: React.FC = () => {
-  const { navToWorker, selectWorkerJob, userProfile } = useApp();
+  const { navToWorker, selectWorkerJob, userProfile, refreshProfile } = useApp();
   const name = userProfile?.Name || 'עובד';
   const initials = name.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
   const level = userProfile?.Level || 'bronze';
@@ -32,6 +32,9 @@ export const WorkerHome: React.FC = () => {
     const iv = setInterval(load, 6000);
     return () => clearInterval(iv);
   }, []);
+
+  // רענן פרופיל (משמרות/רמה) מהשרת בכניסה למסך
+  useEffect(() => { refreshProfile(); }, [refreshProfile]);
 
   // בדוק כל 5 שניות אם יש משמרת פעילה/מאושרת לעובד
   useEffect(() => {

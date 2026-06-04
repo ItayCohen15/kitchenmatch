@@ -15,10 +15,16 @@ export const RestaurantEndShift: React.FC = () => {
 
   const startTime = shiftStartTime || new Date(Date.now() - 5 * 3600000);
   const endTime = new Date();
-  const shiftHours = Math.max(((endTime.getTime() - startTime.getTime()) / 3600000), 0.5);
   const hourlyRate = job ? Number(job.HourlyRate || job.hourlyRate || 0) : 0;
-  const baseAmount = shiftHours * hourlyRate;
-  const restaurantCommission = baseAmount * 0.065;
+  // שעות בפועל (מוגבל למתוכנן) + הסכום המקורי שנקבע מראש
+  const schedHours = job?.StartTime && job?.EndTime
+    ? Math.max((new Date(job.EndTime).getTime() - new Date(job.StartTime).getTime()) / 3600000, 0)
+    : 0;
+  const rawHours = (endTime.getTime() - startTime.getTime()) / 3600000;
+  const shiftHours = Math.max(Math.min(rawHours, schedHours || rawHours), 0.5);
+  const baseAmount = shiftHours * hourlyRate;                    // עבודה בפועל
+  const baseScheduled = (schedHours || shiftHours) * hourlyRate; // הסכום המקורי
+  const restaurantCommission = baseScheduled * 0.065;           // עמלה על המקורי
   const totalCharged = (baseAmount + restaurantCommission).toFixed(0);
   const workerName = job?.WorkerName || 'העובד';
   const workerInit = workerName.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
@@ -103,8 +109,8 @@ export const RestaurantEndShift: React.FC = () => {
         <h3 className="font-bold text-gray-800 mb-3">פירוט תשלום</h3>
         <div className="space-y-0">
           {[
-            { label: `שכר בסיסי (₪${hourlyRate} × ${shiftHours.toFixed(1)} ש׳)`, value: `₪${baseAmount.toFixed(0)}`, color: 'text-gray-800' },
-            { label: 'עמלת פלטפורמה (6.5%)',                                       value: `₪${restaurantCommission.toFixed(0)}`, color: 'text-gray-800' },
+            { label: `שכר בפועל (₪${hourlyRate} × ${shiftHours.toFixed(1)} ש׳)`, value: `₪${baseAmount.toFixed(0)}`, color: 'text-gray-800' },
+            { label: `עמלת פלטפורמה (6.5% מ-₪${baseScheduled.toFixed(0)})`,        value: `₪${restaurantCommission.toFixed(0)}`, color: 'text-gray-800' },
           ].map(r => (
             <div key={r.label} className="flex justify-between text-sm py-2 border-b border-gray-50">
               <span className="text-gray-500">{r.label}</span>

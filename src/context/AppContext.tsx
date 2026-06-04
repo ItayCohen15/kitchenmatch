@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import type { UserRole, RestaurantScreen, WorkerScreen, Job, Message } from '../types';
 import { INITIAL_CHAT } from '../data/mockData';
+import { api } from '../api';
 
 // מסכים שלא כדאי לשחזר (חד-פעמיים)
 const NO_RESTORE_SCREENS = ['end_shift'];
@@ -30,6 +31,7 @@ interface AppContextValue extends AppState {
   getSelectedJob: () => any;
   resetToLanding: () => void;
   setUserProfile: (profile: any) => void;
+  refreshProfile: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextValue | null>(null);
@@ -119,6 +121,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return selectedJobData;
   }, [selectedJobData]);
 
+  // רענן את פרופיל המשתמש מהשרת (סטטיסטיקות, רמה, ארנק) — שלא יישאר תקוע על נתון ישן
+  const refreshProfile = useCallback(async () => {
+    if (!userProfile?.Id || !userRole) return;
+    try {
+      const fresh = userRole === 'worker'
+        ? await api.getWorker(userProfile.Id)
+        : userRole === 'restaurant'
+          ? await api.getRestaurant(userProfile.Id)
+          : null;
+      if (fresh?.Id) {
+        setUserProfile(fresh);
+        localStorage.setItem('km_profile', JSON.stringify(fresh));
+      }
+    } catch { /* רענון לא קריטי */ }
+  }, [userProfile?.Id, userRole]);
+
   const resetToLanding = useCallback(() => {
     setUserRole(null);
     setRestaurantScreen('home');
@@ -143,7 +161,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       shiftStartTime, isEmergencyMode, workerSelectedJobId, selectedJobData, userProfile,
       setUserRole, navToRestaurant, navToWorker, setActiveJob,
       sendMessage, startShift, setEmergencyMode: setIsEmergencyMode,
-      selectWorkerJob, getSelectedJob, resetToLanding, setUserProfile,
+      selectWorkerJob, getSelectedJob, resetToLanding, setUserProfile, refreshProfile,
     }}>
       {children}
     </AppContext.Provider>
