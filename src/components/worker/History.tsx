@@ -3,6 +3,7 @@ import { CheckCircle2, Clock, XCircle, Star } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
+import { levelFromShifts, netMultiplier } from '../../utils/levels';
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
   completed:          { label: 'הושלם',      color: 'text-green-600 bg-green-50',  icon: <CheckCircle2 size={14} /> },
@@ -34,11 +35,13 @@ export const WorkerHistory: React.FC = () => {
     return true;
   });
 
+  const netMult = netMultiplier(levelFromShifts(userProfile?.CompletedShifts || 0).key);
+
   const totalEarned = shifts
     .filter(s => s.Status === 'completed')
     .reduce((sum, s) => {
       const hours = (new Date(s.EndTime).getTime() - new Date(s.StartTime).getTime()) / 3600000;
-      return sum + hours * s.HourlyRate * 0.935;
+      return sum + hours * s.HourlyRate * netMult;
     }, 0);
 
   return (
@@ -101,7 +104,7 @@ export const WorkerHistory: React.FC = () => {
           const start = new Date(shift.StartTime);
           const end = new Date(shift.EndTime);
           const hours = ((end.getTime() - start.getTime()) / 3600000).toFixed(1);
-          const net = (parseFloat(hours) * shift.HourlyRate * 0.935).toFixed(0);
+          const net = (parseFloat(hours) * shift.HourlyRate * netMult).toFixed(0);
           const cfg = STATUS_CONFIG[shift.Status] || STATUS_CONFIG.completed;
           const dateStr = start.toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' });
           const timeStr = `${start.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })} – ${end.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}`;

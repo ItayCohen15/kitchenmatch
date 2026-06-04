@@ -4,6 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { ROLE_LABELS } from '../../data/mockData';
 import { api } from '../../api';
 import { CancelShiftModal } from '../common/CancelShiftModal';
+import { workerCommissionRate, levelFromShifts } from '../../utils/levels';
 
 export const JobDetails: React.FC = () => {
   const { navToWorker, getSelectedJob, userProfile } = useApp();
@@ -36,7 +37,9 @@ export const JobDetails: React.FC = () => {
   const end = new Date(job.EndTime || job.endTime);
   const hours = ((end.getTime() - start.getTime()) / (1000 * 60 * 60)).toFixed(1);
   const baseAmount = parseFloat(hours) * hourlyRate;
-  const commission = baseAmount * 0.065;
+  const workerLevel = levelFromShifts(userProfile?.CompletedShifts || 0).key;
+  const commRate = workerCommissionRate(workerLevel);
+  const commission = baseAmount * commRate;
   const netPay = (baseAmount - commission).toFixed(0);
   const startStr = start.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
   const endStr = end.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
@@ -254,7 +257,7 @@ export const JobDetails: React.FC = () => {
           { label: 'שעות',                 value: `${startStr} – ${endStr}` },
           { label: 'סה״כ שעות',            value: `${hours} שעות` },
           { label: 'שכר ברוטו',            value: `₪${baseAmount.toFixed(0)}` },
-          { label: 'עמלת פלטפורמה (6.5%)', value: `-₪${commission.toFixed(0)}` },
+          { label: `עמלת פלטפורמה (${(commRate*100).toFixed(1)}%)`, value: `-₪${commission.toFixed(0)}` },
         ].map(d => (
           <div key={d.label} className="flex justify-between items-center py-2.5 border-b border-gray-50 last:border-0">
             <span className="text-gray-500 text-sm">{d.label}</span>

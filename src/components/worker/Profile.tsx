@@ -1,21 +1,17 @@
 ﻿import React, { useState } from 'react';
-import { Edit3, Star, Award, LogOut, Phone, Check, X, ChevronRight } from 'lucide-react';
-import { LEVEL_LABELS, LEVEL_COLORS } from '../../data/mockData';
+import { Edit3, Star, Award, LogOut, Phone, Check, X } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
-
-const LEVEL_NEXT: Record<string, { next: string; progress: number; shiftsNeeded: number }> = {
-  bronze: { next: 'כסף',  progress: 65, shiftsNeeded: 35 },
-  silver: { next: 'זהב',  progress: 78, shiftsNeeded: 22 },
-  gold:   { next: 'פרו',  progress: 52, shiftsNeeded: 57 },
-  pro:    { next: 'Pro',  progress: 100, shiftsNeeded: 0 },
-};
+import { LEVELS, levelFromShifts, nextLevelProgress } from '../../utils/levels';
 
 export const WorkerProfile: React.FC = () => {
   const { userProfile, resetToLanding, setUserProfile } = useApp();
-  const level = userProfile?.Level || 'bronze';
-  const levelInfo = LEVEL_NEXT[level] || LEVEL_NEXT.bronze;
+  const completedForLevel = userProfile?.CompletedShifts || 0;
+  // הרמה נקבעת לפי מספר המשמרות (מקור אמת אחיד), עם נפילה לערך מהשרת
+  const currentLevel = levelFromShifts(completedForLevel);
+  const level = currentLevel.key || userProfile?.Level || 'bronze';
+  const prog = nextLevelProgress(completedForLevel);
   const [available, setAvailable] = useState(userProfile?.IsAvailable !== false);
   const [editingPhone, setEditingPhone] = useState(false);
   const [phone, setPhone] = useState(userProfile?.Phone || '');
@@ -135,8 +131,9 @@ export const WorkerProfile: React.FC = () => {
             <div className="font-black text-xl">{name}</div>
             <div className="text-gray-400 text-xs mt-0.5">{userProfile?.City || ''} · {ROLE_LABELS[userProfile?.Role] || userProfile?.Role || ''}</div>
             <div className="flex items-center gap-2 mt-1">
-              <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${LEVEL_COLORS[level] || 'text-gray-500 bg-gray-100'}`}>
-                {LEVEL_LABELS[level] || level}
+              <span className="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full"
+                style={{ background: currentLevel.gradient, color: 'white' }}>
+                {currentLevel.emoji} {currentLevel.label}
               </span>
             </div>
             <div className="flex items-center gap-3 mt-2">
@@ -221,23 +218,67 @@ export const WorkerProfile: React.FC = () => {
       </div>
 
       {/* Level progress */}
-      {level !== 'pro' && (
-        <div className="bg-white rounded-2xl p-4 card-shadow">
-          <div className="flex items-center gap-2 mb-3">
-            <Award size={18} className="text-yellow-500" />
-            <h3 className="font-bold text-gray-800">התקדמות לרמה הבאה</h3>
-          </div>
-          <div className="flex justify-between text-sm mb-2">
-            <span className={`font-bold px-2 py-0.5 rounded-full ${LEVEL_COLORS[level] || ''}`}>{LEVEL_LABELS[level] || level}</span>
-            <span className="text-gray-500">עוד {levelInfo.shiftsNeeded} משמרות → {levelInfo.next}</span>
-          </div>
-          <div className="bg-gray-100 rounded-full h-3">
-            <div className="h-3 bg-gradient-to-l from-yellow-500 to-gray-800 rounded-full transition-all"
-              style={{ width: `${levelInfo.progress}%` }} />
-          </div>
-          <div className="text-xs text-gray-400 mt-1 text-center">{levelInfo.progress}% מהדרך לרמה הבאה</div>
+      <div className="bg-white rounded-2xl p-4 card-shadow">
+        <div className="flex items-center gap-2 mb-3">
+          <Award size={18} className="text-yellow-500" />
+          <h3 className="font-bold text-gray-800">הרמה שלי</h3>
         </div>
-      )}
+
+        {/* badge רמה נוכחית + עמלה */}
+        <div className="flex items-center justify-between mb-3">
+          <span className="inline-flex items-center gap-1.5 font-black px-3 py-1.5 rounded-xl text-sm"
+            style={{ background: currentLevel.gradient, color: 'white' }}>
+            {currentLevel.emoji} {currentLevel.label}
+          </span>
+          <div className="text-left">
+            <div className="text-xs text-gray-400">עמלת העובד שלך</div>
+            <div className="font-black text-green-600 text-sm">{(currentLevel.commission * 100).toFixed(1)}%</div>
+          </div>
+        </div>
+
+        {prog.next ? (
+          <>
+            <div className="flex justify-between text-sm mb-2">
+              <span className="text-gray-500">{completedForLevel} משמרות</span>
+              <span className="text-gray-500">
+                עוד <strong className="text-gray-800">{prog.shiftsNeeded}</strong> → {prog.next.emoji} {prog.next.label}
+              </span>
+            </div>
+            <div className="bg-gray-100 rounded-full h-3 overflow-hidden">
+              <div className="h-3 rounded-full transition-all"
+                style={{ width: `${prog.progress}%`, background: currentLevel.gradient }} />
+            </div>
+            <div className="text-xs text-gray-400 mt-1 text-center">{prog.progress}% מהדרך לרמה הבאה</div>
+          </>
+        ) : (
+          <div className="text-center text-sm font-bold py-1" style={{ color:'#6366f1' }}>
+            💎 הגעת לרמה הגבוהה ביותר!
+          </div>
+        )}
+
+        {/* טבלת רמות */}
+        <div className="mt-4 pt-3 border-t border-gray-100 space-y-1.5">
+          {LEVELS.map(l => {
+            const isCurrent = l.key === level;
+            const reached = completedForLevel >= l.min;
+            return (
+              <div key={l.key}
+                className={`flex items-center justify-between text-xs rounded-lg px-2.5 py-1.5 ${isCurrent ? 'font-bold' : ''}`}
+                style={isCurrent ? { background:'rgba(232,160,32,0.08)' } : {}}>
+                <span className={reached ? 'text-gray-800' : 'text-gray-300'}>
+                  {l.emoji} {l.label}
+                </span>
+                <span className={reached ? 'text-gray-500' : 'text-gray-300'}>
+                  {l.min}+ משמרות · עמלה {(l.commission*100).toFixed(1)}%
+                </span>
+              </div>
+            );
+          })}
+        </div>
+        <p className="text-xs text-gray-400 mt-3 leading-relaxed">
+          ככל שתעלה ברמה — העמלה יורדת והחשיפה שלך למסעדות גדלה (עדיפות בתוצאות החיפוש).
+        </p>
+      </div>
 
       {/* Bio */}
       {bio && (

@@ -6,16 +6,17 @@ import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
 import { printHTML } from '../../utils/print';
 import { CompensationDoc } from '../common/CompensationDoc';
+import { levelFromShifts, workerCommissionRate, netMultiplier } from '../../utils/levels';
 
 const MONTH_NAMES = ['ינו׳','פבר׳','מרץ','אפר׳','מאי','יוני','יולי','אוג׳','ספט׳','אוק׳','נוב׳','דצמ׳'];
 
 /* ─── עזר: חשב נתוני משמרת ─── */
-function calcShift(shift: any) {
+function calcShift(shift: any, rate: number = 0.065) {
   const start = new Date(shift.StartTime);
   const end   = new Date(shift.EndTime);
   const hoursNum = (end.getTime() - start.getTime()) / 3600000;
   const grossNum = hoursNum * shift.HourlyRate;
-  const commNum  = grossNum * 0.065;
+  const commNum  = grossNum * rate;
   const netNum   = grossNum - commNum;
   const dateStr  = start.toLocaleDateString('he-IL', { day:'2-digit', month:'2-digit', year:'numeric' });
   return {
@@ -30,9 +31,10 @@ function calcShift(shift: any) {
 /* ═══════════════════════════════════════════════════════════
    מסמך 1 – סיכום משמרת (לא רשמי, UI בלבד)
 ═══════════════════════════════════════════════════════════ */
-const ShiftSummaryDoc = ({ shift, onClose }: { shift: any; onClose: () => void }) => {
-  const { hours, gross, commission, net, dateStr } = calcShift(shift);
+const ShiftSummaryDoc = ({ shift, rate, onClose }: { shift: any; rate: number; onClose: () => void }) => {
+  const { hours, gross, commission, net, dateStr } = calcShift(shift, rate);
   const docId = `SUM-${(shift.Id ?? 0).toString().padStart(5, '0')}`;
+  const ratePct = (rate * 100).toFixed(1);
 
   const handlePrint = () => {
     printHTML(`
@@ -76,7 +78,7 @@ const ShiftSummaryDoc = ({ shift, onClose }: { shift: any; onClose: () => void }
       <h2>פירוט תשלום</h2>
       <div class="row"><span>סכום משמרת (ברוטו)</span><span>₪${gross}</span></div>
       <div class="row commission-row">
-        <span>עמלת KitchenMatch לעובד (6.5%)</span><span>-₪${commission}</span>
+        <span>עמלת KitchenMatch לעובד (${ratePct}%)</span><span>-₪${commission}</span>
       </div>
       <div class="row net-row"><span>נטו לקבלה</span><span>₪${net}</span></div>
 
@@ -143,7 +145,7 @@ const ShiftSummaryDoc = ({ shift, onClose }: { shift: any; onClose: () => void }
               <span className="font-semibold text-gray-900">₪{gross}</span>
             </div>
             <div className="flex justify-between py-2.5 border-b border-gray-50 text-sm">
-              <span className="text-gray-400">עמלת KitchenMatch (6.5%)</span>
+              <span className="text-gray-400">עמלת KitchenMatch ({ratePct}%)</span>
               <span className="font-semibold text-red-500">-₪{commission}</span>
             </div>
             <div className="flex justify-between pt-3 pb-1">
@@ -368,6 +370,11 @@ export const WorkerWallet: React.FC = () => {
   const completedShifts = userProfile?.CompletedShifts ?? 0;
   const hourlyRate      = userProfile?.HourlyRate      ?? 0;
 
+  // רמה ועמלה של העובד
+  const workerLevel = levelFromShifts(completedShifts).key;
+  const workerRate  = workerCommissionRate(workerLevel);
+  const netMult     = netMultiplier(workerLevel);
+
   useEffect(() => {
     if (!userProfile?.Id) { setLoading(false); return; }
     api.getWorkerHistory(userProfile.Id)
@@ -386,7 +393,7 @@ export const WorkerWallet: React.FC = () => {
   completed.forEach(j => {
     const key = MONTH_NAMES[new Date(j.StartTime).getMonth()];
     const h = (new Date(j.EndTime).getTime() - new Date(j.StartTime).getTime()) / 3600000;
-    monthlyMap[key] = (monthlyMap[key] ?? 0) + h * j.HourlyRate * 0.935;
+    monthlyMap[key] = (monthlyMap[key] ?? 0) + h * j.HourlyRate * netMult;
   });
   const monthlyData = Object.entries(monthlyMap).map(([m, v]) => ({ month: m, earn: Math.round(v) }));
 
@@ -548,7 +555,7 @@ export const WorkerWallet: React.FC = () => {
             const end   = new Date(shift.EndTime);
             const h     = ((end.getTime()-start.getTime())/3600000).toFixed(1);
             const gross = (parseFloat(h)*shift.HourlyRate).toFixed(0);
-            const net   = (parseFloat(h)*shift.HourlyRate*0.935).toFixed(0);
+            const net   = (parseFloat(h)*shift.HourlyRate*netMult).toFixed(0);
 
             return (
               <div key={shift.Id} className="bg-white rounded-2xl p-4 card-shadow">
@@ -594,7 +601,7 @@ export const WorkerWallet: React.FC = () => {
         </div>
       )}
 
-      {summaryShift && <ShiftSummaryDoc shift={summaryShift} onClose={() => setSummary(null)} />}
+      {summaryShift && <ShiftSummaryDoc shift={summaryShift} rate={workerRate} onClose={() => setSummary(null)} />}
       {invoiceShift && <WorkerInvoiceDoc shift={invoiceShift} worker={userProfile} onClose={() => setInvoice(null)} />}
       {compShift && (
         <CompensationDoc

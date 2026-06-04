@@ -4,18 +4,22 @@ import { useApp } from '../../context/AppContext';
 import { LEVEL_LABELS, LEVEL_COLORS } from '../../data/mockData';
 import { api } from '../../api';
 import { CancelShiftModal } from '../common/CancelShiftModal';
+import { getLevel } from '../../utils/levels';
 
-// חישוב אחוז התאמה אמיתי
+// חישוב אחוז התאמה אמיתי (כולל חשיפה לפי רמה)
 const calcMatchScore = (worker: any, restaurantCuisine: string): number => {
-  let score = 40;
-  score += Math.min(((worker.ReliabilityScore || 100) / 100) * 20, 20);
-  score += Math.min((Math.min(worker.CompletedShifts || 0, 100) / 100) * 15, 15);
+  let score = 35;
+  score += Math.min(((worker.ReliabilityScore || 100) / 100) * 18, 18);
+  score += Math.min((Math.min(worker.CompletedShifts || 0, 100) / 100) * 12, 12);
   score += ((worker.WorkerRating || worker.Rating || 0) / 5) * 20;
+  // חשיפה לפי רמה: דיימונד מקבל בונוס גבוה יותר
+  const exposure = getLevel(worker.WorkerLevel || worker.Level).exposure; // 1-5
+  score += exposure * 2; // עד 10 נק׳
   if (restaurantCuisine && worker.Skills) {
     const cuisineWords = restaurantCuisine.toLowerCase().split(/[,/\s·]+/).filter((x: string) => Boolean(x));
     const skillWords = (worker.Skills || '').toLowerCase().split(/[,/\s·]+/).filter((x: string) => Boolean(x));
     const overlap = cuisineWords.filter((w: string) => skillWords.some((s: string) => s.includes(w) || w.includes(s)));
-    score += Math.min((overlap.length / Math.max(cuisineWords.length, 1)) * 25, 25);
+    score += Math.min((overlap.length / Math.max(cuisineWords.length, 1)) * 23, 23);
   }
   return Math.min(Math.round(score), 99);
 };
@@ -165,11 +169,13 @@ export const WorkerMatching: React.FC = () => {
         </div>
       )}
 
-      {/* רשימת מועמדים */}
+      {/* רשימת מועמדים — ממוין לפי אחוז התאמה (חשיפה לפי רמה) */}
       <div className="space-y-3">
-        {applicants.map((job: any, idx: number) => {
+        {[...applicants]
+          .map(job => ({ job, score: calcMatchScore(job, restaurantCuisine) }))
+          .sort((a, b) => b.score - a.score)
+          .map(({ job, score: matchScore }, idx: number) => {
           const isFirst = idx === 0;
-          const matchScore = calcMatchScore(job, restaurantCuisine);
           const wName = job.WorkerName || 'עובד';
           const wInit = wName.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
           const level = job.WorkerLevel || 'bronze';
