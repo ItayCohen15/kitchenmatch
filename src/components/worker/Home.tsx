@@ -3,6 +3,7 @@ import { Zap, MapPin, Clock, ChevronLeft, Filter } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { ROLE_LABELS, LEVEL_LABELS, LEVEL_COLORS } from '../../data/mockData';
 import { api } from '../../api';
+import { visibleShiftRoles, isCookRole } from '../../utils/roles';
 
 export const WorkerHome: React.FC = () => {
   const { navToWorker, selectWorkerJob, userProfile } = useApp();
@@ -50,7 +51,17 @@ export const WorkerHome: React.FC = () => {
     return () => clearInterval(iv);
   }, [userProfile?.Id]);
 
-  const filtered = jobs.filter(j => filterRole === 'all' || j.Role === filterRole);
+  // סינון לפי תפקיד העובד — טבח רואה גם משמרות "טבח הכנות"
+  const workerRole = userProfile?.Role || 'line_cook';
+  const allowedRoles = visibleShiftRoles(workerRole);
+  const relevant = jobs.filter(j => allowedRoles.includes(j.Role));
+  const cook = isCookRole(workerRole);
+  const filtered = filterRole === 'all' ? relevant : relevant.filter(j => j.Role === filterRole);
+
+  // צ'יפים לסינון — רק לטבח (רגיל / הכנות)
+  const roleChips = cook
+    ? [{ id: 'all', label: 'הכל' }, { id: 'line_cook', label: 'טבח' }, { id: 'prep_cook', label: 'טבח הכנות' }]
+    : [];
 
   const handleJobPress = (jobId: string, jobData: any) => {
     selectWorkerJob(jobId, jobData);
@@ -130,8 +141,8 @@ export const WorkerHome: React.FC = () => {
         );
       })}
 
-      {/* Emergency alert — only if there's a real emergency job */}
-      {jobs.filter(j => j.IsEmergency).slice(0, 1).map(emergencyJob => (
+      {/* Emergency alert — only if there's a real emergency job relevant to the worker */}
+      {relevant.filter(j => j.IsEmergency).slice(0, 1).map(emergencyJob => (
         <div key={emergencyJob.Id} className="bg-red-500 rounded-2xl p-4 text-white flex items-center gap-3">
           <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
             <Zap size={22} className="fill-white" />
@@ -149,28 +160,25 @@ export const WorkerHome: React.FC = () => {
         </div>
       ))}
 
-      {/* Filters */}
-      <div className="flex items-center gap-2">
-        <Filter size={14} className="text-gray-400 flex-shrink-0" />
-        <div className="flex gap-2 overflow-x-auto pb-1">
-          {[
-            { id: 'all', label: 'הכל' },
-            { id: 'chef', label: 'שף' },
-            { id: 'line_cook', label: 'טבח' },
-            { id: 'dishwasher', label: 'מדיח' },
-          ].map(f => (
-            <button
-              key={f.id}
-              onClick={() => setFilterRole(f.id)}
-              className={`flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-semibold transition-colors ${
-                filterRole === f.id ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-600'
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
+      {/* Filters — רק לטבח (רגיל / הכנות) */}
+      {roleChips.length > 0 && (
+        <div className="flex items-center gap-2">
+          <Filter size={14} className="text-gray-400 flex-shrink-0" />
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            {roleChips.map(f => (
+              <button
+                key={f.id}
+                onClick={() => setFilterRole(f.id)}
+                className={`flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-semibold transition-colors ${
+                  filterRole === f.id ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-600'
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Job list */}
       <div>

@@ -1,6 +1,7 @@
 ﻿import React, { useState } from 'react';
-import { ChevronRight, ChefHat, Store } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { api } from '../api';
+import { WORKER_ROLES, SKILLS_BY_ROLE } from '../utils/roles';
 
 interface Props {
   role: 'restaurant' | 'worker';
@@ -8,38 +9,6 @@ interface Props {
   profileId: number;
   onComplete: (profile: any) => void;
 }
-
-const WORKER_ROLES = [
-  { id: 'chef',       label: 'שף',    icon: '👨‍🍳', desc: 'שף ראשי / סו-שף' },
-  { id: 'line_cook',  label: 'טבח',   icon: '🍳', desc: 'טבח קו / עוזר שף' },
-  { id: 'dishwasher', label: 'מדיח',  icon: '🫧', desc: 'מדיח / עוזר מטבח' },
-];
-
-const SPECIALTIES = [
-  // סוגי מסעדות
-  { id: 'מסעדת שף / גורמה',   icon: '⭐', group: 'סוג מסעדה' },
-  { id: 'בית קפה',             icon: '☕', group: 'סוג מסעדה' },
-  { id: 'ביסטרו / מזון מהיר',  icon: '🍔', group: 'סוג מסעדה' },
-  { id: 'קייטרינג / אירועים',  icon: '🎉', group: 'סוג מסעדה' },
-  // מטבחים
-  { id: 'ים תיכוני',           icon: '🌊', group: 'מטבח' },
-  { id: 'איטלקי / פסטה',       icon: '🍝', group: 'מטבח' },
-  { id: 'יפני / סושי',         icon: '🍣', group: 'מטבח' },
-  { id: 'אסייתי',              icon: '🥢', group: 'מטבח' },
-  { id: 'מזרח תיכוני / ערבי',  icon: '🧆', group: 'מטבח' },
-  { id: 'צרפתי / אירופאי',     icon: '🥐', group: 'מטבח' },
-  { id: 'מקסיקני / לטיני',     icon: '🌮', group: 'מטבח' },
-  { id: 'אמריקאי',             icon: '🍖', group: 'מטבח' },
-  // התמחויות
-  { id: 'בשרים / גריל',        icon: '🥩', group: 'התמחות' },
-  { id: 'דגים / פירות ים',     icon: '🐟', group: 'התמחות' },
-  { id: 'ארוחות בוקר / ברנץ׳', icon: '🥚', group: 'התמחות' },
-  { id: 'פיצה',                icon: '🍕', group: 'התמחות' },
-  { id: 'קינוחים / קונדיטוריה', icon: '🍰', group: 'התמחות' },
-  { id: 'צמחוני / טבעוני',     icon: '🥗', group: 'התמחות' },
-  { id: 'לחמים / מאפים',       icon: '🥖', group: 'התמחות' },
-  { id: 'קוקטיילים / בר',      icon: '🍹', group: 'התמחות' },
-];
 
 export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplete }) => {
   const [step, setStep] = useState(1);
@@ -234,13 +203,13 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                     <div className="space-y-2">
                       {WORKER_ROLES.map(r => (
                         <button
-                          key={r.id}
-                          onClick={() => setWorkerRole(r.id)}
+                          key={r.key}
+                          onClick={() => { setWorkerRole(r.key); setSelectedSpecialties([]); }}
                           className={`w-full p-3 rounded-xl border-2 flex items-center gap-3 text-right transition-all ${
-                            workerRole === r.id ? 'bg-amber-50' : 'border-gray-100'
+                            workerRole === r.key ? 'border-amber-400 bg-amber-50' : 'border-gray-100'
                           }`}
                         >
-                          <span className="text-2xl">{r.icon}</span>
+                          <span className="text-2xl">{r.emoji}</span>
                           <div>
                             <div className="font-bold text-gray-900">{r.label}</div>
                             <div className="text-gray-500 text-xs">{r.desc}</div>
@@ -354,70 +323,35 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
             </div>
           )}
 
-          {/* Step 3 — Worker: Specialties */}
+          {/* Step 3 — Worker: Skills (מותאם לפי תפקיד) */}
           {step === 3 && role === 'worker' && (
             <div className="space-y-3 screen-enter">
               <h2 className="text-xl font-black text-gray-900">במה אתה מתמחה?</h2>
-              <p className="text-gray-500 text-sm">בחר הכל שרלוונטי — ככה יופיעו לך המשמרות הנכונות</p>
+              <p className="text-gray-500 text-sm">בחר הכל שרלוונטי — ככה המסעדות ידעו בדיוק מה אתה מביא</p>
 
-              {/* קבוצת סוג מסעדה */}
-              <div>
-                <div className="text-xs font-bold text-gray-400 mb-2 mr-1">סוג מסעדה</div>
-                <div className="grid grid-cols-2 gap-2">
-                  {SPECIALTIES.filter(s => s.group === 'סוג מסעדה').map(s => {
-                    const selected = selectedSpecialties.includes(s.id);
-                    return (
-                      <button key={s.id} onClick={() => toggleSpecialty(s.id)}
-                        className={`p-2.5 rounded-xl border-2 flex items-center gap-2 text-right transition-all ${selected ? 'bg-amber-50' : 'border-gray-100 bg-white'}`}>
-                        <span className="text-lg">{s.icon}</span>
-                        <span className={`text-xs font-semibold flex-1 leading-tight ${selected ? 'text-amber-600' : 'text-gray-700'}`}>{s.id}</span>
-                        {selected && <span className="text-amber-500 text-xs">✓</span>}
-                      </button>
-                    );
-                  })}
+              {(SKILLS_BY_ROLE[workerRole] || []).map(section => (
+                <div key={section.group}>
+                  <div className="text-xs font-bold text-gray-400 mb-2 mr-1">{section.group}</div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {section.items.map(item => {
+                      const selected = selectedSpecialties.includes(item);
+                      return (
+                        <button key={item} onClick={() => toggleSpecialty(item)}
+                          className={`p-2.5 rounded-xl border-2 text-right transition-all ${selected ? 'border-amber-400 bg-amber-50' : 'border-gray-100 bg-white'}`}>
+                          <span className={`text-xs font-semibold leading-tight ${selected ? 'text-amber-600' : 'text-gray-700'}`}>
+                            {selected ? '✓ ' : ''}{item}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-
-              {/* קבוצת מטבח */}
-              <div>
-                <div className="text-xs font-bold text-gray-400 mb-2 mr-1">סוג מטבח</div>
-                <div className="grid grid-cols-2 gap-2">
-                  {SPECIALTIES.filter(s => s.group === 'מטבח').map(s => {
-                    const selected = selectedSpecialties.includes(s.id);
-                    return (
-                      <button key={s.id} onClick={() => toggleSpecialty(s.id)}
-                        className={`p-2.5 rounded-xl border-2 flex items-center gap-2 text-right transition-all ${selected ? 'bg-amber-50' : 'border-gray-100 bg-white'}`}>
-                        <span className="text-lg">{s.icon}</span>
-                        <span className={`text-xs font-semibold flex-1 leading-tight ${selected ? 'text-amber-600' : 'text-gray-700'}`}>{s.id}</span>
-                        {selected && <span className="text-amber-500 text-xs">✓</span>}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* קבוצת התמחות */}
-              <div>
-                <div className="text-xs font-bold text-gray-400 mb-2 mr-1">התמחות ספציפית</div>
-                <div className="grid grid-cols-2 gap-2">
-                  {SPECIALTIES.filter(s => s.group === 'התמחות').map(s => {
-                    const selected = selectedSpecialties.includes(s.id);
-                    return (
-                      <button key={s.id} onClick={() => toggleSpecialty(s.id)}
-                        className={`p-2.5 rounded-xl border-2 flex items-center gap-2 text-right transition-all ${selected ? 'bg-amber-50' : 'border-gray-100 bg-white'}`}>
-                        <span className="text-lg">{s.icon}</span>
-                        <span className={`text-xs font-semibold flex-1 leading-tight ${selected ? 'text-amber-600' : 'text-gray-700'}`}>{s.id}</span>
-                        {selected && <span className="text-amber-500 text-xs">✓</span>}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+              ))}
 
               {selectedSpecialties.length > 0 && (
-                <div className="bg-amber-50 rounded-xl p-3 text-center sticky bottom-0">
+                <div className="bg-amber-50 rounded-xl p-3 text-center">
                   <span className="text-amber-600 font-semibold text-sm">
-                    ✓ בחרת {selectedSpecialties.length} התמחויות
+                    ✓ בחרת {selectedSpecialties.length} כישורים
                   </span>
                 </div>
               )}

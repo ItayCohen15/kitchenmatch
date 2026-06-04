@@ -3,12 +3,9 @@ import { ChevronRight, Zap, Clock } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import type { JobRole, ExperienceLevel } from '../../types';
+import { SHIFT_ROLES } from '../../utils/roles';
 
-const ROLES: { id: JobRole; label: string; icon: string; desc: string }[] = [
-  { id: 'chef',       label: 'שף',      icon: '👨‍🍳', desc: 'שף ראשי / סו-שף' },
-  { id: 'line_cook',  label: 'טבח',     icon: '🍳', desc: 'טבח קו / עוזר שף' },
-  { id: 'dishwasher', label: 'מדיח',    icon: '🫧', desc: 'מדיח כלים / עוזר מטבח' },
-];
+const ROLES = SHIFT_ROLES.map(r => ({ id: r.key as JobRole, label: r.label, icon: r.emoji, desc: r.desc }));
 
 const EXPERIENCE: { id: ExperienceLevel; label: string; desc: string }[] = [
   { id: 'entry',  label: 'מתחיל',   desc: 'עד שנתיים ניסיון' },
@@ -65,7 +62,7 @@ export const CreateJob: React.FC = () => {
 
       await api.createJob({
         restaurantId: userProfile.Id,
-        role: role || 'chef',
+        role: role || 'line_cook',
         startTime: startDate.toISOString(),
         endTime: endDate.toISOString(),
         hourlyRate: parseFloat(wage),

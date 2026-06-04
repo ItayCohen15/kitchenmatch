@@ -146,9 +146,10 @@ export const WorkerProfile: React.FC = () => {
           <label className="text-sm font-semibold text-gray-600 mb-1.5 block">תפקיד</label>
           <select value={editRole} onChange={e => setEditRole(e.target.value)}
             className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-amber-400 outline-none bg-white">
-            <option value="chef">שף</option>
             <option value="line_cook">טבח</option>
-            <option value="dishwasher">מדיח</option>
+            <option value="cleaner">עובד ניקיון</option>
+            <option value="bartender">ברמן</option>
+            <option value="waiter">מלצר</option>
           </select>
         </div>
         <div>

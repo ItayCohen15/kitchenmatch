@@ -1,6 +1,6 @@
 export type UserRole = 'restaurant' | 'worker' | null;
-export type JobRole = 'chef' | 'line_cook' | 'dishwasher';
-export type WorkerLevel = 'bronze' | 'silver' | 'gold' | 'pro';
+export type JobRole = 'line_cook' | 'prep_cook' | 'cleaner' | 'bartender' | 'waiter' | 'chef' | 'dishwasher';
+export type WorkerLevel = 'bronze' | 'silver' | 'gold' | 'platinum' | 'diamond' | 'pro';
 export type ShiftStatus = 'searching' | 'matched' | 'confirmed' | 'active' | 'completed' | 'cancelled';
 export type ExperienceLevel = 'entry' | 'mid' | 'senior';
 export type RestaurantScreen =

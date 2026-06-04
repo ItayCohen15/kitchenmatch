@@ -182,7 +182,7 @@ export const RestaurantHome: React.FC = () => {
                     <span className="font-semibold text-gray-900 text-sm">{wName}</span>
                     {w.Rating > 0 && <span className="text-xs text-yellow-500 font-bold">★{w.Rating.toFixed(1)}</span>}
                   </div>
-                  <div className="text-gray-500 text-xs">{w.City} · {w.Role}</div>
+                  <div className="text-gray-500 text-xs">{w.City} · {ROLE_LABELS[w.Role] || w.Role}</div>
                 </div>
                 <div className="text-right flex-shrink-0">
                   <div className="text-amber-500 font-bold text-sm">₪{w.HourlyRate}/ש׳</div>

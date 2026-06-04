@@ -249,9 +249,14 @@ export const INITIAL_CHAT: Message[] = [
 ];
 
 export const ROLE_LABELS: Record<string, string> = {
-  chef: 'שף',
   line_cook: 'טבח',
-  dishwasher: 'מדיח',
+  prep_cook: 'טבח הכנות',
+  cleaner: 'עובד ניקיון',
+  bartender: 'ברמן',
+  waiter: 'מלצר',
+  // legacy
+  chef: 'טבח',
+  dishwasher: 'עובד ניקיון',
 };
 
 export const EXPERIENCE_LABELS: Record<string, string> = {
