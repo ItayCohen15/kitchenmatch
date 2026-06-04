@@ -40,9 +40,17 @@ export const CreateJob: React.FC = () => {
 
   const totalPay = (parseFloat(totalHours) * parseFloat(wage || '0')).toFixed(0);
 
+  const MIN_WAGE = 40;
+  const wageNum = parseFloat(wage) || 0;
+  const wageValid = wageNum >= MIN_WAGE;
+
   const handlePublish = async () => {
     if (!userProfile?.Id) {
       setPublishError('שגיאה: פרופיל מסעדה לא נמצא. נסה להתנתק ולהתחבר מחדש.');
+      return;
+    }
+    if (!wageValid) {
+      setPublishError(`שכר המינימום הוא ₪${MIN_WAGE} לשעה`);
       return;
     }
     setPublishing(true);
@@ -199,11 +207,18 @@ export const CreateJob: React.FC = () => {
                 type="number"
                 value={wage}
                 onChange={e => setWage(e.target.value)}
-                className="w-full border border-gray-200 rounded-xl py-3 pr-10 pl-4 text-gray-900 font-black text-2xl text-right"
-                min={30}
+                className={`w-full border rounded-xl py-3 pr-10 pl-4 text-gray-900 font-black text-2xl text-right ${
+                  wage && !wageValid ? 'border-red-300' : 'border-gray-200'
+                }`}
+                min={MIN_WAGE}
                 max={300}
               />
             </div>
+            {wage && !wageValid && (
+              <div className="mt-2 bg-red-50 text-red-600 rounded-xl px-3 py-2 text-sm text-center font-semibold">
+                ⚠️ שכר המינימום הוא ₪{MIN_WAGE} לשעה
+              </div>
+            )}
             <div className="flex gap-2 mt-3">
               {[55, 70, 85, 100].map(v => (
                 <button
@@ -248,7 +263,7 @@ export const CreateJob: React.FC = () => {
               <ChevronRight size={20} />
             </button>
             <button
-              disabled={!experience}
+              disabled={!experience || !wageValid}
               onClick={() => setStep(4)}
               className="flex-1 bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg disabled:opacity-40 active:scale-98 transition-transform"
             >
