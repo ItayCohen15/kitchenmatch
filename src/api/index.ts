@@ -34,8 +34,8 @@ export const api = {
     }).then(handleResponse),
 
   // ========== JOBS ==========
-  getJobs: (workerId?: number) =>
-    fetch(`${BASE}/jobs${workerId ? `?workerId=${workerId}` : ''}`, { headers: headers() }).then(handleResponse),
+  getJobs: () =>
+    fetch(`${BASE}/jobs`, { headers: headers() }).then(handleResponse),
 
   getRestaurantJobs: (restaurantId: number) =>
     fetch(`${BASE}/jobs/restaurant/${restaurantId}`, { headers: headers() }).then(handleResponse),
