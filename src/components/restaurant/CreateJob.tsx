@@ -15,7 +15,7 @@ const EXPERIENCE: { id: ExperienceLevel; label: string; desc: string }[] = [
 ];
 
 export const CreateJob: React.FC = () => {
-  const { navToRestaurant, setEmergencyMode, userProfile } = useApp();
+  const { navToRestaurant, setEmergencyMode, isEmergencyMode, userProfile } = useApp();
   const [step, setStep] = useState(1);
   const [role, setRole] = useState<JobRole | null>(null);
   const [shiftDate, setShiftDate] = useState(() => new Date().toISOString().slice(0, 10));
@@ -23,7 +23,7 @@ export const CreateJob: React.FC = () => {
   const [endTime, setEndTime] = useState('23:00');
   const [wage, setWage] = useState('75');
   const [experience, setExperience] = useState<ExperienceLevel>('any');
-  const [emergency, setEmergency] = useState(false);
+  const [emergency, setEmergency] = useState(isEmergencyMode); // נדלק אוטומטית בכניסה דרך כפתור חירום
   const [duties, setDuties] = useState('');
   const [instructions, setInstructions] = useState('');
   const [publishing, setPublishing] = useState(false);

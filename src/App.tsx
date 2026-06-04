@@ -101,6 +101,10 @@ const AppContent: React.FC = () => {
   const [authChecked, setAuthChecked] = useState(false);
   const [needsOnboarding, setNeedsOnboarding] = useState(false);
   const [pendingProfile, setPendingProfile] = useState<any>(null);
+  // מזהה משמרת מלחיצה על התראת PUSH (מה-URL או מהודעת ה-service worker)
+  const [pendingJobId, setPendingJobId] = useState<string | null>(() => {
+    try { return new URLSearchParams(window.location.search).get('job'); } catch { return null; }
+  });
 
   useEffect(() => {
     const savedToken   = localStorage.getItem('km_token');
@@ -137,6 +141,33 @@ const AppContent: React.FC = () => {
       setPendingProfile(null);
     }
   }, [userRole, authChecked]);
+
+  // לחיצה על התראת PUSH כשהאפליקציה כבר פתוחה — קבל מזהה משמרת מה-service worker
+  useEffect(() => {
+    if (!('serviceWorker' in navigator)) return;
+    const handler = (e: MessageEvent) => {
+      if (e.data?.type === 'open-job' && e.data.jobId) setPendingJobId(String(e.data.jobId));
+    };
+    navigator.serviceWorker.addEventListener('message', handler);
+    return () => navigator.serviceWorker.removeEventListener('message', handler);
+  }, []);
+
+  // יש משמרת ממתינה מ-PUSH והאפליקציה מוכנה — פתח אותה אצל העובד
+  useEffect(() => {
+    if (!pendingJobId || !token || !userRole || needsOnboarding) return;
+    const jid = pendingJobId;
+    setPendingJobId(null);
+    try { window.history.replaceState({}, '', window.location.pathname); } catch {}
+    if (userRole !== 'worker') return;
+    (async () => {
+      try {
+        const jobs = await api.getJobs();
+        const job = Array.isArray(jobs) ? jobs.find((j: any) => String(j.Id) === String(jid)) : null;
+        if (job) { selectWorkerJob(String(job.Id), job); navToWorker('job_details'); }
+        else navToWorker('home'); // המשמרת כבר נתפסה/הוסרה — הצג לפחות את הבית
+      } catch { navToWorker('home'); }
+    })();
+  }, [pendingJobId, token, userRole, needsOnboarding, selectWorkerJob, navToWorker]);
 
   const handleLogin = (newToken: string, role: string, profile: any, isNew?: boolean) => {
     setToken(newToken);

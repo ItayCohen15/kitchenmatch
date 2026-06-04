@@ -8,7 +8,7 @@ import { NewWorkerBadge } from '../common/NewWorkerBadge';
 import { isWithinKm } from '../../utils/cities';
 
 export const RestaurantHome: React.FC = () => {
-  const { navToRestaurant, navToWorker, userProfile, resetToLanding, selectWorkerJob, refreshProfile } = useApp();
+  const { navToRestaurant, navToWorker, userProfile, resetToLanding, selectWorkerJob, refreshProfile, setEmergencyMode } = useApp();
   const [workers, setWorkers] = useState<any[]>([]);
   const [recentJobs, setRecentJobs] = useState<any[]>([]);
   const [activeShift, setActiveShift] = useState<any>(null);
@@ -140,7 +140,7 @@ export const RestaurantHome: React.FC = () => {
         <h2 className="font-bold text-gray-800 mb-3 text-base">פעולות מהירות</h2>
         <div className="grid grid-cols-2 gap-3">
           <button
-            onClick={() => navToRestaurant('create_job')}
+            onClick={() => { setEmergencyMode(false); navToRestaurant('create_job'); }}
             className="text-white rounded-2xl p-4 text-right active:scale-95 transition-transform"
             style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow: '0 4px 20px rgba(232,160,32,0.4)' }}
           >
@@ -149,7 +149,7 @@ export const RestaurantHome: React.FC = () => {
             <div className="text-white/75 text-xs mt-0.5">מצא עובד עכשיו</div>
           </button>
           <button
-            onClick={() => { navToRestaurant('create_job'); }}
+            onClick={() => { setEmergencyMode(true); navToRestaurant('create_job'); }}
             className="text-white rounded-2xl p-4 text-right active:scale-95 transition-transform"
             style={{ background: 'linear-gradient(135deg,#ef4444,#f97316)', boxShadow: '0 4px 20px rgba(239,68,68,0.4)' }}
           >
