@@ -1,10 +1,12 @@
-﻿import React, { useState } from 'react';
-import { Edit3, Star, Award, LogOut, Phone, Check, X } from 'lucide-react';
+﻿import React, { useState, useRef } from 'react';
+import { Edit3, Star, Award, LogOut, Phone, Check, X, FileText, Trash2, Upload } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
 import { levelFromShifts, nextLevelProgress } from '../../utils/levels';
 import { LevelBenefits } from '../common/LevelBenefits';
+import { WorkerGallery } from '../common/WorkerGallery';
+import { fileToDataUrl } from '../../utils/image';
 
 export const WorkerProfile: React.FC = () => {
   const { userProfile, resetToLanding, setUserProfile } = useApp();
@@ -32,6 +34,51 @@ export const WorkerProfile: React.FC = () => {
   const yearsExp = userProfile?.YearsExp || 0;
   const noShows = userProfile?.NoShows || 0;
   const bio = userProfile?.Bio || '';
+
+  // קורות חיים
+  const [cvName, setCvName] = useState(userProfile?.CvName || '');
+  const [cvUploading, setCvUploading] = useState(false);
+  const [cvError, setCvError] = useState('');
+  const cvRef = useRef<HTMLInputElement>(null);
+  const cvData = userProfile?.CvData || '';
+
+  const handleCvUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !userProfile?.Id) return;
+    if (file.size > 3 * 1024 * 1024) { setCvError('הקובץ גדול מדי (מקס 3MB)'); return; }
+    setCvUploading(true); setCvError('');
+    try {
+      const dataUrl = await fileToDataUrl(file);
+      await api.saveCv(userProfile.Id, dataUrl, file.name);
+      const updated = { ...userProfile, CvData: dataUrl, CvName: file.name };
+      setUserProfile(updated);
+      localStorage.setItem('km_profile', JSON.stringify(updated));
+      setCvName(file.name);
+    } catch (err: any) {
+      setCvError(err.message || 'שגיאה בהעלאה');
+    }
+    setCvUploading(false);
+    if (cvRef.current) cvRef.current.value = '';
+  };
+
+  const handleCvDelete = async () => {
+    if (!userProfile?.Id) return;
+    await api.deleteCv(userProfile.Id).catch(() => {});
+    const updated = { ...userProfile, CvData: null, CvName: null };
+    setUserProfile(updated);
+    localStorage.setItem('km_profile', JSON.stringify(updated));
+    setCvName('');
+  };
+
+  const openCv = () => {
+    if (!cvData) return;
+    const w = window.open('');
+    if (w) w.document.write(
+      cvData.startsWith('data:application/pdf')
+        ? `<iframe src="${cvData}" style="width:100%;height:100vh;border:0"></iframe>`
+        : `<img src="${cvData}" style="max-width:100%"/>`
+    );
+  };
 
   const handleAvailability = async (val: boolean) => {
     setAvailable(val);
@@ -216,6 +263,49 @@ export const WorkerProfile: React.FC = () => {
           </div>
         )}
         <p className="text-xs text-gray-400 mt-2">המסעדה תוכל להתקשר אליך לאחר אישור המשמרת</p>
+      </div>
+
+      {/* גלריית עבודות */}
+      <div className="bg-white rounded-2xl p-4 card-shadow">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-lg">📸</span>
+          <h3 className="font-bold text-gray-800">גלריית העבודות שלי</h3>
+        </div>
+        {userProfile?.Id && <WorkerGallery workerId={userProfile.Id} editable />}
+      </div>
+
+      {/* קורות חיים */}
+      <div className="bg-white rounded-2xl p-4 card-shadow">
+        <div className="flex items-center gap-2 mb-3">
+          <FileText size={18} className="text-blue-500" />
+          <h3 className="font-bold text-gray-800">קורות חיים</h3>
+          <span className="text-xs text-gray-400">(אופציונלי)</span>
+        </div>
+
+        {cvError && <div className="bg-red-50 text-red-600 rounded-xl p-2.5 text-sm text-center mb-2">{cvError}</div>}
+
+        {cvData ? (
+          <div className="flex items-center gap-2">
+            <button onClick={openCv}
+              className="flex-1 flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-xl px-3 py-2.5 text-blue-700 text-sm font-semibold">
+              <FileText size={15} />
+              <span className="truncate">{cvName || 'קורות חיים'}</span>
+            </button>
+            <button onClick={handleCvDelete}
+              className="w-10 h-10 rounded-xl bg-red-50 text-red-400 flex items-center justify-center flex-shrink-0">
+              <Trash2 size={15} />
+            </button>
+          </div>
+        ) : (
+          <button onClick={() => cvRef.current?.click()} disabled={cvUploading}
+            className="w-full flex items-center justify-center gap-2 border-2 border-dashed border-gray-200 rounded-xl py-3 text-gray-500 text-sm font-semibold active:bg-gray-50">
+            {cvUploading
+              ? <div className="w-5 h-5 border-2 border-gray-300 border-t-transparent rounded-full animate-spin" />
+              : <><Upload size={16} /> העלה קו"ח (PDF או תמונה)</>}
+          </button>
+        )}
+        <input ref={cvRef} type="file" accept="application/pdf,image/*" onChange={handleCvUpload} className="hidden" />
+        <p className="text-xs text-gray-400 mt-2">המסעדה תוכל לעיין בקו"ח שלך בעת בחינת מועמדותך</p>
       </div>
 
       {/* Level progress */}

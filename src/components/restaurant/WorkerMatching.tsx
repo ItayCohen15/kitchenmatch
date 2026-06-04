@@ -1,9 +1,10 @@
 ﻿import React, { useEffect, useState, useCallback } from 'react';
-import { Shield, MapPin, Star, Check, X, Clock, RefreshCw, Phone, Trash2 } from 'lucide-react';
+import { Shield, MapPin, Star, Check, X, Clock, RefreshCw, Phone, Trash2, Eye } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { LEVEL_LABELS, LEVEL_COLORS } from '../../data/mockData';
 import { api } from '../../api';
 import { CancelShiftModal } from '../common/CancelShiftModal';
+import { WorkerProfileModal } from '../common/WorkerProfileModal';
 import { getLevel } from '../../utils/levels';
 
 // חישוב אחוז התאמה אמיתי (כולל חשיפה לפי רמה)
@@ -33,6 +34,7 @@ export const WorkerMatching: React.FC = () => {
   const [error, setError] = useState('');
   const [openJob, setOpenJob] = useState<any>(null);   // משמרת פתוחה (searching) לביטול
   const [showCancel, setShowCancel] = useState(false);
+  const [viewWorker, setViewWorker] = useState<any>(null);  // צפייה בפרופיל מועמד
   const restaurantCuisine = userProfile?.CuisineType || '';
 
   const loadApplicants = useCallback(() => {
@@ -193,8 +195,9 @@ export const WorkerMatching: React.FC = () => {
                 </div>
               )}
 
-              {/* פרטי עובד */}
-              <div className="flex items-start gap-3 mb-3">
+              {/* פרטי עובד — לחיצה פותחת פרופיל מלא */}
+              <div className="flex items-start gap-3 mb-3 cursor-pointer"
+                onClick={() => setViewWorker(job)}>
                 <div className="relative flex-shrink-0">
                   <div className="w-14 h-14 bg-amber-500 rounded-2xl flex items-center justify-center text-white font-black text-lg">
                     {wInit}
@@ -263,6 +266,13 @@ export const WorkerMatching: React.FC = () => {
                 </a>
               )}
 
+              {/* צפייה בפרופיל מלא */}
+              <button onClick={() => setViewWorker(job)}
+                className="w-full flex items-center justify-center gap-2 bg-gray-50 border border-gray-150 rounded-xl py-2 mb-2 text-gray-600 font-semibold text-sm"
+                style={{ borderColor:'#e5e7eb' }}>
+                <Eye size={15} /> צפה בפרופיל המלא
+              </button>
+
               {/* כפתורים */}
               <div className="flex gap-2">
                 <button
@@ -306,6 +316,14 @@ export const WorkerMatching: React.FC = () => {
           isConfirmed={false}
           onClose={() => setShowCancel(false)}
           onCancelled={() => { setShowCancel(false); navToRestaurant('home'); }}
+        />
+      )}
+
+      {viewWorker && (
+        <WorkerProfileModal
+          workerId={Number(viewWorker.WorkerId)}
+          initial={viewWorker}
+          onClose={() => setViewWorker(null)}
         />
       )}
     </div>

@@ -152,6 +152,36 @@ export const api = {
   getWorkerEarnings: (workerId: number) =>
     fetch(`${BASE}/workers/${workerId}/earnings`, { headers: headers() }).then(handleResponse),
 
+  getWorker: (workerId: number) =>
+    fetch(`${BASE}/workers/${workerId}`, { headers: headers() }).then(handleResponse),
+
+  // גלריה
+  getGallery: (workerId: number) =>
+    fetch(`${BASE}/workers/${workerId}/gallery`, { headers: headers() }).then(handleResponse),
+
+  addGalleryImage: (workerId: number, imageData: string, caption?: string) =>
+    fetch(`${BASE}/workers/${workerId}/gallery`, {
+      method: 'POST', headers: headers(),
+      body: JSON.stringify({ imageData, caption })
+    }).then(handleResponse),
+
+  deleteGalleryImage: (workerId: number, imageId: number) =>
+    fetch(`${BASE}/workers/${workerId}/gallery/${imageId}`, {
+      method: 'DELETE', headers: headers()
+    }).then(handleResponse),
+
+  // קורות חיים
+  saveCv: (workerId: number, cvData: string, cvName: string) =>
+    fetch(`${BASE}/workers/${workerId}/cv`, {
+      method: 'PUT', headers: headers(),
+      body: JSON.stringify({ cvData, cvName })
+    }).then(handleResponse),
+
+  deleteCv: (workerId: number) =>
+    fetch(`${BASE}/workers/${workerId}/cv`, {
+      method: 'DELETE', headers: headers()
+    }).then(handleResponse),
+
   updateWorker: (workerId: number, data: object) =>
     fetch(`${BASE}/workers/${workerId}`, {
       method: 'PUT',
