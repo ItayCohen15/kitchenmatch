@@ -3,7 +3,8 @@ import { Edit3, Star, Award, LogOut, Phone, Check, X } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
-import { LEVELS, levelFromShifts, nextLevelProgress } from '../../utils/levels';
+import { levelFromShifts, nextLevelProgress } from '../../utils/levels';
+import { LevelBenefits } from '../common/LevelBenefits';
 
 export const WorkerProfile: React.FC = () => {
   const { userProfile, resetToLanding, setUserProfile } = useApp();
@@ -256,29 +257,13 @@ export const WorkerProfile: React.FC = () => {
           </div>
         )}
 
-        {/* טבלת רמות */}
-        <div className="mt-4 pt-3 border-t border-gray-100 space-y-1.5">
-          {LEVELS.map(l => {
-            const isCurrent = l.key === level;
-            const reached = completedForLevel >= l.min;
-            return (
-              <div key={l.key}
-                className={`flex items-center justify-between text-xs rounded-lg px-2.5 py-1.5 ${isCurrent ? 'font-bold' : ''}`}
-                style={isCurrent ? { background:'rgba(232,160,32,0.08)' } : {}}>
-                <span className={reached ? 'text-gray-800' : 'text-gray-300'}>
-                  {l.emoji} {l.label}
-                </span>
-                <span className={reached ? 'text-gray-500' : 'text-gray-300'}>
-                  {l.min}+ משמרות · עמלה {(l.commission*100).toFixed(1)}%
-                </span>
-              </div>
-            );
-          })}
-        </div>
         <p className="text-xs text-gray-400 mt-3 leading-relaxed">
-          ככל שתעלה ברמה — העמלה יורדת והחשיפה שלך למסעדות גדלה (עדיפות בתוצאות החיפוש).
+          ככל שתעלה ברמה — העמלה יורדת, החשיפה למסעדות גדלה, ואתה רואה משמרות חדשות מוקדם יותר.
         </p>
       </div>
+
+      {/* הטבות מפורטות לכל הרמות */}
+      <LevelBenefits completedShifts={completedForLevel} />
 
       {/* Bio */}
       {bio && (
