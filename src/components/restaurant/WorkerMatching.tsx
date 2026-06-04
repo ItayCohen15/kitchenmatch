@@ -235,8 +235,14 @@ export const WorkerMatching: React.FC = () => {
                 </div>
 
                 <div className="text-right flex-shrink-0">
-                  <div className="text-amber-500 font-black text-lg">₪{job.WorkerRate || job.HourlyRate || 0}</div>
-                  <div className="text-gray-400 text-xs">/שעה</div>
+                  {(job.WorkerRating || 0) > 0 ? (
+                    <>
+                      <div className="text-yellow-500 font-black text-lg">★{Number(job.WorkerRating).toFixed(1)}</div>
+                      <div className="text-gray-400 text-xs">דירוג</div>
+                    </>
+                  ) : (
+                    <div className="text-gray-300 text-xs font-semibold">עובד חדש</div>
+                  )}
                 </div>
               </div>
 

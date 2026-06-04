@@ -17,7 +17,6 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
   const [workerRole, setWorkerRole] = useState('');
   const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
   const [selectedCuisines, setSelectedCuisines] = useState<string[]>([]);
-  const [hourlyRate, setHourlyRate] = useState('60');
   const [yearsExp, setYearsExp] = useState('1');
   const [bio, setBio] = useState('');
   const [cuisineType, setCuisineType] = useState('');
@@ -48,7 +47,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
       if (role === 'worker') {
         const res = await api.updateWorker(profileId, {
           name, city, role: workerRole,
-          hourlyRate: parseFloat(hourlyRate), bio,
+          hourlyRate: 0, bio,
           yearsExp: parseInt(yearsExp),
           skills: selectedSpecialties.join(','),
           phone,
@@ -57,7 +56,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
         updatedProfile = res?.profile || {
           ...updatedProfile,
           Skills: selectedSpecialties.join(','), Role: workerRole,
-          HourlyRate: parseFloat(hourlyRate), Bio: bio,
+          HourlyRate: 0, Bio: bio,
           YearsExp: parseInt(yearsExp), Level: 'bronze',
           Rating: 0, CompletedShifts: 0, ReliabilityScore: 100,
           NoShows: 0, IsAvailable: true,
@@ -197,7 +196,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
             <div className="space-y-4 screen-enter">
               {role === 'worker' ? (
                 <>
-                  <h2 className="text-xl font-black text-gray-900">תפקיד ושכר</h2>
+                  <h2 className="text-xl font-black text-gray-900">תפקיד וניסיון</h2>
                   <div>
                     <label className="text-sm font-semibold text-gray-600 mb-2 block">תפקיד ראשי</label>
                     <div className="space-y-2">
@@ -214,22 +213,6 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                             <div className="font-bold text-gray-900">{r.label}</div>
                             <div className="text-gray-500 text-xs">{r.desc}</div>
                           </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <label className="text-sm font-semibold text-gray-600 mb-2 block">שכר מבוקש לשעה (₪)</label>
-                    <div className="flex gap-2">
-                      {[45, 55, 65, 75, 90].map(v => (
-                        <button
-                          key={v}
-                          onClick={() => setHourlyRate(String(v))}
-                          className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-colors ${
-                            hourlyRate === String(v) ? 'text-white' : 'bg-gray-100 text-gray-700'
-                          }`}
-                        >
-                          ₪{v}
                         </button>
                       ))}
                     </div>

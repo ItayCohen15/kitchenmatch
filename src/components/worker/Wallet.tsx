@@ -368,7 +368,7 @@ export const WorkerWallet: React.FC = () => {
 
   const totalEarnings   = userProfile?.TotalEarnings   ?? 0;
   const completedShifts = userProfile?.CompletedShifts ?? 0;
-  const hourlyRate      = userProfile?.HourlyRate      ?? 0;
+  const rating          = userProfile?.Rating          ?? 0;
 
   // רמה ועמלה של העובד
   const workerLevel = levelFromShifts(completedShifts).key;
@@ -410,9 +410,9 @@ export const WorkerWallet: React.FC = () => {
         </div>
         <div className="grid grid-cols-3 gap-3">
           {[
-            { l:'משמרות',     v: completedShifts,   c:'text-white' },
-            { l:'ממוצע/משמרת',v:`₪${avgPerShift}`,  c:'text-amber-400' },
-            { l:'תעריף/שעה',  v:`₪${hourlyRate}`,   c:'text-blue-300' },
+            { l:'משמרות',     v: completedShifts,                         c:'text-white' },
+            { l:'ממוצע/משמרת',v:`₪${avgPerShift}`,                        c:'text-amber-400' },
+            { l:'דירוג',      v: rating > 0 ? `★${rating.toFixed(1)}` : '—', c:'text-blue-300' },
           ].map(s => (
             <div key={s.l} className="bg-white/10 rounded-xl p-2.5 text-center">
               <div className={`font-black text-sm ${s.c}`}>{s.v}</div>

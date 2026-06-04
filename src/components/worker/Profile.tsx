@@ -23,7 +23,6 @@ export const WorkerProfile: React.FC = () => {
   const [editName, setEditName] = useState(userProfile?.Name || '');
   const [editCity, setEditCity] = useState(userProfile?.City || '');
   const [editRole, setEditRole] = useState(userProfile?.Role || 'line_cook');
-  const [editRate, setEditRate] = useState(String(userProfile?.HourlyRate || ''));
   const [editBio, setEditBio] = useState(userProfile?.Bio || '');
   const [savingProfile, setSavingProfile] = useState(false);
   const name = userProfile?.Name || 'שם לא ידוע';
@@ -93,11 +92,11 @@ export const WorkerProfile: React.FC = () => {
     try {
       const res = await api.updateWorker(userProfile.Id, {
         name: editName, city: editCity, role: editRole,
-        hourlyRate: parseFloat(editRate) || 0,
+        hourlyRate: userProfile?.HourlyRate || 0,
         bio: editBio, yearsExp: userProfile?.YearsExp || 0,
         skills: userProfile?.Skills || '', phone,
       });
-      const updated = res?.profile || { ...userProfile, Name: editName, City: editCity, Role: editRole, HourlyRate: parseFloat(editRate), Bio: editBio };
+      const updated = res?.profile || { ...userProfile, Name: editName, City: editCity, Role: editRole, Bio: editBio };
       setUserProfile(updated);
       localStorage.setItem('km_profile', JSON.stringify(updated));
       setEditingProfile(false);
@@ -134,7 +133,6 @@ export const WorkerProfile: React.FC = () => {
           { label: 'שם מלא', val: editName, set: setEditName, ph: 'שם מלא', type: 'text' },
           { label: 'עיר', val: editCity, set: setEditCity, ph: 'עיר', type: 'text' },
           { label: '📞 טלפון', val: phone, set: setPhone, ph: '05X-XXXXXXX', type: 'tel' },
-          { label: 'תעריף שעתי (₪)', val: editRate, set: setEditRate, ph: '75', type: 'number' },
         ].map(f => (
           <div key={f.label}>
             <label className="text-sm font-semibold text-gray-600 mb-1.5 block">{f.label}</label>

@@ -31,7 +31,6 @@ export const WorkerProfileModal: React.FC<Props> = ({ workerId, initial, onClose
   const yearsExp = worker?.YearsExp ?? 0;
   const city = worker?.City || worker?.WorkerCity || '';
   const role = worker?.Role || worker?.WorkerRole || '';
-  const rate = worker?.HourlyRate ?? worker?.WorkerRate ?? 0;
   const phone = worker?.Phone || worker?.WorkerPhone || '';
   const bio = worker?.Bio || '';
   const skills = (worker?.Skills || '').split(',').map((s: string) => s.trim()).filter(Boolean);
@@ -95,12 +94,11 @@ export const WorkerProfileModal: React.FC<Props> = ({ workerId, initial, onClose
           {/* Body */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4" style={{ WebkitOverflowScrolling:'touch' as any }}>
             {/* סטטיסטיקות */}
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               {[
                 { l:'משמרות', v: completed },
                 { l:'אמינות', v: `${reliability}%` },
                 { l:'ניסיון', v: `${yearsExp} שנ׳` },
-                { l:'תעריף', v: `₪${rate}` },
               ].map(s => (
                 <div key={s.l} className="bg-gray-50 rounded-xl p-2 text-center">
                   <div className="font-black text-gray-900 text-sm">{s.v}</div>
