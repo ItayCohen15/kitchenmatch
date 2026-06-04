@@ -113,7 +113,7 @@ export const RestaurantHome: React.FC = () => {
           </div>
           <div className="font-black text-lg">{activeShift.WorkerName || 'עובד'}</div>
           <div className="text-green-100 text-sm mb-3">
-            {activeShift.Role} · ₪{activeShift.HourlyRate}/ש׳
+            {ROLE_LABELS[activeShift.Role] || activeShift.Role} · ₪{activeShift.HourlyRate}/ש׳
           </div>
           <button onClick={handleEnterActiveShift}
             className="w-full bg-white text-green-700 rounded-xl py-2.5 font-black text-sm">

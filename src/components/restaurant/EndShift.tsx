@@ -3,6 +3,7 @@ import { CheckCircle } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { StarRating } from '../common/StarRating';
 import { api } from '../../api';
+import { ROLE_LABELS } from '../../data/mockData';
 
 export const RestaurantEndShift: React.FC = () => {
   const { navToRestaurant, getSelectedJob, shiftStartTime, userProfile } = useApp();
@@ -33,10 +34,11 @@ export const RestaurantEndShift: React.FC = () => {
         const jobId = Number(job.Id || job.id);
         await api.sendRating(
           jobId,
-          userProfile.Id,
-          job.WorkerId || 0,
+          userProfile.UserId ?? userProfile.Id, // מזהה המשתמש (Users.Id) של המדרג
+          job.WorkerId || 0,                    // יעד = Workers.Id
           rating,
-          comment
+          comment,
+          'worker'                              // מסעדה מדרגת עובד
         );
       }
     } catch {
@@ -76,7 +78,7 @@ export const RestaurantEndShift: React.FC = () => {
           <div>
             <div className="font-bold text-lg">{workerName}</div>
             <div className="text-gray-400 text-sm">
-              {job?.Role || 'עובד'} · {shiftHours.toFixed(1)} שעות
+              {ROLE_LABELS[job?.Role] || job?.Role || 'עובד'} · {shiftHours.toFixed(1)} שעות
             </div>
           </div>
         </div>

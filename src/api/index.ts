@@ -228,10 +228,10 @@ export const api = {
       body: JSON.stringify({ text, senderName, senderRole })
     }).then(handleResponse),
 
-  sendRating: (jobId: number, fromUserId: number, toUserId: number, score: number, comment: string) =>
+  sendRating: (jobId: number, fromUserId: number, toUserId: number, score: number, comment: string, toRole: 'worker' | 'restaurant' = 'worker') =>
     fetch(`${BASE}/ratings`, {
       method: 'POST',
       headers: headers(),
-      body: JSON.stringify({ jobId, fromUserId, toUserId, score, comment })
+      body: JSON.stringify({ jobId, fromUserId, toUserId, score, comment, toRole })
     }).then(handleResponse),
 };

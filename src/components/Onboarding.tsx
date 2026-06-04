@@ -133,8 +133,8 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                       onClick={() => setCity(c)}
                       className={`py-1.5 px-3 rounded-full text-xs font-semibold transition-colors ${
                         city === c ? 'text-white' : 'bg-gray-100 text-gray-600'
-                      } style={city === c ? { background: 'linear-gradient(135deg,#e8a020,#f0c050)' } : {}}
                       }`}
+                      style={city === c ? { background: 'linear-gradient(135deg,#e8a020,#f0c050)' } : {}}
                     >
                       {c}
                     </button>
@@ -373,6 +373,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                   onClick={handleComplete}
                   disabled={saving}
                   className="flex-1 text-white rounded-2xl py-4 font-bold disabled:opacity-50"
+                  style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}
                 >
                   {saving ? (
                     <div className="flex items-center justify-center gap-2">

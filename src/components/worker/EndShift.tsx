@@ -34,10 +34,11 @@ export const WorkerEndShift: React.FC = () => {
         const jobId = Number(job.Id || job.id);
         await api.sendRating(
           jobId,
-          userProfile.Id,
-          job.RestaurantId || 0,
+          userProfile.UserId ?? userProfile.Id, // מזהה המשתמש (Users.Id) של המדרג
+          job.RestaurantId || 0,                // יעד = Restaurants.Id
           rating,
-          comment
+          comment,
+          'restaurant'                          // עובד מדרג מסעדה
         );
       }
     } catch {
