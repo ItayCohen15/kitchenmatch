@@ -188,7 +188,7 @@ export const WorkerProfile: React.FC = () => {
             <div className="flex items-center gap-3 mt-2">
               <span className="flex items-center gap-1 text-yellow-400 text-sm font-bold">
                 <Star size={12} className="fill-yellow-400" />
-                {rating > 0 ? rating.toFixed(1) : 'חדש'}
+                {rating > 0 ? rating.toFixed(1) : '—'}
               </span>
             </div>
           </div>

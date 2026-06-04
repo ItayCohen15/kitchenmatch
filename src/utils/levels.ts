@@ -39,8 +39,10 @@ export function unlockedPerks(levelKey?: string): string[] {
 
 // ── עובד חדש ── עד שמסיים את המשמרת השלישית הוא מסומן כ"חדש"
 export const NEW_WORKER_SHIFTS = 3;
-export function isNewWorker(completedShifts?: number): boolean {
-  return (Number(completedShifts) || 0) < NEW_WORKER_SHIFTS;
+export function isNewWorker(completedShifts?: number | null): boolean {
+  // בלי נתון אמיתי — לא מסמנים כחדש (עדיף לא לתייג מאשר לתייג בטעות)
+  if (completedShifts === undefined || completedShifts === null) return false;
+  return Number(completedShifts) < NEW_WORKER_SHIFTS;
 }
 // כמה משמרות נותרו עד להסרת תג "עובד חדש"
 export function shiftsUntilEstablished(completedShifts?: number): number {
