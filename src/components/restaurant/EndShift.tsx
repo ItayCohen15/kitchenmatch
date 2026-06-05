@@ -4,7 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { StarRating } from '../common/StarRating';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
-import { NEW_WORKER_SHIFTS } from '../../utils/levels';
+import { NEW_WORKER_SHIFTS, restaurantRate } from '../../utils/levels';
 
 export const RestaurantEndShift: React.FC = () => {
   const { navToRestaurant, getSelectedJob, shiftStartTime, userProfile } = useApp();
@@ -39,7 +39,10 @@ export const RestaurantEndShift: React.FC = () => {
   const shiftHours = Math.max(Math.min(rawHours, schedHours || rawHours), 0.5);
   const baseAmount = shiftHours * hourlyRate;                    // עבודה בפועל
   const baseScheduled = (schedHours || shiftHours) * hourlyRate; // הסכום המקורי
-  const restaurantCommission = baseScheduled * 0.065;           // עמלה על המקורי
+  const isEmergency = Boolean(job?.IsEmergency || job?.isEmergency);
+  const restCommRate = restaurantRate(isEmergency);             // חירום=9%, אחרת 6.5%
+  const restCommPct = +(restCommRate * 100).toFixed(1);
+  const restaurantCommission = baseScheduled * restCommRate;    // עמלה על המקורי
   const totalCharged = (baseAmount + restaurantCommission).toFixed(0);
   const workerName = job?.WorkerName || 'העובד';
   const workerInit = workerName.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
@@ -129,7 +132,7 @@ export const RestaurantEndShift: React.FC = () => {
         <div className="space-y-0">
           {[
             { label: `שכר בפועל (₪${hourlyRate} × ${shiftHours.toFixed(1)} ש׳)`, value: `₪${baseAmount.toFixed(0)}`, color: 'text-gray-800' },
-            { label: `עמלת פלטפורמה (6.5% מ-₪${baseScheduled.toFixed(0)})`,        value: `₪${restaurantCommission.toFixed(0)}`, color: 'text-gray-800' },
+            { label: `עמלת פלטפורמה (${restCommPct}% מ-₪${baseScheduled.toFixed(0)})${isEmergency ? ' 🚨' : ''}`, value: `₪${restaurantCommission.toFixed(0)}`, color: 'text-gray-800' },
           ].map(r => (
             <div key={r.label} className="flex justify-between text-sm py-2 border-b border-gray-50">
               <span className="text-gray-500">{r.label}</span>

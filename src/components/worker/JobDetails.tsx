@@ -4,7 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { ROLE_LABELS } from '../../data/mockData';
 import { api } from '../../api';
 import { CancelShiftModal } from '../common/CancelShiftModal';
-import { workerCommissionRate, levelFromShifts } from '../../utils/levels';
+import { effectiveWorkerRate, levelFromShifts } from '../../utils/levels';
 
 export const JobDetails: React.FC = () => {
   const { navToWorker, getSelectedJob, userProfile } = useApp();
@@ -38,7 +38,7 @@ export const JobDetails: React.FC = () => {
   const hours = ((end.getTime() - start.getTime()) / (1000 * 60 * 60)).toFixed(1);
   const baseAmount = parseFloat(hours) * hourlyRate;
   const workerLevel = levelFromShifts(userProfile?.CompletedShifts || 0).key;
-  const commRate = workerCommissionRate(workerLevel);
+  const commRate = effectiveWorkerRate(workerLevel, Boolean(job.IsEmergency || job.isEmergency));
   const commission = baseAmount * commRate;
   const netPay = (baseAmount - commission).toFixed(0);
   const startStr = start.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });

@@ -4,6 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import type { JobRole, ExperienceLevel } from '../../types';
 import { SHIFT_ROLES } from '../../utils/roles';
+import { restaurantRate } from '../../utils/levels';
 
 const ROLES = SHIFT_ROLES.map(r => ({ id: r.key as JobRole, label: r.label, icon: r.emoji, desc: r.desc }));
 
@@ -40,6 +41,10 @@ export const CreateJob: React.FC = () => {
   })();
 
   const totalPay = (parseFloat(totalHours) * parseFloat(wage || '0')).toFixed(0);
+  // עמלות לפי חירום: מסעדה 9% (אחרת 6.5%), עובד 5% (אחרת ~6.5%)
+  const restCommRate = restaurantRate(emergency);
+  const restCommPct = +(restCommRate * 100).toFixed(1);
+  const workerSidePct = emergency ? 5 : 6.5;
 
   const MIN_WAGE = 40;
   const wageNum = parseFloat(wage) || 0;
@@ -305,15 +310,15 @@ export const CreateJob: React.FC = () => {
 
             <div className="bg-amber-50 rounded-xl p-3 space-y-1.5">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">עמלה שלך (6.5%)</span>
-                <span className="font-bold text-amber-600">+₪{(parseFloat(totalPay) * 0.065).toFixed(0)}</span>
+                <span className="text-gray-500">עמלה שלך ({restCommPct}%){emergency ? ' 🚨 חירום' : ''}</span>
+                <span className="font-bold text-amber-600">+₪{(parseFloat(totalPay) * restCommRate).toFixed(0)}</span>
               </div>
               <div className="flex justify-between text-sm font-bold border-t border-orange-100 pt-1.5">
                 <span className="text-gray-700">סה״כ תשלם</span>
-                <span className="text-amber-600">₪{(parseFloat(totalPay) * 1.065).toFixed(0)}</span>
+                <span className="text-amber-600">₪{(parseFloat(totalPay) * (1 + restCommRate)).toFixed(0)}</span>
               </div>
               <p className="text-gray-400 text-xs text-center pt-1">
-                העובד ישלם 6.5% נוסף מצידו
+                העובד ישלם {workerSidePct}% נוסף מצידו
               </p>
             </div>
           </div>

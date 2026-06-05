@@ -3,6 +3,7 @@ import { Clock, CheckCircle2, Phone } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { Chat } from '../common/Chat';
+import { effectiveNetMultiplier, effectiveWorkerRate, levelFromShifts } from '../../utils/levels';
 
 export const WorkerActiveShift: React.FC = () => {
   const { navToWorker, shiftStartTime, getSelectedJob, userProfile } = useApp();
@@ -65,8 +66,12 @@ export const WorkerActiveShift: React.FC = () => {
   // חישוב הכנסה בזמן אמת לפי שניות
   const hoursWorked = elapsed / 3600;
   const ratePerSecond = hourlyRate / 3600;
+  const isEmergency = Boolean(job?.IsEmergency || job?.isEmergency);
+  const wLevel = levelFromShifts(userProfile?.CompletedShifts || 0).key;
+  const netMult = effectiveNetMultiplier(wLevel, isEmergency);
+  const wRatePct = +(effectiveWorkerRate(wLevel, isEmergency) * 100).toFixed(1);
   const grossEarned = (hoursWorked * hourlyRate).toFixed(2);
-  const netEarned = (hoursWorked * hourlyRate * 0.935).toFixed(2);
+  const netEarned = (hoursWorked * hourlyRate * netMult).toFixed(2);
   const earnedThisMinute = (ratePerSecond * 60).toFixed(2);
   const QUICK = ['בדרך!', 'מוכן 👍', 'צריך עוד חומרים', '5 דקות ועוד'];
 
@@ -101,7 +106,7 @@ export const WorkerActiveShift: React.FC = () => {
         <p className="text-gray-500">התשלום מועבר... עוד רגע תעבור לדירוג 💰</p>
         <div className="bg-green-50 rounded-2xl p-4 w-full text-center">
           <div className="text-3xl font-black text-green-600">₪{netEarned}</div>
-          <div className="text-gray-400 text-sm mt-1">נטו לאחר עמלה 6.5%</div>
+          <div className="text-gray-400 text-sm mt-1">נטו לאחר עמלה {wRatePct}%{isEmergency ? ' 🚨' : ''}</div>
         </div>
         <div className="w-6 h-6 border-2 border-green-400 border-t-transparent rounded-full animate-spin" />
         <button onClick={() => navToWorker('end_shift')}

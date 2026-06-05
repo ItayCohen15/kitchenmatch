@@ -5,6 +5,7 @@ import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
 import { printHTML } from '../../utils/print';
 import { CompensationDoc } from '../common/CompensationDoc';
+import { restaurantRate } from '../../utils/levels';
 
 /* ═══════════════════════════════════════════════════════════
    מסמך 3 – קבלת עמלת תיווך (KitchenMatch → מסעדה)
@@ -15,7 +16,9 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
   const end        = new Date(job.EndTime);
   const hoursNum   = (end.getTime() - start.getTime()) / 3600000;
   const base       = hoursNum * job.HourlyRate;          // סכום בסיסי
-  const commission = base * 0.065;                       // עמלת מסעדה: 6.5%
+  const commRate   = restaurantRate(job.IsEmergency);    // חירום=9%, אחרת 6.5%
+  const commPct    = +(commRate * 100).toFixed(1);
+  const commission = base * commRate;                    // עמלת מסעדה
   const totalPaid  = base + commission;                  // מה המסעדה שילמה בפועל
   const baseStr    = base.toFixed(2);
   const commStr    = commission.toFixed(2);
@@ -89,7 +92,7 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
 
       <table class="calc-table">
         <tr><td>סכום משמרת בסיסי</td><td align="left">₪${baseStr}</td></tr>
-        <tr><td>שיעור עמלת פלטפורמה</td><td align="left">6.5%</td></tr>
+        <tr><td>שיעור עמלת פלטפורמה</td><td align="left">${commPct}%</td></tr>
         <tr class="total-row"><td>סה"כ עמלת תיווך</td><td align="left">₪${commStr}</td></tr>
       </table>
 
@@ -140,7 +143,7 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
             </button>
           </div>
           <div className="flex items-center justify-between">
-            <div className="text-gray-400 text-xs">עמלת תיווך (6.5%)</div>
+            <div className="text-gray-400 text-xs">עמלת תיווך ({commPct}%){job.IsEmergency ? ' · חירום' : ''}</div>
             <div className="text-2xl font-black" style={{ color:'#e8a020' }}>₪{commStr}</div>
           </div>
         </div>
@@ -175,7 +178,7 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
               </div>
               <div className="flex justify-between py-2.5 border-b border-gray-50 text-sm">
                 <span className="text-gray-400">שיעור עמלה</span>
-                <span className="font-semibold text-gray-900">6.5%</span>
+                <span className="font-semibold text-gray-900">{commPct}%</span>
               </div>
               <div className="flex justify-between py-2.5 border-b border-gray-50 text-sm">
                 <span className="text-gray-400">עמלת KitchenMatch</span>
@@ -234,7 +237,7 @@ export const RestaurantWallet: React.FC = () => {
   const completedJobs = jobs.filter(j => j.Status === 'completed');
   const totalSpend    = completedJobs.reduce((sum, j) => {
     const h = (new Date(j.EndTime).getTime() - new Date(j.StartTime).getTime()) / 3600000;
-    return sum + h * j.HourlyRate * 1.065; // כולל עמלת פלטפורמה
+    return sum + h * j.HourlyRate * (1 + restaurantRate(j.IsEmergency)); // כולל עמלת פלטפורמה (חירום 9%)
   }, 0);
   const avgPerShift = completedJobs.length > 0 ? (totalSpend / completedJobs.length).toFixed(0) : 0;
 
@@ -348,6 +351,10 @@ export const RestaurantWallet: React.FC = () => {
             <span>סה"כ עלות ממסעדה</span>
             <span style={{ color:'#e8a020' }}>× 1.065</span>
           </div>
+          <div className="flex justify-between text-red-500 mt-1">
+            <span>🚨 משמרת חירום</span>
+            <span className="font-semibold">מסעדה 9% · עובד 5%</span>
+          </div>
         </div>
       </div>
 
@@ -395,7 +402,7 @@ export const RestaurantWallet: React.FC = () => {
             // ביטול: אם המסעדה ביטלה מאוחר → שילמה קנס (-). אם העובד ביטל מאוחר → המסעדה קיבלה פיצוי (+)
             const restaurantPaidFee = isCancelled && cancelFee > 0 && j.CancelledBy === 'restaurant';
             const restaurantGotComp = isCancelled && cancelFee > 0 && j.CancelledBy === 'worker';
-            const charged   = isCompleted ? base * 1.065 : 0;
+            const charged   = isCompleted ? base * (1 + restaurantRate(j.IsEmergency)) : 0;
             const statusColor = isCompleted ? 'text-green-500' : isCancelled ? 'text-red-400' : j.Status === 'searching' ? 'text-amber-400' : 'text-blue-400';
             const statusLabel = isCompleted ? 'הושלם' : isCancelled ? 'בוטל' : j.Status === 'searching' ? 'מחפש' : j.Status === 'active' ? 'פעיל' : j.Status === 'confirmed' ? 'מאושר' : j.Status;
 

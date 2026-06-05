@@ -70,6 +70,21 @@ export function netMultiplier(levelKey?: string): number {
   return 1 - workerCommissionRate(levelKey);
 }
 
+// ── עמלות חירום ── משמרת חירום: מסעדה 9%, עובד 5% (קבוע). אחרת: מסעדה 6.5%, עובד לפי רמה.
+export const BASE_RESTAURANT_COMMISSION = 0.065;
+export const EMERGENCY_RESTAURANT_COMMISSION = 0.09;
+export const EMERGENCY_WORKER_COMMISSION = 0.05;
+
+export function restaurantRate(isEmergency?: boolean): number {
+  return isEmergency ? EMERGENCY_RESTAURANT_COMMISSION : BASE_RESTAURANT_COMMISSION;
+}
+export function effectiveWorkerRate(levelKey?: string, isEmergency?: boolean): number {
+  return isEmergency ? EMERGENCY_WORKER_COMMISSION : workerCommissionRate(levelKey);
+}
+export function effectiveNetMultiplier(levelKey?: string, isEmergency?: boolean): number {
+  return 1 - effectiveWorkerRate(levelKey, isEmergency);
+}
+
 // מידע על הרמה הבאה והתקדמות אליה
 export function nextLevelProgress(shifts?: number): {
   current: LevelInfo;

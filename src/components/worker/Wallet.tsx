@@ -6,7 +6,7 @@ import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
 import { printHTML } from '../../utils/print';
 import { CompensationDoc } from '../common/CompensationDoc';
-import { levelFromShifts, workerCommissionRate, netMultiplier } from '../../utils/levels';
+import { levelFromShifts, effectiveNetMultiplier, effectiveWorkerRate } from '../../utils/levels';
 
 const MONTH_NAMES = ['ינו׳','פבר׳','מרץ','אפר׳','מאי','יוני','יולי','אוג׳','ספט׳','אוק׳','נוב׳','דצמ׳'];
 
@@ -370,10 +370,8 @@ export const WorkerWallet: React.FC = () => {
   const completedShifts = userProfile?.CompletedShifts ?? 0;
   const rating          = userProfile?.Rating          ?? 0;
 
-  // רמה ועמלה של העובד
+  // רמת העובד (העמלה מחושבת פר-משמרת — 5% למשמרת חירום, אחרת לפי רמה)
   const workerLevel = levelFromShifts(completedShifts).key;
-  const workerRate  = workerCommissionRate(workerLevel);
-  const netMult     = netMultiplier(workerLevel);
 
   useEffect(() => {
     if (!userProfile?.Id) { setLoading(false); return; }
@@ -396,7 +394,7 @@ export const WorkerWallet: React.FC = () => {
   completed.forEach(j => {
     const key = MONTH_NAMES[new Date(j.StartTime).getMonth()];
     const h = (new Date(j.EndTime).getTime() - new Date(j.StartTime).getTime()) / 3600000;
-    monthlyMap[key] = (monthlyMap[key] ?? 0) + h * j.HourlyRate * netMult;
+    monthlyMap[key] = (monthlyMap[key] ?? 0) + h * j.HourlyRate * effectiveNetMultiplier(workerLevel, j.IsEmergency);
   });
   const monthlyData = Object.entries(monthlyMap).map(([m, v]) => ({ month: m, earn: Math.round(v) }));
 
@@ -558,7 +556,7 @@ export const WorkerWallet: React.FC = () => {
             const end   = new Date(shift.EndTime);
             const h     = ((end.getTime()-start.getTime())/3600000).toFixed(1);
             const gross = (parseFloat(h)*shift.HourlyRate).toFixed(0);
-            const net   = (parseFloat(h)*shift.HourlyRate*netMult).toFixed(0);
+            const net   = (parseFloat(h)*shift.HourlyRate*effectiveNetMultiplier(workerLevel, shift.IsEmergency)).toFixed(0);
 
             return (
               <div key={shift.Id} className="bg-white rounded-2xl p-4 card-shadow">
@@ -604,7 +602,7 @@ export const WorkerWallet: React.FC = () => {
         </div>
       )}
 
-      {summaryShift && <ShiftSummaryDoc shift={summaryShift} rate={workerRate} onClose={() => setSummary(null)} />}
+      {summaryShift && <ShiftSummaryDoc shift={summaryShift} rate={effectiveWorkerRate(workerLevel, summaryShift.IsEmergency)} onClose={() => setSummary(null)} />}
       {invoiceShift && <WorkerInvoiceDoc shift={invoiceShift} worker={userProfile} onClose={() => setInvoice(null)} />}
       {compShift && (
         <CompensationDoc

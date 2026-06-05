@@ -3,6 +3,7 @@ import { Clock, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { Chat } from '../common/Chat';
+import { restaurantRate } from '../../utils/levels';
 
 export const ActiveShift: React.FC = () => {
   const { navToRestaurant, shiftStartTime, getSelectedJob, userProfile } = useApp();
@@ -53,7 +54,10 @@ export const ActiveShift: React.FC = () => {
   // חישוב בזמן אמת
   const hoursWorked = elapsed / 3600;
   const baseAmount = hoursWorked * hourlyRate;
-  const totalWithFee = (baseAmount * 1.065).toFixed(2);
+  const isEmergency = Boolean(job?.IsEmergency || job?.isEmergency);
+  const restCommRate = restaurantRate(isEmergency);
+  const restCommPct = +(restCommRate * 100).toFixed(1);
+  const totalWithFee = (baseAmount * (1 + restCommRate)).toFixed(2);
   const perMinute = (hourlyRate / 60).toFixed(2);
   const handleConfirmEnd = async () => {
     setConfirming(true);
@@ -86,7 +90,7 @@ export const ActiveShift: React.FC = () => {
         <p className="text-gray-500">התשלום עובר... עוד רגע תעבור לדירוג 💰</p>
         <div className="bg-amber-50 rounded-2xl p-4 w-full text-center">
           <div className="text-3xl font-black text-amber-600">₪{totalWithFee}</div>
-          <div className="text-gray-400 text-sm mt-1">סה״כ חויב (כולל 6.5% עמלה)</div>
+          <div className="text-gray-400 text-sm mt-1">סה״כ חויב (כולל {restCommPct}% עמלה){isEmergency ? ' 🚨' : ''}</div>
         </div>
         <div className="w-6 h-6 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
         <button onClick={() => navToRestaurant('end_shift')}
@@ -122,7 +126,7 @@ export const ActiveShift: React.FC = () => {
           <div className="text-right">
             <div className="text-xs text-green-100">תשלם עד כה</div>
             <div className="font-black text-xl">₪{totalWithFee}</div>
-            <div className="text-green-200 text-xs">₪{perMinute}/דק׳ · +6.5%</div>
+            <div className="text-green-200 text-xs">₪{perMinute}/דק׳ · +{restCommPct}%</div>
           </div>
         </div>
       </div>

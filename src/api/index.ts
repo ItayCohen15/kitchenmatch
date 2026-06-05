@@ -103,7 +103,7 @@ export const api = {
     }).then(handleResponse),
 
   getEndStatus: (jobId: number) =>
-    fetch(`${BASE}/jobs/${jobId}/end-status`, { headers: headers() }).then(handleResponse),
+    fetch(`${BASE}/jobs/${jobId}/end-status`, { headers: headers(), cache: 'no-store' }).then(handleResponse),
 
   getShiftsToConfirm: (restaurantId: number) =>
     fetch(`${BASE}/jobs/restaurant/${restaurantId}/to-confirm`, { headers: headers() }).then(handleResponse),
@@ -112,7 +112,7 @@ export const api = {
     fetch(`${BASE}/jobs/worker/${workerId}`, { headers: headers() }).then(handleResponse),
 
   getStartStatus: (jobId: number) =>
-    fetch(`${BASE}/jobs/${jobId}/start-status`, { headers: headers() }).then(handleResponse),
+    fetch(`${BASE}/jobs/${jobId}/start-status`, { headers: headers(), cache: 'no-store' }).then(handleResponse),
 
   initiateStart: (jobId: number, side: 'worker' | 'restaurant') =>
     fetch(`${BASE}/jobs/${jobId}/initiate-start`, {

@@ -3,7 +3,7 @@ import { CheckCircle, Wallet } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { StarRating } from '../common/StarRating';
 import { api } from '../../api';
-import { workerCommissionRate, levelFromShifts } from '../../utils/levels';
+import { effectiveWorkerRate, levelFromShifts } from '../../utils/levels';
 
 export const WorkerEndShift: React.FC = () => {
   const { navToWorker, getSelectedJob, shiftStartTime, userProfile } = useApp();
@@ -23,7 +23,8 @@ export const WorkerEndShift: React.FC = () => {
   const rawHours = (endTime.getTime() - startTime.getTime()) / 3600000;
   const shiftHours = Math.max(Math.min(rawHours, schedHours), 0.5);
   const hourlyRate = job ? Number(job.HourlyRate || job.hourlyRate || 0) : 0;
-  const workerRate = workerCommissionRate(levelFromShifts(userProfile?.CompletedShifts || 0).key);
+  const isEmergency = Boolean(job?.IsEmergency || job?.isEmergency);
+  const workerRate = effectiveWorkerRate(levelFromShifts(userProfile?.CompletedShifts || 0).key, isEmergency);
   const ratePct = (workerRate * 100).toFixed(1);
   const grossPay = shiftHours * hourlyRate;
   const commission = grossPay * workerRate;
