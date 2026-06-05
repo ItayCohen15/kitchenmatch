@@ -28,19 +28,33 @@ export const RestaurantEndShift: React.FC = () => {
   }, [job?.WorkerId]);
   const isNew = workerShifts !== null && workerShifts <= NEW_WORKER_SHIFTS;
 
-  const startTime = shiftStartTime || new Date(Date.now() - 5 * 3600000);
-  const endTime = new Date();
-  const hourlyRate = job ? Number(job.HourlyRate || job.hourlyRate || 0) : 0;
-  // שעות בפועל (מוגבל למתוכנן) + הסכום המקורי שנקבע מראש
-  const schedHours = job?.StartTime && job?.EndTime
-    ? Math.max((new Date(job.EndTime).getTime() - new Date(job.StartTime).getTime()) / 3600000, 0)
+  // שלוף את המשמרת המעודכנת מהשרת — כדי לתפוס IsEmergency והסכום שחויב בפועל
+  const [freshJob, setFreshJob] = useState<any>(null);
+  useEffect(() => {
+    if (!userProfile?.Id || !job) return;
+    const jid = Number(job.Id || job.id);
+    api.getRestaurantJobs(userProfile.Id)
+      .then((list: any[]) => {
+        const f = Array.isArray(list) ? list.find((x: any) => Number(x.Id) === jid) : null;
+        if (f) setFreshJob(f);
+      })
+      .catch(() => {});
+  }, [userProfile?.Id]);
+
+  // נתוני המשמרת — עדיפות למידע הטרי מהשרת
+  const j = freshJob || job;
+  const isEmergency = Boolean(j?.IsEmergency || j?.isEmergency);
+  const hourlyRate = Number(j?.HourlyRate || j?.hourlyRate || 0);
+  const schedHours = j?.StartTime && j?.EndTime
+    ? Math.max((new Date(j.EndTime).getTime() - new Date(j.StartTime).getTime()) / 3600000, 0)
     : 0;
-  const rawHours = (endTime.getTime() - startTime.getTime()) / 3600000;
-  const shiftHours = Math.max(Math.min(rawHours, schedHours || rawHours), 0.5);
-  const baseAmount = shiftHours * hourlyRate;                    // עבודה בפועל
-  const baseScheduled = (schedHours || shiftHours) * hourlyRate; // הסכום המקורי
-  const isEmergency = Boolean(job?.IsEmergency || job?.isEmergency);
-  const restCommRate = restaurantRate(isEmergency);             // חירום=9%, אחרת 6.5%
+  const baseScheduled = schedHours * hourlyRate; // הסכום המקורי שנקבע מראש
+  // שכר בפועל: מהשרת (TotalPay) אם המשמרת הושלמה, אחרת הערכה לפי השעון
+  const startTime = shiftStartTime || new Date(Date.now() - 5 * 3600000);
+  const estHours = Math.max(Math.min((Date.now() - startTime.getTime()) / 3600000, schedHours || 99), 0.5);
+  const baseAmount = (freshJob && freshJob.TotalPay != null) ? Number(freshJob.TotalPay) : estHours * hourlyRate;
+  const shiftHours = hourlyRate > 0 ? baseAmount / hourlyRate : 0;
+  const restCommRate = restaurantRate(isEmergency);            // חירום=12%, אחרת 6.5%
   const restCommPct = +(restCommRate * 100).toFixed(1);
   const restaurantCommission = baseScheduled * restCommRate;    // עמלה על המקורי
   const totalCharged = (baseAmount + restaurantCommission).toFixed(0);

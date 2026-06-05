@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CheckCircle, Wallet } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { StarRating } from '../common/StarRating';
@@ -15,18 +15,32 @@ export const WorkerEndShift: React.FC = () => {
   const [error, setError] = useState('');
 
   // חישוב לפי זמן עבודה בפועל (מוגבל לשעות שנקבעו מראש)
+  // שלוף את המשמרת המעודכנת מהשרת — לתפוס IsEmergency והסכום בפועל
+  const [freshJob, setFreshJob] = useState<any>(null);
+  useEffect(() => {
+    if (!userProfile?.Id || !job) return;
+    const jid = Number(job.Id || job.id);
+    api.getWorkerHistory(userProfile.Id)
+      .then((list: any[]) => {
+        const f = Array.isArray(list) ? list.find((x: any) => Number(x.Id) === jid) : null;
+        if (f) setFreshJob(f);
+      })
+      .catch(() => {});
+  }, [userProfile?.Id]);
+
+  const j = freshJob || job;
+  const isEmergency = Boolean(j?.IsEmergency || j?.isEmergency);
+  const hourlyRate = Number(j?.HourlyRate || j?.hourlyRate || 0);
+  const schedHours = j?.StartTime && j?.EndTime
+    ? Math.max((new Date(j.EndTime).getTime() - new Date(j.StartTime).getTime()) / 3600000, 0)
+    : 0;
   const startTime = shiftStartTime || new Date(Date.now() - 5 * 3600000);
-  const endTime = new Date();
-  const schedHours = job?.StartTime && job?.EndTime
-    ? Math.max((new Date(job.EndTime).getTime() - new Date(job.StartTime).getTime()) / 3600000, 0)
-    : Infinity;
-  const rawHours = (endTime.getTime() - startTime.getTime()) / 3600000;
-  const shiftHours = Math.max(Math.min(rawHours, schedHours), 0.5);
-  const hourlyRate = job ? Number(job.HourlyRate || job.hourlyRate || 0) : 0;
-  const isEmergency = Boolean(job?.IsEmergency || job?.isEmergency);
+  const estHours = Math.max(Math.min((Date.now() - startTime.getTime()) / 3600000, schedHours || 99), 0.5);
+  // שכר ברוטו בפועל: מהשרת (TotalPay) אם הושלם, אחרת הערכה לפי השעון
+  const grossPay = (freshJob && freshJob.TotalPay != null) ? Number(freshJob.TotalPay) : estHours * hourlyRate;
+  const shiftHours = hourlyRate > 0 ? grossPay / hourlyRate : 0;
   const workerRate = effectiveWorkerRate(levelFromShifts(userProfile?.CompletedShifts || 0).key, isEmergency);
   const ratePct = (workerRate * 100).toFixed(1);
-  const grossPay = shiftHours * hourlyRate;
   const commission = grossPay * workerRate;
   const netPay = (grossPay - commission).toFixed(0);
   const restaurantName = job?.RestaurantName || job?.restaurantName || 'המסעדה';
