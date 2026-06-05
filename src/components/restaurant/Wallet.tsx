@@ -353,7 +353,7 @@ export const RestaurantWallet: React.FC = () => {
           </div>
           <div className="flex justify-between text-red-500 mt-1">
             <span>🚨 משמרת חירום</span>
-            <span className="font-semibold">מסעדה 9% · עובד 5%</span>
+            <span className="font-semibold">מסעדה 12% · עובד 4%</span>
           </div>
         </div>
       </div>

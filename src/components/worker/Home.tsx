@@ -4,7 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { ROLE_LABELS, LEVEL_LABELS, LEVEL_COLORS } from '../../data/mockData';
 import { api } from '../../api';
 import { visibleShiftRoles, isCookRole } from '../../utils/roles';
-import { isNewWorker, shiftsUntilEstablished } from '../../utils/levels';
+import { isNewWorker, shiftsUntilEstablished, meetsShiftRequirements } from '../../utils/levels';
 import { NewWorkerBadge } from '../common/NewWorkerBadge';
 
 export const WorkerHome: React.FC = () => {
@@ -59,7 +59,10 @@ export const WorkerHome: React.FC = () => {
   // סינון לפי תפקיד העובד — טבח רואה גם משמרות "טבח הכנות"
   const workerRole = userProfile?.Role || 'line_cook';
   const allowedRoles = visibleShiftRoles(workerRole);
-  const relevant = jobs.filter(j => allowedRoles.includes(j.Role));
+  const relevant = jobs.filter(j =>
+    allowedRoles.includes(j.Role) &&
+    meetsShiftRequirements(rating, completedShifts, j.MinRating, j.AllowNewWorkers)
+  );
   const cook = isCookRole(workerRole);
   const filtered = filterRole === 'all' ? relevant : relevant.filter(j => j.Role === filterRole);
 

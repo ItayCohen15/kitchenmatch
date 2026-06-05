@@ -72,8 +72,8 @@ export function netMultiplier(levelKey?: string): number {
 
 // ── עמלות חירום ── משמרת חירום: מסעדה 9%, עובד 5% (קבוע). אחרת: מסעדה 6.5%, עובד לפי רמה.
 export const BASE_RESTAURANT_COMMISSION = 0.065;
-export const EMERGENCY_RESTAURANT_COMMISSION = 0.09;
-export const EMERGENCY_WORKER_COMMISSION = 0.05;
+export const EMERGENCY_RESTAURANT_COMMISSION = 0.12;
+export const EMERGENCY_WORKER_COMMISSION = 0.04;
 
 export function restaurantRate(isEmergency?: boolean): number {
   return isEmergency ? EMERGENCY_RESTAURANT_COMMISSION : BASE_RESTAURANT_COMMISSION;
@@ -83,6 +83,24 @@ export function effectiveWorkerRate(levelKey?: string, isEmergency?: boolean): n
 }
 export function effectiveNetMultiplier(levelKey?: string, isEmergency?: boolean): number {
   return 1 - effectiveWorkerRate(levelKey, isEmergency);
+}
+
+/**
+ * האם עובד עומד בדרישות הסינון של המשמרת (רלוונטי בעיקר לחירום).
+ * - עובד חדש (פחות מ-3 משמרות) → תלוי במתג "הצע לעובדים חדשים".
+ * - עובד מבוסס → חייב לעמוד בדירוג המינימלי.
+ * משמרת רגילה (ללא דרישות) — תמיד עובר.
+ */
+export function meetsShiftRequirements(
+  workerRating?: number,
+  workerCompletedShifts?: number,
+  minRating?: number,
+  allowNewWorkers?: boolean | number | null,
+): boolean {
+  const allowNew = allowNewWorkers == null ? true : Boolean(allowNewWorkers);
+  if (isNewWorker(workerCompletedShifts)) return allowNew;
+  const min = Number(minRating) || 0;
+  return (Number(workerRating) || 0) >= min;
 }
 
 // מידע על הרמה הבאה והתקדמות אליה

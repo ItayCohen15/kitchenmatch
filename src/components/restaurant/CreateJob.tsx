@@ -1,10 +1,10 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { ChevronRight, Zap, Clock } from 'lucide-react';
+import { ChevronRight, Zap, Clock, Filter, Star } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import type { JobRole, ExperienceLevel } from '../../types';
 import { SHIFT_ROLES } from '../../utils/roles';
-import { restaurantRate } from '../../utils/levels';
+import { restaurantRate, EMERGENCY_WORKER_COMMISSION } from '../../utils/levels';
 
 const ROLES = SHIFT_ROLES.map(r => ({ id: r.key as JobRole, label: r.label, icon: r.emoji, desc: r.desc }));
 
@@ -27,6 +27,9 @@ export const CreateJob: React.FC = () => {
   const [emergency, setEmergency] = useState(isEmergencyMode); // נדלק אוטומטית בכניסה דרך כפתור חירום
   // אם נכנסים דרך כפתור חירום — ודא שהמתג דלוק
   useEffect(() => { if (isEmergencyMode) setEmergency(true); }, [isEmergencyMode]);
+  // פילטרי חירום
+  const [minRating, setMinRating] = useState(0);
+  const [allowNewWorkers, setAllowNewWorkers] = useState(true);
   const [duties, setDuties] = useState('');
   const [instructions, setInstructions] = useState('');
   const [publishing, setPublishing] = useState(false);
@@ -44,7 +47,7 @@ export const CreateJob: React.FC = () => {
   // עמלות לפי חירום: מסעדה 9% (אחרת 6.5%), עובד 5% (אחרת ~6.5%)
   const restCommRate = restaurantRate(emergency);
   const restCommPct = +(restCommRate * 100).toFixed(1);
-  const workerSidePct = emergency ? 5 : 6.5;
+  const workerSidePct = emergency ? +(EMERGENCY_WORKER_COMMISSION * 100).toFixed(1) : 6.5;
 
   const MIN_WAGE = 40;
   const wageNum = parseFloat(wage) || 0;
@@ -78,6 +81,8 @@ export const CreateJob: React.FC = () => {
         isEmergency: emergency,
         description: instructions,
         duties,
+        minRating: emergency ? minRating : 0,
+        allowNewWorkers: emergency ? allowNewWorkers : true,
       });
 
       setTimeout(() => {
@@ -379,6 +384,43 @@ export const CreateJob: React.FC = () => {
               <div className={`w-6 h-6 bg-white rounded-full shadow transition-transform ${emergency ? '-translate-x-6' : ''}`} />
             </div>
           </button>
+
+          {/* סינון מועמדים — רק למשמרת חירום */}
+          {emergency && (
+            <div className="bg-white rounded-2xl p-4 card-shadow space-y-4 screen-enter">
+              <div className="font-bold text-gray-800 text-sm flex items-center gap-1.5">
+                <Filter size={15} className="text-red-500" /> סינון מועמדים לחירום
+              </div>
+
+              {/* דירוג מינימלי */}
+              <div>
+                <label className="text-xs font-semibold text-gray-500 mb-2 block">דירוג מינימלי נדרש</label>
+                <div className="flex gap-1.5">
+                  {[{ v:0, l:'הכל' }, { v:3, l:'3' }, { v:3.5, l:'3.5' }, { v:4, l:'4' }, { v:4.5, l:'4.5' }].map(o => (
+                    <button key={o.v} type="button" onClick={() => setMinRating(o.v)}
+                      className={`flex-1 py-2 rounded-xl text-xs font-bold border flex items-center justify-center gap-0.5 transition-colors ${
+                        minRating === o.v ? 'bg-amber-500 text-white border-amber-500' : 'bg-white text-gray-600 border-gray-200'
+                      }`}>
+                      {o.v > 0 && <Star size={10} className={minRating === o.v ? 'fill-white' : 'fill-amber-400 text-amber-400'} />}{o.l}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-gray-400 text-[11px] mt-1.5">המשמרת תוצע רק לעובדים מבוססים עם דירוג מעל הסף</p>
+              </div>
+
+              {/* עובדים חדשים */}
+              <button type="button" onClick={() => setAllowNewWorkers(v => !v)}
+                className="w-full flex items-center justify-between gap-3 text-right">
+                <div>
+                  <div className="font-bold text-gray-800 text-sm">הצע גם לעובדים חדשים</div>
+                  <div className="text-gray-400 text-xs">עובדים עם פחות מ-3 משמרות (תג "עובד חדש")</div>
+                </div>
+                <div className={`w-12 h-6 rounded-full flex-shrink-0 transition-colors ${allowNewWorkers ? 'bg-green-500' : 'bg-gray-300'}`}>
+                  <div className={`w-6 h-6 bg-white rounded-full shadow transition-transform ${allowNewWorkers ? '-translate-x-6' : ''}`} />
+                </div>
+              </button>
+            </div>
+          )}
 
           {publishError && (
             <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3 text-center font-medium">
