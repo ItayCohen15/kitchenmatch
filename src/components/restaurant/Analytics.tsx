@@ -36,7 +36,7 @@ const KPI = ({ icon, label, value, sub, color }: any) => (
 );
 
 export const RestaurantAnalytics: React.FC = () => {
-  const { userProfile } = useApp();
+  const { userProfile, navToRestaurant } = useApp();
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAllWorkers, setShowAllWorkers] = useState(false);
@@ -121,8 +121,8 @@ export const RestaurantAnalytics: React.FC = () => {
   const busiestDay  = dayData[0]?.day || 'שישי';
   const topRole     = roleDist.sort((a,b)=>b.count-a.count)[0]?.name || '';
   const insight     = topWorkers.length > 0
-    ? `העובד ${topWorkers[0].name} עבד אצלך ${topWorkers[0].count} פעמים — שקול ליצור איתו קשר קבוע`
-    : `${busiestDay} הוא היום הכי עמוס. מומלץ לפרסם משמרות ביום חמישי מראש`;
+    ? `${topWorkers[0].name} כבר עבד אצלך ${topWorkers[0].count} פעמים ומכיר את המטבח שלך — פרסם משמרת חדשה והזמן אותו שוב`
+    : `${busiestDay} הוא היום הכי עמוס. מומלץ לפרסם משמרות ליום זה מראש`;
 
   return (
     <div className="screen-enter space-y-5 pb-4">
@@ -290,6 +290,11 @@ export const RestaurantAnalytics: React.FC = () => {
           <div>
             <div className="font-bold text-sm mb-1" style={{color:'#e8a020'}}>💡 תובנה חכמה</div>
             <div className="text-gray-300 text-sm leading-relaxed">{insight}</div>
+            <button onClick={() => navToRestaurant('create_job')}
+              className="mt-2.5 text-xs font-black rounded-lg px-3 py-1.5 active:scale-95 transition-transform"
+              style={{ background:'#e8a020', color:'#0d1420' }}>
+              פרסם משמרת ›
+            </button>
           </div>
         </div>
       </div>
