@@ -2,6 +2,7 @@
 import { ChevronRight } from 'lucide-react';
 import { api } from '../api';
 import { WORKER_ROLES, SKILLS_BY_ROLE } from '../utils/roles';
+import { CityAutocomplete } from './common/CityAutocomplete';
 
 interface Props {
   role: 'restaurant' | 'worker';
@@ -119,27 +120,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
               </div>
               <div>
                 <label className="text-sm font-semibold text-gray-600 mb-1.5 block">עיר</label>
-                <input
-                  type="text"
-                  value={city}
-                  onChange={e => setCity(e.target.value)}
-                  placeholder="הקלד עיר..."
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-amber-400 outline-none text-gray-900 font-medium mb-2"
-                />
-                <div className="flex gap-2 flex-wrap">
-                  {['תל אביב', 'ירושלים', 'חיפה', 'ראשון לציון', 'פתח תקווה', 'נתניה', 'אשדוד', 'באר שבע', 'רמת גן', 'חולון', 'בת ים', 'לוד', 'רמלה'].map(c => (
-                    <button
-                      key={c}
-                      onClick={() => setCity(c)}
-                      className={`py-1.5 px-3 rounded-full text-xs font-semibold transition-colors ${
-                        city === c ? 'text-white' : 'bg-gray-100 text-gray-600'
-                      }`}
-                      style={city === c ? { background: 'linear-gradient(135deg,#e8a020,#f0c050)' } : {}}
-                    >
-                      {c}
-                    </button>
-                  ))}
-                </div>
+                <CityAutocomplete value={city} onChange={setCity} placeholder="הקלד עיר..." />
               </div>
               <div>
                 <label className="text-sm font-semibold text-gray-600 mb-1.5 block">📞 מספר טלפון</label>
@@ -219,18 +200,22 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                   </div>
                   <div>
                     <label className="text-sm font-semibold text-gray-600 mb-2 block">שנות ניסיון</label>
-                    <div className="flex gap-2">
-                      {['1', '2', '3', '5', '8+'].map(v => (
-                        <button
-                          key={v}
-                          onClick={() => setYearsExp(v.replace('+', ''))}
-                          className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-colors ${
-                            yearsExp === v.replace('+', '') ? 'text-white' : 'bg-gray-100 text-gray-700'
-                          }`}
-                        >
-                          {v}
-                        </button>
-                      ))}
+                    <div className="flex gap-2" dir="ltr">
+                      {['1', '2', '3', '5', '8+'].map(v => {
+                        const sel = yearsExp === v.replace('+', '');
+                        return (
+                          <button
+                            key={v}
+                            onClick={() => setYearsExp(v.replace('+', ''))}
+                            className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-colors ${
+                              sel ? 'text-white' : 'bg-gray-100 text-gray-700'
+                            }`}
+                            style={sel ? { background: 'linear-gradient(135deg,#e8a020,#f0c050)' } : {}}
+                          >
+                            {v}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 </>
