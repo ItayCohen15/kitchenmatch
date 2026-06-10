@@ -246,7 +246,7 @@ export const api = {
   sendRating: (
     jobId: number, fromUserId: number, toUserId: number, score: number, comment: string,
     toRole: 'worker' | 'restaurant' = 'worker',
-    extra?: { wouldHireAgain?: string; skillsAsClaimed?: string }
+    extra?: { wouldHireAgain?: string; skillsAsClaimed?: string; concernNote?: string }
   ) =>
     fetch(`${BASE}/ratings`, {
       method: 'POST',

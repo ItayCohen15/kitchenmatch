@@ -17,6 +17,7 @@ export const RestaurantEndShift: React.FC = () => {
   const [workerShifts, setWorkerShifts] = useState<number | null>(null);
   const [skillsAsClaimed, setSkillsAsClaimed] = useState('');
   const [wouldHireAgain, setWouldHireAgain] = useState('');
+  const [concernNote, setConcernNote] = useState('');
 
   // שלוף את מספר המשמרות של העובד כדי לדעת אם הוא "חדש" (3 ראשונות)
   useEffect(() => {
@@ -63,6 +64,8 @@ export const RestaurantEndShift: React.FC = () => {
   const walletBalance = userProfile?.WalletBalance || 0;
 
   const QUICK = ['עבודה מעולה!', 'מקצועי ומהיר', 'אשמח לקחת שוב', 'מדהים! 🔥', 'עבד קשה ומסור'];
+  // משוב שלילי → פותחים תא נימוק
+  const hasConcern = ['partial', 'no'].includes(skillsAsClaimed) || ['maybe', 'no'].includes(wouldHireAgain);
 
   const handleSubmit = async () => {
     if (rating === 0) return;
@@ -80,6 +83,7 @@ export const RestaurantEndShift: React.FC = () => {
           isNew ? {                             // דירוג מורחב — רק לעובד חדש
             skillsAsClaimed: skillsAsClaimed || undefined,
             wouldHireAgain: wouldHireAgain || undefined,
+            concernNote: concernNote.trim() || undefined,
           } : undefined
         );
       }
@@ -233,6 +237,21 @@ export const RestaurantEndShift: React.FC = () => {
               ))}
             </div>
           </div>
+
+          {/* תא נימוק — מופיע כשיש משוב שלילי (חלקית / לא / אולי) */}
+          {hasConcern && (
+            <div className="mt-3">
+              <div className="text-sm font-semibold text-red-700 mb-1.5">מה קרה? ספר לנו בקצרה</div>
+              <textarea
+                value={concernNote}
+                onChange={e => setConcernNote(e.target.value)}
+                placeholder="לדוגמה: הציג עצמו כמנוסה אבל התקשה במנות בסיסיות, איחר, או לא הקשיב להנחיות..."
+                rows={3}
+                className="w-full border border-red-200 bg-red-50 rounded-xl p-3 text-sm text-right resize-none focus:border-red-400 outline-none"
+              />
+              <p className="text-red-400 text-xs mt-1">המשוב נשמר לבדיקה של הצוות שלנו — לא מוצג לעובד.</p>
+            </div>
+          )}
         </div>
       )}
 

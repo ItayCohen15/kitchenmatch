@@ -63,7 +63,8 @@ export const WorkerNavigation: React.FC = () => {
   const handleInitiate = async () => {
     setInitiating(true); setError('');
     try {
-      await api.initiateStart(jobId, 'worker');
+      const r = await api.initiateStart(jobId, 'worker');
+      if (r?.status === 'active') { startShift(); navToWorker('active_shift'); return; }
       setWaiting(true);
     } catch { setError('שגיאה בשליחה, נסה שוב'); }
     setInitiating(false);

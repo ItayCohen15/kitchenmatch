@@ -65,7 +65,8 @@ export const LiveTracking: React.FC = () => {
   const handleInitiate = async () => {
     setInitiating(true); setError('');
     try {
-      await api.initiateStart(jobId, 'restaurant');
+      const r = await api.initiateStart(jobId, 'restaurant');
+      if (r?.status === 'active') { startShift(); navToRestaurant('active_shift'); return; }
       setWaiting(true);
     } catch { setError('שגיאה בשליחה, נסה שוב'); }
     setInitiating(false);
