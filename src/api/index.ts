@@ -1,6 +1,9 @@
-const BASE = window.location.hostname === 'localhost'
-  ? 'http://localhost:3001'
-  : 'https://deprive-shakable-fog.ngrok-free.dev';
+// כתובת ה-API: בענן מגדירים VITE_API_URL ב-Vercel; אחרת נפילה למקומי/ngrok
+const BASE =
+  (import.meta as any).env?.VITE_API_URL ||
+  (window.location.hostname === 'localhost'
+    ? 'http://localhost:3001'
+    : 'https://deprive-shakable-fog.ngrok-free.dev');
 
 const getToken = () => localStorage.getItem('km_token') || '';
 
