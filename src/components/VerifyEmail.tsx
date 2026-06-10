@@ -1,9 +1,11 @@
 import React, { useState, useRef } from 'react';
 import { CheckCircle } from 'lucide-react';
 
-const BASE = window.location.hostname === 'localhost'
-  ? 'http://localhost:3001'
-  : 'https://deprive-shakable-fog.ngrok-free.dev';
+const BASE =
+  (import.meta as any).env?.VITE_API_URL ||
+  (window.location.hostname === 'localhost'
+    ? 'http://localhost:3001'
+    : 'https://deprive-shakable-fog.ngrok-free.dev');
 
 interface Props {
   userId: number;
@@ -94,13 +96,14 @@ export const VerifyEmail: React.FC<Props> = ({ userId, email, onVerified }) => {
 
         {/* Code inputs */}
         <div className="bg-white rounded-3xl p-6 shadow-2xl mb-4">
-          <div className="flex gap-2 justify-center mb-5" onPaste={handlePaste}>
+          <div className="flex gap-2 justify-center mb-5" dir="ltr" onPaste={handlePaste}>
             {code.map((digit, i) => (
               <input
                 key={i}
                 ref={el => { inputs.current[i] = el; }}
                 type="text"
                 inputMode="numeric"
+                autoFocus={i === 0}
                 maxLength={1}
                 value={digit}
                 onChange={e => handleChange(i, e.target.value)}
