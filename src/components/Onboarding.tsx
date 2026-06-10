@@ -3,6 +3,7 @@ import { ChevronRight } from 'lucide-react';
 import { api } from '../api';
 import { WORKER_ROLES, SKILLS_BY_ROLE } from '../utils/roles';
 import { CityAutocomplete } from './common/CityAutocomplete';
+import { StreetAutocomplete } from './common/StreetAutocomplete';
 
 interface Props {
   role: 'restaurant' | 'worker';
@@ -138,13 +139,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                 <div>
                   <label className="text-sm font-semibold text-gray-600 mb-1.5 block">כתובת המסעדה</label>
                   <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={street}
-                      onChange={e => setStreet(e.target.value)}
-                      placeholder="שם הרחוב"
-                      className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-amber-400 outline-none"
-                    />
+                    <StreetAutocomplete city={city} value={street} onChange={setStreet} />
                     <input
                       type="text"
                       inputMode="numeric"
