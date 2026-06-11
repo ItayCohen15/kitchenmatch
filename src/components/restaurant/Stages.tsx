@@ -233,7 +233,7 @@ export const RestaurantStages: React.FC = () => {
 
       {/* מודאל אישור שמירה (₪300) */}
       {keepJob && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6" style={{ background: 'rgba(0,0,0,0.5)' }}>
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-6" style={{ background: 'rgba(0,0,0,0.5)' }}>
           <div className="bg-white rounded-3xl p-6 w-full max-w-sm text-center space-y-3">
             <div className="text-4xl">⭐</div>
             <h3 className="font-black text-gray-900 text-lg">לשמור את {keepJob.WorkerName || 'העובד'} כקבוע?</h3>
@@ -298,7 +298,7 @@ const StageScheduleModal: React.FC<{ stage: any; onClose: () => void; onCheckIn:
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ background: 'rgba(0,0,0,0.5)' }}>
+    <div className="fixed inset-0 z-[70] flex items-end justify-center" style={{ background: 'rgba(0,0,0,0.5)' }}>
       <div className="bg-white rounded-t-3xl p-5 w-full max-w-md max-h-[88vh] overflow-y-auto space-y-3" style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 24px)' }}>
         <div className="flex items-center justify-between">
           <h3 className="font-black text-gray-900 text-lg flex items-center gap-2"><Calendar size={18} className="text-amber-500" /> לוז סטאז' — {stage.WorkerName || 'העובד'}</h3>
@@ -376,7 +376,7 @@ const DirectShiftModal: React.FC<{ partner: any; restaurantId: number; onClose: 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ background: 'rgba(0,0,0,0.5)' }}>
+    <div className="fixed inset-0 z-[70] flex items-end justify-center" style={{ background: 'rgba(0,0,0,0.5)' }}>
       <div className="bg-white rounded-t-3xl p-6 w-full max-w-md space-y-3" style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 24px)' }}>
         <div className="flex items-center justify-between">
           <h3 className="font-black text-gray-900 text-lg">משמרת ל{partner.Name}</h3>
