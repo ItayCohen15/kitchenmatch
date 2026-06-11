@@ -24,19 +24,20 @@ self.addEventListener('notificationclick', event => {
   event.notification.close();
   const data = event.notification.data || {};
   const jobId = data.jobId;
-  const target = jobId ? `/?job=${jobId}` : '/';
+  const isChat = data.type === 'chat';
+  const target = jobId ? (isChat ? `/?chat=${jobId}` : `/?job=${jobId}`) : '/';
 
   event.waitUntil((async () => {
     const all = await clients.matchAll({ type: 'window', includeUncontrolled: true });
-    // אם האפליקציה כבר פתוחה — מקד אותה והודע לה לפתוח את המשמרת
+    // אם האפליקציה כבר פתוחה — מקד אותה והודע לה לפתוח את המשמרת/הצ'אט
     for (const c of all) {
       if ('focus' in c) {
         await c.focus();
-        if (jobId) c.postMessage({ type: 'open-job', jobId });
+        if (jobId) c.postMessage({ type: isChat ? 'open-chat' : 'open-job', jobId });
         return;
       }
     }
-    // אחרת — פתח חלון חדש עם מזהה המשמרת ב-URL
+    // אחרת — פתח חלון חדש עם היעד ב-URL
     if (clients.openWindow) await clients.openWindow(target);
   })());
 });

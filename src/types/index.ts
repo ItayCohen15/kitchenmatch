@@ -5,10 +5,10 @@ export type ShiftStatus = 'searching' | 'matched' | 'confirmed' | 'active' | 'co
 export type ExperienceLevel = 'any' | 'entry' | 'mid' | 'senior';
 export type RestaurantScreen =
   | 'home' | 'create_job' | 'worker_matching' | 'live_tracking'
-  | 'active_shift' | 'end_shift' | 'wallet' | 'analytics' | 'profile' | 'stages';
+  | 'active_shift' | 'end_shift' | 'wallet' | 'analytics' | 'profile' | 'stages' | 'chats';
 export type WorkerScreen =
   | 'home' | 'job_details' | 'navigation' | 'active_shift' | 'history'
-  | 'end_shift' | 'wallet' | 'profile' | 'stages';
+  | 'end_shift' | 'wallet' | 'profile' | 'stages' | 'chats';
 
 export interface Worker {
   id: string;

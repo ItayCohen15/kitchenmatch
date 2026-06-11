@@ -6,6 +6,7 @@ import { api } from '../../api';
 import { visibleShiftRoles, isCookRole } from '../../utils/roles';
 import { isNewWorker, shiftsUntilEstablished, meetsShiftRequirements } from '../../utils/levels';
 import { NewWorkerBadge } from '../common/NewWorkerBadge';
+import { UnreadChatBanner } from '../common/ChatsScreen';
 
 export const WorkerHome: React.FC = () => {
   const { navToWorker, selectWorkerJob, userProfile, refreshProfile } = useApp();
@@ -119,6 +120,10 @@ export const WorkerHome: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* הודעה חדשה בצ'אט */}
+      <UnreadChatBanner role="worker"
+        onOpen={(jobId) => { try { localStorage.setItem('km_open_chat', String(jobId)); } catch {} navToWorker('chats'); }} />
 
       {/* באנר עובד חדש — עד 3 משמרות */}
       {isNewWorker(completedShifts) && (

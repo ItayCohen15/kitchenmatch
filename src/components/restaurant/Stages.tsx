@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { GraduationCap, Check, Star, Send, Users, Plus, X, Calendar, Clock, Phone, MessageCircle } from 'lucide-react';
+import { GraduationCap, Check, Star, Send, Users, Plus, X, Calendar, Clock, Phone, MessageCircle, Pencil } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { WORKER_ROLES } from '../../utils/roles';
@@ -338,25 +338,45 @@ const StageScheduleModal: React.FC<{ stage: any; onClose: () => void; onCheckIn:
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
   const [err, setErr] = useState('');
+  const [editingId, setEditingId] = useState<number | null>(null);
 
   const load = () => api.getStageShifts(Number(stage.Id)).then((d: any) => setShifts(Array.isArray(d) ? d : [])).catch(() => {});
   useEffect(() => { load(); const iv = setInterval(load, 8000); return () => clearInterval(iv); }, [stage.Id]);
+
+  // טען משמרת קיימת לטופס לעריכה
+  const startEdit = (sh: any) => {
+    const d = new Date(sh.StartTime), e = new Date(sh.EndTime);
+    const pad = (n: number) => String(n).padStart(2, '0');
+    setDate(`${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`);
+    setStart(`${pad(d.getHours())}:${pad(d.getMinutes())}`);
+    setEnd(`${pad(e.getHours())}:${pad(e.getMinutes())}`);
+    setRate(String(sh.HourlyRate ?? ''));
+    setInstructions(sh.Instructions || '');
+    setEditingId(Number(sh.Id));
+    setErr('');
+  };
+
+  const cancelEdit = () => { setEditingId(null); setDate(''); setInstructions(''); setErr(''); };
 
   const add = async () => {
     if (!date || !start || !end || !rate) { setErr('מלא תאריך, שעות ושכר'); return; }
     if (Number(rate) < 40) { setErr('שכר המינימום הוא ₪40 לשעה'); return; }
     setAdding(true); setErr('');
     try {
-      await api.createStageShift({
-        stageId: Number(stage.Id),
+      const payload = {
         startTime: new Date(`${date}T${start}:00`).toISOString(),
         endTime: new Date(`${date}T${end}:00`).toISOString(),
         hourlyRate: Number(rate),
         instructions,
-      });
+      };
+      if (editingId) {
+        await api.editStageShift(editingId, payload);
+      } else {
+        await api.createStageShift({ stageId: Number(stage.Id), ...payload });
+      }
       // שמור שעות+שכר כברירת מחדל — בפעם הבאה משנים רק תאריך
       try { localStorage.setItem(DEFAULTS_KEY, JSON.stringify({ start, end, rate })); } catch {}
-      setDate(''); setInstructions('');
+      setDate(''); setInstructions(''); setEditingId(null);
       setAdded(true); setTimeout(() => setAdded(false), 2500);
       await load();
     } catch (e: any) { setErr(e.message || 'שגיאה'); }
@@ -382,28 +402,42 @@ const StageScheduleModal: React.FC<{ stage: any; onClose: () => void; onCheckIn:
         {shifts.map(sh => {
           const today = isToday(sh.StartTime);
           const done = sh.Status === 'completed';
+          const editable = sh.Status === 'confirmed';
+          const isEditing = editingId === Number(sh.Id);
           return (
-            <div key={sh.Id} className={`rounded-xl p-3 border ${today && !done ? 'border-amber-300 bg-amber-50' : 'border-gray-100 bg-gray-50'}`}>
+            <div key={sh.Id} className={`rounded-xl p-3 border ${isEditing ? 'border-blue-300 bg-blue-50' : today && !done ? 'border-amber-300 bg-amber-50' : 'border-gray-100 bg-gray-50'}`}>
               <div className="flex items-center justify-between">
                 <div className="text-sm font-bold text-gray-800 flex items-center gap-2">
                   <Clock size={13} className="text-gray-400" />
                   {fmtDate(sh.StartTime)} · {fmtTime(sh.StartTime)}–{fmtTime(sh.EndTime)}
                 </div>
-                <span className="text-amber-600 font-bold text-sm">₪{sh.HourlyRate}/ש'</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-amber-600 font-bold text-sm">₪{sh.HourlyRate}/ש'</span>
+                  {editable && (
+                    <button onClick={() => startEdit(sh)} title="ערוך משמרת"
+                      className="w-7 h-7 rounded-lg bg-white border border-gray-200 text-gray-500 flex items-center justify-center active:bg-gray-100">
+                      <Pencil size={13} />
+                    </button>
+                  )}
+                </div>
               </div>
               {sh.Instructions && <div className="text-gray-500 text-xs mt-1">📋 {sh.Instructions}</div>}
+              {isEditing && <div className="text-blue-600 text-xs mt-1 font-semibold">✏️ בעריכה — עדכן בטופס למטה</div>}
               {done
                 ? <div className="text-green-600 text-xs mt-1">✅ הושלמה{sh.TotalPay ? ` · ₪${sh.TotalPay}` : ''}</div>
                 : today
                   ? <button onClick={() => onCheckIn(sh)} className="mt-2 w-full bg-amber-500 text-white rounded-lg py-2 text-sm font-bold">כנס למשמרת היום ›</button>
-                  : <div className="text-gray-400 text-xs mt-1">מתוכננת</div>}
+                  : !isEditing && <div className="text-gray-400 text-xs mt-1">מתוכננת</div>}
             </div>
           );
         })}
 
-        {/* קביעת משמרת חדשה */}
+        {/* קביעת/עריכת משמרת */}
         <div className="border-t border-gray-100 pt-3 space-y-3">
-          <div className="text-sm font-bold text-gray-800">קבע משמרת חדשה</div>
+          <div className="flex items-center justify-between">
+            <div className="text-sm font-bold text-gray-800">{editingId ? '✏️ עריכת משמרת' : 'קבע משמרת חדשה'}</div>
+            {editingId && <button onClick={cancelEdit} className="text-xs text-gray-400 font-semibold">בטל עריכה</button>}
+          </div>
           <div>
             <label className="text-xs font-semibold text-gray-500 mb-1 block">תאריך</label>
             <input type="date" value={date} onChange={e => setDate(e.target.value)} className={inputCls} />
@@ -431,11 +465,11 @@ const StageScheduleModal: React.FC<{ stage: any; onClose: () => void; onCheckIn:
           </div>
           <p className="text-amber-700 text-xs text-center bg-amber-50 rounded-xl py-2">🎓 בתקופת הסטאז' העמלה שלך {(STAGE_RESTAURANT_COMMISSION * 100).toFixed(1)}% בלבד</p>
           {err && <div className="bg-red-50 text-red-600 text-sm rounded-xl px-4 py-2 text-center">{err}</div>}
-          {added && <div className="bg-green-50 text-green-700 text-sm rounded-xl px-4 py-2 text-center font-semibold">✅ המשמרת נוספה ללוז — העובד קיבל התראה</div>}
+          {added && <div className="bg-green-50 text-green-700 text-sm rounded-xl px-4 py-2 text-center font-semibold">✅ נשמר — העובד קיבל התראה</div>}
           <button onClick={add} disabled={adding}
             className="w-full text-white rounded-2xl py-3.5 font-bold disabled:opacity-40"
-            style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow: '0 4px 16px rgba(232,160,32,0.35)' }}>
-            {adding ? 'מוסיף...' : '+ הוסף משמרת ללוז'}
+            style={{ background: editingId ? 'linear-gradient(135deg,#3b82f6,#6366f1)' : 'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow: '0 4px 16px rgba(232,160,32,0.25)' }}>
+            {adding ? 'שומר...' : editingId ? '💾 שמור שינויים' : '+ הוסף משמרת ללוז'}
           </button>
         </div>
       </div>

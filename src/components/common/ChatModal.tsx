@@ -1,23 +1,31 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Send, MessageCircle } from 'lucide-react';
-import { api } from '../../api';
+import { X, Send, MessageCircle, Lock } from 'lucide-react';
+import { api, chatSeen } from '../../api';
 
 interface Props {
   jobId: number;            // שרשור ההודעות (לסטאז' — מזהה הסטאז')
   title: string;            // שם הצד השני
   myRole: 'restaurant' | 'worker';
   myName: string;
+  readOnly?: boolean;       // צ'אט נעול — לקריאה בלבד
   onClose: () => void;
 }
 
-export const ChatModal: React.FC<Props> = ({ jobId, title, myRole, myName, onClose }) => {
+export const ChatModal: React.FC<Props> = ({ jobId, title, myRole, myName, readOnly, onClose }) => {
   const [messages, setMessages] = useState<any[]>([]);
   const [text, setText] = useState('');
   const [sending, setSending] = useState(false);
+  const [sendErr, setSendErr] = useState('');
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const load = () => api.getMessages(jobId)
-    .then((d: any) => setMessages(Array.isArray(d) ? d : []))
+    .then((d: any) => {
+      const list = Array.isArray(d) ? d : [];
+      setMessages(list);
+      // סמן כנקרא — ההודעה האחרונה שראינו
+      const last = list[list.length - 1];
+      if (last?.Id) chatSeen.mark(jobId, Number(last.Id));
+    })
     .catch(() => {});
   useEffect(() => { load(); const iv = setInterval(load, 4000); return () => clearInterval(iv); }, [jobId]);
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages.length]);
@@ -25,8 +33,9 @@ export const ChatModal: React.FC<Props> = ({ jobId, title, myRole, myName, onClo
   const send = async () => {
     const t = text.trim();
     if (!t || sending) return;
-    setSending(true);
-    try { await api.sendMessage(jobId, t, myName, myRole); setText(''); await load(); } catch {}
+    setSending(true); setSendErr('');
+    try { await api.sendMessage(jobId, t, myName, myRole); setText(''); await load(); }
+    catch (e: any) { setSendErr(e.message || 'שליחה נכשלה'); }
     setSending(false);
   };
 
@@ -71,21 +80,32 @@ export const ChatModal: React.FC<Props> = ({ jobId, title, myRole, myName, onClo
           <div ref={bottomRef} />
         </div>
 
-        {/* שליחה */}
-        <div className="flex items-center gap-2 px-3 py-3 border-t border-gray-100 flex-shrink-0 bg-white">
-          <input
-            value={text}
-            onChange={e => setText(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Enter') send(); }}
-            placeholder="כתוב הודעה..."
-            className="flex-1 border border-gray-200 bg-gray-50 rounded-2xl px-4 py-2.5 text-sm text-right outline-none focus:border-amber-400 focus:bg-white"
-          />
-          <button onClick={send} disabled={sending || !text.trim()}
-            className="w-10 h-10 rounded-2xl flex items-center justify-center text-white disabled:opacity-40 flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
-            <Send size={17} style={{ transform: 'scaleX(-1)' }} />
-          </button>
-        </div>
+        {/* שליחה / נעול */}
+        {readOnly ? (
+          <div className="px-4 py-3 border-t border-gray-100 flex-shrink-0 bg-gray-50 text-center">
+            <span className="text-gray-500 text-xs font-semibold flex items-center justify-center gap-1.5">
+              <Lock size={12} /> הצ'אט לקריאה בלבד — ייפתח שוב כשתתאמו משמרת חדשה
+            </span>
+          </div>
+        ) : (
+          <div className="px-3 py-3 border-t border-gray-100 flex-shrink-0 bg-white">
+            {sendErr && <div className="text-red-500 text-xs text-center mb-1.5">{sendErr}</div>}
+            <div className="flex items-center gap-2">
+              <input
+                value={text}
+                onChange={e => setText(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') send(); }}
+                placeholder="כתוב הודעה..."
+                className="flex-1 border border-gray-200 bg-gray-50 rounded-2xl px-4 py-2.5 text-sm text-right outline-none focus:border-amber-400 focus:bg-white"
+              />
+              <button onClick={send} disabled={sending || !text.trim()}
+                className="w-10 h-10 rounded-2xl flex items-center justify-center text-white disabled:opacity-40 flex-shrink-0"
+                style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
+                <Send size={17} style={{ transform: 'scaleX(-1)' }} />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

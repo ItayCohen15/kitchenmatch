@@ -285,4 +285,28 @@ export const api = {
 
   saveStageFeedback: (jobId: number, data: object) =>
     fetch(`${BASE}/jobs/${jobId}/stage-feedback`, { method: 'PUT', headers: headers(), body: JSON.stringify(data) }).then(handleResponse),
+
+  editStageShift: (jobId: number, data: object) =>
+    fetch(`${BASE}/jobs/${jobId}/edit-stage-shift`, { method: 'PUT', headers: headers(), body: JSON.stringify(data) }).then(handleResponse),
+
+  // רשימת השיחות שלי (וואטסאפ-סטייל)
+  getThreads: (role: 'worker' | 'restaurant', profileId: number) =>
+    fetch(`${BASE}/messages/threads/${role}/${profileId}`, { headers: headers(), cache: 'no-store' }).then(handleResponse),
+};
+
+// ── מעקב "נקרא" לצ'אטים (מקומי) ──
+export const chatSeen = {
+  get(): Record<string, number> {
+    try { return JSON.parse(localStorage.getItem('km_chat_seen') || '{}'); } catch { return {}; }
+  },
+  mark(jobId: number, lastMsgId: number) {
+    try {
+      const m = chatSeen.get();
+      if ((m[jobId] || 0) < lastMsgId) { m[jobId] = lastMsgId; localStorage.setItem('km_chat_seen', JSON.stringify(m)); }
+    } catch {}
+  },
+  isUnread(jobId: number, lastMsgId?: number | null, lastSenderRole?: string, myRole?: string): boolean {
+    if (!lastMsgId || !lastSenderRole || lastSenderRole === myRole) return false;
+    return (chatSeen.get()[jobId] || 0) < lastMsgId;
+  },
 };

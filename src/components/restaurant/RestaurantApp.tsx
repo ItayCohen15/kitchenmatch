@@ -14,6 +14,7 @@ import { RestaurantWallet } from './Wallet';
 import { RestaurantAnalytics } from './Analytics';
 import { RestaurantProfile } from './Profile';
 import { RestaurantStages } from './Stages';
+import { ChatsScreen } from '../common/ChatsScreen';
 import type { RestaurantScreen } from '../../types';
 
 const SCREEN_TITLES: Record<RestaurantScreen, string> = {
@@ -27,9 +28,10 @@ const SCREEN_TITLES: Record<RestaurantScreen, string> = {
   analytics:       'ניתוח',
   profile:         'הפרופיל שלי',
   stages:          "סטאז'רים",
+  chats:           "הצ'אטים שלי",
 };
 
-const NAV_TABS: RestaurantScreen[] = ['home', 'create_job', 'stages', 'analytics', 'wallet', 'profile'];
+const NAV_TABS: RestaurantScreen[] = ['home', 'create_job', 'stages', 'chats', 'analytics', 'wallet', 'profile'];
 
 export const RestaurantApp: React.FC = () => {
   const { restaurantScreen, navToRestaurant, resetToLanding, userProfile } = useApp();
@@ -65,6 +67,7 @@ export const RestaurantApp: React.FC = () => {
       case 'analytics':       return <RestaurantAnalytics />;
       case 'profile':         return <RestaurantProfile />;
       case 'stages':          return <RestaurantStages />;
+      case 'chats':           return <ChatsScreen role="restaurant" />;
     }
   };
 

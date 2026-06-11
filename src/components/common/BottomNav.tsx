@@ -1,21 +1,23 @@
 import React from 'react';
-import { Home, BarChart2, Wallet, User, PlusCircle, Clock, GraduationCap } from 'lucide-react';
+import { Home, BarChart2, Wallet, User, PlusCircle, Clock, GraduationCap, MessageCircle } from 'lucide-react';
 
 interface NavItem { id: string; label: string; icon: React.ReactNode; }
 interface Props { mode: 'restaurant' | 'worker'; active: string; onNav: (id: string) => void; }
 
 const RESTAURANT_TABS: NavItem[] = [
-  { id: 'home',       label: 'בית',     icon: <Home size={20} /> },
-  { id: 'create_job', label: 'משמרת',  icon: <PlusCircle size={20} /> },
-  { id: 'stages',     label: "סטאז'",  icon: <GraduationCap size={20} /> },
-  { id: 'analytics',  label: 'ניתוח',  icon: <BarChart2 size={20} /> },
-  { id: 'wallet',     label: 'ארנק',   icon: <Wallet size={20} /> },
-  { id: 'profile',    label: 'פרופיל', icon: <User size={20} /> },
+  { id: 'home',       label: 'בית',     icon: <Home size={19} /> },
+  { id: 'create_job', label: 'משמרת',  icon: <PlusCircle size={19} /> },
+  { id: 'stages',     label: "סטאז'",  icon: <GraduationCap size={19} /> },
+  { id: 'chats',      label: "צ'אטים", icon: <MessageCircle size={19} /> },
+  { id: 'analytics',  label: 'ניתוח',  icon: <BarChart2 size={19} /> },
+  { id: 'wallet',     label: 'ארנק',   icon: <Wallet size={19} /> },
+  { id: 'profile',    label: 'פרופיל', icon: <User size={19} /> },
 ];
 
 const WORKER_TABS: NavItem[] = [
   { id: 'home',    label: 'משמרות',   icon: <Home size={20} /> },
   { id: 'stages',  label: "סטאז'",   icon: <GraduationCap size={20} /> },
+  { id: 'chats',   label: "צ'אטים",  icon: <MessageCircle size={20} /> },
   { id: 'wallet',  label: 'הכנסות',  icon: <Wallet size={20} /> },
   { id: 'history', label: 'היסטוריה', icon: <Clock size={20} /> },
   { id: 'profile', label: 'פרופיל',  icon: <User size={20} /> },
@@ -56,7 +58,7 @@ export const BottomNav: React.FC<Props> = ({ mode, active, onNav }) => {
                            filter: isActive ? 'drop-shadow(0 0 6px rgba(232,160,32,0.6))' : 'none' }}>
                   {tab.icon}
                 </span>
-                <span className="relative z-10 text-[10px] font-semibold mt-0.5"
+                <span className="relative z-10 text-[9px] font-semibold mt-0.5 whitespace-nowrap"
                   style={{ color: isActive ? '#e8a020' : 'rgba(255,255,255,0.3)' }}>
                   {tab.label}
                 </span>

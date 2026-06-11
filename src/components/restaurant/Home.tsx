@@ -5,6 +5,7 @@ import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
 import { CancelShiftModal } from '../common/CancelShiftModal';
 import { NewWorkerBadge } from '../common/NewWorkerBadge';
+import { UnreadChatBanner } from '../common/ChatsScreen';
 import { isWithinKm } from '../../utils/cities';
 
 export const RestaurantHome: React.FC = () => {
@@ -113,6 +114,10 @@ export const RestaurantHome: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* הודעה חדשה בצ'אט */}
+      <UnreadChatBanner role="restaurant"
+        onOpen={(jobId) => { try { localStorage.setItem('km_open_chat', String(jobId)); } catch {} navToRestaurant('chats'); }} />
 
       {/* משמרת פעילה */}
       {activeShift && (

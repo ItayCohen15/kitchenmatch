@@ -13,6 +13,7 @@ import { WorkerWallet } from './Wallet';
 import { WorkerProfile } from './Profile';
 import { WorkerHistory } from './History';
 import { WorkerStages } from './Stages';
+import { ChatsScreen } from '../common/ChatsScreen';
 import type { WorkerScreen } from '../../types';
 
 const SCREEN_TITLES: Record<WorkerScreen, string> = {
@@ -25,9 +26,10 @@ const SCREEN_TITLES: Record<WorkerScreen, string> = {
   profile:       'הפרופיל שלי',
   history:       'ההיסטוריה שלי',
   stages:        "סטאז'",
+  chats:         "הצ'אטים שלי",
 };
 
-const NAV_TABS: WorkerScreen[] = ['home', 'stages', 'wallet', 'history', 'profile'];
+const NAV_TABS: WorkerScreen[] = ['home', 'stages', 'chats', 'wallet', 'history', 'profile'];
 
 export const WorkerApp: React.FC = () => {
   const { workerScreen, navToWorker, resetToLanding, userProfile } = useApp();
@@ -73,6 +75,7 @@ export const WorkerApp: React.FC = () => {
       case 'history':      return <WorkerHistory />;
       case 'profile':      return <WorkerProfile />;
       case 'stages':       return <WorkerStages />;
+      case 'chats':        return <ChatsScreen role="worker" />;
     }
   };
 

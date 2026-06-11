@@ -8,6 +8,34 @@ import { api } from './api';
 // טעינה עצלה — כל תפקיד מוריד רק את הקוד שלו (כולל גרפים כבדים)
 const RestaurantApp = lazy(() => import('./components/restaurant/RestaurantApp').then(m => ({ default: m.RestaurantApp })));
 const WorkerApp = lazy(() => import('./components/worker/WorkerApp').then(m => ({ default: m.WorkerApp })));
+
+// רשת ביטחון: אם נטענה גרסה ישנה שהקבצים שלה כבר לא קיימים (נפוץ בכניסה מהתראת PUSH),
+// טעינת המסך נכשלת והמסך נשאר לבן — נטען מחדש פעם אחת אוטומטית כדי לקבל את הגרסה העדכנית.
+class ReloadOnChunkError extends React.Component<{ children: React.ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  componentDidCatch() {
+    try {
+      if (!sessionStorage.getItem('km_chunk_reload')) {
+        sessionStorage.setItem('km_chunk_reload', '1');
+        window.location.reload();
+      }
+    } catch { window.location.reload(); }
+  }
+  render() {
+    if (this.state.failed) {
+      return (
+        <div className="flex flex-col items-center justify-center gap-3 p-8 text-center" style={{ height: '100dvh' }}>
+          <div className="text-3xl">🔄</div>
+          <p className="text-gray-600 font-semibold text-sm">יש גרסה חדשה — טוען מחדש...</p>
+          <button onClick={() => { try { sessionStorage.removeItem('km_chunk_reload'); } catch {} window.location.reload(); }}
+            className="bg-amber-500 text-white rounded-2xl px-6 py-3 font-bold text-sm">רענן עכשיו</button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 import { Splash } from './components/Splash';
 import { Landing } from './components/Landing';
 import { VerifyEmail } from './components/VerifyEmail';
@@ -109,6 +137,13 @@ const AppContent: React.FC = () => {
   const [pendingJobId, setPendingJobId] = useState<string | null>(() => {
     try { return new URLSearchParams(window.location.search).get('job'); } catch { return null; }
   });
+  // מזהה צ'אט מלחיצה על התראת הודעה
+  const [pendingChatId, setPendingChatId] = useState<string | null>(() => {
+    try { return new URLSearchParams(window.location.search).get('chat'); } catch { return null; }
+  });
+
+  // הגרסה נטענה בהצלחה — אפס את מנגנון הריענון האוטומטי
+  useEffect(() => { try { sessionStorage.removeItem('km_chunk_reload'); } catch {} }, []);
 
   useEffect(() => {
     const savedToken   = localStorage.getItem('km_token');
@@ -128,9 +163,12 @@ const AppContent: React.FC = () => {
       }
       if (!onboardingDone) {
         setNeedsOnboarding(true);
-      } else if (!new URLSearchParams(window.location.search).get('job')) {
-        // בדוק סטטוס משמרת ונווט בהתאם (אלא אם הגענו דרך התראת PUSH למשמרת ספציפית)
-        resolveScreen(savedRole, profile, navToWorker, navToRestaurant, selectWorkerJob, startShift);
+      } else {
+        const params = new URLSearchParams(window.location.search);
+        if (!params.get('job') && !params.get('chat')) {
+          // בדוק סטטוס משמרת ונווט בהתאם (אלא אם הגענו דרך התראת PUSH למשמרת/צ'אט ספציפיים)
+          resolveScreen(savedRole, profile, navToWorker, navToRestaurant, selectWorkerJob, startShift);
+        }
       }
     }
     setAuthChecked(true);
@@ -151,6 +189,7 @@ const AppContent: React.FC = () => {
     if (!('serviceWorker' in navigator)) return;
     const handler = (e: MessageEvent) => {
       if (e.data?.type === 'open-job' && e.data.jobId) setPendingJobId(String(e.data.jobId));
+      if (e.data?.type === 'open-chat' && e.data.jobId) setPendingChatId(String(e.data.jobId));
     };
     navigator.serviceWorker.addEventListener('message', handler);
     return () => navigator.serviceWorker.removeEventListener('message', handler);
@@ -172,6 +211,17 @@ const AppContent: React.FC = () => {
       } catch { navToWorker('home'); }
     })();
   }, [pendingJobId, token, userRole, needsOnboarding, selectWorkerJob, navToWorker]);
+
+  // התראת הודעה נלחצה — פתח את מסך הצ'אטים על השיחה הנכונה
+  useEffect(() => {
+    if (!pendingChatId || !token || !userRole || needsOnboarding) return;
+    const cid = pendingChatId;
+    setPendingChatId(null);
+    try { window.history.replaceState({}, '', window.location.pathname); } catch {}
+    try { localStorage.setItem('km_open_chat', cid); } catch {}
+    if (userRole === 'worker') navToWorker('chats' as any);
+    else navToRestaurant('chats' as any);
+  }, [pendingChatId, token, userRole, needsOnboarding, navToWorker, navToRestaurant]);
 
   const handleLogin = (newToken: string, role: string, profile: any, isNew?: boolean) => {
     setToken(newToken);
@@ -233,14 +283,16 @@ const AppContent: React.FC = () => {
           );
         })()}
         {showApp && (
-          <Suspense fallback={
-            <div className="flex items-center justify-center" style={{ height: '100dvh' }}>
-              <div className="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
-            </div>
-          }>
-            {userRole === 'restaurant' && <RestaurantApp />}
-            {userRole === 'worker'     && <WorkerApp />}
-          </Suspense>
+          <ReloadOnChunkError>
+            <Suspense fallback={
+              <div className="flex items-center justify-center" style={{ height: '100dvh' }}>
+                <div className="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+              </div>
+            }>
+              {userRole === 'restaurant' && <RestaurantApp />}
+              {userRole === 'worker'     && <WorkerApp />}
+            </Suspense>
+          </ReloadOnChunkError>
         )}
       </div>
     </div>
