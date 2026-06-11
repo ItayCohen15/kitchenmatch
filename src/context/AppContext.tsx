@@ -3,8 +3,8 @@ import type { UserRole, RestaurantScreen, WorkerScreen, Job, Message } from '../
 import { INITIAL_CHAT } from '../data/mockData';
 import { api } from '../api';
 
-// מסכים שלא כדאי לשחזר (חד-פעמיים)
-const NO_RESTORE_SCREENS = ['end_shift'];
+// מסכים שלא משוחזרים אחרי ריענון/כניסה — תלויים במשמרת נבחרת; נכנסים אליהם מחדש דרך הבית/הלוז
+const NO_RESTORE_SCREENS = ['end_shift', 'live_tracking', 'navigation', 'worker_matching', 'job_details'];
 
 interface AppState {
   userRole: UserRole;
