@@ -74,6 +74,8 @@ export function netMultiplier(levelKey?: string): number {
 export const BASE_RESTAURANT_COMMISSION = 0.065;
 export const EMERGENCY_RESTAURANT_COMMISSION = 0.12;
 export const EMERGENCY_WORKER_COMMISSION = 0.04;
+// שותפות (אחרי סטאז' + ₪250): עמלה מופחתת 4.5% לכל צד
+export const PARTNERSHIP_COMMISSION = 0.045;
 
 export function restaurantRate(isEmergency?: boolean): number {
   return isEmergency ? EMERGENCY_RESTAURANT_COMMISSION : BASE_RESTAURANT_COMMISSION;

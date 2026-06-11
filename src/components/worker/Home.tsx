@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Zap, MapPin, Clock, ChevronLeft, Filter } from 'lucide-react';
+import { Zap, MapPin, Clock, ChevronLeft, Filter, GraduationCap } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { ROLE_LABELS, LEVEL_LABELS, LEVEL_COLORS } from '../../data/mockData';
 import { api } from '../../api';
@@ -45,7 +45,7 @@ export const WorkerHome: React.FC = () => {
       api.getWorkerHistory(userProfile.Id)
         .then((data: any[]) => {
           const active = Array.isArray(data)
-            ? data.filter((j: any) => ['confirmed','active'].includes(j.Status))
+            ? data.filter((j: any) => ['confirmed','active'].includes(j.Status) && j.JobType !== 'stage')
             : [];
           setActiveShifts(active);
         })
@@ -119,6 +119,18 @@ export const WorkerHome: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* כניסה לסטאז' והצעות ישירות */}
+      <button onClick={() => navToWorker('stages')}
+        className="w-full rounded-2xl p-3.5 flex items-center gap-3 text-right active:scale-[0.98] transition-transform"
+        style={{ background: 'linear-gradient(135deg,#1a2744,#0f2444)', border: '1px solid rgba(232,160,32,0.2)' }}>
+        <GraduationCap size={22} className="text-amber-400 flex-shrink-0" />
+        <div className="flex-1">
+          <div className="font-bold text-white text-sm">סטאז' והצעות ישירות</div>
+          <div className="text-white/55 text-xs">מתלמד? מצא סטאז' · קבל הצעות ממסעדות קבועות</div>
+        </div>
+        <ChevronLeft size={18} className="text-white/40" />
+      </button>
 
       {/* באנר עובד חדש — עד 3 משמרות */}
       {isNewWorker(completedShifts) && (

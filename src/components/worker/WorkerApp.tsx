@@ -12,6 +12,7 @@ import { WorkerEndShift } from './EndShift';
 import { WorkerWallet } from './Wallet';
 import { WorkerProfile } from './Profile';
 import { WorkerHistory } from './History';
+import { WorkerStages } from './Stages';
 import type { WorkerScreen } from '../../types';
 
 const SCREEN_TITLES: Record<WorkerScreen, string> = {
@@ -23,6 +24,7 @@ const SCREEN_TITLES: Record<WorkerScreen, string> = {
   wallet:        'הכנסות',
   profile:       'הפרופיל שלי',
   history:       'ההיסטוריה שלי',
+  stages:        "סטאז'",
 };
 
 const NAV_TABS: WorkerScreen[] = ['home', 'wallet', 'history', 'profile'];
@@ -54,6 +56,7 @@ export const WorkerApp: React.FC = () => {
       navigation:   'job_details',
       active_shift: 'navigation',
       end_shift:    'active_shift',
+      stages:       'home',
     };
     const dest = backMap[workerScreen];
     if (dest) navToWorker(dest);
@@ -69,6 +72,7 @@ export const WorkerApp: React.FC = () => {
       case 'wallet':       return <WorkerWallet />;
       case 'history':      return <WorkerHistory />;
       case 'profile':      return <WorkerProfile />;
+      case 'stages':       return <WorkerStages />;
     }
   };
 

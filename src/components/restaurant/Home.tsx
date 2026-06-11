@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Zap, ChefHat, CheckCircle, Star, LogOut, X } from 'lucide-react';
+import { Zap, ChefHat, CheckCircle, Star, LogOut, X, GraduationCap } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
@@ -46,7 +46,8 @@ export const RestaurantHome: React.FC = () => {
     const load = () => {
       api.getRestaurantJobs(userProfile.Id)
         .then(data => {
-          const all = Array.isArray(data) ? data : [];
+          // סטאז'ים מנוהלים במסך נפרד — לא נספרים כמשמרת פעילה/אחרונה
+          const all = (Array.isArray(data) ? data : []).filter((j: any) => j.JobType !== 'stage');
           const active = all.find((j: any) => ['confirmed','active','pending_completion'].includes(j.Status));
           setActiveShift(active || null);
           setRecentJobs(all.filter((j: any) => !['confirmed','active','pending_completion'].includes(j.Status)).slice(0, 3));
@@ -161,6 +162,17 @@ export const RestaurantHome: React.FC = () => {
             <div className="text-white/75 text-xs mt-0.5">עובד תוך 30 דקות</div>
           </button>
         </div>
+        <button
+          onClick={() => navToRestaurant('stages')}
+          className="w-full mt-3 rounded-2xl p-4 text-right active:scale-95 transition-transform flex items-center gap-3"
+          style={{ background: 'linear-gradient(135deg,#1a2744,#0f2444)', boxShadow: '0 4px 20px rgba(15,36,68,0.3)' }}
+        >
+          <GraduationCap size={24} className="text-amber-400 flex-shrink-0" />
+          <div>
+            <div className="font-black text-white">ניהול סטאז'רים</div>
+            <div className="text-white/60 text-xs mt-0.5">קלוט מתלמדים · עובדים קבועים בעמלה מופחתת</div>
+          </div>
+        </button>
       </div>
 
       {/* Available workers nearby */}

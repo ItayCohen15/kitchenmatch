@@ -20,6 +20,8 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
   const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
   const [selectedCuisines, setSelectedCuisines] = useState<string[]>([]);
   const [yearsExp, setYearsExp] = useState('1');
+  const [isTrainee, setIsTrainee] = useState(false);
+  const [courseType, setCourseType] = useState('');
   const [bio, setBio] = useState('');
   const [cuisineType, setCuisineType] = useState('');
   const [street, setStreet] = useState('');
@@ -53,6 +55,8 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
           yearsExp: parseInt(yearsExp),
           skills: selectedSpecialties.join(','),
           phone,
+          isTrainee,
+          courseType: isTrainee ? (courseType || 'אחר') : null,
         });
         // השתמש בפרופיל מהשרת אם קיים
         updatedProfile = res?.profile || {
@@ -212,6 +216,37 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                         );
                       })}
                     </div>
+                  </div>
+                  {/* סטטוס מתלמד/סטודנט — פותח גישה לסטאז'ים */}
+                  <div>
+                    <label className="text-sm font-semibold text-gray-600 mb-2 block">סטטוס מקצועי</label>
+                    <button
+                      type="button"
+                      onClick={() => setIsTrainee(v => !v)}
+                      className={`w-full p-3 rounded-xl border-2 flex items-center justify-between text-right transition-all ${isTrainee ? 'border-amber-400 bg-amber-50' : 'border-gray-100'}`}
+                    >
+                      <div>
+                        <div className="font-bold text-gray-900 text-sm">🎓 אני סטודנט/מתלמד</div>
+                        <div className="text-gray-500 text-xs">לומד בקורס בישול/ברמנים — אחפש גם סטאז'</div>
+                      </div>
+                      <div className={`w-11 h-6 rounded-full transition-colors relative flex-shrink-0 ${isTrainee ? 'bg-amber-500' : 'bg-gray-300'}`}>
+                        <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-all ${isTrainee ? 'right-0.5' : 'left-0.5'}`} />
+                      </div>
+                    </button>
+                    {isTrainee && (
+                      <div className="grid grid-cols-3 gap-2 mt-2">
+                        {['בישול', 'ברמנים', 'אחר'].map(c => (
+                          <button
+                            key={c}
+                            type="button"
+                            onClick={() => setCourseType(c)}
+                            className={`py-2 rounded-xl text-sm font-semibold border transition-colors ${courseType === c ? 'bg-blue-500 text-white border-blue-500' : 'bg-white text-gray-600 border-gray-200'}`}
+                          >
+                            {c}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </>
               ) : (

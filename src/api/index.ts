@@ -253,4 +253,26 @@ export const api = {
       headers: headers(),
       body: JSON.stringify({ jobId, fromUserId, toUserId, score, comment, toRole, ...(extra || {}) })
     }).then(handleResponse),
+
+  // ========== STAGES / PARTNERSHIPS ==========
+  createStage: (stage: object) =>
+    fetch(`${BASE}/jobs/stage`, { method: 'POST', headers: headers(), body: JSON.stringify(stage) }).then(handleResponse),
+
+  getStages: () =>
+    fetch(`${BASE}/jobs/stages`, { headers: headers() }).then(handleResponse),
+
+  keepWorker: (jobId: number) =>
+    fetch(`${BASE}/jobs/${jobId}/keep`, { method: 'PUT', headers: headers() }).then(handleResponse),
+
+  getPartners: (restaurantId: number) =>
+    fetch(`${BASE}/jobs/restaurant/${restaurantId}/partners`, { headers: headers() }).then(handleResponse),
+
+  createDirectShift: (shift: object) =>
+    fetch(`${BASE}/jobs/direct`, { method: 'POST', headers: headers(), body: JSON.stringify(shift) }).then(handleResponse),
+
+  getWorkerOffers: (workerId: number) =>
+    fetch(`${BASE}/jobs/worker/${workerId}/offers`, { headers: headers() }).then(handleResponse),
+
+  acceptOffer: (jobId: number) =>
+    fetch(`${BASE}/jobs/${jobId}/accept-offer`, { method: 'PUT', headers: headers() }).then(handleResponse),
 };
