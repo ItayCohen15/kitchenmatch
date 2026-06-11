@@ -27,7 +27,7 @@ const SCREEN_TITLES: Record<WorkerScreen, string> = {
   stages:        "סטאז'",
 };
 
-const NAV_TABS: WorkerScreen[] = ['home', 'wallet', 'history', 'profile'];
+const NAV_TABS: WorkerScreen[] = ['home', 'stages', 'wallet', 'history', 'profile'];
 
 export const WorkerApp: React.FC = () => {
   const { workerScreen, navToWorker, resetToLanding, userProfile } = useApp();

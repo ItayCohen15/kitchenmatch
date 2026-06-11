@@ -29,7 +29,7 @@ const SCREEN_TITLES: Record<RestaurantScreen, string> = {
   stages:          "סטאז'רים",
 };
 
-const NAV_TABS: RestaurantScreen[] = ['home', 'create_job', 'analytics', 'wallet', 'profile'];
+const NAV_TABS: RestaurantScreen[] = ['home', 'create_job', 'stages', 'analytics', 'wallet', 'profile'];
 
 export const RestaurantApp: React.FC = () => {
   const { restaurantScreen, navToRestaurant, resetToLanding, userProfile } = useApp();

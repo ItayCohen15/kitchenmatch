@@ -18,6 +18,9 @@ export const RestaurantEndShift: React.FC = () => {
   const [skillsAsClaimed, setSkillsAsClaimed] = useState('');
   const [wouldHireAgain, setWouldHireAgain] = useState('');
   const [concernNote, setConcernNote] = useState('');
+  // משוב סטאז' (רק למשמרת סטאז')
+  const [improvementNote, setImprovementNote] = useState('');
+  const [nextShiftNote, setNextShiftNote] = useState('');
 
   // שלוף את מספר המשמרות של העובד כדי לדעת אם הוא "חדש" (3 ראשונות)
   useEffect(() => {
@@ -45,6 +48,7 @@ export const RestaurantEndShift: React.FC = () => {
   // נתוני המשמרת — עדיפות למידע הטרי מהשרת
   const j = freshJob || job;
   const isEmergency = Boolean(j?.IsEmergency || j?.isEmergency);
+  const isStageShift = j?.JobType === 'stage_shift';
   const hourlyRate = Number(j?.HourlyRate || j?.hourlyRate || 0);
   const schedHours = j?.StartTime && j?.EndTime
     ? Math.max((new Date(j.EndTime).getTime() - new Date(j.StartTime).getTime()) / 3600000, 0)
@@ -86,6 +90,12 @@ export const RestaurantEndShift: React.FC = () => {
             concernNote: concernNote.trim() || undefined,
           } : undefined
         );
+        if (isStageShift) {
+          await api.saveStageFeedback(jobId, {
+            improvementNote: improvementNote.trim() || undefined,
+            nextShiftNote: nextShiftNote.trim() || undefined,
+          }).catch(() => {});
+        }
       }
     } catch {
       // ממשיך גם אם נכשל
@@ -252,6 +262,27 @@ export const RestaurantEndShift: React.FC = () => {
               <p className="text-red-400 text-xs mt-1">המשוב נשמר לבדיקה של הצוות שלנו — לא מוצג לעובד.</p>
             </div>
           )}
+        </div>
+      )}
+
+      {isStageShift && (
+        <div className="bg-white rounded-2xl p-4 card-shadow space-y-3">
+          <div className="flex items-center gap-1.5">
+            <span className="text-lg">🎓</span>
+            <h3 className="font-bold text-gray-800 text-sm">משוב סטאז' לעובד</h3>
+          </div>
+          <div>
+            <label className="text-xs font-semibold text-gray-500 mb-1 block">💡 במה הוא יכול להשתפר למשמרת הבאה?</label>
+            <textarea value={improvementNote} onChange={e => setImprovementNote(e.target.value)} rows={2}
+              placeholder="לדוגמה: לעבוד מהר יותר על מנות פתיחה, לשמור על סדר בתחנה..."
+              className="w-full border border-gray-200 rounded-xl p-3 text-sm text-right resize-none focus:border-amber-400 outline-none" />
+          </div>
+          <div>
+            <label className="text-xs font-semibold text-gray-500 mb-1 block">📋 מה יהיה במשמרת הבאה? (שיתכונן)</label>
+            <textarea value={nextShiftNote} onChange={e => setNextShiftNote(e.target.value)} rows={2}
+              placeholder="לדוגמה: ערב עמוס, נתמקד בגריל ובמנות עיקריות..."
+              className="w-full border border-gray-200 rounded-xl p-3 text-sm text-right resize-none focus:border-amber-400 outline-none" />
+          </div>
         </div>
       )}
 

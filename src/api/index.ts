@@ -275,4 +275,14 @@ export const api = {
 
   acceptOffer: (jobId: number) =>
     fetch(`${BASE}/jobs/${jobId}/accept-offer`, { method: 'PUT', headers: headers() }).then(handleResponse),
+
+  // לוז סטאז' + משוב
+  createStageShift: (shift: object) =>
+    fetch(`${BASE}/jobs/stage-shift`, { method: 'POST', headers: headers(), body: JSON.stringify(shift) }).then(handleResponse),
+
+  getStageShifts: (stageId: number) =>
+    fetch(`${BASE}/jobs/stage/${stageId}/shifts`, { headers: headers() }).then(handleResponse),
+
+  saveStageFeedback: (jobId: number, data: object) =>
+    fetch(`${BASE}/jobs/${jobId}/stage-feedback`, { method: 'PUT', headers: headers(), body: JSON.stringify(data) }).then(handleResponse),
 };
