@@ -13,15 +13,21 @@ import { Landing } from './components/Landing';
 import { VerifyEmail } from './components/VerifyEmail';
 
 // ניווט חכם לפי סטטוס משמרת
+// אילו משמרות מצדיקות קפיצה אוטומטית בכניסה — סטאז' מנוהל בטאב הסטאז', לא חוטף את המסך
+function autoNavigable(j: any): boolean {
+  if (j.JobType === 'stage') return false;                                   // קונטיינר סטאז' (3 שבועות)
+  if (j.JobType === 'stage_shift' && j.Status === 'confirmed') return false; // משמרת סטאז' מתוכננת — נכנסים מהלוז
+  if (j.JobType === 'direct' && j.Status === 'pending_approval') return false; // הצעה ישירה — מאשרים בטאב הסטאז'
+  return ['confirmed','active','pending_completion','pending_approval'].includes(j.Status);
+}
+
 async function resolveScreen(role: string, profile: any,
   navToWorker: Function, navToRestaurant: Function,
   selectWorkerJob: Function, startShift: Function) {
   try {
     if (role === 'worker' && profile?.Id) {
       const jobs = await api.getWorkerHistory(profile.Id);
-      const active = Array.isArray(jobs)
-        ? jobs.find((j: any) => ['confirmed','active','pending_completion','pending_approval'].includes(j.Status))
-        : null;
+      const active = Array.isArray(jobs) ? jobs.find(autoNavigable) : null;
 
       if (active) {
         selectWorkerJob(String(active.Id), active);
@@ -47,9 +53,7 @@ async function resolveScreen(role: string, profile: any,
 
     if (role === 'restaurant' && profile?.Id) {
       const jobs = await api.getRestaurantJobs(profile.Id);
-      const active = Array.isArray(jobs)
-        ? jobs.find((j: any) => ['confirmed','active','pending_completion','pending_approval'].includes(j.Status))
-        : null;
+      const active = Array.isArray(jobs) ? jobs.find(autoNavigable) : null;
 
       if (active) {
         selectWorkerJob(String(active.Id), active);
