@@ -298,15 +298,21 @@ const StageScheduleModal: React.FC<{ stage: any; onClose: () => void; onCheckIn:
   };
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-end justify-center" style={{ background: 'rgba(0,0,0,0.5)' }}>
-      <div className="bg-white rounded-t-3xl p-5 w-full max-w-md max-h-[88vh] overflow-y-auto space-y-3" style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 24px)' }}>
-        <div className="flex items-center justify-between">
+    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4" style={{ background: 'rgba(13,20,32,0.65)', backdropFilter: 'blur(3px)' }}>
+      <div className="bg-white rounded-3xl p-5 w-full max-w-md max-h-[85vh] overflow-y-auto space-y-3 shadow-2xl">
+        <div className="flex items-center justify-between pb-2 border-b border-gray-100">
           <h3 className="font-black text-gray-900 text-lg flex items-center gap-2"><Calendar size={18} className="text-amber-500" /> לוז סטאז' — {stage.WorkerName || 'העובד'}</h3>
-          <button onClick={onClose} className="text-gray-400"><X size={22} /></button>
+          <button onClick={onClose} className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500"><X size={17} /></button>
         </div>
 
         {/* רשימת משמרות */}
-        {shifts.length === 0 && <div className="text-center text-gray-400 text-sm py-4">עדיין לא נקבעו משמרות. הוסף למטה.</div>}
+        {shifts.length === 0 && (
+          <div className="text-center py-5 bg-gray-50 rounded-2xl">
+            <div className="text-3xl mb-1">🗓️</div>
+            <div className="text-gray-500 text-sm font-medium">עדיין לא נקבעו משמרות</div>
+            <div className="text-gray-400 text-xs">קבע את הראשונה בטופס למטה</div>
+          </div>
+        )}
         {shifts.map(sh => {
           const today = isToday(sh.StartTime);
           const done = sh.Status === 'completed';
@@ -329,19 +335,35 @@ const StageScheduleModal: React.FC<{ stage: any; onClose: () => void; onCheckIn:
         })}
 
         {/* הוספת משמרת */}
-        <div className="border-t border-gray-100 pt-3 space-y-2">
-          <div className="text-sm font-bold text-gray-700">קבע משמרת חדשה</div>
-          <input type="date" value={date} onChange={e => setDate(e.target.value)} className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-right outline-none focus:border-amber-400" />
-          <div className="flex gap-2" dir="ltr">
-            <input type="time" value={start} onChange={e => setStart(e.target.value)} className="flex-1 border border-gray-200 rounded-xl px-3 py-2.5 outline-none focus:border-amber-400" />
-            <input type="time" value={end} onChange={e => setEnd(e.target.value)} className="flex-1 border border-gray-200 rounded-xl px-3 py-2.5 outline-none focus:border-amber-400" />
+        <div className="border-t border-gray-100 pt-3 space-y-3">
+          <div className="text-sm font-bold text-gray-800">קבע משמרת חדשה</div>
+          <div>
+            <label className="text-xs font-semibold text-gray-500 mb-1 block">תאריך</label>
+            <input type="date" value={date} onChange={e => setDate(e.target.value)}
+              className="w-full border border-gray-200 bg-gray-50 rounded-xl px-4 py-3 text-right outline-none focus:border-amber-400 focus:bg-white text-gray-900" />
           </div>
-          <input type="number" inputMode="numeric" value={rate} onChange={e => setRate(e.target.value)} placeholder="שכר לשעה ₪" className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-right outline-none focus:border-amber-400" />
-          <p className="text-amber-600 text-xs text-center">בתקופת הסטאז' העמלה שלך {(STAGE_RESTAURANT_COMMISSION * 100).toFixed(1)}% בלבד</p>
+          <div className="flex gap-2" dir="ltr">
+            <div className="flex-1">
+              <label className="text-xs font-semibold text-gray-500 mb-1 block text-right">שעת התחלה</label>
+              <input type="time" value={start} onChange={e => setStart(e.target.value)}
+                className="w-full border border-gray-200 bg-gray-50 rounded-xl px-3 py-3 outline-none focus:border-amber-400 focus:bg-white text-gray-900" />
+            </div>
+            <div className="flex-1">
+              <label className="text-xs font-semibold text-gray-500 mb-1 block text-right">שעת סיום</label>
+              <input type="time" value={end} onChange={e => setEnd(e.target.value)}
+                className="w-full border border-gray-200 bg-gray-50 rounded-xl px-3 py-3 outline-none focus:border-amber-400 focus:bg-white text-gray-900" />
+            </div>
+          </div>
+          <div>
+            <label className="text-xs font-semibold text-gray-500 mb-1 block">שכר לשעה (₪)</label>
+            <input type="number" inputMode="numeric" value={rate} onChange={e => setRate(e.target.value)} placeholder="50"
+              className="w-full border border-gray-200 bg-gray-50 rounded-xl px-4 py-3 text-right outline-none focus:border-amber-400 focus:bg-white text-gray-900" />
+          </div>
+          <p className="text-amber-700 text-xs text-center bg-amber-50 rounded-xl py-2">🎓 בתקופת הסטאז' העמלה שלך {(STAGE_RESTAURANT_COMMISSION * 100).toFixed(1)}% בלבד</p>
           {err && <div className="bg-red-50 text-red-600 text-sm rounded-xl px-4 py-2 text-center">{err}</div>}
           <button onClick={add} disabled={adding}
-            className="w-full text-white rounded-2xl py-3 font-bold disabled:opacity-40"
-            style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
+            className="w-full text-white rounded-2xl py-3.5 font-bold disabled:opacity-40"
+            style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow: '0 4px 16px rgba(232,160,32,0.35)' }}>
             {adding ? 'מוסיף...' : '+ הוסף משמרת ללוז'}
           </button>
         </div>
@@ -376,11 +398,11 @@ const DirectShiftModal: React.FC<{ partner: any; restaurantId: number; onClose: 
   };
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-end justify-center" style={{ background: 'rgba(0,0,0,0.5)' }}>
-      <div className="bg-white rounded-t-3xl p-6 w-full max-w-md space-y-3" style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 24px)' }}>
-        <div className="flex items-center justify-between">
+    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4" style={{ background: 'rgba(13,20,32,0.65)', backdropFilter: 'blur(3px)' }}>
+      <div className="bg-white rounded-3xl p-5 w-full max-w-md max-h-[85vh] overflow-y-auto space-y-3 shadow-2xl">
+        <div className="flex items-center justify-between pb-2 border-b border-gray-100">
           <h3 className="font-black text-gray-900 text-lg">משמרת ל{partner.Name}</h3>
-          <button onClick={onClose} className="text-gray-400"><X size={22} /></button>
+          <button onClick={onClose} className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500"><X size={17} /></button>
         </div>
         <div>
           <label className="text-xs font-semibold text-gray-500 mb-1 block">תאריך</label>
