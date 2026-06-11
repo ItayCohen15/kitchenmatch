@@ -18,6 +18,11 @@ export const LiveTracking: React.FC = () => {
   const [cancelledByWorker, setCancelledByWorker] = useState(false);
   const [jobData, setJobData]              = useState<any>(job || null);
 
+  // קונטיינר סטאז' ששוחזר אחרי ריענון — שייך למסך הסטאז', לא לכאן
+  useEffect(() => {
+    if (jobData?.JobType === 'stage') navToRestaurant('stages');
+  }, [jobData?.JobType]);
+
   const workerName  = jobData?.WorkerName || 'העובד';
   const workerInit  = workerName.split(' ').map((n: string) => n[0]).join('').slice(0,2);
   const hourlyRate  = jobData ? Number(jobData.HourlyRate ?? 0) : 0;
@@ -28,8 +33,12 @@ export const LiveTracking: React.FC = () => {
     if (!userProfile?.Id) return;
     const load = () => api.getRestaurantJobs(userProfile.Id)
       .then((data: any[]) => {
-        const active = data?.find((j: any) =>
-          ['confirmed','active','pending_completion'].includes(j.Status));
+        // קונטיינר סטאז' לא שייך למסך הזה (משמרות סטאז' מתוזמנות כן — הן רצות בזרימה הרגילה)
+        const candidates = (data || []).filter((j: any) =>
+          j.JobType !== 'stage' && ['confirmed','active','pending_completion'].includes(j.Status));
+        // עדיפות למשמרת שנבחרה; אחרת הפעילה הראשונה
+        const selId = Number(job?.Id || job?.id || 0);
+        const active = candidates.find((j: any) => Number(j.Id) === selId) || candidates[0];
         if (active) {
           setJobData(active);
           if (active.WorkerPhone) setWorkerPhone(active.WorkerPhone);

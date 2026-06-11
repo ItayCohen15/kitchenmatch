@@ -16,6 +16,11 @@ export const WorkerNavigation: React.FC = () => {
   const [cancelledByRest, setCancelledByRest]    = useState(false);
   const [restaurantPhone, setRestPhone]          = useState<string>(job?.RestaurantPhone || '');
 
+  // קונטיינר סטאז' ששוחזר אחרי ריענון — שייך למסך הסטאז', לא לצ'ק-אין
+  useEffect(() => {
+    if (job?.JobType === 'stage') navToWorker('stages');
+  }, [job?.JobType]);
+
   const restaurantName    = job?.RestaurantName    || job?.restaurantName    || 'המסעדה';
   const restaurantCity    = job?.RestaurantCity    || job?.restaurantCity    || '';
   const restaurantAddress = job?.RestaurantAddress || job?.restaurantAddress || '';
