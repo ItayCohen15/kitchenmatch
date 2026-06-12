@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { GraduationCap, Check, Star, Send, Users, Plus, X, Calendar, Phone, MessageCircle, Trash2 } from 'lucide-react';
+import { GraduationCap, Check, Star, Send, Users, Plus, X, Calendar, Phone, MessageCircle, Trash2, ChevronRight } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { WORKER_ROLES } from '../../utils/roles';
@@ -115,23 +115,29 @@ export const RestaurantStages: React.FC = () => {
         </div>
       </div>
 
-      {/* טאבים */}
-      <div className="flex bg-gray-100 rounded-2xl p-1">
-        {([['mine', "הסטאז'ים שלי"], ['post', 'פרסם'], ['partners', 'הקבועים שלי']] as [Tab, string][]).map(([k, l]) => (
-          <button key={k} onClick={() => setTab(k)}
-            className={`relative flex-1 py-2.5 rounded-xl text-sm font-bold transition-all ${tab === k ? 'bg-white text-gray-900 shadow' : 'text-gray-400'}`}>
-            {l}
-            {k === 'mine' && groupApplicants.length > 0 && (
-              <span className="absolute top-1.5 right-2 w-2 h-2 rounded-full bg-blue-500" />
-            )}
-          </button>
-        ))}
-      </div>
+      {/* טאבים — הטופס נפתח רק מכפתור הפרסום */}
+      {tab !== 'post' && (
+        <div className="flex bg-gray-100 rounded-2xl p-1">
+          {([['mine', "הסטאז'רים שלי"], ['partners', 'הקבועים שלי']] as [Tab, string][]).map(([k, l]) => (
+            <button key={k} onClick={() => setTab(k)}
+              className={`relative flex-1 py-2.5 rounded-xl text-sm font-bold transition-all ${tab === k ? 'bg-white text-gray-900 shadow' : 'text-gray-400'}`}>
+              {l}
+              {k === 'mine' && groupApplicants.length > 0 && (
+                <span className="absolute top-1.5 right-2 w-2 h-2 rounded-full bg-blue-500" />
+              )}
+            </button>
+          ))}
+        </div>
+      )}
 
       {msg && <div className="bg-amber-50 text-amber-700 text-sm rounded-xl px-4 py-2.5 text-center font-semibold">{msg}</div>}
 
       {/* ── פרסום סטאז' ── */}
       {tab === 'post' && (
+        <>
+        <button onClick={() => setTab('mine')} className="flex items-center gap-1 text-gray-400 text-sm font-semibold">
+          <ChevronRight size={18} /> חזרה לסטאז'רים שלי
+        </button>
         <div className="bg-white rounded-2xl p-4 card-shadow space-y-4">
           <div>
             <label className="text-sm font-semibold text-gray-600 mb-2 block">תפקיד</label>
@@ -159,17 +165,19 @@ export const RestaurantStages: React.FC = () => {
           <button onClick={handlePost} disabled={posting}
             className="w-full text-white rounded-2xl py-4 font-bold disabled:opacity-40"
             style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow: '0 4px 16px rgba(232,160,32,0.35)' }}>
-            {posting ? 'מפרסם...' : "פרסם מקום סטאז'"}
+            {posting ? 'מפרסם...' : "פרסם סטאז'"}
           </button>
         </div>
+        </>
       )}
 
       {/* ── הסטאז'ים שלי ── */}
       {tab === 'mine' && (
         <div className="space-y-4">
           <button onClick={() => setTab('post')}
-            className="w-full flex items-center justify-center gap-2 border-2 border-dashed border-amber-300 text-amber-600 rounded-2xl py-3 font-bold bg-amber-50/50">
-            <Plus size={18} /> פרסם מקום סטאז'
+            className="w-full text-white rounded-2xl py-4 font-bold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
+            style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow: '0 4px 16px rgba(232,160,32,0.35)' }}>
+            <Plus size={18} /> פרסם סטאז'
           </button>
 
           {visibleStages.length === 0 && (
