@@ -13,6 +13,8 @@ import { RestaurantWallet } from './Wallet';
 import { RestaurantAnalytics } from './Analytics';
 import { RestaurantProfile } from './Profile';
 import { RestaurantStages } from './Stages';
+import { StageSchedule } from './StageSchedule';
+import { StageAddShift } from './StageAddShift';
 import { ChatsScreen } from '../common/ChatsScreen';
 import type { RestaurantScreen } from '../../types';
 
@@ -28,9 +30,11 @@ const SCREEN_TITLES: Record<RestaurantScreen, string> = {
   profile:         'הפרופיל שלי',
   stages:          "סטאז'רים",
   chats:           "הצ'אטים שלי",
+  stage_schedule:  "לוז הסטאז'",
+  stage_add_shift: 'קביעת משמרת',
 };
 
-const NAV_TABS: RestaurantScreen[] = ['home', 'create_job', 'stages', 'chats', 'analytics', 'wallet', 'profile'];
+const NAV_TABS: RestaurantScreen[] = ['home', 'create_job', 'stages', 'chats', 'analytics', 'wallet', 'profile', 'stage_schedule', 'stage_add_shift'];
 
 export const RestaurantApp: React.FC = () => {
   const { restaurantScreen, navToRestaurant, resetToLanding, userProfile } = useApp();
@@ -71,6 +75,8 @@ export const RestaurantApp: React.FC = () => {
       case 'profile':         return <RestaurantProfile />;
       case 'stages':          return <RestaurantStages />;
       case 'chats':           return <ChatsScreen role="restaurant" />;
+      case 'stage_schedule':  return <StageSchedule />;
+      case 'stage_add_shift': return <StageAddShift />;
     }
   };
 
