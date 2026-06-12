@@ -58,6 +58,17 @@ export const RestaurantApp: React.FC = () => {
   const showNav = NAV_TABS.includes(restaurantScreen);
   const showTopBar = !['active_shift'].includes(restaurantScreen);
 
+  // מסכים פנימיים — חץ חזרה במקום כפתור היציאה
+  const BACK_MAP: Partial<Record<RestaurantScreen, RestaurantScreen>> = {
+    create_job:      'home',
+    worker_matching: 'home',
+    live_tracking:   'home',
+    chats:           'home',
+    stage_schedule:  'stages',
+    stage_add_shift: 'stage_schedule',
+  };
+  const backTo = BACK_MAP[restaurantScreen];
+
   const handleNavTab = (id: string) => {
     navToRestaurant(id as RestaurantScreen);
   };
@@ -86,9 +97,15 @@ export const RestaurantApp: React.FC = () => {
         <header className="px-4 flex items-center justify-between flex-shrink-0"
           style={{ background:'linear-gradient(135deg, #080c14 0%, #0f1829 100%)', borderBottom:'1px solid rgba(255,255,255,0.06)', paddingTop:'max(env(safe-area-inset-top), 12px)', paddingBottom:'12px' }}>
           <div className="flex items-center gap-2">
-            <button onClick={resetToLanding} style={{color:'rgba(255,255,255,0.4)'}}>
-              <LogOut size={18} />
-            </button>
+            {backTo ? (
+              <button onClick={() => navToRestaurant(backTo)} className="font-bold text-xl leading-none" style={{color:'rgba(255,255,255,0.6)'}} title="חזרה">
+                ‹
+              </button>
+            ) : (
+              <button onClick={resetToLanding} style={{color:'rgba(255,255,255,0.4)'}}>
+                <LogOut size={18} />
+              </button>
+            )}
           </div>
           <div className="flex items-center gap-2">
             <span className="font-black text-base text-white">{SCREEN_TITLES[restaurantScreen]}</span>
