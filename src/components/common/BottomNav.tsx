@@ -1,12 +1,11 @@
 import React from 'react';
-import { Home, BarChart2, Wallet, User, PlusCircle, Clock, GraduationCap } from 'lucide-react';
+import { Home, BarChart2, Wallet, User, Clock, GraduationCap } from 'lucide-react';
 
 interface NavItem { id: string; label: string; icon: React.ReactNode; }
 interface Props { mode: 'restaurant' | 'worker'; active: string; onNav: (id: string) => void; }
 
 const RESTAURANT_TABS: NavItem[] = [
   { id: 'home',       label: 'בית',     icon: <Home size={20} /> },
-  { id: 'create_job', label: 'משמרת',  icon: <PlusCircle size={20} /> },
   { id: 'stages',     label: "סטאז'",  icon: <GraduationCap size={20} /> },
   { id: 'analytics',  label: 'ניתוח',  icon: <BarChart2 size={20} /> },
   { id: 'wallet',     label: 'ארנק',   icon: <Wallet size={20} /> },
