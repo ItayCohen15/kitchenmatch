@@ -19,8 +19,14 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
   const [error, setError] = useState('');
   const [pendingVerify, setPendingVerify] = useState<{userId:number,email:string,data:any}|null>(null);
 
+  const passLenOk = password.length >= 6;
+  const passUpperOk = /[A-Z]/.test(password);
+
   const handleSubmit = async () => {
     if (!email || !password) return setError('נא למלא אימייל וסיסמא');
+    if (mode === 'register' && (!passLenOk || !passUpperOk)) {
+      return setError('הסיסמה חייבת להכיל לפחות 6 תווים ואות גדולה אחת באנגלית (A-Z)');
+    }
     setLoading(true);
     setError('');
     try {
@@ -150,6 +156,17 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
                 {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
+            {/* דרישות סיסמה — חיווי חי בהרשמה */}
+            {mode === 'register' && (
+              <div className="flex gap-3 px-1">
+                <span className={`text-[11px] font-semibold ${passLenOk ? 'text-green-600' : 'text-gray-400'}`}>
+                  {passLenOk ? '✓' : '•'} לפחות 6 תווים
+                </span>
+                <span className={`text-[11px] font-semibold ${passUpperOk ? 'text-green-600' : 'text-gray-400'}`}>
+                  {passUpperOk ? '✓' : '•'} אות גדולה באנגלית (A-Z)
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Error */}
