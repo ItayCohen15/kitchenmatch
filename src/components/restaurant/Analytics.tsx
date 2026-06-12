@@ -3,14 +3,20 @@ import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip,
   ResponsiveContainer, PieChart, Pie, Cell,
 } from 'recharts';
-import { TrendingUp, Clock, Star, Zap, ChevronDown, ChevronUp } from 'lucide-react';
+import { TrendingUp, Clock, Star, Zap, ChevronDown, ChevronUp, Flame, Handshake, Scale } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 
 const MONTH_NAMES = ['ינו׳','פבר׳','מרץ','אפר׳','מאי','יוני','יולי','אוג׳','ספט׳','אוק׳','נוב׳','דצמ׳'];
 const DAY_NAMES   = ['','ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
-const ROLE_LABELS: Record<string,string> = { chef:'שפים', line_cook:'טבחים', dishwasher:'מדיחים' };
-const ROLE_COLORS: Record<string,string> = { chef:'#e8a020', line_cook:'#3b82f6', dishwasher:'#10b981' };
+const ROLE_LABELS: Record<string,string> = { chef:'שפים', line_cook:'טבחים', prep_cook:'טבחי הכנות', dishwasher:'מדיחים', cleaner:'ניקיון', bartender:'ברמנים', waiter:'מלצרים' };
+const ROLE_COLORS: Record<string,string> = { chef:'#e8a020', line_cook:'#3b82f6', prep_cook:'#6366f1', dishwasher:'#10b981', cleaner:'#10b981', bartender:'#8b5cf6', waiter:'#f43f5e' };
+
+// אחוז עמלת המסעדה לפי סוג המשמרת: שותפות/סטאז' 4.5%, חירום 12%, רגיל 6.5%
+const restRate = (j: any) =>
+  (j.JobType === 'direct' || j.JobType === 'stage_shift') ? 0.045 : j.IsEmergency ? 0.12 : 0.065;
+const baseOf = (j: any) => Number(j.TotalPay ?? (j.HourlyRate * (j.Hours || 0))) || 0;
+const costOf = (j: any) => baseOf(j) * (1 + restRate(j));
 
 const Tip = ({ active, payload, label }: any) => active && payload?.length ? (
   <div className="bg-white rounded-xl shadow-lg p-3 text-right border border-gray-100 text-sm">
@@ -38,13 +44,18 @@ const KPI = ({ icon, label, value, sub, color }: any) => (
 export const RestaurantAnalytics: React.FC = () => {
   const { userProfile, navToRestaurant } = useApp();
   const [jobs, setJobs] = useState<any[]>([]);
+  const [benchmark, setBenchmark] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAllWorkers, setShowAllWorkers] = useState(false);
 
   useEffect(() => {
     if (!userProfile?.Id) { setLoading(false); return; }
     api.getRestaurantAnalytics(userProfile.Id)
-      .then(data => setJobs(Array.isArray(data) ? data : []))
+      .then((data: any) => {
+        // תמיכה בשני פורמטים (מערך ישן / אובייקט חדש)
+        if (Array.isArray(data)) { setJobs(data); }
+        else { setJobs(Array.isArray(data?.jobs) ? data.jobs : []); setBenchmark(Array.isArray(data?.benchmark) ? data.benchmark : []); }
+      })
       .catch(() => setJobs([]))
       .finally(() => setLoading(false));
   }, [userProfile?.Id]);
@@ -57,117 +68,208 @@ export const RestaurantAnalytics: React.FC = () => {
 
   if (jobs.length === 0) return (
     <div className="screen-enter space-y-4">
-      <h2 className="text-xl font-black text-gray-900">ניתוח ביצועים</h2>
+      <h2 className="text-xl font-black text-gray-900">המרכז הפיננסי</h2>
       <div className="rounded-3xl p-8 text-center text-white"
         style={{ background: 'linear-gradient(135deg,#0d1420,#1a2744)' }}>
         <div className="text-5xl mb-3">📊</div>
         <p className="font-bold text-lg">אין עדיין נתונים</p>
-        <p className="text-gray-400 text-sm mt-1">הנתונים יופיעו לאחר השלמת משמרות</p>
+        <p className="text-gray-400 text-sm mt-1">התובנות הפיננסיות יופיעו לאחר השלמת משמרות</p>
       </div>
     </div>
   );
 
-  // ── חישובים ──
-  const totalSpend  = jobs.reduce((s,j) => s + (j.TotalPay || j.HourlyRate * (j.Hours||5)) * 1.065, 0);
-  const totalHours  = jobs.reduce((s,j) => s + (j.Hours || 5), 0);
+  // ── חישובי ליבה ──
+  const totalSpend  = jobs.reduce((s, j) => s + costOf(j), 0);
+  const totalHours  = jobs.reduce((s, j) => s + (Number(j.Hours) || 0), 0);
   const avgPerShift = totalSpend / jobs.length;
-  const avgHourly   = totalSpend / (totalHours || 1);
+  const avgHourly   = totalHours > 0 ? totalSpend / totalHours : 0;
 
-  // חודשי
-  const monthlyMap: Record<string,{spend:number,shifts:number,hours:number}> = {};
+  // חודש נוכחי מול קודם + צפי לסוף החודש
+  const now = new Date();
+  const inMonth = (j: any, m: number, y: number) => Number(j.Month) === m + 1 && Number(j.Year) === y;
+  const prevM = now.getMonth() === 0 ? 11 : now.getMonth() - 1;
+  const prevY = now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear();
+  const thisJobs  = jobs.filter(j => inMonth(j, now.getMonth(), now.getFullYear()));
+  const lastJobs  = jobs.filter(j => inMonth(j, prevM, prevY));
+  const thisSpend = thisJobs.reduce((s, j) => s + costOf(j), 0);
+  const lastSpend = lastJobs.reduce((s, j) => s + costOf(j), 0);
+  const changePct = lastSpend > 0 ? Math.round((thisSpend - lastSpend) / lastSpend * 100) : null;
+  const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const projection = now.getDate() >= 3 && thisSpend > 0 ? (thisSpend / now.getDate()) * daysInMonth : null;
+
+  // מגמה חודשית (ממוין כרונולוגית, עד 6 חודשים)
+  const monthlyMap: Record<string, { label: string; spend: number; shifts: number }> = {};
   jobs.forEach(j => {
-    const key = `${MONTH_NAMES[j.Month-1]}`;
-    if (!monthlyMap[key]) monthlyMap[key] = {spend:0,shifts:0,hours:0};
-    monthlyMap[key].spend  += (j.TotalPay || j.HourlyRate*(j.Hours||5)) * 1.065;
+    const key = `${j.Year}-${String(j.Month).padStart(2, '0')}`;
+    if (!monthlyMap[key]) monthlyMap[key] = { label: MONTH_NAMES[Number(j.Month) - 1], spend: 0, shifts: 0 };
+    monthlyMap[key].spend += costOf(j);
     monthlyMap[key].shifts += 1;
-    monthlyMap[key].hours  += j.Hours || 5;
   });
-  const monthlyData = Object.entries(monthlyMap).map(([m,v]) => ({ month:m, ...v, spend: Math.round(v.spend) }));
+  const monthlyData = Object.keys(monthlyMap).sort().slice(-6)
+    .map(k => ({ month: monthlyMap[k].label, spend: Math.round(monthlyMap[k].spend), shifts: monthlyMap[k].shifts }));
 
-  // ימים
-  const dayMap: Record<number,number> = {};
-  jobs.forEach(j => { dayMap[j.WeekDay] = (dayMap[j.WeekDay]||0) + 1; });
+  // ימים בשבוע
+  const dayMap: Record<number, number> = {};
+  jobs.forEach(j => { dayMap[j.WeekDay] = (dayMap[j.WeekDay] || 0) + 1; });
   const dayData = Object.entries(dayMap)
-    .map(([d,c]) => ({ day: DAY_NAMES[Number(d)] || `יום ${d}`, shifts: c }))
-    .sort((a,b) => b.shifts - a.shifts);
+    .map(([d, c]) => ({ day: DAY_NAMES[Number(d)] || `יום ${d}`, shifts: c }))
+    .sort((a, b) => b.shifts - a.shifts);
 
   // תפקידים
-  const roleMap: Record<string,number> = {};
-  jobs.forEach(j => { roleMap[j.Role] = (roleMap[j.Role]||0)+1; });
-  const roleDist = Object.entries(roleMap).map(([r,c]) => ({
-    name: ROLE_LABELS[r]||r, value: Math.round(c/jobs.length*100),
-    color: ROLE_COLORS[r]||'#9ca3af', count: c,
-  }));
+  const roleMap: Record<string, number> = {};
+  jobs.forEach(j => { roleMap[j.Role] = (roleMap[j.Role] || 0) + 1; });
+  const roleDist = Object.entries(roleMap).map(([r, c]) => ({
+    name: ROLE_LABELS[r] || r, value: Math.round(c / jobs.length * 100),
+    color: ROLE_COLORS[r] || '#9ca3af', count: c,
+  })).sort((a, b) => b.count - a.count);
 
   // עובדים מובילים
-  const workerMap: Record<string,{count:number,rating:number,name:string}> = {};
+  const workerMap: Record<string, { count: number; rating: number; name: string }> = {};
   jobs.forEach(j => {
     if (!j.WorkerName) return;
-    if (!workerMap[j.WorkerName]) workerMap[j.WorkerName] = {count:0,rating:0,name:j.WorkerName};
+    if (!workerMap[j.WorkerName]) workerMap[j.WorkerName] = { count: 0, rating: 0, name: j.WorkerName };
     workerMap[j.WorkerName].count++;
     if (j.WorkerRating) workerMap[j.WorkerName].rating = j.WorkerRating;
   });
-  const topWorkers = Object.values(workerMap).sort((a,b) => b.count-a.count);
+  const topWorkers = Object.values(workerMap).sort((a, b) => b.count - a.count);
 
-  // השוואת חודש נוכחי vs קודם
-  const thisMonth = new Date().getMonth();
-  const thisJobs  = jobs.filter(j => j.Month-1 === thisMonth);
-  const lastJobs  = jobs.filter(j => j.Month-1 === (thisMonth-1+12)%12);
-  const thisSpend = thisJobs.reduce((s,j) => s+(j.TotalPay||j.HourlyRate*(j.Hours||5))*1.065,0);
-  const lastSpend = lastJobs.reduce((s,j) => s+(j.TotalPay||j.HourlyRate*(j.Hours||5))*1.065,0);
-  const changePct = lastSpend > 0 ? ((thisSpend-lastSpend)/lastSpend*100).toFixed(0) : null;
+  // 🚨 פרמיית חירום: כמה עלו משמרות החירום מעבר לעמלה רגילה
+  const emergencyJobs = jobs.filter(j => j.IsEmergency && j.JobType !== 'direct' && j.JobType !== 'stage_shift');
+  const emergencyExtra = emergencyJobs.reduce((s, j) => s + baseOf(j) * (0.12 - 0.065), 0);
 
-  // תובנה חכמה
-  const busiestDay  = dayData[0]?.day || 'שישי';
-  const topRole     = roleDist.sort((a,b)=>b.count-a.count)[0]?.name || '';
-  const insight     = topWorkers.length > 0
-    ? `${topWorkers[0].name} כבר עבד אצלך ${topWorkers[0].count} פעמים ומכיר את המטבח שלך — פרסם משמרת חדשה והזמן אותו שוב`
-    : `${busiestDay} הוא היום הכי עמוס. מומלץ לפרסם משמרות ליום זה מראש`;
+  // 🤝 חיסכון משותפויות: עמלה 4.5% במקום 6.5%
+  const partnerJobs = jobs.filter(j => j.JobType === 'direct' || j.JobType === 'stage_shift');
+  const partnerSavings = partnerJobs.reduce((s, j) => s + baseOf(j) * (0.065 - 0.045), 0);
+
+  // ⚖️ אני מול השוק — תעריף ממוצע שלי לכל תפקיד מול ממוצע הפלטפורמה
+  const myRateByRole: Record<string, { sum: number; n: number }> = {};
+  jobs.forEach(j => {
+    if (!myRateByRole[j.Role]) myRateByRole[j.Role] = { sum: 0, n: 0 };
+    myRateByRole[j.Role].sum += Number(j.HourlyRate) || 0;
+    myRateByRole[j.Role].n += 1;
+  });
+  const benchRows = Object.entries(myRateByRole).map(([role, v]) => {
+    const mine = v.sum / v.n;
+    const market = Number(benchmark.find((b: any) => b.Role === role)?.AvgRate) || 0;
+    const diffPct = market > 0 ? Math.round((mine - market) / market * 100) : null;
+    return { role, label: ROLE_LABELS[role] || role, mine, market, diffPct };
+  }).filter(r => r.market > 0);
+
+  // 💡 תובנות חכמות (עד 4, לפי מה שרלוונטי)
+  const insights: string[] = [];
+  if (emergencyExtra >= 20) insights.push(`🚨 משמרות חירום עלו לך ₪${Math.round(emergencyExtra).toLocaleString()} מעבר לעמלה רגילה — פרסום יום מראש היה משאיר את הכסף אצלך`);
+  if (partnerSavings >= 10) insights.push(`🤝 העובדים הקבועים שלך חסכו לך ₪${Math.round(partnerSavings).toLocaleString()} בעמלות (4.5% במקום 6.5%)`);
+  const cheapest = benchRows.filter(r => r.diffPct !== null).sort((a, b) => (a.diffPct! - b.diffPct!))[0];
+  if (cheapest && cheapest.diffPct! <= -5) insights.push(`⚖️ אתה משלם ל${cheapest.label} ${Math.abs(cheapest.diffPct!)}% פחות מהממוצע בפלטפורמה — חיסכון חכם`);
+  else if (cheapest && cheapest.diffPct! >= 8) insights.push(`⚖️ השכר שאתה מציע ל${cheapest.label} גבוה ב-${cheapest.diffPct}% מהשוק — זה מאייש משמרות מהר, אבל יש מקום להתייעל`);
+  if (topWorkers[0]) insights.push(`👨‍🍳 ${topWorkers[0].name} כבר עבד אצלך ${topWorkers[0].count} פעמים ומכיר את המטבח — שווה לשמור עליו קרוב`);
+  if (dayData[0]) insights.push(`📅 ${dayData[0].day} הוא היום העמוס שלך (${dayData[0].shifts} משמרות) — פרסם אליו מוקדם כדי לתפוס את העובדים הטובים`);
 
   return (
     <div className="screen-enter space-y-5 pb-4">
 
-      {/* כותרת */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-black text-gray-900">ניתוח ביצועים</h2>
-        <span className="text-xs text-gray-400 bg-gray-100 px-3 py-1 rounded-full">{jobs.length} משמרות</span>
+      {/* ── HERO: החודש שלך ── */}
+      <div className="rounded-3xl p-5 text-white" style={{ background: 'linear-gradient(135deg,#0d1420,#1a2744)' }}>
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-gray-400 text-sm">הוצאות {MONTH_NAMES[now.getMonth()]} (כולל עמלות)</span>
+          {changePct !== null && (
+            <span className={`text-[11px] font-bold rounded-full px-2 py-0.5 ${changePct <= 0 ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+              {changePct <= 0 ? '↓' : '↑'}{Math.abs(changePct)}% מחודש שעבר
+            </span>
+          )}
+        </div>
+        <div className="text-4xl font-black mb-3" style={{ color: '#e8a020' }}>
+          ₪{Math.round(thisSpend).toLocaleString()}
+        </div>
+        <div className="grid grid-cols-3 gap-2.5">
+          {[
+            { l: 'משמרות החודש', v: thisJobs.length },
+            { l: 'ממוצע למשמרת', v: `₪${Math.round(avgPerShift)}` },
+            { l: 'צפי לסוף החודש', v: projection ? `₪${Math.round(projection).toLocaleString()}` : '—' },
+          ].map(s => (
+            <div key={s.l} className="bg-white/10 rounded-xl p-2.5 text-center">
+              <div className="font-black text-sm">{s.v}</div>
+              <div className="text-gray-500 text-[10px] mt-0.5">{s.l}</div>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* KPI */}
+      {/* KPI כלליים */}
       <div className="grid grid-cols-2 gap-3">
-        <KPI icon={<TrendingUp size={18}/>} label="סה״כ הוצאות" value={`₪${Math.round(totalSpend).toLocaleString()}`}
-          sub={changePct ? `${Number(changePct)>0?'↑':'↓'}${Math.abs(Number(changePct))}% מחודש שעבר` : null}
-          color={changePct && Number(changePct)>0 ? '#ef4444' : '#10b981'} />
-        <KPI icon={<Clock size={18}/>} label="סה״כ שעות" value={`${Math.round(totalHours).toLocaleString()}`}
-          sub={`ממוצע ${(totalHours/jobs.length).toFixed(1)} ש׳/משמרת`} color="#3b82f6" />
-        <KPI icon={<span style={{fontSize:16}}>💰</span>} label="ממוצע למשמרת" value={`₪${Math.round(avgPerShift)}`}
-          sub={`₪${Math.round(avgHourly)}/שעה בממוצע`} color="#e8a020" />
-        <KPI icon={<Star size={18}/>} label="עובדים שונים" value={`${topWorkers.length}`}
-          sub={topWorkers.length > 0 ? `מוביל: ${topWorkers[0].name.split(' ')[0]}` : null} color="#8b5cf6" />
+        <KPI icon={<TrendingUp size={18}/>} label={'סה"כ הוצאות (מאז ומעולם)'} value={`₪${Math.round(totalSpend).toLocaleString()}`}
+          sub={`${jobs.length} משמרות`} color="#e8a020" />
+        <KPI icon={<Clock size={18}/>} label={'סה"כ שעות עבודה'} value={`${Math.round(totalHours).toLocaleString()}`}
+          sub={`₪${Math.round(avgHourly)}/שעה בממוצע`} color="#3b82f6" />
+      </div>
+
+      {/* 🤝 + 🚨 כרטיסי כסף */}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="rounded-2xl p-4 card-shadow" style={{ background: 'linear-gradient(135deg,#064e3b,#065f46)' }}>
+          <Handshake size={18} className="text-green-300 mb-2" />
+          <div className="font-black text-white text-xl">₪{Math.round(partnerSavings).toLocaleString()}</div>
+          <div className="text-green-200 text-xs mt-0.5">חסכת עם עובדים קבועים</div>
+          <div className="text-green-300/60 text-[10px] mt-1">עמלה 4.5% במקום 6.5% · {partnerJobs.length} משמרות</div>
+        </div>
+        <div className="rounded-2xl p-4 card-shadow" style={{ background: 'linear-gradient(135deg,#7f1d1d,#991b1b)' }}>
+          <Flame size={18} className="text-red-300 mb-2" />
+          <div className="font-black text-white text-xl">₪{Math.round(emergencyExtra).toLocaleString()}</div>
+          <div className="text-red-200 text-xs mt-0.5">פרמיית חירום ששילמת</div>
+          <div className="text-red-300/60 text-[10px] mt-1">{emergencyJobs.length} משמרות חירום · תכנון מראש חוסך</div>
+        </div>
       </div>
 
       {/* גרף הוצאות */}
-      <div className="bg-white rounded-2xl p-4 card-shadow">
-        <div className="flex items-center justify-between mb-1">
-          <h3 className="font-bold text-gray-800">הוצאות חודשיות</h3>
-          <span className="text-xs text-gray-400">₪</span>
+      {monthlyData.length > 0 && (
+        <div className="bg-white rounded-2xl p-4 card-shadow">
+          <div className="flex items-center justify-between mb-1">
+            <h3 className="font-bold text-gray-800">מגמת הוצאות</h3>
+            <span className="text-xs text-gray-400">6 חודשים אחרונים</span>
+          </div>
+          <p className="text-xs text-gray-400 mb-3">כולל עמלת פלטפורמה לפי סוג המשמרת</p>
+          <ResponsiveContainer width="100%" height={150}>
+            <AreaChart data={monthlyData} margin={{top:5,right:-20,left:5,bottom:0}}>
+              <defs>
+                <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%"  stopColor="#e8a020" stopOpacity={0.35}/>
+                  <stop offset="95%" stopColor="#e8a020" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
+              <XAxis dataKey="month" reversed tick={{fontSize:10,fill:'#9ca3af'}} axisLine={false} tickLine={false}/>
+              <YAxis orientation="right" tick={{fontSize:10,fill:'#9ca3af'}} axisLine={false} tickLine={false}/>
+              <Tooltip content={<Tip/>}/>
+              <Area type="monotone" dataKey="spend" name="הוצאות" stroke="#e8a020" strokeWidth={2.5} fill="url(#g1)"/>
+            </AreaChart>
+          </ResponsiveContainer>
         </div>
-        <p className="text-xs text-gray-400 mb-3">כולל עמלת פלטפורמה 6.5%</p>
-        <ResponsiveContainer width="100%" height={150}>
-          <AreaChart data={monthlyData} margin={{top:5,right:-20,left:5,bottom:0}}>
-            <defs>
-              <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%"  stopColor="#e8a020" stopOpacity={0.35}/>
-                <stop offset="95%" stopColor="#e8a020" stopOpacity={0}/>
-              </linearGradient>
-            </defs>
-            <XAxis dataKey="month" reversed tick={{fontSize:10,fill:'#9ca3af'}} axisLine={false} tickLine={false}/>
-            <YAxis orientation="right" tick={{fontSize:10,fill:'#9ca3af'}} axisLine={false} tickLine={false}/>
-            <Tooltip content={<Tip/>}/>
-            <Area type="monotone" dataKey="spend" name="הוצאות" stroke="#e8a020" strokeWidth={2.5} fill="url(#g1)"/>
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
+      )}
+
+      {/* ⚖️ אני מול השוק */}
+      {benchRows.length > 0 && (
+        <div className="bg-white rounded-2xl p-4 card-shadow">
+          <div className="flex items-center gap-1.5 mb-3">
+            <Scale size={16} className="text-indigo-500" />
+            <h3 className="font-bold text-gray-800">השכר שלך מול השוק</h3>
+          </div>
+          <div className="space-y-2.5">
+            {benchRows.map(r => (
+              <div key={r.role} className="flex items-center justify-between">
+                <span className="text-sm text-gray-700 font-medium">{r.label}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-gray-400">שוק ₪{Math.round(r.market)}</span>
+                  <span className="font-bold text-gray-900 text-sm">אתה ₪{Math.round(r.mine)}</span>
+                  {r.diffPct !== null && Math.abs(r.diffPct) >= 3 && (
+                    <span className={`text-[10px] font-bold rounded-full px-2 py-0.5 ${r.diffPct < 0 ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-600'}`}>
+                      {r.diffPct < 0 ? `${Math.abs(r.diffPct)}%- מהשוק` : `${r.diffPct}%+ מהשוק`}
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-gray-400 text-[10px] mt-3">💡 שכר מעל השוק מאייש מהר יותר; מתחת לשוק — חיסכון אבל איוש איטי יותר</p>
+        </div>
+      )}
 
       {/* יום בשבוע */}
       <div className="bg-white rounded-2xl p-4 card-shadow">
@@ -185,7 +287,7 @@ export const RestaurantAnalytics: React.FC = () => {
           </BarChart>
         </ResponsiveContainer>
         <p className="text-xs text-gray-400 mt-2 text-center">
-          📊 יום <strong>{busiestDay}</strong> הכי עמוס — {dayData[0]?.shifts || 0} משמרות
+          📊 יום <strong>{dayData[0]?.day}</strong> הכי עמוס — {dayData[0]?.shifts || 0} משמרות
         </p>
       </div>
 
@@ -251,53 +353,30 @@ export const RestaurantAnalytics: React.FC = () => {
         </div>
       )}
 
-      {/* השוואת חודשים */}
-      {monthlyData.length >= 2 && (
-        <div className="bg-white rounded-2xl p-4 card-shadow">
-          <h3 className="font-bold text-gray-800 mb-3">📅 השוואה חודשית</h3>
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { label: MONTH_NAMES[thisMonth], spend: thisSpend, shifts: thisJobs.length },
-              { label: MONTH_NAMES[(thisMonth-1+12)%12], spend: lastSpend, shifts: lastJobs.length },
-            ].map((m,i) => (
-              <div key={i} className="rounded-xl p-3 text-center"
-                style={{background: i===0 ? 'rgba(232,160,32,0.08)' : '#f8fafc',
-                        border: i===0 ? '1px solid rgba(232,160,32,0.2)' : '1px solid #f1f5f9'}}>
-                <div className="text-xs text-gray-400 mb-1">{m.label}</div>
-                <div className="font-black text-lg text-gray-900">₪{Math.round(m.spend).toLocaleString()}</div>
-                <div className="text-xs text-gray-500">{m.shifts} משמרות</div>
+      {/* 💡 תובנות חכמות */}
+      {insights.length > 0 && (
+        <div className="rounded-2xl p-4 text-white" style={{background:'linear-gradient(135deg,#0d1420,#1a2744)'}}>
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{background:'rgba(232,160,32,0.2)'}}>
+              <Zap size={16} style={{color:'#e8a020'}}/>
+            </div>
+            <span className="font-bold text-sm" style={{color:'#e8a020'}}>התובנות הפיננסיות שלך</span>
+          </div>
+          <div className="space-y-2.5">
+            {insights.slice(0, 4).map((t, i) => (
+              <div key={i} className="text-gray-300 text-sm leading-relaxed flex items-start gap-2">
+                <span className="text-amber-400 font-black flex-shrink-0 mt-0.5">·</span>
+                <span>{t}</span>
               </div>
             ))}
           </div>
-          {changePct && (
-            <div className={`mt-3 text-center text-sm font-semibold rounded-xl py-2 ${
-              Number(changePct) <= 0 ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-500'
-            }`}>
-              {Number(changePct) <= 0 ? '✅ חסכת' : '⚠️ הוצאת'} {Math.abs(Number(changePct))}% לעומת חודש שעבר
-            </div>
-          )}
+          <button onClick={() => navToRestaurant('create_job')}
+            className="mt-3.5 text-xs font-black rounded-lg px-3 py-1.5 active:scale-95 transition-transform"
+            style={{ background:'#e8a020', color:'#0d1420' }}>
+            פרסם משמרת מתוכננת ›
+          </button>
         </div>
       )}
-
-      {/* תובנה חכמה */}
-      <div className="rounded-2xl p-4 text-white"
-        style={{background:'linear-gradient(135deg,#0d1420,#1a2744)'}}>
-        <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{background:'rgba(232,160,32,0.2)'}}>
-            <Zap size={18} style={{color:'#e8a020'}}/>
-          </div>
-          <div>
-            <div className="font-bold text-sm mb-1" style={{color:'#e8a020'}}>💡 תובנה חכמה</div>
-            <div className="text-gray-300 text-sm leading-relaxed">{insight}</div>
-            <button onClick={() => navToRestaurant('create_job')}
-              className="mt-2.5 text-xs font-black rounded-lg px-3 py-1.5 active:scale-95 transition-transform"
-              style={{ background:'#e8a020', color:'#0d1420' }}>
-              פרסם משמרת ›
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

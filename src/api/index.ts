@@ -292,6 +292,10 @@ export const api = {
   cancelStage: (jobId: number) =>
     fetch(`${BASE}/jobs/${jobId}/cancel-stage`, { method: 'PUT', headers: headers() }).then(handleResponse),
 
+  // ממוצעי שכר פלטפורמיים לפי תפקיד (השוואת "אני מול השוק")
+  getRateBenchmark: () =>
+    fetch(`${BASE}/workers/benchmark/rates`, { headers: headers() }).then(handleResponse),
+
   // רשימת השיחות שלי (וואטסאפ-סטייל)
   getThreads: (role: 'worker' | 'restaurant', profileId: number) =>
     fetch(`${BASE}/messages/threads/${role}/${profileId}`, { headers: headers(), cache: 'no-store' }).then(handleResponse),

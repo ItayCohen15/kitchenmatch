@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { FileText, X, Printer, Building2, User } from 'lucide-react';
+import { FileText, X, Printer, Building2, User, Target, Flame, Scale, Pencil } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
 import { printHTML } from '../../utils/print';
 import { CompensationDoc } from '../common/CompensationDoc';
-import { levelFromShifts, effectiveNetMultiplier, effectiveWorkerRate } from '../../utils/levels';
+import { levelFromShifts, effectiveNetMultiplier, effectiveWorkerRate, nextLevelProgress, getLevel } from '../../utils/levels';
 
 const MONTH_NAMES = ['ינו׳','פבר׳','מרץ','אפר׳','מאי','יוני','יולי','אוג׳','ספט׳','אוק׳','נוב׳','דצמ׳'];
+const DAY_NAMES_HE = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
 
 /* ─── עזר: חשב נתוני משמרת ─── */
 function calcShift(shift: any, rate: number = 0.065) {
@@ -370,8 +371,20 @@ export const WorkerWallet: React.FC = () => {
   const completedShifts = userProfile?.CompletedShifts ?? 0;
   const rating          = userProfile?.Rating          ?? 0;
 
-  // רמת העובד (העמלה מחושבת פר-משמרת — 5% למשמרת חירום, אחרת לפי רמה)
+  // רמת העובד (העמלה מחושבת פר-משמרת — לפי רמה, ובחירום עמלה מופחתת)
   const workerLevel = levelFromShifts(completedShifts).key;
+
+  // יעד הכנסה חודשי (נשמר מקומית) + ממוצעי שוק להשוואה
+  const [goal, setGoal] = useState<number>(() => { try { return Number(localStorage.getItem('km_income_goal')) || 0; } catch { return 0; } });
+  const [editGoal, setEditGoal] = useState(false);
+  const [goalInput, setGoalInput] = useState('');
+  const [benchmark, setBenchmark] = useState<any[]>([]);
+  useEffect(() => { api.getRateBenchmark().then((d: any) => setBenchmark(Array.isArray(d) ? d : [])).catch(() => {}); }, []);
+  const saveGoal = () => {
+    const g = Number(goalInput) || 0;
+    setGoal(g); setEditGoal(false);
+    try { localStorage.setItem('km_income_goal', String(g)); } catch {}
+  };
 
   useEffect(() => {
     if (!userProfile?.Id) { setLoading(false); return; }
@@ -399,6 +412,56 @@ export const WorkerWallet: React.FC = () => {
   const monthlyData = Object.entries(monthlyMap).map(([m, v]) => ({ month: m, earn: Math.round(v) }));
 
   const avgPerShift = completedShifts > 0 ? (totalEarnings / completedShifts).toFixed(0) : '0';
+
+  // ── תובנות פיננסיות ──
+  const hoursOf = (j: any) => (new Date(j.EndTime).getTime() - new Date(j.StartTime).getTime()) / 3600000;
+  const grossOf = (j: any) => hoursOf(j) * j.HourlyRate;
+  const netOf   = (j: any) => grossOf(j) * effectiveNetMultiplier(workerLevel, j.IsEmergency);
+
+  // החודש מול חודש שעבר + צפי
+  const now = new Date();
+  const inMonth = (j: any, m: number, y: number) => { const d = new Date(j.StartTime); return d.getMonth() === m && d.getFullYear() === y; };
+  const prevM = now.getMonth() === 0 ? 11 : now.getMonth() - 1;
+  const prevY = now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear();
+  const thisMonthJobs = completed.filter(j => inMonth(j, now.getMonth(), now.getFullYear()));
+  const thisNet = thisMonthJobs.reduce((s, j) => s + netOf(j), 0);
+  const lastNet = completed.filter(j => inMonth(j, prevM, prevY)).reduce((s, j) => s + netOf(j), 0);
+  const deltaPct = lastNet > 0 ? Math.round((thisNet - lastNet) / lastNet * 100) : null;
+  const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const projection = now.getDate() >= 3 && thisNet > 0 ? (thisNet / now.getDate()) * daysInMonth : null;
+
+  // באיזה ימים אתה מרוויח הכי הרבה
+  const dayEarn: Record<number, number> = {};
+  completed.forEach(j => { const d = new Date(j.StartTime).getDay(); dayEarn[d] = (dayEarn[d] || 0) + netOf(j); });
+  const dayRows = Object.entries(dayEarn).map(([d, v]) => ({ day: DAY_NAMES_HE[Number(d)], earn: v }))
+    .sort((a, b) => b.earn - a.earn);
+  const maxDayEarn = dayRows[0]?.earn || 1;
+
+  // המסעדות המשתלמות ביותר
+  const restMap: Record<string, { net: number; hours: number; gross: number; count: number }> = {};
+  completed.forEach(j => {
+    const n = j.RestaurantName || 'מסעדה';
+    if (!restMap[n]) restMap[n] = { net: 0, hours: 0, gross: 0, count: 0 };
+    restMap[n].net += netOf(j); restMap[n].hours += hoursOf(j); restMap[n].gross += grossOf(j); restMap[n].count += 1;
+  });
+  const topRests = Object.entries(restMap).map(([name, v]) => ({ name, ...v, avgRate: v.hours > 0 ? v.gross / v.hours : 0 }))
+    .sort((a, b) => b.net - a.net).slice(0, 3);
+
+  // בונוס חירום: עמלה 4% במקום עמלת הרמה
+  const regularRate = effectiveWorkerRate(workerLevel, false);
+  const emergencySaved = completed.filter(j => j.IsEmergency)
+    .reduce((s, j) => s + grossOf(j) * Math.max(regularRate - 0.04, 0), 0);
+
+  // סה"כ עמלות ששולמו + הדרך לרמה הבאה (עמלה נמוכה יותר)
+  const commissionPaid = completed.reduce((s, j) => s + (grossOf(j) - netOf(j)), 0);
+  const lvlProg = nextLevelProgress(completedShifts);
+  const nextCommissionDrop = lvlProg.next && lvlProg.next.commission < getLevel(workerLevel).commission ? lvlProg.next : null;
+
+  // התעריף שלי מול השוק (לתפקיד שלי)
+  const myRole = userProfile?.Role;
+  const marketRate = Number(benchmark.find((b: any) => b.Role === myRole)?.AvgRate) || 0;
+  const myAvgRate = completed.length > 0 ? completed.reduce((s, j) => s + Number(j.HourlyRate || 0), 0) / completed.length : 0;
+  const rateDiffPct = marketRate > 0 && myAvgRate > 0 ? Math.round((myAvgRate - marketRate) / marketRate * 100) : null;
 
   return (
     <div className="screen-enter space-y-4 pb-4">
@@ -441,6 +504,66 @@ export const WorkerWallet: React.FC = () => {
       {/* ─── Tab: סקירה ─── */}
       {activeTab === 'overview' && (
         <>
+          {/* החודש שלי + צפי */}
+          {completed.length > 0 && (
+            <div className="bg-white rounded-2xl p-4 card-shadow">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-gray-400 text-sm">הכנסות {MONTH_NAMES[now.getMonth()]} (נטו)</span>
+                {deltaPct !== null && (
+                  <span className={`text-[11px] font-bold rounded-full px-2 py-0.5 ${deltaPct >= 0 ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-500'}`}>
+                    {deltaPct >= 0 ? '↑' : '↓'}{Math.abs(deltaPct)}% מחודש שעבר
+                  </span>
+                )}
+              </div>
+              <div className="font-black text-3xl text-gray-900">₪{Math.round(thisNet).toLocaleString()}</div>
+              {projection !== null && (
+                <div className="text-xs text-gray-400 mt-1.5">
+                  📈 בקצב הנוכחי תסיים את החודש עם <b className="text-green-600">~₪{Math.round(projection).toLocaleString()}</b>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 🎯 יעד חודשי */}
+          <div className="rounded-2xl p-4 card-shadow text-white" style={{ background: 'linear-gradient(135deg,#0d1420,#1a2744)' }}>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-1.5">
+                <Target size={16} className="text-amber-400" />
+                <span className="font-bold text-sm">היעד החודשי שלי</span>
+              </div>
+              {goal > 0 && !editGoal && (
+                <button onClick={() => { setGoalInput(String(goal)); setEditGoal(true); }} className="text-gray-400"><Pencil size={13} /></button>
+              )}
+            </div>
+            {editGoal || goal === 0 ? (
+              <div className="flex gap-2">
+                <input type="number" inputMode="numeric" value={goalInput} onChange={e => setGoalInput(e.target.value)}
+                  placeholder="לדוגמה: 5000"
+                  className="flex-1 rounded-xl px-3 py-2.5 text-right text-sm outline-none text-gray-900 bg-white" />
+                <button onClick={saveGoal} className="rounded-xl px-4 py-2.5 text-sm font-bold text-gray-900"
+                  style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
+                  שמור
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="flex justify-between items-end mb-1.5">
+                  <span className="font-black text-xl" style={{ color: '#e8a020' }}>₪{Math.round(thisNet).toLocaleString()}</span>
+                  <span className="text-gray-400 text-xs">מתוך ₪{goal.toLocaleString()}</span>
+                </div>
+                <div className="h-2.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
+                  <div className="h-full rounded-full transition-all"
+                    style={{ width: `${Math.min(Math.round(thisNet / goal * 100), 100)}%`, background: 'linear-gradient(90deg,#e8a020,#f0c050)' }} />
+                </div>
+                <div className="text-[11px] text-gray-400 mt-1.5">
+                  {thisNet >= goal
+                    ? '🎉 הגעת ליעד החודשי — כל הכבוד!'
+                    : `${Math.round(thisNet / goal * 100)}% מהיעד · חסרות ₪${Math.round(goal - thisNet).toLocaleString()}${projection && projection >= goal ? ' · בקצב הזה תגיע! 💪' : ''}`}
+                </div>
+              </>
+            )}
+          </div>
+
           {monthlyData.length > 0 && (
             <div className="bg-white rounded-2xl p-4 card-shadow">
               <h3 className="font-bold text-gray-800 mb-4">הכנסות חודשיות</h3>
@@ -479,6 +602,96 @@ export const WorkerWallet: React.FC = () => {
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* 💰 ימי הכסף שלך */}
+          {dayRows.length > 1 && (
+            <div className="bg-white rounded-2xl p-4 card-shadow">
+              <h3 className="font-bold text-gray-800 mb-3">💰 ימי הכסף שלך</h3>
+              <div className="space-y-2">
+                {dayRows.slice(0, 5).map((d, i) => (
+                  <div key={d.day} className="flex items-center gap-2.5">
+                    <span className="text-xs text-gray-500 w-12 flex-shrink-0">{d.day}</span>
+                    <div className="flex-1 h-5 bg-gray-50 rounded-lg overflow-hidden">
+                      <div className="h-full rounded-lg" style={{
+                        width: `${Math.max(Math.round(d.earn / maxDayEarn * 100), 8)}%`,
+                        background: i === 0 ? 'linear-gradient(90deg,#e8a020,#f0c050)' : '#e2e8f0',
+                      }} />
+                    </div>
+                    <span className={`text-xs font-bold w-16 text-left flex-shrink-0 ${i === 0 ? 'text-amber-600' : 'text-gray-400'}`}>₪{Math.round(d.earn).toLocaleString()}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-gray-400 text-[11px] mt-2.5">📌 {dayRows[0]?.day} הוא היום הרווחי שלך — תעדף משמרות ביום הזה</p>
+            </div>
+          )}
+
+          {/* 🏆 המסעדות המשתלמות */}
+          {topRests.length > 0 && (
+            <div className="bg-white rounded-2xl p-4 card-shadow">
+              <h3 className="font-bold text-gray-800 mb-3">🏆 המסעדות המשתלמות לך</h3>
+              <div className="space-y-2">
+                {topRests.map((r, i) => (
+                  <div key={r.name} className="flex items-center gap-3 py-2 border-b border-gray-50 last:border-0">
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
+                      style={{ background: i === 0 ? '#e8a020' : i === 1 ? '#94a3b8' : '#b45309' }}>
+                      {i + 1}
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-semibold text-gray-900 text-sm">{r.name}</div>
+                      <div className="text-gray-400 text-xs">{r.count} משמרות · ₪{Math.round(r.avgRate)}/ש' בממוצע</div>
+                    </div>
+                    <span className="font-bold text-green-600 text-sm">₪{Math.round(r.net).toLocaleString()}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* חירום + עמלות */}
+          {completed.length > 0 && (
+            <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-2xl p-4 card-shadow" style={{ background: 'linear-gradient(135deg,#064e3b,#065f46)' }}>
+                <Flame size={17} className="text-green-300 mb-2" />
+                <div className="font-black text-white text-lg">₪{Math.round(emergencySaved).toLocaleString()}</div>
+                <div className="text-green-200 text-[11px] mt-0.5">הרווחת נוסף ממשמרות חירום</div>
+                <div className="text-green-300/60 text-[10px] mt-1">עמלה 4% בלבד בחירום</div>
+              </div>
+              <div className="bg-white rounded-2xl p-4 card-shadow">
+                <Scale size={17} className="text-indigo-500 mb-2" />
+                <div className="font-black text-gray-900 text-lg">₪{Math.round(commissionPaid).toLocaleString()}</div>
+                <div className="text-gray-400 text-[11px] mt-0.5">עמלות ששילמת סה"כ</div>
+                {nextCommissionDrop && (
+                  <div className="text-amber-600 text-[10px] font-semibold mt-1">
+                    עוד {lvlProg.shiftsNeeded} משמרות → עמלה {(nextCommissionDrop.commission * 100).toFixed(1)}% בלבד
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* ⚖️ התעריף שלך מול השוק */}
+          {rateDiffPct !== null && (
+            <div className="bg-white rounded-2xl p-4 card-shadow">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <Scale size={15} className="text-indigo-500" />
+                  <span className="font-bold text-gray-800 text-sm">התעריף שלך מול השוק</span>
+                </div>
+                <span className={`text-[11px] font-bold rounded-full px-2 py-0.5 ${rateDiffPct >= 0 ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-600'}`}>
+                  {rateDiffPct >= 0 ? `${rateDiffPct}%+ מהממוצע` : `${Math.abs(rateDiffPct)}%- מהממוצע`}
+                </span>
+              </div>
+              <div className="flex items-center justify-between mt-2.5 text-sm">
+                <span className="text-gray-500">אתה מקבל בממוצע <b className="text-gray-900">₪{Math.round(myAvgRate)}/ש'</b></span>
+                <span className="text-gray-400 text-xs">ממוצע השוק: ₪{Math.round(marketRate)}/ש'</span>
+              </div>
+              {rateDiffPct < -5 && (
+                <p className="text-amber-600 text-[11px] mt-2 bg-amber-50 rounded-lg px-2.5 py-1.5">
+                  💡 אתה מתחת לשוק — עם הדירוג שלך אפשר לכוון למשמרות עם שכר גבוה יותר
+                </p>
+              )}
             </div>
           )}
 
