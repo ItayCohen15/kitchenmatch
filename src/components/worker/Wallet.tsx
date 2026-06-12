@@ -689,7 +689,10 @@ export const WorkerWallet: React.FC = () => {
               </div>
               <div className="flex items-center justify-between mt-2.5 text-sm">
                 <span className="text-gray-500">אתה מקבל בממוצע <b className="text-gray-900">₪{Math.round(myAvgRate)}/ש'</b></span>
-                <span className="text-gray-400 text-xs">שוק: ₪{Math.round(marketRate)}{marketRange ? ` (${marketRange})` : ''}</span>
+                <span className="text-gray-400 text-xs">
+                  שוק האקסטרות: ₪{Math.round(marketRate)}{marketRange ? ` (${marketRange})` : ''}
+                  {blended?.noTips && <span className="text-amber-500"> · לא כולל טיפים</span>}
+                </span>
               </div>
               {rateDiffPct < -5 && (
                 <p className="text-amber-600 text-[11px] mt-2 bg-amber-50 rounded-lg px-2.5 py-1.5">

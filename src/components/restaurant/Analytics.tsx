@@ -155,7 +155,7 @@ export const RestaurantAnalytics: React.FC = () => {
     const blended = blendedMarket(role, Number(platform?.AvgRate) || 0, Number(platform?.Cnt) || 0);
     const market = blended?.avg || 0;
     const diffPct = market > 0 ? Math.round((mine - market) / market * 100) : null;
-    return { role, label: ROLE_LABELS[role] || role, mine, market, range: blended?.range, source: blended?.source, diffPct };
+    return { role, label: ROLE_LABELS[role] || role, mine, market, range: blended?.range, noTips: blended?.noTips, source: blended?.source, diffPct };
   }).filter(r => r.market > 0);
 
   // 📋 פילוח לפי סוג משמרת — רגיל / חירום / קבועים / סטאז'רים (שכר ממוצע + עלות)
@@ -326,13 +326,14 @@ export const RestaurantAnalytics: React.FC = () => {
                   </div>
                 </div>
                 <div className="text-[11px] text-gray-400 mt-0.5">
-                  שוק: ממוצע ₪{Math.round(r.market)}{r.range ? ` · טווח מקובל ${r.range}` : ''}
+                  שוק אקסטרות: ממוצע ₪{Math.round(r.market)}{r.range ? ` · טווח מקובל ${r.range}` : ''}
+                  {r.noTips && <span className="text-amber-500"> · לא כולל טיפים</span>}
                 </div>
               </div>
             ))}
           </div>
           <p className="text-gray-400 text-[10px] mt-3 leading-relaxed">
-            📊 מקור: אומדני שכר פרילנס בענף ההסעדה בישראל (2025, ללא טיפים) + נתוני הפלטפורמה · 💡 שכר מעל השוק מאייש מהר יותר
+            📊 הטווחים מתייחסים לשכר <b>אקסטרות</b> (עובדי משמרת מזדמנים) בענף ההסעדה בישראל, 2025 · במלצרות וברמנות — לא כולל טיפים · 💡 שכר מעל השוק מאייש מהר יותר
           </p>
         </div>
       )}
