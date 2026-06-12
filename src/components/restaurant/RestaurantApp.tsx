@@ -1,9 +1,8 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { ChefHat, LogOut, Bell } from 'lucide-react';
+import { LogOut, MessageCircle } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { BottomNav } from '../common/BottomNav';
-import { NotificationPanel } from '../common/NotificationPanel';
-import { api } from '../../api';
+import { api, chatSeen } from '../../api';
 import { RestaurantHome } from './Home';
 import { CreateJob } from './CreateJob';
 import { WorkerMatching } from './WorkerMatching';
@@ -36,17 +35,21 @@ const NAV_TABS: RestaurantScreen[] = ['home', 'create_job', 'stages', 'chats', '
 export const RestaurantApp: React.FC = () => {
   const { restaurantScreen, navToRestaurant, resetToLanding, userProfile } = useApp();
   const initials = (userProfile?.Name || 'מ').slice(0, 2);
-  const [showNotifs, setShowNotifs] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
+  const [chatUnread, setChatUnread] = useState(0);
 
+  // מונה הודעות צ'אט שלא נקראו (מוצג למעלה משמאל)
   useEffect(() => {
-    const load = () => api.getNotifications()
-      .then((data: any[]) => setUnreadCount(data.filter((n: any) => !n.IsRead).length))
+    if (!userProfile?.Id) return;
+    const load = () => api.getThreads('restaurant', userProfile.Id)
+      .then((d: any) => {
+        const list = Array.isArray(d) ? d : [];
+        setChatUnread(list.filter((t: any) => chatSeen.isUnread(Number(t.JobId), t.LastMsgId, t.LastSenderRole, 'restaurant')).length);
+      })
       .catch(() => {});
     load();
-    const iv = setInterval(load, 15000);
+    const iv = setInterval(load, 12000);
     return () => clearInterval(iv);
-  }, []);
+  }, [userProfile?.Id]);
 
   const showNav = NAV_TABS.includes(restaurantScreen);
   const showTopBar = !['active_shift'].includes(restaurantScreen);
@@ -88,19 +91,17 @@ export const RestaurantApp: React.FC = () => {
               {initials}
             </div>
           </div>
-          <button className="relative" style={{color:'rgba(255,255,255,0.5)'}} onClick={() => { setShowNotifs(true); setUnreadCount(0); }}>
-            <Bell size={20} />
-            {unreadCount > 0 && (
+          <button className="relative" style={{color:'rgba(255,255,255,0.5)'}} onClick={() => navToRestaurant('chats')} title="הצ'אטים שלי">
+            <MessageCircle size={20} />
+            {chatUnread > 0 && (
               <div className="absolute -top-1 -left-1 min-w-[16px] h-4 px-1 rounded-full flex items-center justify-center text-white font-bold"
-                style={{ fontSize: 9, background: '#e8a020' }}>
-                {unreadCount > 9 ? '9+' : unreadCount}
+                style={{ fontSize: 9, background: '#ef4444' }}>
+                {chatUnread > 9 ? '9+' : chatUnread}
               </div>
             )}
           </button>
         </header>
       )}
-
-      {showNotifs && <NotificationPanel onClose={() => setShowNotifs(false)} />}
 
       <main className="flex-1 overflow-y-auto px-4 pt-4" style={{ paddingBottom: 'calc(90px + env(safe-area-inset-bottom))' }}>
         {renderScreen()}

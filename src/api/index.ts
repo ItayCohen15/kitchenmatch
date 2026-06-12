@@ -289,6 +289,9 @@ export const api = {
   editStageShift: (jobId: number, data: object) =>
     fetch(`${BASE}/jobs/${jobId}/edit-stage-shift`, { method: 'PUT', headers: headers(), body: JSON.stringify(data) }).then(handleResponse),
 
+  cancelStage: (jobId: number) =>
+    fetch(`${BASE}/jobs/${jobId}/cancel-stage`, { method: 'PUT', headers: headers() }).then(handleResponse),
+
   // רשימת השיחות שלי (וואטסאפ-סטייל)
   getThreads: (role: 'worker' | 'restaurant', profileId: number) =>
     fetch(`${BASE}/messages/threads/${role}/${profileId}`, { headers: headers(), cache: 'no-store' }).then(handleResponse),

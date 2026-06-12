@@ -1,9 +1,8 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Bell, LogOut } from 'lucide-react';
+import { LogOut, MessageCircle } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { BottomNav } from '../common/BottomNav';
-import { NotificationPanel } from '../common/NotificationPanel';
-import { api } from '../../api';
+import { api, chatSeen } from '../../api';
 import { WorkerHome } from './Home';
 import { JobDetails } from './JobDetails';
 import { WorkerNavigation } from './Navigation';
@@ -35,17 +34,21 @@ export const WorkerApp: React.FC = () => {
   const { workerScreen, navToWorker, resetToLanding, userProfile } = useApp();
   const name = userProfile?.Name || 'עובד';
   const initials = name.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
-  const [showNotifs, setShowNotifs] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
+  const [chatUnread, setChatUnread] = useState(0);
 
+  // מונה הודעות צ'אט שלא נקראו (מוצג למעלה משמאל)
   useEffect(() => {
-    const load = () => api.getNotifications()
-      .then((data: any[]) => setUnreadCount(data.filter((n: any) => !n.IsRead).length))
+    if (!userProfile?.Id) return;
+    const load = () => api.getThreads('worker', userProfile.Id)
+      .then((d: any) => {
+        const list = Array.isArray(d) ? d : [];
+        setChatUnread(list.filter((t: any) => chatSeen.isUnread(Number(t.JobId), t.LastMsgId, t.LastSenderRole, 'worker')).length);
+      })
       .catch(() => {});
     load();
-    const iv = setInterval(load, 15000);
+    const iv = setInterval(load, 12000);
     return () => clearInterval(iv);
-  }, []);
+  }, [userProfile?.Id]);
 
   const showNav = NAV_TABS.includes(workerScreen);
   const showBack = !NAV_TABS.includes(workerScreen);
@@ -99,16 +102,15 @@ export const WorkerApp: React.FC = () => {
             {initials}
           </div>
         </div>
-        <button className="relative" style={{color:'rgba(255,255,255,0.5)'}} onClick={() => { setShowNotifs(true); setUnreadCount(0); }}>
-          <Bell size={20} />
-          {unreadCount > 0 && (
+        <button className="relative" style={{color:'rgba(255,255,255,0.5)'}} onClick={() => navToWorker('chats')} title="הצ'אטים שלי">
+          <MessageCircle size={20} />
+          {chatUnread > 0 && (
             <div className="absolute -top-1 -left-1 min-w-[16px] h-4 px-1 rounded-full flex items-center justify-center text-white font-bold"
-              style={{ fontSize: 9, background: '#e8a020' }}>
-              {unreadCount > 9 ? '9+' : unreadCount}
+              style={{ fontSize: 9, background: '#ef4444' }}>
+              {chatUnread > 9 ? '9+' : chatUnread}
             </div>
           )}
         </button>
-        {showNotifs && <NotificationPanel onClose={() => setShowNotifs(false)} />}
       </header>
 
       <main className="flex-1 overflow-y-auto px-4 pt-4" style={{ paddingBottom: 'calc(90px + env(safe-area-inset-bottom))' }}>

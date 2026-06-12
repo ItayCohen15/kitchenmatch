@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { GraduationCap, Check, Star, Send, Users, Plus, X, Calendar, Clock, Phone, MessageCircle, Pencil } from 'lucide-react';
+import { GraduationCap, Check, Star, Send, Users, Plus, X, Calendar, Clock, Phone, MessageCircle, Pencil, Trash2 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { WORKER_ROLES } from '../../utils/roles';
@@ -43,6 +43,22 @@ export const RestaurantStages: React.FC = () => {
   const [directFor, setDirectFor] = useState<any | null>(null);
   const [scheduleStage, setScheduleStage] = useState<any | null>(null);
   const [chatStage, setChatStage] = useState<any | null>(null);
+  const [cancelId, setCancelId] = useState<number | null>(null);
+  const [cancelling, setCancelling] = useState(false);
+
+  // קיבוץ לפי מצב — מסך פשוט וברור
+  const visibleStages = stages.filter(s => s.Status !== 'cancelled');
+  const groupApplicants = visibleStages.filter(s => ['pending_approval', 'matched'].includes(s.Status));
+  const groupActive     = visibleStages.filter(s => ['confirmed', 'active'].includes(s.Status));
+  const groupSearching  = visibleStages.filter(s => s.Status === 'searching');
+  const groupDone       = visibleStages.filter(s => s.Status === 'completed');
+
+  const doCancelStage = async (id: number) => {
+    setCancelling(true);
+    try { await api.cancelStage(id); setCancelId(null); await load(); }
+    catch (e: any) { setMsg(e.message || 'שגיאה בביטול'); setCancelId(null); }
+    setCancelling(false);
+  };
 
   const load = async () => {
     if (!rid) return;
@@ -100,8 +116,11 @@ export const RestaurantStages: React.FC = () => {
       <div className="flex bg-gray-100 rounded-2xl p-1">
         {([['mine', "הסטאז'ים שלי"], ['post', 'פרסם'], ['partners', 'הקבועים שלי']] as [Tab, string][]).map(([k, l]) => (
           <button key={k} onClick={() => setTab(k)}
-            className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-all ${tab === k ? 'bg-white text-gray-900 shadow' : 'text-gray-400'}`}>
+            className={`relative flex-1 py-2.5 rounded-xl text-sm font-bold transition-all ${tab === k ? 'bg-white text-gray-900 shadow' : 'text-gray-400'}`}>
             {l}
+            {k === 'mine' && groupApplicants.length > 0 && (
+              <span className="absolute top-1.5 right-2 w-2 h-2 rounded-full bg-blue-500" />
+            )}
           </button>
         ))}
       </div>
@@ -144,13 +163,13 @@ export const RestaurantStages: React.FC = () => {
 
       {/* ── הסטאז'ים שלי ── */}
       {tab === 'mine' && (
-        <div className="space-y-3">
+        <div className="space-y-4">
           <button onClick={() => setTab('post')}
             className="w-full flex items-center justify-center gap-2 border-2 border-dashed border-amber-300 text-amber-600 rounded-2xl py-3 font-bold bg-amber-50/50">
             <Plus size={18} /> פרסם מקום סטאז'
           </button>
 
-          {stages.length === 0 && (
+          {visibleStages.length === 0 && (
             <div className="text-center py-10 bg-white rounded-2xl card-shadow">
               <div className="text-4xl mb-2">🎓</div>
               <p className="text-gray-500 font-medium text-sm">אין עדיין סטאז'ים</p>
@@ -158,48 +177,63 @@ export const RestaurantStages: React.FC = () => {
             </div>
           )}
 
-          {stages.map(s => {
-            const isOpen = s.Status === 'searching';
-            const isApplicant = s.Status === 'pending_approval' || s.Status === 'matched';
-            const isActive = s.Status === 'confirmed' || s.Status === 'active';
-            const isDone = s.Status === 'completed';
-            const left = daysLeft(s.EndTime);
-            const initials = (s.WorkerName || 'ע').split(' ').map((n: string) => n[0]).join('').slice(0, 2);
-            return (
-              <div key={s.Id} className="bg-white rounded-2xl p-4 card-shadow space-y-3">
-                {/* שורה עליונה */}
-                <div className="flex items-center justify-between">
+          {/* ממתינים לאישורך — קודם, כי זה דורש פעולה */}
+          {groupApplicants.length > 0 && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-blue-600">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" /> ממתינים לאישורך ({groupApplicants.length})
+              </div>
+              {groupApplicants.map(s => (
+                <div key={s.Id} className="bg-white rounded-2xl p-4 card-shadow border border-blue-100 space-y-2.5">
                   <div className="flex items-center gap-3">
-                    {(isActive || isApplicant) ? (
-                      <div className="w-11 h-11 rounded-2xl bg-amber-500 text-white flex items-center justify-center font-black">{initials}</div>
-                    ) : (
-                      <div className="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center text-xl">🎓</div>
-                    )}
-                    <div>
-                      <div className="font-bold text-gray-900">{(isActive || isApplicant) ? (s.WorkerName || 'מועמד') : ROLE_LABELS[s.Role] || s.Role}</div>
+                    <div className="w-11 h-11 rounded-2xl bg-blue-500 text-white flex items-center justify-center font-black">
+                      {(s.WorkerName || 'מ').split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-bold text-gray-900">{s.WorkerName || 'מועמד'}</div>
                       <div className="text-gray-400 text-xs">{ROLE_LABELS[s.Role] || s.Role} · {fmtDate(s.StartTime)}–{fmtDate(s.EndTime)}</div>
                     </div>
+                    <button onClick={() => setCancelId(Number(s.Id))} title="בטל סטאז'"
+                      className="w-9 h-9 rounded-xl bg-gray-50 border border-gray-200 text-gray-400 flex items-center justify-center">
+                      <Trash2 size={15} />
+                    </button>
                   </div>
-                  {isActive && <span className="text-[11px] font-bold text-green-600 bg-green-50 rounded-full px-2.5 py-1">🎓 פעיל</span>}
-                  {isOpen && <span className="text-[11px] font-bold text-amber-600 bg-amber-50 rounded-full px-2.5 py-1">מחפש</span>}
-                  {isApplicant && <span className="text-[11px] font-bold text-blue-600 bg-blue-50 rounded-full px-2.5 py-1">ממתין לאישורך</span>}
-                  {isDone && <span className="text-[11px] font-bold text-gray-500 bg-gray-100 rounded-full px-2.5 py-1">הסתיים</span>}
+                  {cancelId === Number(s.Id) ? (
+                    <CancelConfirm onYes={() => doCancelStage(Number(s.Id))} onNo={() => setCancelId(null)} busy={cancelling} />
+                  ) : (
+                    <button onClick={() => approve(Number(s.Id))}
+                      className="w-full bg-blue-500 text-white rounded-xl py-3 font-bold flex items-center justify-center gap-2">
+                      <Check size={16} /> אשר את המועמד לסטאז'
+                    </button>
+                  )}
                 </div>
+              ))}
+            </div>
+          )}
 
-                {/* מועמד — אישור */}
-                {isApplicant && (
-                  <button onClick={() => approve(Number(s.Id))}
-                    className="w-full bg-blue-500 text-white rounded-xl py-3 font-bold flex items-center justify-center gap-2">
-                    <Check size={16} /> אשר את המועמד לסטאז'
-                  </button>
-                )}
-
-                {/* פעיל — התקדמות + פעולות */}
-                {isActive && (
-                  <>
+          {/* סטאז' פעיל */}
+          {groupActive.length > 0 && (
+            <div className="space-y-2">
+              <div className="text-xs font-bold text-gray-400">סטאז' פעיל ({groupActive.length})</div>
+              {groupActive.map(s => {
+                const left = daysLeft(s.EndTime);
+                return (
+                  <div key={s.Id} className="bg-white rounded-2xl p-4 card-shadow space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-11 h-11 rounded-2xl bg-amber-500 text-white flex items-center justify-center font-black">
+                          {(s.WorkerName || 'ע').split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
+                        </div>
+                        <div>
+                          <div className="font-bold text-gray-900">{s.WorkerName || 'העובד'}</div>
+                          <div className="text-gray-400 text-xs">{ROLE_LABELS[s.Role] || s.Role} · עד {fmtDate(s.EndTime)}</div>
+                        </div>
+                      </div>
+                      <span className="text-[11px] font-bold text-green-600 bg-green-50 rounded-full px-2.5 py-1">🎓 פעיל</span>
+                    </div>
                     <div>
                       <div className="flex justify-between text-[11px] text-gray-400 mb-1">
-                        <span>התקדמות הסטאז'</span>
+                        <span>התקדמות</span>
                         <span>{left > 0 ? `עוד ${left} ימים` : 'הסתיימה התקופה'}</span>
                       </div>
                       <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
@@ -230,11 +264,51 @@ export const RestaurantStages: React.FC = () => {
                         ⭐ שמור כעובד קבוע — ₪300
                       </button>
                     )}
-                  </>
-                )}
-              </div>
-            );
-          })}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* בחיפוש מתלמד */}
+          {groupSearching.length > 0 && (
+            <div className="space-y-2">
+              <div className="text-xs font-bold text-gray-400">בחיפוש מתלמד ({groupSearching.length})</div>
+              {groupSearching.map(s => (
+                <div key={s.Id} className="bg-white rounded-2xl p-4 card-shadow space-y-2.5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center text-xl flex-shrink-0">🔎</div>
+                    <div className="flex-1">
+                      <div className="font-bold text-gray-900">{ROLE_LABELS[s.Role] || s.Role}</div>
+                      <div className="text-gray-400 text-xs">מתחיל {fmtDate(s.StartTime)} · 3 שבועות</div>
+                    </div>
+                    <span className="text-[11px] font-bold text-amber-600 bg-amber-50 rounded-full px-2.5 py-1 flex-shrink-0">מחפש</span>
+                    <button onClick={() => setCancelId(Number(s.Id))} title="בטל סטאז'"
+                      className="w-9 h-9 rounded-xl bg-gray-50 border border-gray-200 text-gray-400 flex items-center justify-center flex-shrink-0">
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
+                  {cancelId === Number(s.Id) && (
+                    <CancelConfirm onYes={() => doCancelStage(Number(s.Id))} onNo={() => setCancelId(null)} busy={cancelling} />
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* הסתיימו — שורות קומפקטיות */}
+          {groupDone.length > 0 && (
+            <div className="space-y-2">
+              <div className="text-xs font-bold text-gray-400">הסתיימו ({groupDone.length})</div>
+              {groupDone.map(s => (
+                <div key={s.Id} className="bg-white rounded-xl px-3.5 py-2.5 card-shadow flex items-center gap-2.5">
+                  <span className="text-green-500">✅</span>
+                  <span className="font-semibold text-gray-700 text-sm flex-1 truncate">{s.WorkerName || ROLE_LABELS[s.Role] || s.Role}</span>
+                  <span className="text-gray-400 text-xs">{fmtDate(s.StartTime)}–{fmtDate(s.EndTime)}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
@@ -323,6 +397,18 @@ export const RestaurantStages: React.FC = () => {
     </div>
   );
 };
+
+// ── אישור ביטול קטן בתוך כרטיס ──
+const CancelConfirm: React.FC<{ onYes: () => void; onNo: () => void; busy: boolean }> = ({ onYes, onNo, busy }) => (
+  <div className="flex items-center gap-2 bg-red-50 border border-red-100 rounded-xl p-2.5">
+    <span className="text-red-600 text-xs font-semibold flex-1">לבטל את הסטאז'?</span>
+    <button onClick={onYes} disabled={busy}
+      className="bg-red-500 text-white rounded-lg px-3 py-1.5 text-xs font-bold disabled:opacity-50">
+      {busy ? '...' : 'כן, בטל'}
+    </button>
+    <button onClick={onNo} className="bg-white border border-gray-200 text-gray-500 rounded-lg px-3 py-1.5 text-xs font-bold">לא</button>
+  </div>
+);
 
 // ── מודאל: לוז משמרות הסטאז' ──
 const DEFAULTS_KEY = 'km_stage_shift_defaults';
