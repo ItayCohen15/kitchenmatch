@@ -7,6 +7,7 @@ import { ROLE_LABELS } from '../../data/mockData';
 import { printHTML } from '../../utils/print';
 import { CompensationDoc } from '../common/CompensationDoc';
 import { levelFromShifts, effectiveNetMultiplier, effectiveWorkerRate, nextLevelProgress, getLevel } from '../../utils/levels';
+import { blendedMarket } from '../../utils/marketRates';
 
 const MONTH_NAMES = ['ינו׳','פבר׳','מרץ','אפר׳','מאי','יוני','יולי','אוג׳','ספט׳','אוק׳','נוב׳','דצמ׳'];
 const DAY_NAMES_HE = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
@@ -457,9 +458,12 @@ export const WorkerWallet: React.FC = () => {
   const lvlProg = nextLevelProgress(completedShifts);
   const nextCommissionDrop = lvlProg.next && lvlProg.next.commission < getLevel(workerLevel).commission ? lvlProg.next : null;
 
-  // התעריף שלי מול השוק (לתפקיד שלי)
+  // התעריף שלי מול השוק (אומדן שוק אמיתי, או ממוצע הפלטפורמה כשיש מספיק נתונים)
   const myRole = userProfile?.Role;
-  const marketRate = Number(benchmark.find((b: any) => b.Role === myRole)?.AvgRate) || 0;
+  const platBench = benchmark.find((b: any) => b.Role === myRole);
+  const blended = myRole ? blendedMarket(myRole, Number(platBench?.AvgRate) || 0, Number(platBench?.Cnt) || 0) : null;
+  const marketRate = blended?.avg || 0;
+  const marketRange = blended?.range;
   const myAvgRate = completed.length > 0 ? completed.reduce((s, j) => s + Number(j.HourlyRate || 0), 0) / completed.length : 0;
   const rateDiffPct = marketRate > 0 && myAvgRate > 0 ? Math.round((myAvgRate - marketRate) / marketRate * 100) : null;
 
@@ -685,7 +689,7 @@ export const WorkerWallet: React.FC = () => {
               </div>
               <div className="flex items-center justify-between mt-2.5 text-sm">
                 <span className="text-gray-500">אתה מקבל בממוצע <b className="text-gray-900">₪{Math.round(myAvgRate)}/ש'</b></span>
-                <span className="text-gray-400 text-xs">ממוצע השוק: ₪{Math.round(marketRate)}/ש'</span>
+                <span className="text-gray-400 text-xs">שוק: ₪{Math.round(marketRate)}{marketRange ? ` (${marketRange})` : ''}</span>
               </div>
               {rateDiffPct < -5 && (
                 <p className="text-amber-600 text-[11px] mt-2 bg-amber-50 rounded-lg px-2.5 py-1.5">

@@ -6,6 +6,7 @@ import {
 import { TrendingUp, Clock, Star, Zap, ChevronDown, ChevronUp, Flame, Handshake, Scale } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
+import { blendedMarket } from '../../utils/marketRates';
 
 const MONTH_NAMES = ['ינו׳','פבר׳','מרץ','אפר׳','מאי','יוני','יולי','אוג׳','ספט׳','אוק׳','נוב׳','דצמ׳'];
 const DAY_NAMES   = ['','ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
@@ -141,7 +142,7 @@ export const RestaurantAnalytics: React.FC = () => {
   const partnerJobs = jobs.filter(j => j.JobType === 'direct' || j.JobType === 'stage_shift');
   const partnerSavings = partnerJobs.reduce((s, j) => s + baseOf(j) * (0.065 - 0.045), 0);
 
-  // ⚖️ אני מול השוק — תעריף ממוצע שלי לכל תפקיד מול ממוצע הפלטפורמה
+  // ⚖️ אני מול השוק — התעריף שלי מול אומדן שוק אמיתי (או ממוצע הפלטפורמה כשיש מספיק נתונים)
   const myRateByRole: Record<string, { sum: number; n: number }> = {};
   jobs.forEach(j => {
     if (!myRateByRole[j.Role]) myRateByRole[j.Role] = { sum: 0, n: 0 };
@@ -150,20 +151,77 @@ export const RestaurantAnalytics: React.FC = () => {
   });
   const benchRows = Object.entries(myRateByRole).map(([role, v]) => {
     const mine = v.sum / v.n;
-    const market = Number(benchmark.find((b: any) => b.Role === role)?.AvgRate) || 0;
+    const platform = benchmark.find((b: any) => b.Role === role);
+    const blended = blendedMarket(role, Number(platform?.AvgRate) || 0, Number(platform?.Cnt) || 0);
+    const market = blended?.avg || 0;
     const diffPct = market > 0 ? Math.round((mine - market) / market * 100) : null;
-    return { role, label: ROLE_LABELS[role] || role, mine, market, diffPct };
+    return { role, label: ROLE_LABELS[role] || role, mine, market, range: blended?.range, source: blended?.source, diffPct };
   }).filter(r => r.market > 0);
 
-  // 💡 תובנות חכמות (עד 4, לפי מה שרלוונטי)
+  // 📋 פילוח לפי סוג משמרת — רגיל / חירום / קבועים / סטאז'רים (שכר ממוצע + עלות)
+  const typeOf = (j: any) => j.JobType === 'direct' ? 'partner' : j.JobType === 'stage_shift' ? 'stage' : j.IsEmergency ? 'emergency' : 'regular';
+  const TYPE_META: Record<string, { label: string; emoji: string; color: string }> = {
+    regular:   { label: 'משמרות רגילות', emoji: '🍳', color: '#3b82f6' },
+    emergency: { label: 'משמרות חירום',  emoji: '🚨', color: '#ef4444' },
+    partner:   { label: 'עובדים קבועים', emoji: '🤝', color: '#10b981' },
+    stage:     { label: "סטאז'רים",      emoji: '🎓', color: '#e8a020' },
+  };
+  const typeMap: Record<string, { count: number; rateSum: number; cost: number; hours: number }> = {};
+  jobs.forEach(j => {
+    const t = typeOf(j);
+    if (!typeMap[t]) typeMap[t] = { count: 0, rateSum: 0, cost: 0, hours: 0 };
+    typeMap[t].count += 1;
+    typeMap[t].rateSum += Number(j.HourlyRate) || 0;
+    typeMap[t].cost += costOf(j);
+    typeMap[t].hours += Number(j.Hours) || 0;
+  });
+  const typeRows = (['regular', 'emergency', 'partner', 'stage'] as const)
+    .filter(t => typeMap[t]?.count)
+    .map(t => ({ key: t, ...TYPE_META[t], count: typeMap[t].count, avgRate: typeMap[t].rateSum / typeMap[t].count, cost: typeMap[t].cost }));
+
+  // 🕐 שעות שיא — מתי אתה מוציא הכי הרבה
+  const HOUR_BUCKETS = [
+    { key: 'morning', label: 'בוקר (6–12)',   from: 6,  to: 12 },
+    { key: 'noon',    label: 'צהריים (12–17)', from: 12, to: 17 },
+    { key: 'evening', label: 'ערב (17–24)',    from: 17, to: 24 },
+    { key: 'night',   label: 'לילה (0–6)',     from: 0,  to: 6 },
+  ];
+  const hourRows = HOUR_BUCKETS.map(b => {
+    const list = jobs.filter(j => { const h = new Date(j.StartTime).getHours(); return h >= b.from && h < b.to; });
+    return { ...b, count: list.length, cost: list.reduce((s, j) => s + costOf(j), 0) };
+  }).filter(r => r.count > 0).sort((a, b) => b.cost - a.cost);
+  const maxHourCost = hourRows[0]?.cost || 1;
+
+  // עלות בפועל לפי תפקיד (₪, לא רק אחוזים)
+  const roleCost: Record<string, number> = {};
+  jobs.forEach(j => { roleCost[j.Role] = (roleCost[j.Role] || 0) + costOf(j); });
+
+  // ROI שותפויות: דמי ההמרה (₪300 לעובד) מול החיסכון בעמלות
+  const partnerNames = new Set(partnerJobs.map(j => j.WorkerName).filter(Boolean));
+  const partnerInvestment = partnerNames.size * 300;
+  const partnerROI = partnerInvestment > 0 ? partnerSavings / partnerInvestment : null;
+
+  // צפי לחודש הבא (ממוצע 3 חודשים אחרונים)
+  const last3 = monthlyData.slice(-3);
+  const nextMonthForecast = last3.length >= 2 ? last3.reduce((s, m) => s + m.spend, 0) / last3.length : null;
+
+  // אחוז משמרות חירום
+  const emergencyShare = jobs.length > 0 ? Math.round(emergencyJobs.length / jobs.length * 100) : 0;
+
+  // 💡 תובנות חכמות (עד 4, לפי מה שרלוונטי) — הכל נשאר בתוך האפליקציה
   const insights: string[] = [];
-  if (emergencyExtra >= 20) insights.push(`🚨 משמרות חירום עלו לך ₪${Math.round(emergencyExtra).toLocaleString()} מעבר לעמלה רגילה — פרסום יום מראש היה משאיר את הכסף אצלך`);
-  if (partnerSavings >= 10) insights.push(`🤝 העובדים הקבועים שלך חסכו לך ₪${Math.round(partnerSavings).toLocaleString()} בעמלות (4.5% במקום 6.5%)`);
+  if (emergencyShare >= 30 && emergencyExtra >= 20) insights.push(`⏰ ${emergencyShare}% מהמשמרות שלך הן חירום — תכנון שבועי מראש היה חוסך לך ~₪${Math.round(emergencyExtra).toLocaleString()} בפרמיות`);
+  else if (emergencyExtra >= 20) insights.push(`🚨 משמרות חירום עלו לך ₪${Math.round(emergencyExtra).toLocaleString()} מעבר לעמלה רגילה — פרסום יום מראש משאיר את הכסף אצלך`);
+  if (partnerSavings >= 10 && partnerROI !== null) insights.push(partnerROI >= 1
+    ? `🤝 ההשקעה בעובדים קבועים (₪${partnerInvestment.toLocaleString()}) כבר החזירה את עצמה — חסכת ₪${Math.round(partnerSavings).toLocaleString()} בעמלות`
+    : `🤝 העובדים הקבועים חסכו לך ₪${Math.round(partnerSavings).toLocaleString()} — עוד ₪${Math.round(partnerInvestment - partnerSavings).toLocaleString()} והם מכסים את דמי ההמרה`);
+  const repeatNonPartner = topWorkers.find(w => w.count >= 2 && !partnerNames.has(w.name));
+  if (repeatNonPartner) insights.push(`⭐ ${repeatNonPartner.name} השלים אצלך ${repeatNonPartner.count} משמרות — שווה לצרף אותו כעובד קבוע באפליקציה ולרדת לעמלה של 4.5% בלבד`);
   const cheapest = benchRows.filter(r => r.diffPct !== null).sort((a, b) => (a.diffPct! - b.diffPct!))[0];
-  if (cheapest && cheapest.diffPct! <= -5) insights.push(`⚖️ אתה משלם ל${cheapest.label} ${Math.abs(cheapest.diffPct!)}% פחות מהממוצע בפלטפורמה — חיסכון חכם`);
-  else if (cheapest && cheapest.diffPct! >= 8) insights.push(`⚖️ השכר שאתה מציע ל${cheapest.label} גבוה ב-${cheapest.diffPct}% מהשוק — זה מאייש משמרות מהר, אבל יש מקום להתייעל`);
-  if (topWorkers[0]) insights.push(`👨‍🍳 ${topWorkers[0].name} כבר עבד אצלך ${topWorkers[0].count} פעמים ומכיר את המטבח — שווה לשמור עליו קרוב`);
-  if (dayData[0]) insights.push(`📅 ${dayData[0].day} הוא היום העמוס שלך (${dayData[0].shifts} משמרות) — פרסם אליו מוקדם כדי לתפוס את העובדים הטובים`);
+  if (cheapest && cheapest.diffPct! <= -5) insights.push(`⚖️ אתה משלם ל${cheapest.label} ${Math.abs(cheapest.diffPct!)}% מתחת לשוק — חיסכון חכם, רק שים לב למהירות האיוש`);
+  else if (cheapest && cheapest.diffPct! >= 8) insights.push(`⚖️ השכר שאתה מציע ל${cheapest.label} גבוה ב-${cheapest.diffPct}% מהשוק — זה מאייש מהר, אבל יש מקום להתייעל`);
+  if (nextMonthForecast) insights.push(`📅 לפי ${last3.length} החודשים האחרונים, צפי ההוצאה לחודש הבא: ~₪${Math.round(nextMonthForecast).toLocaleString()}`);
+  if (dayData[0]) insights.push(`📊 ${dayData[0].day} הוא היום העמוס שלך (${dayData[0].shifts} משמרות) — פרסם אליו מוקדם כדי לתפוס את העובדים המדורגים`);
 
   return (
     <div className="screen-enter space-y-5 pb-4">
@@ -208,8 +266,10 @@ export const RestaurantAnalytics: React.FC = () => {
         <div className="rounded-2xl p-4 card-shadow" style={{ background: 'linear-gradient(135deg,#064e3b,#065f46)' }}>
           <Handshake size={18} className="text-green-300 mb-2" />
           <div className="font-black text-white text-xl">₪{Math.round(partnerSavings).toLocaleString()}</div>
-          <div className="text-green-200 text-xs mt-0.5">חסכת עם עובדים קבועים</div>
-          <div className="text-green-300/60 text-[10px] mt-1">עמלה 4.5% במקום 6.5% · {partnerJobs.length} משמרות</div>
+          <div className="text-green-200 text-xs mt-0.5">חסכת עם קבועים וסטאז'רים</div>
+          <div className="text-green-300/60 text-[10px] mt-1">
+            עמלה 4.5% · {partnerJobs.length} משמרות{partnerROI !== null ? (partnerROI >= 1 ? ' · ההשקעה הוחזרה ✓' : ` · ${Math.round(partnerROI * 100)}% מההשקעה הוחזרה`) : ''}
+          </div>
         </div>
         <div className="rounded-2xl p-4 card-shadow" style={{ background: 'linear-gradient(135deg,#7f1d1d,#991b1b)' }}>
           <Flame size={18} className="text-red-300 mb-2" />
@@ -251,23 +311,79 @@ export const RestaurantAnalytics: React.FC = () => {
             <Scale size={16} className="text-indigo-500" />
             <h3 className="font-bold text-gray-800">השכר שלך מול השוק</h3>
           </div>
-          <div className="space-y-2.5">
+          <div className="space-y-3">
             {benchRows.map(r => (
-              <div key={r.role} className="flex items-center justify-between">
-                <span className="text-sm text-gray-700 font-medium">{r.label}</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-400">שוק ₪{Math.round(r.market)}</span>
-                  <span className="font-bold text-gray-900 text-sm">אתה ₪{Math.round(r.mine)}</span>
-                  {r.diffPct !== null && Math.abs(r.diffPct) >= 3 && (
-                    <span className={`text-[10px] font-bold rounded-full px-2 py-0.5 ${r.diffPct < 0 ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-600'}`}>
-                      {r.diffPct < 0 ? `${Math.abs(r.diffPct)}%- מהשוק` : `${r.diffPct}%+ מהשוק`}
-                    </span>
-                  )}
+              <div key={r.role}>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-700 font-medium">{r.label}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-gray-900 text-sm">אתה ₪{Math.round(r.mine)}</span>
+                    {r.diffPct !== null && Math.abs(r.diffPct) >= 3 && (
+                      <span className={`text-[10px] font-bold rounded-full px-2 py-0.5 ${r.diffPct < 0 ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-600'}`}>
+                        {r.diffPct < 0 ? `${Math.abs(r.diffPct)}%- מהשוק` : `${r.diffPct}%+ מהשוק`}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="text-[11px] text-gray-400 mt-0.5">
+                  שוק: ממוצע ₪{Math.round(r.market)}{r.range ? ` · טווח מקובל ${r.range}` : ''}
                 </div>
               </div>
             ))}
           </div>
-          <p className="text-gray-400 text-[10px] mt-3">💡 שכר מעל השוק מאייש מהר יותר; מתחת לשוק — חיסכון אבל איוש איטי יותר</p>
+          <p className="text-gray-400 text-[10px] mt-3 leading-relaxed">
+            📊 מקור: אומדני שכר פרילנס בענף ההסעדה בישראל (2025, ללא טיפים) + נתוני הפלטפורמה · 💡 שכר מעל השוק מאייש מהר יותר
+          </p>
+        </div>
+      )}
+
+      {/* 📋 פילוח לפי סוג משמרת — כולל קבועים וסטאז'רים */}
+      {typeRows.length > 0 && (
+        <div className="bg-white rounded-2xl p-4 card-shadow">
+          <h3 className="font-bold text-gray-800 mb-3">פילוח לפי סוג משמרת</h3>
+          <div className="space-y-2.5">
+            {typeRows.map(t => (
+              <div key={t.key} className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg flex-shrink-0" style={{ background: t.color + '15' }}>
+                  {t.emoji}
+                </div>
+                <div className="flex-1">
+                  <div className="font-semibold text-gray-900 text-sm">{t.label}</div>
+                  <div className="text-gray-400 text-xs">{t.count} משמרות · שכר ממוצע ₪{Math.round(t.avgRate)}/ש'</div>
+                </div>
+                <span className="font-bold text-sm" style={{ color: t.color }}>₪{Math.round(t.cost).toLocaleString()}</span>
+              </div>
+            ))}
+          </div>
+          {typeMap['regular'] && (typeMap['partner'] || typeMap['stage']) && (
+            <p className="text-green-600 text-[11px] mt-3 bg-green-50 rounded-lg px-2.5 py-1.5">
+              🤝 קבועים וסטאז'רים עולים לך 4.5% עמלה בלבד — לעומת 6.5% במשמרת רגילה ו-12% בחירום
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* 🕐 שעות שיא */}
+      {hourRows.length > 1 && (
+        <div className="bg-white rounded-2xl p-4 card-shadow">
+          <h3 className="font-bold text-gray-800 mb-3">🕐 מתי אתה מוציא הכי הרבה</h3>
+          <div className="space-y-2">
+            {hourRows.map((h, i) => (
+              <div key={h.key} className="flex items-center gap-2.5">
+                <span className="text-xs text-gray-500 w-24 flex-shrink-0">{h.label}</span>
+                <div className="flex-1 h-5 bg-gray-50 rounded-lg overflow-hidden">
+                  <div className="h-full rounded-lg" style={{
+                    width: `${Math.max(Math.round(h.cost / maxHourCost * 100), 8)}%`,
+                    background: i === 0 ? 'linear-gradient(90deg,#e8a020,#f0c050)' : '#e2e8f0',
+                  }} />
+                </div>
+                <span className={`text-xs font-bold w-16 text-left flex-shrink-0 ${i === 0 ? 'text-amber-600' : 'text-gray-400'}`}>
+                  ₪{Math.round(h.cost).toLocaleString()}
+                </span>
+              </div>
+            ))}
+          </div>
+          <p className="text-gray-400 text-[11px] mt-2.5">📌 {hourRows[0]?.label} היא תקופת ההוצאה הגדולה שלך ({hourRows[0]?.count} משמרות)</p>
         </div>
       )}
 
@@ -311,8 +427,8 @@ export const RestaurantAnalytics: React.FC = () => {
                     <span className="text-sm text-gray-700">{d.name}</span>
                   </div>
                   <div className="text-right">
-                    <span className="font-bold text-gray-900 text-sm">{d.value}%</span>
-                    <span className="text-gray-400 text-xs mr-1">({d.count})</span>
+                    <span className="font-bold text-gray-900 text-sm">₪{Math.round(roleCost[Object.keys(ROLE_LABELS).find(k => ROLE_LABELS[k] === d.name) || ''] || 0).toLocaleString()}</span>
+                    <span className="text-gray-400 text-xs mr-1">({d.count} · {d.value}%)</span>
                   </div>
                 </div>
               ))}
