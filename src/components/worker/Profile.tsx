@@ -211,9 +211,13 @@ export const WorkerProfile: React.FC = () => {
           </span>
           <button
             onClick={() => handleAvailability(!available)}
-            className={`w-12 h-6 rounded-full transition-colors ${available ? 'bg-green-500' : 'bg-gray-600'}`}
+            aria-pressed={available}
+            className={`relative w-12 h-6 rounded-full transition-colors flex-shrink-0 ${available ? 'bg-green-500' : 'bg-gray-600'}`}
           >
-            <div className={`w-5 h-5 bg-white rounded-full shadow mx-0.5 transition-transform ${available ? 'translate-x-6' : 'translate-x-0'}`} />
+            <span
+              className="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all duration-200"
+              style={{ left: available ? 2 : 26 }}
+            />
           </button>
         </div>
       </div>
