@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Search, Star, CheckCircle2, XCircle, Phone, Briefcase, GraduationCap } from 'lucide-react';
+import { Search, Star, CheckCircle2, XCircle, Phone, Briefcase, GraduationCap, Download } from 'lucide-react';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../utils/roles';
 import { ils, num, dateShort, LEVEL_LABELS, LEVEL_COLORS } from './format';
+import { downloadCsv } from './exportCsv';
 
 type Tab = 'workers' | 'restaurants';
 
@@ -33,6 +34,22 @@ export const AdminUsers: React.FC = () => {
     ? <CheckCircle2 size={13} style={{ color: '#34d399' }} />
     : <XCircle size={13} style={{ color: 'rgba(255,255,255,0.25)' }} />;
 
+  const exportCurrent = () => {
+    if (tab === 'workers') {
+      downloadCsv('kitchenmatch-workers.csv',
+        ['שם', 'אימייל', 'טלפון', 'עיר', 'תפקיד', 'רמה', 'דירוג', 'מס׳ דירוגים', 'משמרות', 'אמינות %', 'תעריף', 'הכנסות', 'מאומת', 'הצטרף'],
+        filtered.map((w: any) => [w.Name, w.Email, w.Phone, w.City, ROLE_LABELS[w.Role] || w.Role, LEVEL_LABELS[w.Level] || w.Level,
+          Number(w.Rating || 0).toFixed(1), w.RatingCount, w.CompletedShifts, w.ReliabilityScore, w.HourlyRate,
+          Math.round(Number(w.TotalEarnings || 0)), w.IsEmailVerified ? 'כן' : 'לא', dateShort(w.JoinedAt)]));
+    } else {
+      downloadCsv('kitchenmatch-restaurants.csv',
+        ['שם', 'אימייל', 'טלפון', 'עיר', 'סוג מטבח', 'דירוג', 'מס׳ דירוגים', 'משמרות שהושלמו', 'סה״כ משמרות', 'הוצאה', 'עמלות', 'ארנק', 'מאומת', 'הצטרף'],
+        filtered.map((r: any) => [r.Name, r.Email, r.Phone, r.City, r.CuisineType, Number(r.Rating || 0).toFixed(1), r.RatingCount,
+          r.CompletedJobs, r.TotalJobs, Math.round(Number(r.TotalSpend || 0)), Math.round(Number(r.Commission || 0)),
+          Math.round(Number(r.WalletBalance || 0)), r.IsEmailVerified ? 'כן' : 'לא', dateShort(r.JoinedAt)]));
+    }
+  };
+
   return (
     <div className="pb-4">
       {/* Tabs */}
@@ -48,12 +65,19 @@ export const AdminUsers: React.FC = () => {
         ))}
       </div>
 
-      {/* Search */}
-      <div className="relative mb-3">
-        <Search size={15} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: 'rgba(255,255,255,0.3)' }} />
-        <input value={q} onChange={e => setQ(e.target.value)} placeholder="חיפוש לפי שם, עיר, מייל..."
-          className="w-full rounded-xl pr-9 pl-3 py-2.5 text-sm text-right text-white outline-none"
-          style={{ background: '#111a2b', border: '1px solid rgba(255,255,255,0.08)' }} />
+      {/* Search + export */}
+      <div className="flex gap-2 mb-3">
+        <div className="relative flex-1">
+          <Search size={15} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: 'rgba(255,255,255,0.3)' }} />
+          <input value={q} onChange={e => setQ(e.target.value)} placeholder="חיפוש לפי שם, עיר, מייל..."
+            className="w-full rounded-xl pr-9 pl-3 py-2.5 text-sm text-right text-white outline-none"
+            style={{ background: '#111a2b', border: '1px solid rgba(255,255,255,0.08)' }} />
+        </div>
+        <button onClick={exportCurrent} disabled={filtered.length === 0} title="ייצוא ל-CSV"
+          className="px-3 rounded-xl flex items-center gap-1.5 text-xs font-bold disabled:opacity-40"
+          style={{ background: '#111a2b', border: '1px solid rgba(255,255,255,0.08)', color: '#34d399' }}>
+          <Download size={15} /> CSV
+        </button>
       </div>
 
       {loading ? (

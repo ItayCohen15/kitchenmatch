@@ -71,6 +71,8 @@ export const AdminDashboard: React.FC = () => {
   const { users, jobs, partnerships, ratings, revenue } = data;
   const signups = (data.signupsByMonth || []).map((m: any) => ({ ...m, label: monthLabel(m.ym) }));
   const revByMonth = (data.revenueByMonth || []).map((m: any) => ({ ...m, label: monthLabel(m.ym), commission: Number(m.commission) || 0 }));
+  let _acc = 0;
+  const cumulative = revByMonth.map((mo: any) => { _acc += mo.commission; return { label: mo.label, total: Math.round(_acc) }; });
   const maxRole = Math.max(1, ...(data.jobsByRole || []).map((r: any) => r.cnt));
 
   return (
@@ -138,6 +140,28 @@ export const AdminDashboard: React.FC = () => {
             </AreaChart>
           </ResponsiveContainer>
         ) : <p className="text-xs text-center py-6" style={{ color: 'rgba(255,255,255,0.3)' }}>אין נתונים עדיין</p>}
+      </Card>
+
+      {/* ===== הכנסה מצטברת ===== */}
+      <Card>
+        <SectionTitle><span className="inline-flex items-center gap-1.5"><TrendingUp size={14} style={{ color: '#34d399' }} /> הכנסה מצטברת</span></SectionTitle>
+        {cumulative.length ? (
+          <ResponsiveContainer width="100%" height={150}>
+            <AreaChart data={cumulative} margin={{ top: 5, right: 5, left: 5, bottom: 0 }}>
+              <defs>
+                <linearGradient id="gCum" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#34d399" stopOpacity={0.5} />
+                  <stop offset="100%" stopColor="#34d399" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+              <XAxis dataKey="label" tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 11 }} axisLine={false} tickLine={false} />
+              <Tooltip content={<Tip money />} />
+              <Area type="monotone" dataKey="total" stroke="#34d399" strokeWidth={2.5} fill="url(#gCum)" />
+            </AreaChart>
+          </ResponsiveContainer>
+        ) : <p className="text-xs text-center py-6" style={{ color: 'rgba(255,255,255,0.3)' }}>אין נתונים עדיין</p>}
+        <p className="text-[10px] text-center mt-1" style={{ color: 'rgba(255,255,255,0.3)' }}>סך עמלות מצטבר לאורך החודשים האחרונים</p>
       </Card>
 
       {/* ===== הרשמות לפי חודש ===== */}
