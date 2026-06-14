@@ -73,13 +73,6 @@ export const api = {
       body: JSON.stringify({ workerId })
     }).then(handleResponse),
 
-  acceptJob: (jobId: number, workerId: number) =>
-    fetch(`${BASE}/jobs/${jobId}/apply`, {
-      method: 'PUT',
-      headers: headers(),
-      body: JSON.stringify({ workerId })
-    }).then(handleResponse),
-
   approveWorker: (jobId: number) =>
     fetch(`${BASE}/jobs/${jobId}/approve`, {
       method: 'PUT',
@@ -108,9 +101,6 @@ export const api = {
   getEndStatus: (jobId: number) =>
     fetch(`${BASE}/jobs/${jobId}/end-status`, { headers: headers(), cache: 'no-store' }).then(handleResponse),
 
-  getShiftsToConfirm: (restaurantId: number) =>
-    fetch(`${BASE}/jobs/restaurant/${restaurantId}/to-confirm`, { headers: headers() }).then(handleResponse),
-
   getWorkerHistory: (workerId: number) =>
     fetch(`${BASE}/jobs/worker/${workerId}`, { headers: headers() }).then(handleResponse),
 
@@ -126,12 +116,6 @@ export const api = {
   confirmStart: (jobId: number) =>
     fetch(`${BASE}/jobs/${jobId}/confirm-start`, {
       method: 'PUT', headers: headers()
-    }).then(handleResponse),
-
-  startJob: (jobId: number) =>
-    fetch(`${BASE}/jobs/${jobId}/start`, {
-      method: 'PUT',
-      headers: headers()
     }).then(handleResponse),
 
   completeJob: (jobId: number) =>
@@ -167,9 +151,6 @@ export const api = {
       headers: headers(),
       body: JSON.stringify({ isAvailable })
     }).then(handleResponse),
-
-  getWorkerEarnings: (workerId: number) =>
-    fetch(`${BASE}/workers/${workerId}/earnings`, { headers: headers() }).then(handleResponse),
 
   getWorker: (workerId: number) =>
     fetch(`${BASE}/workers/${workerId}`, { headers: headers() }).then(handleResponse),

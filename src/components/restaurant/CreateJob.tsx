@@ -81,6 +81,7 @@ export const CreateJob: React.FC = () => {
         isEmergency: emergency,
         description: instructions,
         duties,
+        experience,
         minRating: emergency ? minRating : 0,
         allowNewWorkers: emergency ? allowNewWorkers : true,
       });

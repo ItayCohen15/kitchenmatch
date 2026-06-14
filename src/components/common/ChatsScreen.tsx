@@ -30,17 +30,17 @@ export const ChatsScreen: React.FC<{ role: 'restaurant' | 'worker' }> = ({ role 
   useEffect(() => { load(); }, [pid]);
   useEffect(() => { if (!pid) return; const iv = setInterval(load, 6000); return () => clearInterval(iv); }, [pid]);
 
-  // נפתח מהתראת push / באנר בבית — פתח את השיחה המבוקשת
+  // נפתח מהתראת push / באנר בבית — פתח את השיחה המבוקשת.
+  // תלוי ב-threads (מתעדכן בכל פולינג) כדי שייפתח גם אם מספר השרשורים לא השתנה.
   useEffect(() => {
-    if (!threads.length) return;
     try {
       const want = localStorage.getItem('km_open_chat');
-      if (want) {
+      if (want && threads.length) {
         const t = threads.find(x => String(x.JobId) === String(want));
         if (t) { setOpenThread(t); localStorage.removeItem('km_open_chat'); }
       }
     } catch {}
-  }, [threads.length]);
+  }, [threads]);
 
   return (
     <div className="screen-enter space-y-4">

@@ -16,7 +16,7 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
   const end        = new Date(job.EndTime);
   const hoursNum   = (end.getTime() - start.getTime()) / 3600000;
   const base       = hoursNum * job.HourlyRate;          // סכום בסיסי
-  const commRate   = restaurantRate(job.IsEmergency);    // חירום=9%, אחרת 6.5%
+  const commRate   = restaurantRate(job.IsEmergency);    // חירום=12%, אחרת 6.5%
   const commPct    = +(commRate * 100).toFixed(1);
   const commission = base * commRate;                    // עמלת מסעדה
   const totalPaid  = base + commission;                  // מה המסעדה שילמה בפועל
@@ -236,8 +236,11 @@ export const RestaurantWallet: React.FC = () => {
 
   const completedJobs = jobs.filter(j => j.Status === 'completed');
   const totalSpend    = completedJobs.reduce((sum, j) => {
-    const h = (new Date(j.EndTime).getTime() - new Date(j.StartTime).getTime()) / 3600000;
-    return sum + h * j.HourlyRate * (1 + restaurantRate(j.IsEmergency)); // כולל עמלת פלטפורמה (חירום 9%)
+    const schedH = (new Date(j.EndTime).getTime() - new Date(j.StartTime).getTime()) / 3600000;
+    // בסיס לפי שכר בפועל מהשרת (אם קיים), עמלה על הסכום המקורי — בדיוק כמו חישוב השרת
+    const base = Number(j.TotalPay) || schedH * j.HourlyRate;
+    const restComm = schedH * j.HourlyRate * restaurantRate(j.IsEmergency); // עמלת מסעדה (חירום 12%)
+    return sum + base + restComm;
   }, 0);
   const avgPerShift = completedJobs.length > 0 ? (totalSpend / completedJobs.length).toFixed(0) : 0;
 

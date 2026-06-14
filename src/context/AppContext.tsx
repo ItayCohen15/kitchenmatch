@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import type { UserRole, RestaurantScreen, WorkerScreen, Job, Message } from '../types';
-import { INITIAL_CHAT } from '../data/mockData';
+import type { UserRole, RestaurantScreen, WorkerScreen, Job } from '../types';
 import { api } from '../api';
 
 // מסכים שלא משוחזרים אחרי ריענון/כניסה — תלויים במשמרת נבחרת; נכנסים אליהם מחדש דרך הבית/הלוז
@@ -11,7 +10,6 @@ interface AppState {
   restaurantScreen: RestaurantScreen;
   workerScreen: WorkerScreen;
   activeJob: Job | null;
-  chatMessages: Message[];
   shiftStartTime: Date | null;
   isEmergencyMode: boolean;
   workerSelectedJobId: string | null;
@@ -24,7 +22,6 @@ interface AppContextValue extends AppState {
   navToRestaurant: (screen: RestaurantScreen) => void;
   navToWorker: (screen: WorkerScreen) => void;
   setActiveJob: (job: Job | null) => void;
-  sendMessage: (text: string, isOwn: boolean) => void;
   startShift: () => void;
   setEmergencyMode: (v: boolean) => void;
   selectWorkerJob: (jobId: string, jobData?: any) => void;
@@ -59,7 +56,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   const [activeJob, setActiveJob] = useState<Job | null>(null);
-  const [chatMessages, setChatMessages] = useState<Message[]>(INITIAL_CHAT);
 
   // שחזור זמן התחלת משמרת
   const [shiftStartTime, setShiftStartTime] = useState<Date | null>(() => {
@@ -89,18 +85,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const navToWorker = useCallback((screen: WorkerScreen) => {
     setWorkerScreen(screen);
     localStorage.setItem('km_screen', screen);
-  }, []);
-
-  const sendMessage = useCallback((text: string, isOwn: boolean) => {
-    const newMsg: Message = {
-      id: `m${Date.now()}`,
-      senderId: isOwn ? 'rest1' : 'w2',
-      senderName: isOwn ? 'מסעדת הגן' : 'דניאל',
-      text,
-      time: new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }),
-      isOwn,
-    };
-    setChatMessages(prev => [...prev, newMsg]);
   }, []);
 
   const startShift = useCallback(() => {
@@ -146,7 +130,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setIsEmergencyMode(false);
     setWorkerSelectedJobId(null);
     setSelectedJobData(null);
-    setChatMessages(INITIAL_CHAT);
     localStorage.removeItem('km_token');
     localStorage.removeItem('km_role');
     localStorage.removeItem('km_profile');
@@ -157,10 +140,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   return (
     <AppContext.Provider value={{
-      userRole, restaurantScreen, workerScreen, activeJob, chatMessages,
+      userRole, restaurantScreen, workerScreen, activeJob,
       shiftStartTime, isEmergencyMode, workerSelectedJobId, selectedJobData, userProfile,
       setUserRole, navToRestaurant, navToWorker, setActiveJob,
-      sendMessage, startShift, setEmergencyMode: setIsEmergencyMode,
+      startShift, setEmergencyMode: setIsEmergencyMode,
       selectWorkerJob, getSelectedJob, resetToLanding, setUserProfile, refreshProfile,
     }}>
       {children}
