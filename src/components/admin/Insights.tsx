@@ -148,7 +148,10 @@ export const AdminInsights: React.FC = () => {
 
   const fillTone = m.fillRate >= 70 ? 'good' : m.fillRate >= 40 ? 'gold' : 'bad';
   const repeatTone = m.repeatRate >= 40 ? 'good' : m.repeatRate >= 20 ? 'gold' : 'bad';
-  const revUp = m.momRevenue.growthPct >= 0;
+  // צמיחה — null כשאין בסיס השוואה (חודש קודם ריק) → "חדש"
+  const fmtGrowth = (g: any) => g == null ? 'חדש' : `${g >= 0 ? '+' : ''}${g}%`;
+  const growthTone = (g: any) => g == null ? 'neutral' : g >= 0 ? 'good' : 'bad';
+  const revUp = m.momRevenue.growthPct == null ? null : m.momRevenue.growthPct >= 0;
   const maxFunnel = Math.max(1, m.funnel.posted);
   const maxCity = Math.max(1, ...(m.topCities || []).map((c: any) => c.shifts));
 
@@ -214,13 +217,13 @@ export const AdminInsights: React.FC = () => {
         <Metric icon={<Target size={16} />} label="Fill Rate (אחוז איוש מוצלח)" value={`${m.fillRate}%`} hint={`${m.cancelRate}% ביטולים`} tone={fillTone} />
         <Metric icon={<Repeat size={16} />} label="מסעדות חוזרות" value={`${m.repeatRate}%`} hint={`${num(m.repeatRestaurants)}/${num(m.restaurantsWithShift)} מסעדות`} tone={repeatTone} />
         <Metric icon={<Activity size={16} />} label="עובדים פעילים (30 ימים)" value={`${m.workerActiveRate}%`} hint={`${num(m.activeWorkers30d)}/${num(m.totalWorkers)} עובדים`} tone="neutral" />
-        <Metric icon={revUp ? <TrendingUp size={16} /> : <TrendingDown size={16} />} label="צמיחת הכנסה (חודשי)" value={`${revUp ? '+' : ''}${m.momRevenue.growthPct}%`} hint={`${ils(m.momRevenue.current)} החודש`} tone={revUp ? 'good' : 'bad'} />
+        <Metric icon={revUp === false ? <TrendingDown size={16} /> : <TrendingUp size={16} />} label="צמיחת הכנסה (חודשי)" value={fmtGrowth(m.momRevenue.growthPct)} hint={`${ils(m.momRevenue.current)} החודש`} tone={growthTone(m.momRevenue.growthPct)} />
         <Metric icon={<GraduationCap size={16} />} label="המרת סטאז'→שותפות" value={`${m.stageConversion.pct}%`} hint={`${num(m.stageConversion.partnerships)}/${num(m.stageConversion.stages)} סטאז'ים`} tone="gold" />
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <Metric icon={<Wallet size={16} />} label="ערך ממוצע למשמרת (GMV)" value={ils(m.avgShiftValue)} tone="neutral" />
-        <Metric icon={<TrendingUp size={16} />} label="צמיחת משתמשים (חודשי)" value={`${m.momUsers.growthPct >= 0 ? '+' : ''}${m.momUsers.growthPct}%`} hint={`${num(m.momUsers.current)} החודש`} tone={m.momUsers.growthPct >= 0 ? 'good' : 'bad'} />
+        <Metric icon={<TrendingUp size={16} />} label="צמיחת משתמשים (חודשי)" value={fmtGrowth(m.momUsers.growthPct)} hint={`${num(m.momUsers.current)} החודש`} tone={growthTone(m.momUsers.growthPct)} />
       </div>
 
       {/* ===== משפך ===== */}
