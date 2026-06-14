@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Clock, CheckCircle2, Phone } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
@@ -15,7 +15,8 @@ export const WorkerActiveShift: React.FC = () => {
   const [bothDone, setBothDone] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
-  const startTime = shiftStartTime || new Date(Date.now() - 30 * 60000);
+  // בסיס זמן יציב — בלי זה נוצר Date חדש בכל רינדור וה-interval מתאפס (השעון קופץ)
+  const startTime = useMemo(() => shiftStartTime || new Date(Date.now() - 30 * 60000), [shiftStartTime]);
   const hourlyRate = job ? Number(job.HourlyRate ?? job.hourlyRate ?? 0) : 0;
   const restaurantName: string = job?.RestaurantName || job?.restaurantName || 'המסעדה';
   const jobId: number = job ? Number(job.Id ?? job.id ?? 0) : 0;

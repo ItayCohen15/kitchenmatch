@@ -181,7 +181,7 @@ export const WorkerEndShift: React.FC = () => {
         ) : `שלח דירוג וקבל ₪${netPay}`}
       </button>
 
-      <button onClick={() => navToWorker('home')} className="w-full text-gray-400 text-sm py-2">
+      <button onClick={() => navToWorker('wallet')} className="w-full text-gray-400 text-sm py-2">
         דלג על הדירוג
       </button>
     </div>

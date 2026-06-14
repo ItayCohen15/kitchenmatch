@@ -39,15 +39,9 @@ export const Chat: React.FC<Props> = ({ jobId, myRole, myName }) => {
     setInput('');
     try {
       await api.sendMessage(jobId, text, myName, myRole);
-      const now = new Date();
-      const localTime = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-      setMessages(prev => [...prev, {
-        Id: Date.now(),
-        SenderRole: myRole,
-        SenderName: myName,
-        Text: text,
-        DisplayTime: localTime,
-      }]);
+      // טען מחדש מהשרת (מקור אמת) במקום הוספה אופטימית — מונע ריצוד/כפילויות מול הפולינג
+      const data = await api.getMessages(jobId);
+      if (Array.isArray(data)) setMessages(data);
     } catch (e: any) {
       setError('שגיאה בשליחה');
       setInput(text);
@@ -75,11 +69,11 @@ export const Chat: React.FC<Props> = ({ jobId, myRole, myName }) => {
           <div className="text-center text-gray-300 text-sm py-8">אין הודעות עדיין — שלח הודעה ראשונה!</div>
         )}
         {messages.map((msg, i) => (
-          <div key={msg.Id || i} className={`flex ${isMe(msg) ? 'justify-end' : 'justify-start'}`}>
+          <div key={msg.Id || i} className={`flex ${isMe(msg) ? 'justify-start' : 'justify-end'}`}>
             <div className={`max-w-[78%] rounded-2xl px-3 py-2 text-sm ${
               isMe(msg)
-                ? 'bg-amber-500 text-white rounded-bl-sm'
-                : 'bg-gray-100 text-gray-800 rounded-br-sm'
+                ? 'bg-amber-500 text-white rounded-br-sm'
+                : 'bg-gray-100 text-gray-800 rounded-bl-sm'
             }`}>
               {!isMe(msg) && (
                 <div className="text-xs font-bold mb-0.5 opacity-60">{msg.SenderName}</div>

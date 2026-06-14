@@ -21,18 +21,20 @@ export const WorkerHome: React.FC = () => {
   const [filterRole, setFilterRole] = useState<string>('all');
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [activeShifts, setActiveShifts] = useState<any[]>([]);
+
+  const loadJobs = () => {
+    api.getJobs()
+      .then(data => { setJobs(Array.isArray(data) ? data : []); setLoadError(false); })
+      .catch(() => setLoadError(true))
+      .finally(() => setLoading(false));
+  };
 
   // רענון אוטומטי כל 6 שניות
   useEffect(() => {
-    const load = () => {
-      api.getJobs()
-        .then(data => setJobs(Array.isArray(data) ? data : []))
-        .catch(() => {})
-        .finally(() => setLoading(false));
-    };
-    load();
-    const iv = setInterval(load, 6000);
+    loadJobs();
+    const iv = setInterval(loadJobs, 6000);
     return () => clearInterval(iv);
   }, []);
 
@@ -219,7 +221,19 @@ export const WorkerHome: React.FC = () => {
           </div>
         )}
 
-        {!loading && filtered.length === 0 && (
+        {!loading && loadError && (
+          <div className="text-center py-10 bg-white rounded-2xl card-shadow">
+            <div className="text-4xl mb-3">📡</div>
+            <p className="text-gray-600 font-medium">לא הצלחנו לטעון משמרות</p>
+            <p className="text-gray-400 text-sm mt-1 mb-3">בדוק את החיבור לאינטרנט</p>
+            <button onClick={() => { setLoading(true); loadJobs(); }}
+              className="bg-amber-500 text-white rounded-xl px-5 py-2 font-bold text-sm active:scale-95 transition-transform">
+              נסה שוב
+            </button>
+          </div>
+        )}
+
+        {!loading && !loadError && filtered.length === 0 && (
           <div className="text-center py-10 bg-white rounded-2xl card-shadow">
             <div className="text-4xl mb-3">🍳</div>
             <p className="text-gray-500 font-medium">אין משמרות זמינות כרגע</p>

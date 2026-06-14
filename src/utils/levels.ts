@@ -70,7 +70,7 @@ export function netMultiplier(levelKey?: string): number {
   return 1 - workerCommissionRate(levelKey);
 }
 
-// ── עמלות חירום ── משמרת חירום: מסעדה 9%, עובד 5% (קבוע). אחרת: מסעדה 6.5%, עובד לפי רמה.
+// ── עמלות חירום ── משמרת חירום: מסעדה 12%, עובד 4% (קבוע). אחרת: מסעדה 6.5%, עובד לפי רמה.
 export const BASE_RESTAURANT_COMMISSION = 0.065;
 export const EMERGENCY_RESTAURANT_COMMISSION = 0.12;
 export const EMERGENCY_WORKER_COMMISSION = 0.04;
