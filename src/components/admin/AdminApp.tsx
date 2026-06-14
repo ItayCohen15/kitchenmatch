@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, Users as UsersIcon, Star, Briefcase, LogOut, ShieldCheck } from 'lucide-react';
+import { LayoutDashboard, Sparkles, Users as UsersIcon, Star, Briefcase, LogOut, ShieldCheck } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import type { AdminScreen } from '../../types';
 import { AdminDashboard } from './Dashboard';
+import { AdminInsights } from './Insights';
 import { AdminUsers } from './Users';
 import { AdminRatings } from './Ratings';
 import { AdminJobs } from './Jobs';
 
 const TABS: { id: AdminScreen; label: string; icon: React.ReactNode }[] = [
   { id: 'dashboard', label: 'דאשבורד', icon: <LayoutDashboard size={20} /> },
+  { id: 'insights',  label: 'מנכ״ל',   icon: <Sparkles size={20} /> },
   { id: 'users',     label: 'משתמשים', icon: <UsersIcon size={20} /> },
   { id: 'ratings',   label: 'דירוגים', icon: <Star size={20} /> },
   { id: 'jobs',      label: 'משמרות',  icon: <Briefcase size={20} /> },
@@ -16,6 +18,7 @@ const TABS: { id: AdminScreen; label: string; icon: React.ReactNode }[] = [
 
 const TITLES: Record<AdminScreen, string> = {
   dashboard: 'סקירת מערכת',
+  insights:  'תובנות מנכ״ל',
   users:     'משתמשים',
   ratings:   'כל הדירוגים',
   jobs:      'משמרות אחרונות',
@@ -28,6 +31,7 @@ export const AdminApp: React.FC = () => {
   const renderScreen = () => {
     switch (screen) {
       case 'dashboard': return <AdminDashboard />;
+      case 'insights':  return <AdminInsights />;
       case 'users':     return <AdminUsers />;
       case 'ratings':   return <AdminRatings />;
       case 'jobs':      return <AdminJobs />;
