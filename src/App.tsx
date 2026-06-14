@@ -1,4 +1,5 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
+import type { UserRole } from './types';
 import { AppProvider, useApp } from './context/AppContext';
 import { usePush } from './hooks/usePush';
 import { Auth } from './components/Auth';
@@ -8,6 +9,7 @@ import { api } from './api';
 // טעינה עצלה — כל תפקיד מוריד רק את הקוד שלו (כולל גרפים כבדים)
 const RestaurantApp = lazy(() => import('./components/restaurant/RestaurantApp').then(m => ({ default: m.RestaurantApp })));
 const WorkerApp = lazy(() => import('./components/worker/WorkerApp').then(m => ({ default: m.WorkerApp })));
+const AdminApp = lazy(() => import('./components/admin/AdminApp').then(m => ({ default: m.AdminApp })));
 
 // רשת ביטחון: אם נטענה גרסה ישנה שהקבצים שלה כבר לא קיימים (נפוץ בכניסה מהתראת PUSH),
 // טעינת המסך נכשלת והמסך נשאר לבן — נטען מחדש פעם אחת אוטומטית כדי לקבל את הגרסה העדכנית.
@@ -156,12 +158,14 @@ const AppContent: React.FC = () => {
     }
     if (savedToken && savedRole) {
       setToken(savedToken);
-      setUserRole(savedRole as 'restaurant' | 'worker');
+      setUserRole(savedRole as UserRole);
       let profile = null;
       if (savedProfile) {
         try { profile = JSON.parse(savedProfile); setUserProfile(profile); } catch {}
       }
-      if (!onboardingDone) {
+      if (savedRole === 'admin') {
+        // מנהל-על — אין onboarding ואין ניווט חכם של משמרות
+      } else if (!onboardingDone) {
         setNeedsOnboarding(true);
       } else {
         const params = new URLSearchParams(window.location.search);
@@ -225,7 +229,7 @@ const AppContent: React.FC = () => {
 
   const handleLogin = (newToken: string, role: string, profile: any, isNew?: boolean) => {
     setToken(newToken);
-    setUserRole(role as 'restaurant' | 'worker');
+    setUserRole(role as UserRole);
     setPendingProfile(profile);
     localStorage.setItem('km_token', newToken);
     localStorage.setItem('km_role', role);
@@ -238,8 +242,10 @@ const AppContent: React.FC = () => {
         localStorage.setItem('km_profile', JSON.stringify(profile));
       }
       localStorage.setItem('km_onboarding', 'done');
-      // נווט חכם גם אחרי login
-      resolveScreen(role, profile, navToWorker, navToRestaurant, selectWorkerJob, startShift);
+      // נווט חכם גם אחרי login (מנהל-על אין לו משמרות — נכנס ישר לדאשבורד)
+      if (role === 'worker' || role === 'restaurant') {
+        resolveScreen(role, profile, navToWorker, navToRestaurant, selectWorkerJob, startShift);
+      }
     }
   };
 
@@ -291,6 +297,7 @@ const AppContent: React.FC = () => {
             }>
               {userRole === 'restaurant' && <RestaurantApp />}
               {userRole === 'worker'     && <WorkerApp />}
+              {userRole === 'admin'      && <AdminApp />}
             </Suspense>
           </ReloadOnChunkError>
         )}

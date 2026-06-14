@@ -299,6 +299,18 @@ export const api = {
   // רשימת השיחות שלי (וואטסאפ-סטייל)
   getThreads: (role: 'worker' | 'restaurant', profileId: number) =>
     fetch(`${BASE}/messages/threads/${role}/${profileId}`, { headers: headers(), cache: 'no-store' }).then(handleResponse),
+
+  // ========== ADMIN (מנהל-על) ==========
+  adminOverview: () =>
+    fetch(`${BASE}/admin/overview`, { headers: headers(), cache: 'no-store' }).then(handleResponse),
+  adminWorkers: () =>
+    fetch(`${BASE}/admin/workers`, { headers: headers(), cache: 'no-store' }).then(handleResponse),
+  adminRestaurants: () =>
+    fetch(`${BASE}/admin/restaurants`, { headers: headers(), cache: 'no-store' }).then(handleResponse),
+  adminRatings: () =>
+    fetch(`${BASE}/admin/ratings`, { headers: headers(), cache: 'no-store' }).then(handleResponse),
+  adminJobs: () =>
+    fetch(`${BASE}/admin/jobs`, { headers: headers(), cache: 'no-store' }).then(handleResponse),
 };
 
 // ── מעקב "נקרא" לצ'אטים (מקומי) ──
