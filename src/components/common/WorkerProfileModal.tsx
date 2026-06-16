@@ -39,14 +39,20 @@ export const WorkerProfileModal: React.FC<Props> = ({ workerId, initial, onClose
   const cvName = worker?.CvName || 'קורות חיים';
   const lvl = getLevel(worker?.Level || levelFromShifts(completed).key);
 
+  // פתיחת קו"ח בבטחה — מאמת data-URI מורשה בלבד ומרנדר דרך .src (לא הזרקת HTML),
+  // כדי שערך זדוני ב-CvData לא יוכל להריץ סקריפט ולגנוב את הטוקן
+  const CV_RE = /^data:(application\/pdf|image\/(png|jpe?g|webp|gif));base64,[A-Za-z0-9+/=]+$/;
   const openCv = () => {
-    if (!cvData) return;
+    if (!cvData || !CV_RE.test(cvData)) { alert('קובץ קורות החיים אינו תקין'); return; }
     const w = window.open('');
-    if (w) w.document.write(
-      cvData.startsWith('data:application/pdf')
-        ? `<iframe src="${cvData}" style="width:100%;height:100vh;border:0"></iframe>`
-        : `<img src="${cvData}" style="max-width:100%"/>`
-    );
+    if (!w) return;
+    const isPdf = cvData.startsWith('data:application/pdf');
+    const el = w.document.createElement(isPdf ? 'iframe' : 'img');
+    el.setAttribute('src', cvData);
+    el.style.cssText = isPdf ? 'width:100%;height:100vh;border:0' : 'max-width:100%';
+    const body = w.document.body || w.document.documentElement;
+    body.style.margin = '0';
+    body.appendChild(el);
   };
 
   return (
