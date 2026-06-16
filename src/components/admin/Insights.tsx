@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   Sparkles, TrendingUp, TrendingDown, Percent, Target, Repeat, Activity,
-  GraduationCap, MapPin, Filter, Wallet, CheckCircle2, AlertTriangle, Rocket,
+  GraduationCap, MapPin, Filter, Wallet, CheckCircle2, AlertTriangle, Rocket, Store, ChefHat,
 } from 'lucide-react';
 import { api } from '../../api';
 import { ils, num } from './format';
@@ -128,12 +128,29 @@ function buildAdvisor(m: any): Advisor {
   return { status, headline, strengths: strengths.slice(0, 4), risks: risks.slice(0, 4), actions: actions.slice(0, 5), focus };
 }
 
+// "לפני X" יחסי
+const agoLabel = (s: number) => {
+  if (s < 60) return 'עכשיו';
+  const m = Math.floor(s / 60); if (m < 60) return `לפני ${m} דק׳`;
+  const h = Math.floor(m / 60); if (h < 24) return `לפני ${h} שע׳`;
+  const d = Math.floor(h / 24); return `לפני ${d} ${d === 1 ? 'יום' : 'ימים'}`;
+};
+
 export const AdminInsights: React.FC = () => {
   const [m, setM] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [presence, setPresence] = useState<any>(null);
 
   useEffect(() => {
     api.adminInsights().then((d: any) => setM(d)).catch(() => {}).finally(() => setLoading(false));
+  }, []);
+
+  // נוכחות — רענון כל 25 שניות (תחושת "חי")
+  useEffect(() => {
+    const load = () => api.adminPresence().then((d: any) => setPresence(d)).catch(() => {});
+    load();
+    const iv = setInterval(load, 25000);
+    return () => clearInterval(iv);
   }, []);
 
   if (loading) return (
@@ -209,6 +226,54 @@ export const AdminInsights: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* ===== נוכחות — מחוברים / התחברו לאחרונה ===== */}
+      {presence && (() => {
+        const showOnline = (presence.online || []).length > 0;
+        const list = showOnline ? presence.online : (presence.recent || []);
+        return (
+          <Card>
+            <h3 className="text-white font-black text-sm mb-3 flex items-center gap-2">
+              <span className="relative flex h-2.5 w-2.5">
+                {showOnline && <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-60" style={{ background: '#34d399' }} />}
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5" style={{ background: showOnline ? '#34d399' : 'rgba(255,255,255,0.3)' }} />
+              </span>
+              {showOnline ? `מחוברים עכשיו (${presence.online.length})` : 'התחברו לאחרונה'}
+            </h3>
+            {list.length === 0 ? (
+              <p className="text-xs text-center py-4" style={{ color: 'rgba(255,255,255,0.3)' }}>אין נתוני התחברות עדיין</p>
+            ) : (
+              <div className="space-y-2.5">
+                {list.map((u: any) => {
+                  const isRest = u.Role === 'restaurant';
+                  return (
+                    <div key={u.Id} className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isRest ? 'rgba(232,160,32,0.15)' : 'rgba(167,139,250,0.15)' }}>
+                          {isRest ? <Store size={15} style={{ color: '#e8a020' }} /> : <ChefHat size={15} style={{ color: '#a78bfa' }} />}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-white text-sm font-bold truncate">{u.Name || '—'}</div>
+                          <div className="text-[11px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                            {isRest ? 'מסעדה' : 'עובד'}{u.City ? ` · ${u.City}` : ''}
+                          </div>
+                        </div>
+                      </div>
+                      {showOnline ? (
+                        <span className="flex items-center gap-1 text-[11px] font-bold flex-shrink-0" style={{ color: '#34d399' }}>
+                          <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#34d399' }} /> מחובר
+                        </span>
+                      ) : (
+                        <span className="text-[11px] flex-shrink-0" style={{ color: 'rgba(255,255,255,0.4)' }}>{agoLabel(u.SecondsAgo)}</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </Card>
+        );
+      })()}
 
       {/* ===== מטריקות מפתח ===== */}
       <SectionTitle>מטריקות מפתח</SectionTitle>

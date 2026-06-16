@@ -294,6 +294,8 @@ export const api = {
     fetch(`${BASE}/admin/jobs`, { headers: headers(), cache: 'no-store' }).then(handleResponse),
   adminInsights: () =>
     fetch(`${BASE}/admin/insights`, { headers: headers(), cache: 'no-store' }).then(handleResponse),
+  adminPresence: () =>
+    fetch(`${BASE}/admin/presence`, { headers: headers(), cache: 'no-store' }).then(handleResponse),
   adminAiAnalysis: () =>
     fetch(`${BASE}/admin/ai-analysis`, { method: 'POST', headers: headers() }).then(handleResponse),
 };
