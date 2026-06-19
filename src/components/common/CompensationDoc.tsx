@@ -69,7 +69,7 @@ export const CompensationDoc: React.FC<Props> = ({ job, viewer, workerName, rest
       </style></head><body>
       <div class="top">
         <div>
-          <div class="logo">Kitchen<span class="gold">Match</span></div>
+          <div class="logo">Staff<span class="gold">ly</span></div>
           <div class="logo-sub">פלטפורמת שיבוץ כוח אדם</div>
         </div>
         <div>
@@ -97,7 +97,7 @@ export const CompensationDoc: React.FC<Props> = ({ job, viewer, workerName, rest
 
       <div class="note">
         ✅ סכום זה הועבר <b>ישירות בין הצדדים</b> כפיצוי על ביטול מאוחר.<br/>
-        <b>KitchenMatch לא גבתה עמלה</b> על תשלום זה.
+        <b>Staffly לא גבתה עמלה</b> על תשלום זה.
       </div>
 
       <div class="legal">
@@ -105,7 +105,7 @@ export const CompensationDoc: React.FC<Props> = ({ job, viewer, workerName, rest
       </div>
 
       <div class="footer">
-        KitchenMatch Platform | kitchenmatch.vercel.app<br/>
+        Staffly Platform | kitchenmatch.vercel.app<br/>
         אסמכתא זו הופקה אוטומטית עם ביצוע הפיצוי.
       </div>
       </body></html>`);
@@ -168,7 +168,7 @@ export const CompensationDoc: React.FC<Props> = ({ job, viewer, workerName, rest
 
             <div className="rounded-xl p-3 text-xs leading-relaxed"
               style={{ background:'#f0fdf4', border:'1px solid #86efac', color:'#166534' }}>
-              ✅ הסכום הועבר <strong>ישירות בין הצדדים</strong> — KitchenMatch לא גבתה עמלה.
+              ✅ הסכום הועבר <strong>ישירות בין הצדדים</strong> — Staffly לא גבתה עמלה.
             </div>
 
             <div className="rounded-xl p-3 text-xs leading-relaxed"

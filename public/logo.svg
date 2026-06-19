@@ -8,6 +8,7 @@
     </linearGradient>
   </defs>
   <rect width="1024" height="1024" rx="224" fill="url(#sfNavy)"/>
+  <!-- team -->
   <g fill="url(#sfGold)">
     <circle cx="512" cy="320" r="58"/>
     <circle cx="408" cy="356" r="44"/>
@@ -18,6 +19,7 @@
     <path d="M338 476 Q408 412 478 476"/>
     <path d="M546 476 Q616 412 686 476"/>
   </g>
+  <!-- cloche (serving dome) -->
   <g fill="url(#sfGold)">
     <rect x="490" y="514" width="44" height="18" rx="9"/>
     <rect x="505" y="528" width="14" height="28" rx="4"/>

@@ -60,7 +60,7 @@ const ShiftSummaryDoc = ({ shift, rate, onClose }: { shift: any; rate: number; o
                 border-top:1px solid #e5e7eb;padding-top:10px;line-height:1.7}
         @media print{body{margin:0}}
       </style></head><body>
-      <div class="logo">Kitchen<span class="gold">Match</span></div>
+      <div class="logo">Staff<span class="gold">ly</span></div>
       <div class="doc-title">סיכום משמרת</div>
       <div class="doc-meta">${docId} · ${dateStr}</div>
 
@@ -80,14 +80,14 @@ const ShiftSummaryDoc = ({ shift, rate, onClose }: { shift: any; rate: number; o
       <h2>פירוט תשלום</h2>
       <div class="row"><span>סכום משמרת (ברוטו)</span><span>₪${gross}</span></div>
       <div class="row commission-row">
-        <span>עמלת KitchenMatch לעובד (${ratePct}%)</span><span>-₪${commission}</span>
+        <span>עמלת Staffly לעובד (${ratePct}%)</span><span>-₪${commission}</span>
       </div>
       <div class="row net-row"><span>נטו לקבלה</span><span>₪${net}</span></div>
 
       <div class="footer">
-        KitchenMatch — פלטפורמת שיבוץ כוח אדם למטבחים<br/>
+        Staffly — פלטפורמת שיבוץ כוח אדם למטבחים<br/>
         kitchenmatch.vercel.app<br/><br/>
-        KitchenMatch אינה המעסיקה. העובד הינו עוסק עצמאי.<br/>
+        Staffly אינה המעסיקה. העובד הינו עוסק עצמאי.<br/>
         יש להוציא חשבונית עצמאית למסעדה על מלוא סכום המשמרת (₪${gross}).
       </div>
       </body></html>`);
@@ -109,7 +109,7 @@ const ShiftSummaryDoc = ({ shift, rate, onClose }: { shift: any; rate: number; o
         <div className="flex-shrink-0 p-4 text-white" style={{ background:'linear-gradient(135deg,#0d1420,#1a2744)' }}>
           <div className="flex items-center justify-between mb-2">
             <div>
-              <div className="font-black text-sm">Kitchen<span style={{ color:'#e8a020' }}>Match</span> · סיכום משמרת</div>
+              <div className="font-black text-sm">Staff<span style={{ color:'#e8a020' }}>ly</span> · סיכום משמרת</div>
               <div className="text-gray-400 text-xs mt-0.5">{docId}</div>
             </div>
             <button onClick={onClose} className="w-8 h-8 rounded-xl flex items-center justify-center bg-white/10">
@@ -147,7 +147,7 @@ const ShiftSummaryDoc = ({ shift, rate, onClose }: { shift: any; rate: number; o
               <span className="font-semibold text-gray-900">₪{gross}</span>
             </div>
             <div className="flex justify-between py-2.5 border-b border-gray-50 text-sm">
-              <span className="text-gray-400">עמלת KitchenMatch ({ratePct}%)</span>
+              <span className="text-gray-400">עמלת Staffly ({ratePct}%)</span>
               <span className="font-semibold text-red-500">-₪{commission}</span>
             </div>
             <div className="flex justify-between pt-3 pb-1">
@@ -210,7 +210,7 @@ const WorkerInvoiceDoc = ({ shift, worker, onClose }: { shift: any; worker: any;
       </style></head><body>
       <div class="top">
         <div>
-          <div class="logo">Kitchen<span class="gold">Match</span></div>
+          <div class="logo">Staff<span class="gold">ly</span></div>
           <div class="logo-sub">פלטפורמת שיבוץ כוח אדם</div>
         </div>
         <div>
@@ -250,14 +250,14 @@ const WorkerInvoiceDoc = ({ shift, worker, onClose }: { shift: any; worker: any;
       </div>
 
       <div class="platform-note">
-        ✅ שולם באמצעות פלטפורמת KitchenMatch<br/>
-        <b>KitchenMatch אינה צד לחוזה העבודה ואינה המעסיקה.</b><br/>
+        ✅ שולם באמצעות פלטפורמת Staffly<br/>
+        <b>Staffly אינה צד לחוזה העבודה ואינה המעסיקה.</b><br/>
         הפלטפורמה משמשת כמתווך בין העוסק העצמאי לבין המסעדה בלבד.
       </div>
 
       <div class="footer">
-        KitchenMatch Platform | kitchenmatch.vercel.app<br/>
-        חשבונית זו הופקה בסיוע פלטפורמת KitchenMatch.<br/>
+        Staffly Platform | kitchenmatch.vercel.app<br/>
+        חשבונית זו הופקה בסיוע פלטפורמת Staffly.<br/>
         האחריות על הגשת החשבונית לרשויות המס חלה על העוסק בלבד.
       </div>
       </body></html>`);

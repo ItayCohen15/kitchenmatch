@@ -8,7 +8,7 @@ import { CompensationDoc } from '../common/CompensationDoc';
 import { restaurantRate } from '../../utils/levels';
 
 /* ═══════════════════════════════════════════════════════════
-   מסמך 3 – קבלת עמלת תיווך (KitchenMatch → מסעדה)
+   מסמך 3 – קבלת עמלת תיווך (Staffly → מסעדה)
    הסכום: 6.5% מסכום המשמרת הבסיסי
 ═══════════════════════════════════════════════════════════ */
 const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaurant: any; onClose: () => void }) => {
@@ -58,7 +58,7 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
       </style></head><body>
       <div class="top">
         <div>
-          <div class="logo">Kitchen<span class="gold">Match</span></div>
+          <div class="logo">Staff<span class="gold">ly</span></div>
           <div class="logo-sub">פלטפורמת שיבוץ כוח אדם</div>
         </div>
         <div>
@@ -70,7 +70,7 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
 
       <div class="section">
         <div class="sec-label">🏢 ספק שירות התיווך</div>
-        <div class="field"><b>שם:</b> KitchenMatch Platform</div>
+        <div class="field"><b>שם:</b> Staffly Platform</div>
         <div class="field"><b>תיאור:</b> פלטפורמת שיבוץ כוח אדם למטבחים</div>
         <div class="field"><b>אתר:</b> kitchenmatch.vercel.app</div>
       </div>
@@ -107,13 +107,13 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
       <div class="legal">
         ⚖️ <b>הבהרה משפטית:</b><br/>
         קבלה זו מהווה אסמכתא לעמלת תיווך בלבד.<br/>
-        <b>KitchenMatch אינה המעסיקה של העובד.</b><br/>
+        <b>Staffly אינה המעסיקה של העובד.</b><br/>
         חוזה העבודה הינו בין המסעדה לעובד העצמאי באופן ישיר.<br/>
         הפלטפורמה משמשת כמתווך מקצועי בלבד.
       </div>
 
       <div class="footer">
-        KitchenMatch Platform | kitchenmatch.vercel.app<br/>
+        Staffly Platform | kitchenmatch.vercel.app<br/>
         קבלה זו הופקה אוטומטית עם סיום המשמרת.<br/>
         לשאלות: support@kitchenmatch.co.il
       </div>
@@ -136,7 +136,7 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
           <div className="flex items-center justify-between mb-2">
             <div>
               <div className="font-black text-sm">קבלת עמלת תיווך</div>
-              <div className="text-gray-400 text-xs mt-0.5">KitchenMatch · {receiptNum}</div>
+              <div className="text-gray-400 text-xs mt-0.5">Staffly · {receiptNum}</div>
             </div>
             <button onClick={onClose} className="w-8 h-8 rounded-xl flex items-center justify-center bg-white/10">
               <X size={16} />
@@ -152,7 +152,7 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
         <div className="flex-1 overflow-y-auto" style={{ WebkitOverflowScrolling:'touch' as any }}>
           <div className="mx-4 mt-3 p-3 rounded-xl text-xs leading-relaxed"
             style={{ background:'#fef9ec', border:'1px solid #fcd34d', color:'#92400e' }}>
-            ⚖️ <strong>קבלה זו לעמלת תיווך בלבד.</strong> KitchenMatch אינה המעסיקה. חוזה העבודה הוא בינך לבין העובד.
+            ⚖️ <strong>קבלה זו לעמלת תיווך בלבד.</strong> Staffly אינה המעסיקה. חוזה העבודה הוא בינך לבין העובד.
           </div>
 
           <div className="p-4 space-y-3">
@@ -181,7 +181,7 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
                 <span className="font-semibold text-gray-900">{commPct}%</span>
               </div>
               <div className="flex justify-between py-2.5 border-b border-gray-50 text-sm">
-                <span className="text-gray-400">עמלת KitchenMatch</span>
+                <span className="text-gray-400">עמלת Staffly</span>
                 <span className="font-semibold text-red-500">₪{commStr}</span>
               </div>
               <div className="flex justify-between pt-3 pb-1">
@@ -342,11 +342,11 @@ export const RestaurantWallet: React.FC = () => {
             <span className="font-semibold text-gray-700">סכום בסיסי</span>
           </div>
           <div className="flex justify-between">
-            <span>עמלת KitchenMatch (ממסעדה)</span>
+            <span>עמלת Staffly (ממסעדה)</span>
             <span className="font-semibold text-amber-600">+ 6.5%</span>
           </div>
           <div className="flex justify-between">
-            <span>עמלת KitchenMatch (מעובד)</span>
+            <span>עמלת Staffly (מעובד)</span>
             <span className="font-semibold text-gray-400">6.5% (נגבה מהעובד)</span>
           </div>
           <div className="h-px bg-gray-100 my-1"/>

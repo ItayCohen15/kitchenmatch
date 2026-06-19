@@ -36,11 +36,11 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
         {/* Logo */}
         <div className="flex items-center gap-3 mb-8 relative" style={{ marginTop: 'env(safe-area-inset-top)' }}>
           <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-lg">
-            <img src="/logo.png" alt="KitchenMatch" className="w-full h-full object-cover" />
+            <img src="/logo.svg" alt="Staffly" className="w-full h-full object-cover" />
           </div>
           <div className="font-black text-xl">
-            <span className="text-white">Kitchen</span>
-            <span style={{ color: '#e8a020' }}>Match</span>
+            <span className="text-white">Staff</span>
+            <span style={{ color: '#e8a020' }}>ly</span>
           </div>
         </div>
 

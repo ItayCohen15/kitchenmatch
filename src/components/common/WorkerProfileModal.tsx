@@ -164,7 +164,7 @@ export const WorkerProfileModal: React.FC<Props> = ({ workerId, initial, onClose
             )}
 
             <div className="flex items-center gap-1.5 text-green-600 text-xs justify-center">
-              <Shield size={12} /> עובד מאומת ב-KitchenMatch
+              <Shield size={12} /> עובד מאומת ב-Staffly
             </div>
           </div>
         </div>

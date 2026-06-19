@@ -259,7 +259,7 @@ export const AdminDashboard: React.FC = () => {
 
       <div className="flex items-center justify-center gap-1.5 pt-1 pb-3">
         <ShieldCheck size={12} style={{ color: 'rgba(255,255,255,0.25)' }} />
-        <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.25)' }}>מתעדכן אוטומטית · KitchenMatch ניהול</span>
+        <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.25)' }}>מתעדכן אוטומטית · Staffly ניהול</span>
       </div>
     </div>
   );

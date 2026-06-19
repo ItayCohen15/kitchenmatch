@@ -78,10 +78,10 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="w-24 h-24 rounded-3xl overflow-hidden mx-auto mb-4" style={{ boxShadow: '0 8px 32px rgba(232,160,32,0.3)' }}>
-            <img src="/logo.png" alt="KitchenMatch" className="w-full h-full object-cover" />
+            <img src="/logo.svg" alt="Staffly" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-3xl font-black">
-            <span className="text-white">Kitchen</span><span style={{ color: '#e8a020' }}>Match</span>
+            <span className="text-white">Staff</span><span style={{ color: '#e8a020' }}>ly</span>
           </h1>
           <p className="text-sm mt-1" style={{ color: '#8899bb' }}>המשמרת הבאה שלך מתחילה כאן</p>
         </div>

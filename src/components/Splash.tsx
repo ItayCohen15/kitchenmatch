@@ -19,12 +19,12 @@ export const Splash: React.FC<{ onDone: () => void }> = ({ onDone }) => {
           className="w-32 h-32 rounded-3xl overflow-hidden shadow-2xl"
           style={{ animation: 'splashPop 0.6s cubic-bezier(0.34,1.56,0.64,1)', boxShadow: '0 20px 60px rgba(232,160,32,0.35)' }}
         >
-          <img src="/logo.png" alt="KitchenMatch" className="w-full h-full object-cover" />
+          <img src="/logo.svg" alt="Staffly" className="w-full h-full object-cover" />
         </div>
         <div className="text-center">
           <div className="font-black text-3xl tracking-tight">
-            <span className="text-white">Kitchen</span>
-            <span style={{ color: '#e8a020' }}>Match</span>
+            <span className="text-white">Staff</span>
+            <span style={{ color: '#e8a020' }}>ly</span>
           </div>
           <div className="text-sm mt-1" style={{ color: '#8899bb' }}>המשמרת הבאה שלך מתחילה כאן</div>
         </div>

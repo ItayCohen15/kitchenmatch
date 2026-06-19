@@ -89,7 +89,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
         <div className="text-center mb-6 pt-4">
           <div className="w-16 h-16 rounded-2xl overflow-hidden mx-auto mb-3 shadow-lg"
             style={{ boxShadow: '0 4px 20px rgba(232,160,32,0.3)' }}>
-            <img src="/logo.png" alt="KitchenMatch" className="w-full h-full object-cover" />
+            <img src="/logo.svg" alt="Staffly" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-2xl font-black text-white">ברוך הבא!</h1>
           <p className="text-sm mt-1" style={{ color: '#8899bb' }}>בוא נגדיר את הפרופיל שלך</p>
