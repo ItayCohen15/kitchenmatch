@@ -83,7 +83,7 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
           <h1 className="text-3xl font-black">
             <span className="text-white">Staff</span><span style={{ color: '#e8a020' }}>ly</span>
           </h1>
-          <p className="text-sm mt-1" style={{ color: '#8899bb' }}>המשמרת הבאה שלך מתחילה כאן</p>
+          <p className="text-sm mt-1" dir="ltr" style={{ color: '#8899bb' }}>Find your shift. Fill your team.</p>
         </div>
 
         {/* Card */}

@@ -46,10 +46,10 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
 
         {/* Headline */}
         <div className="relative mb-6">
-          <h1 className="text-3xl font-black text-white leading-tight mb-3">
-            המשמרת הבאה שלך
+          <h1 className="text-3xl font-black text-white leading-tight mb-3" dir="ltr">
+            Find your shift.
             <br />
-            <span style={{ color: '#e8a020' }}>מתחילה כאן</span>
+            <span style={{ color: '#e8a020' }}>Fill your team.</span>
           </h1>
           <p className="text-gray-400 text-sm leading-relaxed">
             הפלטפורמה שמחברת מסעדות עם עובדי מטבח מקצועיים — בזמן אמת, בלחיצת כפתור.

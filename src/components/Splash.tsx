@@ -26,7 +26,7 @@ export const Splash: React.FC<{ onDone: () => void }> = ({ onDone }) => {
             <span className="text-white">Staff</span>
             <span style={{ color: '#e8a020' }}>ly</span>
           </div>
-          <div className="text-sm mt-1" style={{ color: '#8899bb' }}>המשמרת הבאה שלך מתחילה כאן</div>
+          <div className="text-sm mt-1" dir="ltr" style={{ color: '#8899bb' }}>Find your shift. Fill your team.</div>
         </div>
         <div className="flex gap-1.5 mt-2">
           {[0,1,2].map(i => (
