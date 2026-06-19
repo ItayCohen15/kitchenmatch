@@ -29,7 +29,7 @@ export const AdminJobs: React.FC = () => {
   const filtered = list.filter(j => matchFilter(j, filter));
 
   const exportJobs = () => {
-    downloadCsv('kitchenmatch-shifts.csv',
+    downloadCsv('staffly-shifts.csv',
       ['תאריך', 'תפקיד', 'סטטוס', 'סוג', 'מסעדה', 'עובד', 'תעריף לשעה', 'שכר', 'עמלה', 'חירום'],
       filtered.map((j: any) => [
         dateShort(j.StartTime || j.CreatedAt),

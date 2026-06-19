@@ -105,7 +105,7 @@ export const CompensationDoc: React.FC<Props> = ({ job, viewer, workerName, rest
       </div>
 
       <div class="footer">
-        Staffly Platform | kitchenmatch.vercel.app<br/>
+        Staffly Platform | getstaffly.vercel.app<br/>
         אסמכתא זו הופקה אוטומטית עם ביצוע הפיצוי.
       </div>
       </body></html>`);

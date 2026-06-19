@@ -72,7 +72,7 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
         <div class="sec-label">🏢 ספק שירות התיווך</div>
         <div class="field"><b>שם:</b> Staffly Platform</div>
         <div class="field"><b>תיאור:</b> פלטפורמת שיבוץ כוח אדם למטבחים</div>
-        <div class="field"><b>אתר:</b> kitchenmatch.vercel.app</div>
+        <div class="field"><b>אתר:</b> getstaffly.vercel.app</div>
       </div>
 
       <div class="section" style="border-right-color:#10b981">
@@ -113,9 +113,9 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
       </div>
 
       <div class="footer">
-        Staffly Platform | kitchenmatch.vercel.app<br/>
+        Staffly Platform | getstaffly.vercel.app<br/>
         קבלה זו הופקה אוטומטית עם סיום המשמרת.<br/>
-        לשאלות: support@kitchenmatch.co.il
+        לשאלות: support@staffly.com
       </div>
       </body></html>`);
   };

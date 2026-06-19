@@ -36,13 +36,13 @@ export const AdminUsers: React.FC = () => {
 
   const exportCurrent = () => {
     if (tab === 'workers') {
-      downloadCsv('kitchenmatch-workers.csv',
+      downloadCsv('staffly-workers.csv',
         ['שם', 'אימייל', 'טלפון', 'עיר', 'תפקיד', 'רמה', 'דירוג', 'מס׳ דירוגים', 'משמרות', 'אמינות %', 'תעריף', 'הכנסות', 'מאומת', 'הצטרף'],
         filtered.map((w: any) => [w.Name, w.Email, w.Phone, w.City, ROLE_LABELS[w.Role] || w.Role, LEVEL_LABELS[w.Level] || w.Level,
           Number(w.Rating || 0).toFixed(1), w.RatingCount, w.CompletedShifts, w.ReliabilityScore, w.HourlyRate,
           Math.round(Number(w.TotalEarnings || 0)), w.IsEmailVerified ? 'כן' : 'לא', dateShort(w.JoinedAt)]));
     } else {
-      downloadCsv('kitchenmatch-restaurants.csv',
+      downloadCsv('staffly-restaurants.csv',
         ['שם', 'אימייל', 'טלפון', 'עיר', 'סוג מטבח', 'דירוג', 'מס׳ דירוגים', 'משמרות שהושלמו', 'סה״כ משמרות', 'הוצאה', 'עמלות', 'ארנק', 'מאומת', 'הצטרף'],
         filtered.map((r: any) => [r.Name, r.Email, r.Phone, r.City, r.CuisineType, Number(r.Rating || 0).toFixed(1), r.RatingCount,
           r.CompletedJobs, r.TotalJobs, Math.round(Number(r.TotalSpend || 0)), Math.round(Number(r.Commission || 0)),

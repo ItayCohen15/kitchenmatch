@@ -86,7 +86,7 @@ const ShiftSummaryDoc = ({ shift, rate, onClose }: { shift: any; rate: number; o
 
       <div class="footer">
         Staffly — פלטפורמת שיבוץ כוח אדם למטבחים<br/>
-        kitchenmatch.vercel.app<br/><br/>
+        getstaffly.vercel.app<br/><br/>
         Staffly אינה המעסיקה. העובד הינו עוסק עצמאי.<br/>
         יש להוציא חשבונית עצמאית למסעדה על מלוא סכום המשמרת (₪${gross}).
       </div>
@@ -256,7 +256,7 @@ const WorkerInvoiceDoc = ({ shift, worker, onClose }: { shift: any; worker: any;
       </div>
 
       <div class="footer">
-        Staffly Platform | kitchenmatch.vercel.app<br/>
+        Staffly Platform | getstaffly.vercel.app<br/>
         חשבונית זו הופקה בסיוע פלטפורמת Staffly.<br/>
         האחריות על הגשת החשבונית לרשויות המס חלה על העוסק בלבד.
       </div>
