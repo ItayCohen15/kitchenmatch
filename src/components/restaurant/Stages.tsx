@@ -4,7 +4,6 @@ import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { WORKER_ROLES } from '../../utils/roles';
 import { ROLE_LABELS } from '../../data/mockData';
-import { PARTNERSHIP_COMMISSION, STAGE_RESTAURANT_COMMISSION } from '../../utils/levels';
 import { ChatModal } from '../common/ChatModal';
 
 type Tab = 'mine' | 'post' | 'partners';
@@ -327,7 +326,7 @@ export const RestaurantStages: React.FC = () => {
       {tab === 'partners' && (
         <div className="space-y-3">
           <div className="bg-amber-50 border border-amber-100 rounded-2xl p-3 text-center">
-            <span className="text-amber-700 text-sm font-semibold">העובדים הקבועים שלך — עמלה {(PARTNERSHIP_COMMISSION * 100).toFixed(1)}% בלבד לכל צד 🎉</span>
+            <span className="text-amber-700 text-sm font-semibold">הצוות שגייסת דרך Staffly — הזמן אותם שוב בקלות 🎉</span>
           </div>
           {partners.length === 0 && (
             <div className="text-center py-10 bg-white rounded-2xl card-shadow">
@@ -372,9 +371,9 @@ export const RestaurantStages: React.FC = () => {
         <div className="fixed inset-0 z-[70] flex items-center justify-center p-6" style={{ background: 'rgba(13,20,32,0.65)', backdropFilter: 'blur(3px)' }}>
           <div className="bg-white rounded-3xl p-6 w-full max-w-sm text-center space-y-3 shadow-2xl">
             <div className="text-4xl">⭐</div>
-            <h3 className="font-black text-gray-900 text-lg">לשמור את {keepJob.WorkerName || 'העובד'} כקבוע?</h3>
+            <h3 className="font-black text-gray-900 text-lg">לגייס את {keepJob.WorkerName || 'העובד'} לצוות?</h3>
             <p className="text-gray-500 text-sm">
-              ייגבו <b>₪300</b> (עמלת מקשר חד-פעמית). מעכשיו תוכלו לעבוד יחד דרך האפליקציה בעמלה של <b>{(PARTNERSHIP_COMMISSION * 100).toFixed(1)}%</b> בלבד לכל צד.
+              ייגבו <b>₪300</b> (דמי השמה חד-פעמיים). מכאן ההעסקה ישירה מולך כמעסיק — Staffly אינה צד ביחסי העבודה.
             </p>
             <div className="flex gap-2 pt-1">
               <button onClick={() => setKeepJob(null)} className="flex-1 bg-gray-100 text-gray-600 rounded-2xl py-3 font-bold">ביטול</button>
@@ -476,7 +475,7 @@ const DirectShiftModal: React.FC<{ partner: any; restaurantId: number; onClose: 
           <label className="text-xs font-semibold text-gray-500 mb-1 block">📋 הנחיות לעובד (אופציונלי)</label>
           <input type="text" value={duties} onChange={e => setDuties(e.target.value)} placeholder="מה צריך לעשות במשמרת" className={inputCls} />
         </div>
-        <p className="text-amber-700 text-xs text-center bg-amber-50 rounded-xl py-2">עמלה מופחתת {(PARTNERSHIP_COMMISSION * 100).toFixed(1)}% — כי {partner.Name} עובד קבוע שלך 🎉</p>
+        <p className="text-amber-700 text-xs text-center bg-amber-50 rounded-xl py-2">{partner.Name} בצוות שלך — הזמנה מהירה למשמרת בודדת 🎉</p>
         {err && <div className="bg-red-50 text-red-600 text-sm rounded-xl px-4 py-2 text-center">{err}</div>}
         <button onClick={send} disabled={sending}
           className="w-full text-white rounded-2xl py-4 font-bold disabled:opacity-40"

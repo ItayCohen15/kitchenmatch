@@ -15,6 +15,7 @@ import { RestaurantProfile } from './Profile';
 import { RestaurantStages } from './Stages';
 import { StageSchedule } from './StageSchedule';
 import { StageAddShift } from './StageAddShift';
+import { TalentBrowse } from './TalentBrowse';
 import { ChatsScreen } from '../common/ChatsScreen';
 import type { RestaurantScreen } from '../../types';
 
@@ -29,6 +30,7 @@ const SCREEN_TITLES: Record<RestaurantScreen, string> = {
   analytics:       'ניתוח',
   profile:         'הפרופיל שלי',
   stages:          "סטאז'רים",
+  talent:          'טאלנט',
   chats:           "הצ'אטים שלי",
   stage_schedule:  "לוז הסטאז'",
   stage_add_shift: 'קביעת משמרת',
@@ -63,6 +65,7 @@ export const RestaurantApp: React.FC = () => {
     create_job:      'home',
     worker_matching: 'home',
     live_tracking:   'home',
+    talent:          'home',
     chats:           'home',
     stage_schedule:  'stages',
     stage_add_shift: 'stage_schedule',
@@ -85,6 +88,7 @@ export const RestaurantApp: React.FC = () => {
       case 'analytics':       return <RestaurantAnalytics />;
       case 'profile':         return <RestaurantProfile />;
       case 'stages':          return <RestaurantStages />;
+      case 'talent':          return <TalentBrowse />;
       case 'chats':           return <ChatsScreen role="restaurant" />;
       case 'stage_schedule':  return <StageSchedule />;
       case 'stage_add_shift': return <StageAddShift />;

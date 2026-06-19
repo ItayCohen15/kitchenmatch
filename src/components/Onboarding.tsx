@@ -22,6 +22,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
   const [yearsExp, setYearsExp] = useState('1');
   const [isTrainee, setIsTrainee] = useState(false);
   const [courseType, setCourseType] = useState('');
+  const [schoolName, setSchoolName] = useState('');
   const [bio, setBio] = useState('');
   const [cuisineType, setCuisineType] = useState('');
   const [street, setStreet] = useState('');
@@ -57,6 +58,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
           phone,
           isTrainee,
           courseType: isTrainee ? (courseType || 'אחר') : null,
+          schoolName: isTrainee ? schoolName : null,
         });
         // השתמש בפרופיל מהשרת אם קיים
         updatedProfile = res?.profile || {
@@ -234,18 +236,27 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                       </div>
                     </button>
                     {isTrainee && (
-                      <div className="grid grid-cols-3 gap-2 mt-2">
-                        {['בישול', 'ברמנים', 'אחר'].map(c => (
-                          <button
-                            key={c}
-                            type="button"
-                            onClick={() => setCourseType(c)}
-                            className={`py-2 rounded-xl text-sm font-semibold border transition-colors ${courseType === c ? 'bg-blue-500 text-white border-blue-500' : 'bg-white text-gray-600 border-gray-200'}`}
-                          >
-                            {c}
-                          </button>
-                        ))}
-                      </div>
+                      <>
+                        <div className="grid grid-cols-3 gap-2 mt-2">
+                          {['בישול', 'ברמנים', 'אחר'].map(c => (
+                            <button
+                              key={c}
+                              type="button"
+                              onClick={() => setCourseType(c)}
+                              className={`py-2 rounded-xl text-sm font-semibold border transition-colors ${courseType === c ? 'bg-blue-500 text-white border-blue-500' : 'bg-white text-gray-600 border-gray-200'}`}
+                            >
+                              {c}
+                            </button>
+                          ))}
+                        </div>
+                        <input
+                          type="text"
+                          value={schoolName}
+                          onChange={e => setSchoolName(e.target.value)}
+                          placeholder="שם בית הספר / המכללה (לתוכנית הכניסה למקצוע)"
+                          className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-right focus:border-amber-400 outline-none text-sm mt-2"
+                        />
+                      </>
                     )}
                   </div>
                 </>

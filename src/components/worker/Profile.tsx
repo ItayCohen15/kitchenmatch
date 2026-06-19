@@ -6,6 +6,7 @@ import { ROLE_LABELS } from '../../data/mockData';
 import { levelFromShifts, nextLevelProgress } from '../../utils/levels';
 import { LevelBenefits } from '../common/LevelBenefits';
 import { WorkerGallery } from '../common/WorkerGallery';
+import { GradBadge } from '../common/GradBadge';
 import { fileToDataUrl } from '../../utils/image';
 
 export const WorkerProfile: React.FC = () => {
@@ -189,6 +190,7 @@ export const WorkerProfile: React.FC = () => {
                 style={{ background: currentLevel.gradient, color: 'white' }}>
                 {currentLevel.emoji} {currentLevel.label}
               </span>
+              <GradBadge isTrainee={userProfile?.IsTrainee} school={userProfile?.SchoolName} course={userProfile?.CourseType} size="sm" />
             </div>
             <div className="flex items-center gap-3 mt-2">
               <span className="flex items-center gap-1 text-yellow-400 text-sm font-bold">

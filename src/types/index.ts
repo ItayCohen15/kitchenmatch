@@ -7,7 +7,7 @@ export type ExperienceLevel = 'any' | 'entry' | 'mid' | 'senior';
 export type RestaurantScreen =
   | 'home' | 'create_job' | 'worker_matching' | 'live_tracking'
   | 'active_shift' | 'end_shift' | 'wallet' | 'analytics' | 'profile'
-  | 'stages' | 'chats' | 'stage_schedule' | 'stage_add_shift';
+  | 'stages' | 'talent' | 'chats' | 'stage_schedule' | 'stage_add_shift';
 export type WorkerScreen =
   | 'home' | 'job_details' | 'navigation' | 'active_shift' | 'history'
   | 'end_shift' | 'wallet' | 'profile' | 'stages' | 'chats';

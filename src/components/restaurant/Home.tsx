@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Zap, ChefHat, CheckCircle, Star, LogOut, X } from 'lucide-react';
+import { Zap, ChefHat, CheckCircle, Star, LogOut, X, GraduationCap } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
@@ -168,6 +168,18 @@ export const RestaurantHome: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Talent program entry */}
+      <button onClick={() => navToRestaurant('talent')}
+        className="w-full rounded-2xl p-4 text-white text-right active:scale-[0.99] transition-transform flex items-center gap-3"
+        style={{ background: 'linear-gradient(135deg,#8b5cf6,#6366f1)', boxShadow: '0 4px 20px rgba(139,92,246,0.35)' }}>
+        <GraduationCap size={26} className="flex-shrink-0" />
+        <div className="flex-1">
+          <div className="font-black">🎓 גלה טאלנט טרי</div>
+          <div className="text-white/80 text-xs mt-0.5">בוגרי בתי ספר לבישול/ברמנות — מוכנים להזדמנות הראשונה</div>
+        </div>
+        <span className="text-xl">‹</span>
+      </button>
 
       {/* Available workers nearby */}
       <div>
