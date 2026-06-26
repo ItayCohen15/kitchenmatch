@@ -40,8 +40,8 @@ export const ChatModal: React.FC<Props> = ({ jobId, title, myRole, myName, readO
   };
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4" style={{ background: 'rgba(13,20,32,0.65)', backdropFilter: 'blur(3px)' }}>
-      <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl flex flex-col overflow-hidden" style={{ height: 'min(560px, 85vh)' }}>
+    <div onClick={onClose} className="fixed inset-0 z-[70] flex items-center justify-center p-4" style={{ background: 'rgba(13,20,32,0.65)', backdropFilter: 'blur(3px)', paddingTop: 'max(env(safe-area-inset-top), 16px)', paddingBottom: 'max(env(safe-area-inset-bottom), 16px)' }}>
+      <div onClick={e => e.stopPropagation()} className="bg-white rounded-3xl w-full max-w-md shadow-2xl flex flex-col overflow-hidden" style={{ height: 'min(560px, 85dvh)' }}>
         {/* כותרת */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 flex-shrink-0">
           <div className="flex items-center gap-2">
@@ -53,11 +53,11 @@ export const ChatModal: React.FC<Props> = ({ jobId, title, myRole, myName, readO
               <div className="text-gray-400 text-[11px] flex items-center gap-1"><MessageCircle size={10} /> צ'אט סטאז'</div>
             </div>
           </div>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500"><X size={16} /></button>
+          <button onClick={onClose} className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 active:bg-gray-200 transition-colors"><X size={18} /></button>
         </div>
 
         {/* הודעות */}
-        <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2 bg-gray-50">
+        <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2 bg-gray-50" style={{ WebkitOverflowScrolling: 'touch' }}>
           {messages.length === 0 && (
             <div className="text-center text-gray-400 text-sm pt-10">
               <div className="text-3xl mb-2">💬</div>

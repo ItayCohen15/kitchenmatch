@@ -78,8 +78,8 @@ export const CancelShiftModal: React.FC<Props> = ({
                 <AlertTriangle size={18} />
                 <span className="font-black text-base">ביטול משמרת</span>
               </div>
-              <button onClick={onClose} className="w-8 h-8 rounded-xl flex items-center justify-center bg-white/15">
-                <X size={16} />
+              <button onClick={onClose} className="w-10 h-10 rounded-xl flex items-center justify-center bg-white/15 active:bg-white/30 transition-colors">
+                <X size={18} />
               </button>
             </div>
           </div>

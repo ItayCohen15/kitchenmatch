@@ -246,7 +246,7 @@ export const WorkerHome: React.FC = () => {
             const start = new Date(job.StartTime);
             const end = new Date(job.EndTime);
             const hours = ((end.getTime() - start.getTime()) / (1000 * 60 * 60)).toFixed(1);
-            const totalPay = parseFloat(hours) * job.HourlyRate;
+            const totalPay = parseFloat(hours) * Number(job.HourlyRate || 0);
             const startStr = start.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
             const endStr = end.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
             const dateStr = start.toLocaleDateString('he-IL', { weekday: 'short', day: 'numeric', month: 'numeric' });

@@ -29,6 +29,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
   const [streetNumber, setStreetNumber] = useState('');
   const [phone, setPhone] = useState('');
   const [saving, setSaving] = useState(false);
+  const [saveErr, setSaveErr] = useState('');
 
   const totalSteps = role === 'worker' ? 4 : 2;
 
@@ -46,6 +47,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
 
   const handleComplete = async () => {
     setSaving(true);
+    setSaveErr('');
     try {
       let updatedProfile: any = { Id: profileId, Name: name, City: city };
 
@@ -77,9 +79,10 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
       }
 
       onComplete(updatedProfile);
-    } catch (e) {
-      // ממשיך גם בשגיאה
-      onComplete({ Id: profileId, Name: name, City: city });
+    } catch (e: any) {
+      // אל תמשיך עם פרופיל חלקי — הצג שגיאה ואפשר לנסות שוב
+      setSaveErr(e?.message || 'שמירת הפרופיל נכשלה — בדוק חיבור ונסה שוב');
+      setSaving(false);
     }
   };
 
@@ -411,6 +414,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
               </div>
             </div>
           )}
+          {saveErr && <div className="mt-3 bg-red-50 text-red-600 text-sm rounded-xl px-4 py-2.5 text-center">{saveErr}</div>}
         </div>
       </div>
       </div>

@@ -136,10 +136,14 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
             )}
             <input
               type="email"
+              inputMode="email"
+              autoComplete="email"
+              autoCapitalize="none"
+              enterKeyHint="next"
               placeholder="אימייל"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right text-sm focus:border-amber-400 outline-none"
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right text-sm focus:border-amber-400 focus:ring-2 focus:ring-amber-200 outline-none"
             />
             <div className="relative">
               <input
@@ -147,13 +151,17 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
                 placeholder="סיסמא"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 pr-4 pl-10 text-right text-sm focus:border-amber-400 outline-none"
+                autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
+                enterKeyHint="go"
+                onKeyDown={e => { if (e.key === 'Enter') handleSubmit(); }}
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 pr-4 pl-12 text-right text-sm focus:border-amber-400 focus:ring-2 focus:ring-amber-200 outline-none"
               />
               <button
+                type="button"
                 onClick={() => setShowPass(s => !s)}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                className="absolute left-1 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-gray-400 active:text-gray-600"
               >
-                {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+                {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
             {/* דרישות סיסמה — חיווי חי בהרשמה */}

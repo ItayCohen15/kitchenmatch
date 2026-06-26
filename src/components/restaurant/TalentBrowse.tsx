@@ -105,9 +105,9 @@ export const TalentBrowse: React.FC = () => {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-bold text-gray-900 text-sm">{wName}</span>
-                  {w.Rating > 0 && (
+                  {Number(w.Rating) > 0 && (
                     <span className="text-xs text-yellow-500 font-bold flex items-center gap-0.5">
-                      <Star size={10} className="fill-yellow-400 text-yellow-400" />{w.Rating.toFixed(1)}
+                      <Star size={10} className="fill-yellow-400 text-yellow-400" />{Number(w.Rating).toFixed(1)}
                     </span>
                   )}
                 </div>

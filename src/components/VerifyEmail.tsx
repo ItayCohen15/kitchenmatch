@@ -44,6 +44,7 @@ export const VerifyEmail: React.FC<Props> = ({ userId, email, onVerified }) => {
   };
 
   const handleVerify = async (fullCode?: string) => {
+    if (loading) return; // מונע שליחה כפולה (הדבקה / Enter / לחיצה כפולה)
     const c = fullCode || code.join('');
     if (c.length !== 6) { setError('הכנס 6 ספרות'); return; }
     setLoading(true); setError('');

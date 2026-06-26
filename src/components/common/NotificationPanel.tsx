@@ -77,15 +77,15 @@ export const NotificationPanel: React.FC<Props> = ({ onClose }) => {
                 </button>
               )}
               <button onClick={onClose}
-                className="w-8 h-8 rounded-xl flex items-center justify-center"
+                className="w-10 h-10 rounded-xl flex items-center justify-center active:bg-white/20 transition-colors"
                 style={{ background: 'rgba(255,255,255,0.1)' }}>
-                <X size={16} className="text-white" />
+                <X size={18} className="text-white" />
               </button>
             </div>
           </div>
 
           {/* List */}
-          <div className="overflow-y-auto" style={{ maxHeight: 'calc(80dvh - 80px)' }}>
+          <div className="overflow-y-auto" style={{ maxHeight: 'calc(80dvh - 80px)', WebkitOverflowScrolling: 'touch' }}>
             {loading ? (
               <div className="flex items-center justify-center py-12">
                 <div className="w-8 h-8 border-2 border-gray-200 border-t-amber-500 rounded-full animate-spin" />
