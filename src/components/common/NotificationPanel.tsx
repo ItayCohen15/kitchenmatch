@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { X, Bell, CheckCheck } from 'lucide-react';
 import { api } from '../../api';
+import { Skeleton } from './Skeleton';
+import { toast } from './Toast';
 
 interface Props {
   onClose: () => void;
@@ -13,7 +15,7 @@ export const NotificationPanel: React.FC<Props> = ({ onClose }) => {
   useEffect(() => {
     api.getNotifications()
       .then(data => setNotifs(Array.isArray(data) ? data : []))
-      .catch(() => {})
+      .catch(() => toast.error('שגיאה בטעינת התראות'))
       .finally(() => setLoading(false));
   }, []);
 
@@ -87,8 +89,16 @@ export const NotificationPanel: React.FC<Props> = ({ onClose }) => {
           {/* List */}
           <div className="overflow-y-auto" style={{ maxHeight: 'calc(80dvh - 80px)', WebkitOverflowScrolling: 'touch' }}>
             {loading ? (
-              <div className="flex items-center justify-center py-12">
-                <div className="w-8 h-8 border-2 border-gray-200 border-t-amber-500 rounded-full animate-spin" />
+              <div className="p-5 space-y-5">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <Skeleton className="w-10 h-10 flex-shrink-0" />
+                    <div className="flex-1 space-y-2 pt-0.5">
+                      <Skeleton className="h-3" style={{ width: '55%' }} />
+                      <Skeleton className="h-2.5" style={{ width: '90%' }} />
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : notifs.length === 0 ? (
               <div className="text-center py-14 px-6">

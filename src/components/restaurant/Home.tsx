@@ -7,6 +7,10 @@ import { CancelShiftModal } from '../common/CancelShiftModal';
 import { NewWorkerBadge } from '../common/NewWorkerBadge';
 import { UnreadChatBanner } from '../common/ChatsScreen';
 import { isWithinKm } from '../../utils/cities';
+import { SkeletonList } from '../common/Skeleton';
+import { EmptyState } from '../common/EmptyState';
+import { toast } from '../common/Toast';
+import { haptic } from '../../utils/haptics';
 
 export const RestaurantHome: React.FC = () => {
   const { navToRestaurant, navToWorker, userProfile, resetToLanding, selectWorkerJob, refreshProfile, setEmergencyMode } = useApp();
@@ -26,7 +30,7 @@ export const RestaurantHome: React.FC = () => {
     // עובדים — רענון חד פעמי (שומרים את כולם, מסננים לפי אזור בהמשך)
     api.getWorkers()
       .then(data => setWorkers(Array.isArray(data) ? data : []))
-      .catch(() => setWorkers([]))
+      .catch(() => { setWorkers([]); toast.error('שגיאה בטעינת עובדים'); })
       .finally(() => setLoadingWorkers(false));
   }, [userProfile]);
 
@@ -146,7 +150,7 @@ export const RestaurantHome: React.FC = () => {
         <h2 className="font-bold text-gray-800 mb-3 text-base">פעולות מהירות</h2>
         <div className="grid grid-cols-2 gap-3">
           <button
-            onClick={() => { setEmergencyMode(false); navToRestaurant('create_job'); }}
+            onClick={() => { haptic('light'); setEmergencyMode(false); navToRestaurant('create_job'); }}
             className="text-white rounded-2xl p-4 text-right active:scale-95 transition-transform"
             style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow: '0 4px 20px rgba(232,160,32,0.4)' }}
           >
@@ -155,7 +159,7 @@ export const RestaurantHome: React.FC = () => {
             <div className="text-white/75 text-xs mt-0.5">מצא עובד עכשיו</div>
           </button>
           <button
-            onClick={() => { setEmergencyMode(true); navToRestaurant('create_job'); }}
+            onClick={() => { haptic('medium'); setEmergencyMode(true); navToRestaurant('create_job'); }}
             className="text-white rounded-2xl p-4 text-right active:scale-95 transition-transform"
             style={{ background: 'linear-gradient(135deg,#ef4444,#f97316)', boxShadow: '0 4px 20px rgba(239,68,68,0.4)' }}
           >
@@ -189,14 +193,11 @@ export const RestaurantHome: React.FC = () => {
             עד 30 ק״מ
           </span>
         </div>
-        {loadingWorkers && (
-          <div className="text-center py-4">
-            <div className="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto" />
-          </div>
-        )}
+        {loadingWorkers && <SkeletonList count={3} />}
         {!loadingWorkers && areaWorkers.length === 0 && (
-          <div className="bg-white rounded-xl p-4 text-center card-shadow">
-            <p className="text-gray-400 text-sm">אין עובדים זמינים באזורך כרגע</p>
+          <div className="bg-white rounded-2xl card-shadow">
+            <EmptyState emoji="👷" title="אין עובדים זמינים באזורך כרגע"
+              subtitle="פרסם משמרת — עובדים מתאימים יקבלו התראה מיידית" />
           </div>
         )}
         <div className="space-y-2">

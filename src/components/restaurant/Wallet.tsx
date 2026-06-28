@@ -6,6 +6,7 @@ import { ROLE_LABELS } from '../../data/mockData';
 import { printHTML } from '../../utils/print';
 import { CompensationDoc } from '../common/CompensationDoc';
 import { restaurantRate } from '../../utils/levels';
+import { haptic } from '../../utils/haptics';
 
 /* ═══════════════════════════════════════════════════════════
    מסמך 3 – קבלת עמלת תיווך (Staffly → מסעדה)
@@ -266,10 +267,12 @@ export const RestaurantWallet: React.FC = () => {
       setTopping(false);
       setTopped(true);
       setShowTopUp(false);
+      haptic('success');
       setTimeout(() => setTopped(false), 3000);
     } catch (e: any) {
       setTopping(false);
       setTopUpErr(e.message || 'הטעינה נכשלה');
+      haptic('error');
     }
   };
 

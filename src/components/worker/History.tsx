@@ -4,6 +4,9 @@ import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
 import { levelFromShifts, netMultiplier } from '../../utils/levels';
+import { SkeletonList } from '../common/Skeleton';
+import { EmptyState } from '../common/EmptyState';
+import { toast } from '../common/Toast';
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
   completed:          { label: 'הושלם',      color: 'text-green-600 bg-green-50',  icon: <CheckCircle2 size={14} /> },
@@ -25,7 +28,7 @@ export const WorkerHistory: React.FC = () => {
 
     api.getWorkerHistory(userProfile.Id)
       .then(data => setShifts(Array.isArray(data) ? data : []))
-      .catch(() => setShifts([]))
+      .catch(() => { setShifts([]); toast.error('לא הצלחנו לטעון את ההיסטוריה'); })
       .finally(() => setLoading(false));
   }, [userProfile]);
 
@@ -85,17 +88,12 @@ export const WorkerHistory: React.FC = () => {
         ))}
       </div>
 
-      {loading && (
-        <div className="text-center py-8">
-          <div className="w-7 h-7 border-2 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto" />
-        </div>
-      )}
+      {loading && <SkeletonList count={4} />}
 
       {!loading && filtered.length === 0 && (
-        <div className="bg-white rounded-2xl p-8 text-center card-shadow">
-          <div className="text-4xl mb-3">📋</div>
-          <p className="font-bold text-gray-700">אין משמרות עדיין</p>
-          <p className="text-gray-400 text-sm mt-1">הגש מועמדות למשמרות כדי להתחיל</p>
+        <div className="bg-white rounded-2xl card-shadow">
+          <EmptyState emoji="📋" title="אין משמרות עדיין"
+            subtitle="הגש מועמדות למשמרות כדי להתחיל לצבור היסטוריה והכנסות" />
         </div>
       )}
 

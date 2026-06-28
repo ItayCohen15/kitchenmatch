@@ -41,6 +41,10 @@ class ReloadOnChunkError extends React.Component<{ children: React.ReactNode }, 
 import { Splash } from './components/Splash';
 import { Landing } from './components/Landing';
 import { VerifyEmail } from './components/VerifyEmail';
+// ── רובד גימור UX: גבול-שגיאה גלובלי, toasts, באנר אופליין ──
+import { ErrorBoundary } from './components/common/ErrorBoundary';
+import { ToastHost } from './components/common/Toast';
+import { OfflineBanner } from './components/common/OfflineBanner';
 
 // ניווט חכם לפי סטטוס משמרת
 // אילו משמרות מצדיקות קפיצה אוטומטית בכניסה — סטאז' מנוהל בטאב הסטאז', לא חוטף את המסך
@@ -307,9 +311,14 @@ const AppContent: React.FC = () => {
 };
 
 const App: React.FC = () => (
-  <AppProvider>
-    <AppContent />
-  </AppProvider>
+  <ErrorBoundary>
+    <AppProvider>
+      <AppContent />
+      {/* שכבות-על גלובליות (fixed) — ממקמות את עצמן, מעל כל המסכים */}
+      <ToastHost />
+      <OfflineBanner />
+    </AppProvider>
+  </ErrorBoundary>
 );
 
 export default App;

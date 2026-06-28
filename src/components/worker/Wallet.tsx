@@ -3,6 +3,7 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'rec
 import { FileText, X, Printer, Building2, User, Target, Flame, Scale, Pencil, Wallet, ArrowDownToLine } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
+import { haptic } from '../../utils/haptics';
 import { ROLE_LABELS } from '../../data/mockData';
 import { printHTML } from '../../utils/print';
 import { CompensationDoc } from '../common/CompensationDoc';
@@ -383,14 +384,17 @@ export const WorkerWallet: React.FC = () => {
 
   const handleWithdraw = async () => {
     if (!userProfile?.Id || withdrawing || !canWithdraw) return;
+    haptic('light');
     setWithdrawing(true); setWithdrawMsg(null);
     try {
       const r = await api.requestWithdraw(userProfile.Id);
       if (r?.wallet) setWallet({ ...wallet, ...r.wallet });
       setWithdrawMsg({ ok: true, text: `הועברו ₪${Math.round(r?.payout?.amount || 0).toLocaleString()} לחשבונך 🎉` });
+      haptic('success');
       refreshProfile();
     } catch (e: any) {
       setWithdrawMsg({ ok: false, text: e.message || 'המשיכה נכשלה' });
+      haptic('error');
     } finally {
       setWithdrawing(false);
     }

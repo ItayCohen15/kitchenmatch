@@ -7,6 +7,9 @@ import { visibleShiftRoles, isCookRole } from '../../utils/roles';
 import { isNewWorker, shiftsUntilEstablished, meetsShiftRequirements } from '../../utils/levels';
 import { NewWorkerBadge } from '../common/NewWorkerBadge';
 import { UnreadChatBanner } from '../common/ChatsScreen';
+import { SkeletonList } from '../common/Skeleton';
+import { EmptyState } from '../common/EmptyState';
+import { haptic } from '../../utils/haptics';
 
 export const WorkerHome: React.FC = () => {
   const { navToWorker, selectWorkerJob, userProfile, refreshProfile } = useApp();
@@ -75,6 +78,7 @@ export const WorkerHome: React.FC = () => {
     : [];
 
   const handleJobPress = (jobId: string, jobData: any) => {
+    haptic('light');
     selectWorkerJob(jobId, jobData);
     navToWorker('job_details');
   };
@@ -214,12 +218,7 @@ export const WorkerHome: React.FC = () => {
           <span className="text-xs text-gray-400">{filtered.length} זמינות</span>
         </div>
 
-        {loading && (
-          <div className="text-center py-8">
-            <div className="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-            <p className="text-gray-400 text-sm">טוען משמרות...</p>
-          </div>
-        )}
+        {loading && <SkeletonList count={3} />}
 
         {!loading && loadError && (
           <div className="text-center py-10 bg-white rounded-2xl card-shadow">
@@ -234,15 +233,14 @@ export const WorkerHome: React.FC = () => {
         )}
 
         {!loading && !loadError && filtered.length === 0 && (
-          <div className="text-center py-10 bg-white rounded-2xl card-shadow">
-            <div className="text-4xl mb-3">🍳</div>
-            <p className="text-gray-500 font-medium">אין משמרות זמינות כרגע</p>
-            <p className="text-gray-400 text-sm mt-1">בדוק שוב מאוחר יותר</p>
+          <div className="bg-white rounded-2xl card-shadow">
+            <EmptyState emoji="🍳" title="אין משמרות זמינות כרגע"
+              subtitle="משמרות חדשות נוספות לאורך היום — בדוק שוב מאוחר יותר" />
           </div>
         )}
 
         <div className="space-y-3">
-          {filtered.map(job => {
+          {filtered.map((job, idx) => {
             const start = new Date(job.StartTime);
             const end = new Date(job.EndTime);
             const hours = ((end.getTime() - start.getTime()) / (1000 * 60 * 60)).toFixed(1);
@@ -252,7 +250,7 @@ export const WorkerHome: React.FC = () => {
             const dateStr = start.toLocaleDateString('he-IL', { weekday: 'short', day: 'numeric', month: 'numeric' });
 
             return (
-              <div key={job.Id} className="overflow-hidden"
+              <div key={job.Id} className="overflow-hidden stagger-item"
                 style={{
                   borderRadius: 20,
                   background: 'linear-gradient(145deg, #0f1829 0%, #0a1020 100%)',
@@ -261,6 +259,7 @@ export const WorkerHome: React.FC = () => {
                     ? '0 4px 24px rgba(239,68,68,0.15), 0 1px 0 rgba(255,255,255,0.04) inset'
                     : '0 4px 24px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.04) inset',
                   transition: 'transform 0.15s ease',
+                  animationDelay: `${Math.min(idx, 8) * 45}ms`,
                 }}>
                 {/* פס גלו עליון */}
                 <div className="h-0.5 w-full" style={{
