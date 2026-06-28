@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { FileText, X, Printer, Building2, User, Target, Flame, Scale, Pencil } from 'lucide-react';
+import { FileText, X, Printer, Building2, User, Target, Flame, Scale, Pencil, Wallet, ArrowDownToLine } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
@@ -368,6 +368,34 @@ export const WorkerWallet: React.FC = () => {
   const [compShift, setCompShift]   = useState<any>(null);
   const [activeTab, setActiveTab]   = useState<'overview'|'docs'>('overview');
 
+  // ── ארנק תשלומים (PayMe): דליי ממתין/זמין/שולם + משיכה ──
+  const [wallet, setWallet]         = useState<any>(null);
+  const [withdrawing, setWithdrawing] = useState(false);
+  const [withdrawMsg, setWithdrawMsg] = useState<{ ok: boolean; text: string } | null>(null);
+
+  useEffect(() => {
+    if (!userProfile?.Id) return;
+    api.getWallet(userProfile.Id).then(setWallet).catch(() => {});
+  }, [userProfile?.Id]);
+
+  const minPayout = Number(wallet?.minPayout ?? 50);
+  const canWithdraw = wallet && Number(wallet.available) >= minPayout;
+
+  const handleWithdraw = async () => {
+    if (!userProfile?.Id || withdrawing || !canWithdraw) return;
+    setWithdrawing(true); setWithdrawMsg(null);
+    try {
+      const r = await api.requestWithdraw(userProfile.Id);
+      if (r?.wallet) setWallet({ ...wallet, ...r.wallet });
+      setWithdrawMsg({ ok: true, text: `הועברו ₪${Math.round(r?.payout?.amount || 0).toLocaleString()} לחשבונך 🎉` });
+      refreshProfile();
+    } catch (e: any) {
+      setWithdrawMsg({ ok: false, text: e.message || 'המשיכה נכשלה' });
+    } finally {
+      setWithdrawing(false);
+    }
+  };
+
   const totalEarnings   = userProfile?.TotalEarnings   ?? 0;
   const completedShifts = userProfile?.CompletedShifts ?? 0;
   const rating          = userProfile?.Rating          ?? 0;
@@ -508,6 +536,53 @@ export const WorkerWallet: React.FC = () => {
       {/* ─── Tab: סקירה ─── */}
       {activeTab === 'overview' && (
         <>
+          {/* 💳 ארנק התשלומים שלי (PayMe · escrow) */}
+          {wallet && (
+            <div className="bg-white rounded-2xl p-4 card-shadow">
+              <div className="flex items-center gap-2 mb-3">
+                <Wallet size={16} className="text-amber-500" />
+                <span className="font-bold text-gray-800 text-sm">הארנק שלי</span>
+                <span className="text-[10px] text-gray-400 mr-auto">תשלום מאובטח · escrow</span>
+              </div>
+              <div className="grid grid-cols-3 gap-2 mb-3">
+                <div className="rounded-xl p-2.5 text-center" style={{ background:'#fff8e1' }}>
+                  <div className="font-black text-amber-600 text-base">₪{Math.round(Number(wallet.pending)||0).toLocaleString()}</div>
+                  <div className="text-[10px] text-gray-500 mt-0.5">ממתין</div>
+                </div>
+                <div className="rounded-xl p-2.5 text-center" style={{ background:'#ecfdf5' }}>
+                  <div className="font-black text-green-600 text-base">₪{Math.round(Number(wallet.available)||0).toLocaleString()}</div>
+                  <div className="text-[10px] text-gray-500 mt-0.5">זמין למשיכה</div>
+                </div>
+                <div className="rounded-xl p-2.5 text-center" style={{ background:'#f1f5f9' }}>
+                  <div className="font-black text-gray-700 text-base">₪{Math.round(Number(wallet.paid)||0).toLocaleString()}</div>
+                  <div className="text-[10px] text-gray-500 mt-0.5">שולם</div>
+                </div>
+              </div>
+              <button onClick={handleWithdraw} disabled={withdrawing || !canWithdraw}
+                className="w-full rounded-2xl py-3 font-bold text-sm text-white flex items-center justify-center gap-2 disabled:opacity-50 active:scale-98 transition-transform"
+                style={{ background:'linear-gradient(135deg,#059669,#10b981)' }}>
+                {withdrawing
+                  ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"/> מעבד...</>
+                  : <><ArrowDownToLine size={16}/> משוך ₪{Math.round(Number(wallet.available)||0).toLocaleString()}</>}
+              </button>
+              {!canWithdraw && (
+                <p className="text-[11px] text-gray-400 text-center mt-2">
+                  מינימום למשיכה: ₪{minPayout} · היתרה תגדל עם סיום משמרות
+                </p>
+              )}
+              {wallet.autoPayout && (
+                <p className="text-[11px] text-center mt-1.5" style={{ color:'#059669' }}>
+                  ⚡ תשלום אוטומטי שבועי פעיל — הכסף יועבר גם בלי שתלחץ
+                </p>
+              )}
+              {withdrawMsg && (
+                <div className={`mt-2 text-xs text-center rounded-xl px-3 py-2 ${withdrawMsg.ok ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}>
+                  {withdrawMsg.text}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* החודש שלי + צפי */}
           {completed.length > 0 && (
             <div className="bg-white rounded-2xl p-4 card-shadow">

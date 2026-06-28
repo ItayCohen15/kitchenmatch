@@ -210,11 +210,12 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
    ראשי – ארנק מסעדה
 ═══════════════════════════════════════════════════════════ */
 export const RestaurantWallet: React.FC = () => {
-  const { userProfile }    = useApp();
+  const { userProfile, refreshProfile } = useApp();
   const [topUpAmount, setTopUpAmount] = useState('');
   const [showTopUp, setShowTopUp]     = useState(false);
   const [topping, setTopping]         = useState(false);
   const [topped, setTopped]           = useState(false);
+  const [topUpErr, setTopUpErr]       = useState('');
   const [jobs, setJobs]               = useState<any[]>([]);
   const [loading, setLoading]         = useState(true);
   const [receiptJob, setReceiptJob]   = useState<any>(null);
@@ -244,14 +245,32 @@ export const RestaurantWallet: React.FC = () => {
   }, 0);
   const avgPerShift = completedJobs.length > 0 ? (totalSpend / completedJobs.length).toFixed(0) : 0;
 
-  const handleTopUp = () => {
-    setTopping(true);
-    setTimeout(() => {
+  // ── טעינת ארנק אמיתית דרך הספק (PayMe escrow funding) ──
+  // קודם (טעינה מדומה — UI בלבד, ללא שרת):
+  // const handleTopUp = () => {
+  //   setTopping(true);
+  //   setTimeout(() => {
+  //     setTopping(false);
+  //     setTopped(true);
+  //     setShowTopUp(false);
+  //     setTimeout(() => setTopped(false), 3000);
+  //   }, 1800);
+  // };
+  const handleTopUp = async () => {
+    const amount = Number(topUpAmount);
+    if (!userProfile?.Id || !(amount > 0) || topping) return;
+    setTopping(true); setTopUpErr('');
+    try {
+      await api.restaurantTopUp(userProfile.Id, amount);
+      await refreshProfile();          // עדכון יתרת הארנק מהשרת
       setTopping(false);
       setTopped(true);
       setShowTopUp(false);
       setTimeout(() => setTopped(false), 3000);
-    }, 1800);
+    } catch (e: any) {
+      setTopping(false);
+      setTopUpErr(e.message || 'הטעינה נכשלה');
+    }
   };
 
   return (
@@ -303,6 +322,9 @@ export const RestaurantWallet: React.FC = () => {
               <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"/>מעבד...</>
             ) : `טען ₪${topUpAmount}`}
           </button>
+          {topUpErr && (
+            <div className="mt-2 text-xs text-center rounded-xl px-3 py-2 bg-red-50 text-red-600">{topUpErr}</div>
+          )}
         </div>
       )}
 

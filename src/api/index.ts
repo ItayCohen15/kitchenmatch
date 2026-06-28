@@ -200,6 +200,34 @@ export const api = {
       body: JSON.stringify(data)
     }).then(handleResponse),
 
+  // ========== PAYMENTS (ארנק / escrow / payouts — PayMe Marketplace) ==========
+  // מצב הארנק של העובד: { pending, available, paid, totalEarnings, autoPayout, minPayout, ... }
+  getWallet: (workerId: number) =>
+    fetch(`${BASE}/payments/wallet/${workerId}`, { headers: headers(), cache: 'no-store' }).then(handleResponse),
+
+  // היסטוריית משיכות
+  getPayouts: (workerId: number) =>
+    fetch(`${BASE}/payments/payouts/${workerId}`, { headers: headers(), cache: 'no-store' }).then(handleResponse),
+
+  // בקשת משיכה — בלי amount = כל היתרה הזמינה
+  requestWithdraw: (workerId: number, amount?: number) =>
+    fetch(`${BASE}/payments/withdraw/${workerId}`, {
+      method: 'POST', headers: headers(),
+      body: JSON.stringify(amount != null ? { amount } : {})
+    }).then(handleResponse),
+
+  // הגדרות payout (auto שבועי / שיטה / 4 ספרות אחרונות)
+  updatePayoutSettings: (workerId: number, data: { autoPayoutEnabled?: boolean; payoutMethod?: string; bankLast4?: string }) =>
+    fetch(`${BASE}/payments/wallet/${workerId}/settings`, {
+      method: 'PUT', headers: headers(), body: JSON.stringify(data)
+    }).then(handleResponse),
+
+  // טעינת ארנק מסעדה (escrow funding) — סליקה אמיתית/סימולציה דרך הספק
+  restaurantTopUp: (restaurantId: number, amount: number) =>
+    fetch(`${BASE}/payments/restaurant/${restaurantId}/topup`, {
+      method: 'POST', headers: headers(), body: JSON.stringify({ amount })
+    }).then(handleResponse),
+
   // ========== RATINGS ==========
   getNotifications: () =>
     fetch(`${BASE}/push/notifications`, { headers: headers() }).then(handleResponse),
