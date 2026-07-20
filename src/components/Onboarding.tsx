@@ -23,6 +23,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
   const [isTrainee, setIsTrainee] = useState(false);
   const [courseType, setCourseType] = useState('');
   const [schoolName, setSchoolName] = useState('');
+  const [isSelfEmployed, setIsSelfEmployed] = useState<boolean | null>(null); // עצמאי / לא-עצמאי (לתשלום)
   const [bio, setBio] = useState('');
   const [cuisineType, setCuisineType] = useState('');
   const [street, setStreet] = useState('');
@@ -61,6 +62,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
           isTrainee,
           courseType: isTrainee ? (courseType || 'אחר') : null,
           schoolName: isTrainee ? schoolName : null,
+          isSelfEmployed: isSelfEmployed === null ? true : isSelfEmployed,
         });
         // השתמש בפרופיל מהשרת אם קיים
         updatedProfile = res?.profile || {
@@ -262,6 +264,28 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                       </>
                     )}
                   </div>
+
+                  {/* מעמד תעסוקתי — קובע איך מתבצע התשלום */}
+                  <div>
+                    <label className="text-sm font-semibold text-gray-600 mb-2 block">מעמד תעסוקתי (לתשלום)</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button type="button" onClick={() => setIsSelfEmployed(true)}
+                        className={`p-3 rounded-xl border-2 text-right transition-all ${isSelfEmployed === true ? 'border-amber-400 bg-amber-50' : 'border-gray-100'}`}>
+                        <div className="font-bold text-gray-900 text-sm">✅ יש לי עוסק</div>
+                        <div className="text-gray-500 text-xs mt-0.5">פטור/מורשה — תשלום ישיר, אני מוציא חשבונית</div>
+                      </button>
+                      <button type="button" onClick={() => setIsSelfEmployed(false)}
+                        className={`p-3 rounded-xl border-2 text-right transition-all ${isSelfEmployed === false ? 'border-amber-400 bg-amber-50' : 'border-gray-100'}`}>
+                        <div className="font-bold text-gray-900 text-sm">🧾 אין לי עוסק</div>
+                        <div className="text-gray-500 text-xs mt-0.5">תשלום דרך "חשבונית לשכיר"</div>
+                      </button>
+                    </div>
+                    {isSelfEmployed === false && (
+                      <div className="mt-2 rounded-xl p-2.5 text-xs leading-relaxed" style={{ background:'#fff8e1', border:'1px solid #f59e0b', color:'#92400e' }}>
+                        ℹ️ התשלום יעבור דרך שירות "חשבונית לשכיר" — ינוכו ~5% עמלת שירות + מס/ביטוח לאומי/בריאות. תראה הערכת נטו לפני כל משמרת.
+                      </div>
+                    )}
+                  </div>
                 </>
               ) : (
                 <>
@@ -324,7 +348,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                   <ChevronRight size={20} />
                 </button>
                 <button
-                  disabled={role === 'worker' ? !workerRole : selectedCuisines.length === 0}
+                  disabled={role === 'worker' ? (!workerRole || isSelfEmployed === null) : selectedCuisines.length === 0}
                   onClick={() => role === 'worker' ? setStep(3) : handleComplete()}
                   className="flex-1 text-white rounded-2xl py-4 font-bold disabled:opacity-40"
                   style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}

@@ -5,6 +5,8 @@ import { ROLE_LABELS } from '../../data/mockData';
 import { api } from '../../api';
 import { CancelShiftModal } from '../common/CancelShiftModal';
 import { effectiveWorkerRate, levelFromShifts } from '../../utils/levels';
+import { estimateNet } from '../../utils/payrollEstimate';
+import { NetBreakdown } from '../common/NetBreakdown';
 
 export const JobDetails: React.FC = () => {
   const { navToWorker, getSelectedJob, userProfile } = useApp();
@@ -39,8 +41,9 @@ export const JobDetails: React.FC = () => {
   const baseAmount = parseFloat(hours) * hourlyRate;
   const workerLevel = levelFromShifts(userProfile?.CompletedShifts || 0).key;
   const commRate = effectiveWorkerRate(workerLevel, Boolean(job.IsEmergency || job.isEmergency));
-  const commission = baseAmount * commRate;
-  const netPay = (baseAmount - commission).toFixed(0);
+  const isSelfEmployed = userProfile?.IsSelfEmployed !== 0; // NULL/1 => עצמאי, 0 => לא-עצמאי
+  const netEst = estimateNet(baseAmount, commRate, isSelfEmployed);
+  const netPay = Math.round(netEst.net).toString();
   const startStr = start.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
   const endStr = end.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
   const restaurantName = job.RestaurantName || job.restaurantName || 'מסעדה';
@@ -251,25 +254,22 @@ export const JobDetails: React.FC = () => {
         </div>
       </div>
 
-      {/* Details */}
+      {/* Details — תפקיד/שעות */}
       <div className="bg-white rounded-2xl p-4 card-shadow space-y-0">
         {[
-          { label: 'תפקיד',                value: ROLE_LABELS[role] || role },
-          { label: 'שעות',                 value: `${startStr} – ${endStr}` },
-          { label: 'סה״כ שעות',            value: `${hours} שעות` },
-          { label: 'שכר ברוטו',            value: `₪${baseAmount.toFixed(0)}` },
-          { label: `עמלת פלטפורמה (${(commRate*100).toFixed(1)}%)`, value: `-₪${commission.toFixed(0)}` },
+          { label: 'תפקיד',     value: ROLE_LABELS[role] || role },
+          { label: 'שעות',      value: `${startStr} – ${endStr}` },
+          { label: 'סה״כ שעות', value: `${hours} שעות` },
         ].map(d => (
           <div key={d.label} className="flex justify-between items-center py-2.5 border-b border-gray-50 last:border-0">
             <span className="text-gray-500 text-sm">{d.label}</span>
             <span className="font-semibold text-gray-900 text-sm">{d.value}</span>
           </div>
         ))}
-        <div className="flex justify-between items-center py-2.5 bg-green-50 rounded-xl px-2 mt-2">
-          <span className="text-gray-700 font-bold text-sm">תקבל נטו</span>
-          <span className="font-black text-green-600 text-lg">₪{netPay}</span>
-        </div>
       </div>
+
+      {/* פירוט תשלום שקוף — עצמאי מול לא-עצמאי */}
+      <NetBreakdown base={baseAmount} stafflyRate={commRate} isSelfEmployed={isSelfEmployed} title="פירוט תשלום" />
 
       {/* מה כוללת המשמרת */}
       {jobDuties && (
@@ -316,7 +316,9 @@ export const JobDetails: React.FC = () => {
 
       {/* Payment guarantee */}
       <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-sm text-blue-700">
-        💰 <strong>תשלום מובטח</strong> — הכסף יועבר לארנקך לאחר אישור סיום המשמרת על ידי המסעדה.
+        💰 <strong>תשלום מובטח</strong> — {isSelfEmployed
+          ? 'הכסף יועבר לארנקך לאחר אישור סיום המשמרת על ידי המסעדה.'
+          : 'הסכום יועבר לשירות "חשבונית לשכיר" לאחר סיום המשמרת, ומשם נטו אליך.'}
       </div>
 
       {error && (
