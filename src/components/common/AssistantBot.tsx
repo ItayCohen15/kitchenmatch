@@ -1,59 +1,76 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Sparkles, X, Send } from 'lucide-react';
 import { api } from '../../api';
+import { useApp } from '../../context/AppContext';
 import { haptic } from '../../utils/haptics';
+import { answerFor, suggestionsFor, type BotRole, type BotCtx } from '../../utils/botKnowledge';
 
-// בוט התמיכה החכם של Staffly ("סטאף") — כפתור צף + חלון צ'אט.
-// עונה על שאלות לפי כללי הפלטפורמה + הנתונים של המשתמש עצמו.
+// בוט התמיכה של Staffly ("סטאף") — כפתור צף + חלון צ'אט.
+// ⚙️ כרגע **בוט חוקים מקומי** (utils/botKnowledge.ts): אפס עלות, תשובה מיידית, בלי מפתח API.
+//    כשיהיה ANTHROPIC_API_KEY בשרת — אפשר להחליף את הקריאה ל-answerFor
+//    ב-`await api.assistantChat(next)` (ה-endpoint /assistant/chat כבר קיים ומוכן).
 
-type Role = 'worker' | 'restaurant' | 'admin';
 interface Msg { role: 'user' | 'assistant'; content: string }
 
-const GREETING: Record<Role, string> = {
-  worker:     'היי! אני סטאף 👋 אפשר לשאול אותי כל דבר — תשלומים, עמלות, משיכת כסף או איך למצוא משמרות.',
+const GREETING: Record<BotRole, string> = {
+  worker:     'היי! אני סטאף 👋 אפשר לשאול אותי על תשלומים, עמלות, משיכת כסף או איך למצוא משמרות.',
   restaurant: 'היי! אני סטאף 👋 אפשר לשאול אותי על פרסום משמרות, עלויות, טעינת ארנק ובחירת עובדים.',
-  admin:      'היי! אני סטאף 👋 אפשר לשאול אותי על איך המערכת עובדת, עמלות, תשלומים והתנהלות הפלטפורמה.',
+  admin:      'היי! אני סטאף 👋 אפשר לשאול אותי איך המערכת עובדת — עמלות, תשלומים ומדיניות.',
 };
 
-const SUGGESTIONS: Record<Role, string[]> = {
-  worker:     ['מתי אקבל את הכסף?', 'מה העמלה שלי?', 'מה זה "חשבונית לשכיר"?', 'איך מושכים כסף?'],
-  restaurant: ['איך מפרסמים משמרת?', 'כמה זה עולה לי?', 'איך טוענים ארנק?', 'מה קורה בביטול?'],
-  admin:      ['איך מחושבות העמלות?', 'איך עובד מסלול הלא-עצמאי?', 'מה מדיניות הביטולים?'],
-};
+// טקסט עשיר קליל: **מודגש** + שורות חדשות
+const RichText: React.FC<{ text: string }> = ({ text }) => (
+  <>
+    {text.split('\n').map((line, i) => (
+      <React.Fragment key={i}>
+        {i > 0 && <br />}
+        {line.split('**').map((part, j) =>
+          j % 2 === 1
+            ? <strong key={j}>{part}</strong>
+            : <React.Fragment key={j}>{part}</React.Fragment>
+        )}
+      </React.Fragment>
+    ))}
+  </>
+);
 
-export const AssistantBot: React.FC<{ role: Role }> = ({ role }) => {
+export const AssistantBot: React.FC<{ role: BotRole }> = ({ role }) => {
+  const { userProfile } = useApp();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState('');
-  const [sending, setSending] = useState(false);
-  const [error, setError] = useState('');
+  const [thinking, setThinking] = useState(false);
+  const [wallet, setWallet] = useState<any>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  // יתרת הארנק — לתשובות מותאמות אישית ("כמה יש לי?"). best-effort.
+  useEffect(() => {
+    if (!open || role !== 'worker' || !userProfile?.Id || wallet) return;
+    api.getWallet(userProfile.Id).then(setWallet).catch(() => {});
+  }, [open, role, userProfile?.Id, wallet]);
 
   useEffect(() => {
     if (open) bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages.length, sending, open]);
+  }, [messages.length, thinking, open]);
 
-  const ask = async (text: string) => {
+  const ask = (text: string) => {
     const q = text.trim();
-    if (!q || sending) return;
+    if (!q || thinking) return;
     haptic('light');
-    setError('');
-    const next: Msg[] = [...messages, { role: 'user', content: q }];
-    setMessages(next);
+    setMessages(m => [...m, { role: 'user', content: q }]);
     setInput('');
-    setSending(true);
-    try {
-      const r = await api.assistantChat(next);
-      const reply = r?.reply || 'לא הצלחתי לענות על זה.';
-      setMessages(m => [...m, { role: 'assistant', content: reply }]);
-      haptic('success');
-    } catch (e: any) {
-      setError(e?.message || 'הבוט לא זמין כרגע');
-      haptic('error');
-    } finally {
-      setSending(false);
-    }
+    setThinking(true);
+
+    // השהיה קצרה — נותן תחושה טבעית של "מקליד"
+    setTimeout(() => {
+      const ctx: BotCtx = { role, profile: userProfile, wallet };
+      setMessages(m => [...m, { role: 'assistant', content: answerFor(q, ctx) }]);
+      setThinking(false);
+      haptic('light');
+    }, 420);
   };
+
+  const suggestions = suggestionsFor(role);
 
   return (
     <>
@@ -95,7 +112,7 @@ export const AssistantBot: React.FC<{ role: Role }> = ({ role }) => {
                   <Sparkles size={18} className="text-white" />
                 </div>
                 <div>
-                  <div className="font-black text-sm">סטאף · עוזר חכם</div>
+                  <div className="font-black text-sm">סטאף · עוזר</div>
                   <div className="text-[11px]" style={{ color: '#8899bb' }}>כאן לענות על כל שאלה</div>
                 </div>
               </div>
@@ -110,37 +127,24 @@ export const AssistantBot: React.FC<{ role: Role }> = ({ role }) => {
               style={{ WebkitOverflowScrolling: 'touch' }}>
               {/* ברכה */}
               <div className="flex justify-end">
-                <div className="max-w-[85%] rounded-2xl rounded-br-md px-3.5 py-2.5 text-sm leading-snug bg-white text-gray-800 border border-gray-100">
+                <div className="max-w-[88%] rounded-2xl rounded-br-md px-3.5 py-2.5 text-sm leading-relaxed bg-white text-gray-800 border border-gray-100">
                   {GREETING[role]}
                 </div>
               </div>
 
-              {/* שאלות מוצעות — רק בהתחלה */}
-              {messages.length === 0 && (
-                <div className="flex flex-wrap gap-2 justify-end pt-1">
-                  {SUGGESTIONS[role].map(s => (
-                    <button key={s} onClick={() => ask(s)}
-                      className="text-xs font-semibold rounded-full px-3 py-1.5 border transition-colors active:scale-95"
-                      style={{ background: 'rgba(232,160,32,0.08)', borderColor: 'rgba(232,160,32,0.3)', color: '#b8791a' }}>
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              )}
-
               {messages.map((m, i) => (
                 <div key={i} className={`flex ${m.role === 'user' ? 'justify-start' : 'justify-end'}`}>
-                  <div className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-line ${
+                  <div className={`max-w-[88%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
                     m.role === 'user'
                       ? 'bg-amber-500 text-white rounded-bl-md'
                       : 'bg-white text-gray-800 border border-gray-100 rounded-br-md'
                   }`}>
-                    {m.content}
+                    <RichText text={m.content} />
                   </div>
                 </div>
               ))}
 
-              {sending && (
+              {thinking && (
                 <div className="flex justify-end">
                   <div className="bg-white border border-gray-100 rounded-2xl rounded-br-md px-4 py-3 flex items-center gap-1.5">
                     {[0, 150, 300].map(d => (
@@ -151,9 +155,19 @@ export const AssistantBot: React.FC<{ role: Role }> = ({ role }) => {
                 </div>
               )}
 
-              {error && (
-                <div className="text-center text-xs text-red-500 bg-red-50 rounded-xl px-3 py-2">{error}</div>
+              {/* שאלות מוצעות — תמיד זמינות, מתעדכנות אחרי תשובה */}
+              {!thinking && (
+                <div className="flex flex-wrap gap-2 justify-end pt-1">
+                  {suggestions.map(s => (
+                    <button key={s} onClick={() => ask(s)}
+                      className="text-xs font-semibold rounded-full px-3 py-1.5 border transition-transform active:scale-95"
+                      style={{ background: 'rgba(232,160,32,0.08)', borderColor: 'rgba(232,160,32,0.3)', color: '#b8791a' }}>
+                      {s}
+                    </button>
+                  ))}
+                </div>
               )}
+
               <div ref={bottomRef} />
             </div>
 
@@ -168,14 +182,14 @@ export const AssistantBot: React.FC<{ role: Role }> = ({ role }) => {
                   placeholder="שאל אותי כל דבר..."
                   className="flex-1 border border-gray-200 bg-gray-50 rounded-2xl px-4 py-2.5 text-sm text-right outline-none focus:border-amber-400 focus:bg-white"
                 />
-                <button onClick={() => ask(input)} disabled={sending || !input.trim()}
+                <button onClick={() => ask(input)} disabled={thinking || !input.trim()}
                   className="w-10 h-10 rounded-2xl flex items-center justify-center text-white disabled:opacity-40 flex-shrink-0 active:scale-95 transition-transform"
                   style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
                   <Send size={17} style={{ transform: 'scaleX(-1)' }} />
                 </button>
               </div>
               <p className="text-[10px] text-gray-400 text-center mt-2">
-                סטאף יכול לטעות · מידע על מס הוא הערכה בלבד
+                מידע על מס הוא הערכה בלבד · לשאלות נוספות support@staffly.com
               </p>
             </div>
           </div>
