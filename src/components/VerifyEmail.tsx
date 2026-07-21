@@ -3,10 +3,18 @@ import { CheckCircle } from 'lucide-react';
 // כתובת ה-API מגיעה ממקור אחד (ראה הערת האבטחה ב-api/index.ts)
 import { BASE } from '../api';
 
+// תשובת האימות מכילה את הסשן — הטוקן מונפק רק כאן, אחרי הוכחת
+// בעלות על תיבת המייל (ראה הערת האבטחה ב-routes/auth.js).
+export interface VerifiedSession {
+  token: string;
+  role: string;
+  profile: any;
+}
+
 interface Props {
   userId: number;
   email: string;
-  onVerified: () => void;
+  onVerified: (session: VerifiedSession) => void;
 }
 
 export const VerifyEmail: React.FC<Props> = ({ userId, email, onVerified }) => {
@@ -52,7 +60,8 @@ export const VerifyEmail: React.FC<Props> = ({ userId, email, onVerified }) => {
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error || 'קוד שגוי'); setLoading(false); return; }
-      onVerified();
+      if (!data.token) { setError('האימות הצליח אך לא התקבל סשן — נסה להתחבר'); setLoading(false); return; }
+      onVerified({ token: data.token, role: data.role, profile: data.profile });
     } catch {
       setError('שגיאה בחיבור, נסה שוב');
       setLoading(false);

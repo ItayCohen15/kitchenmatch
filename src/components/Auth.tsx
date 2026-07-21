@@ -19,13 +19,15 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
   const [error, setError] = useState('');
   const [pendingVerify, setPendingVerify] = useState<{userId:number,email:string,data:any}|null>(null);
 
-  const passLenOk = password.length >= 6;
+  // חייב להישאר תואם למדיניות בשרת (routes/auth.js)
+  const passLenOk = password.length >= 8;
   const passUpperOk = /[A-Z]/.test(password);
+  const passDigitOk = /[0-9]/.test(password);
 
   const handleSubmit = async () => {
     if (!email || !password) return setError('נא למלא אימייל וסיסמא');
-    if (mode === 'register' && (!passLenOk || !passUpperOk)) {
-      return setError('הסיסמה חייבת להכיל לפחות 6 תווים ואות גדולה אחת באנגלית (A-Z)');
+    if (mode === 'register' && (!passLenOk || !passUpperOk || !passDigitOk)) {
+      return setError('הסיסמה חייבת להכיל לפחות 8 תווים, אות גדולה באנגלית (A-Z) וספרה');
     }
     setLoading(true);
     setError('');
@@ -37,9 +39,10 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
         data = await api.register(email, password, role, '', '');
       }
       const isNew = mode === 'register';
-      if (isNew && data.needsVerification) {
-        // הצג מסך אימות לפני כניסה
-        setPendingVerify({ userId: data.userId, email, data });
+      // חשבון שטרם אומת — ברישום *וגם* בכניסה. אין טוקן עד שהמייל אומת,
+      // ולכן חייבים לעבור דרך מסך האימות (ראה routes/auth.js).
+      if (data.needsVerification) {
+        setPendingVerify({ userId: data.userId, email, data: { isNew } });
         setLoading(false);
         return;
       }
@@ -60,13 +63,14 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
       <VerifyEmail
         userId={pendingVerify.userId}
         email={pendingVerify.email}
-        onVerified={() => {
-          const d = pendingVerify.data;
-          localStorage.setItem('km_token', d.token);
-          localStorage.setItem('km_role', d.role);
-          if (d.profile) localStorage.setItem('km_profile', JSON.stringify(d.profile));
-          localStorage.removeItem('km_onboarding');
-          onLogin(d.token, d.role, d.profile, true);
+        onVerified={(session) => {
+          // הסשן מגיע מתשובת /auth/verify — לא מהרישום
+          const isNew = !!pendingVerify.data?.isNew;
+          localStorage.setItem('km_token', session.token);
+          localStorage.setItem('km_role', session.role);
+          if (session.profile) localStorage.setItem('km_profile', JSON.stringify(session.profile));
+          if (isNew) localStorage.removeItem('km_onboarding');
+          onLogin(session.token, session.role, session.profile, isNew);
         }}
       />
     );
@@ -166,12 +170,15 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
             </div>
             {/* דרישות סיסמה — חיווי חי בהרשמה */}
             {mode === 'register' && (
-              <div className="flex gap-3 px-1">
+              <div className="flex flex-wrap gap-x-3 gap-y-1 px-1">
                 <span className={`text-[11px] font-semibold ${passLenOk ? 'text-green-600' : 'text-gray-400'}`}>
-                  {passLenOk ? '✓' : '•'} לפחות 6 תווים
+                  {passLenOk ? '✓' : '•'} לפחות 8 תווים
                 </span>
                 <span className={`text-[11px] font-semibold ${passUpperOk ? 'text-green-600' : 'text-gray-400'}`}>
-                  {passUpperOk ? '✓' : '•'} אות גדולה באנגלית (A-Z)
+                  {passUpperOk ? '✓' : '•'} אות גדולה (A-Z)
+                </span>
+                <span className={`text-[11px] font-semibold ${passDigitOk ? 'text-green-600' : 'text-gray-400'}`}>
+                  {passDigitOk ? '✓' : '•'} ספרה
                 </span>
               </div>
             )}
