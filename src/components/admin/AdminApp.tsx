@@ -7,6 +7,7 @@ import { AdminInsights } from './Insights';
 import { AdminUsers } from './Users';
 import { AdminRatings } from './Ratings';
 import { AdminJobs } from './Jobs';
+import { AssistantBot } from '../common/AssistantBot';
 
 const TABS: { id: AdminScreen; label: string; icon: React.ReactNode }[] = [
   { id: 'dashboard', label: 'דאשבורד', icon: <LayoutDashboard size={20} /> },
@@ -90,6 +91,9 @@ export const AdminApp: React.FC = () => {
           </div>
         </div>
       </nav>
+
+      {/* בוט התמיכה החכם — כפתור צף (ממקם את עצמו) */}
+      <AssistantBot role="admin" />
     </div>
   );
 };

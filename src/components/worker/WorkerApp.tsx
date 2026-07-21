@@ -13,6 +13,7 @@ import { WorkerProfile } from './Profile';
 import { WorkerHistory } from './History';
 import { WorkerStages } from './Stages';
 import { ChatsScreen } from '../common/ChatsScreen';
+import { AssistantBot } from '../common/AssistantBot';
 import type { WorkerScreen } from '../../types';
 
 const SCREEN_TITLES: Record<WorkerScreen, string> = {
@@ -124,6 +125,9 @@ export const WorkerApp: React.FC = () => {
           onNav={handleNavTab}
         />
       )}
+
+      {/* בוט התמיכה החכם — כפתור צף (ממקם את עצמו) */}
+      <AssistantBot role="worker" />
     </div>
   );
 };

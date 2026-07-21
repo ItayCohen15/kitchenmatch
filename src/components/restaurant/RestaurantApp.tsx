@@ -17,6 +17,7 @@ import { StageSchedule } from './StageSchedule';
 import { StageAddShift } from './StageAddShift';
 import { TalentBrowse } from './TalentBrowse';
 import { ChatsScreen } from '../common/ChatsScreen';
+import { AssistantBot } from '../common/AssistantBot';
 import type { RestaurantScreen } from '../../types';
 
 const SCREEN_TITLES: Record<RestaurantScreen, string> = {
@@ -141,6 +142,9 @@ export const RestaurantApp: React.FC = () => {
           onNav={handleNavTab}
         />
       )}
+
+      {/* בוט התמיכה החכם — כפתור צף (ממקם את עצמו) */}
+      <AssistantBot role="restaurant" />
     </div>
   );
 };

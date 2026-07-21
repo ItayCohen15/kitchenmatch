@@ -228,6 +228,13 @@ export const api = {
       method: 'POST', headers: headers(), body: JSON.stringify({ amount })
     }).then(handleResponse),
 
+  // ========== ASSISTANT BOT ("סטאף") ==========
+  // שולח את היסטוריית השיחה ומקבל תשובה. { available, reply } או { error }
+  assistantChat: (messages: { role: 'user' | 'assistant'; content: string }[]) =>
+    fetch(`${BASE}/assistant/chat`, {
+      method: 'POST', headers: headers(), body: JSON.stringify({ messages })
+    }).then(handleResponse),
+
   // ========== RATINGS ==========
   getNotifications: () =>
     fetch(`${BASE}/push/notifications`, { headers: headers() }).then(handleResponse),
