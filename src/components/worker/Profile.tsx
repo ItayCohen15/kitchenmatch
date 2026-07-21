@@ -8,6 +8,7 @@ import { LevelBenefits } from '../common/LevelBenefits';
 import { WorkerGallery } from '../common/WorkerGallery';
 import { GradBadge } from '../common/GradBadge';
 import { fileToDataUrl } from '../../utils/image';
+import { DeleteAccountModal } from '../common/DeleteAccountModal';
 
 export const WorkerProfile: React.FC = () => {
   const { userProfile, resetToLanding, setUserProfile, refreshProfile } = useApp();
@@ -28,6 +29,7 @@ export const WorkerProfile: React.FC = () => {
   const [editRole, setEditRole] = useState(userProfile?.Role || 'line_cook');
   const [editBio, setEditBio] = useState(userProfile?.Bio || '');
   const [savingProfile, setSavingProfile] = useState(false);
+  const [showDelete, setShowDelete] = useState(false); // מודל מחיקת חשבון
   const name = userProfile?.Name || 'שם לא ידוע';
   const initials = name.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
   const rating = userProfile?.Rating || 0;
@@ -394,6 +396,25 @@ export const WorkerProfile: React.FC = () => {
         <LogOut size={18} />
         התנתק
       </button>
+
+      {/* אזור מסוכן — מחיקת חשבון */}
+      <button
+        onClick={() => setShowDelete(true)}
+        className="w-full text-red-500 rounded-2xl py-3 font-semibold text-sm flex items-center justify-center gap-2 active:bg-red-50 transition-colors"
+      >
+        <Trash2 size={15} />
+        מחיקת החשבון שלי
+      </button>
+
+      {showDelete && (
+        <DeleteAccountModal
+          onClose={() => setShowDelete(false)}
+          onDeleted={() => {
+            try { localStorage.clear(); } catch { /* ignore */ }
+            resetToLanding();
+          }}
+        />
+      )}
     </div>
   );
 };

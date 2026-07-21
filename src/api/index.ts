@@ -52,6 +52,12 @@ export const api = {
       body: JSON.stringify({ email, password })
     }).then(handleResponse),
 
+  // מחיקת חשבון — בלתי-הפיך. דורש אישור סיסמה.
+  deleteAccount: (password: string) =>
+    fetch(`${BASE}/auth/delete-account`, {
+      method: 'POST', headers: headers(), body: JSON.stringify({ password })
+    }).then(handleResponse),
+
   // ========== JOBS ==========
   getJobs: () =>
     fetch(`${BASE}/jobs`, { headers: headers() }).then(handleResponse),

@@ -1,13 +1,15 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Edit3, Phone, MapPin, Star, LogOut, ChefHat, TrendingUp } from 'lucide-react';
+import { Edit3, Phone, MapPin, Star, LogOut, ChefHat, TrendingUp, Trash2 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
+import { DeleteAccountModal } from '../common/DeleteAccountModal';
 
 export const RestaurantProfile: React.FC = () => {
   const { userProfile, setUserProfile, resetToLanding } = useApp();
   const [editing, setEditing] = useState(false);
   const [reviews, setReviews] = useState<any[]>([]);
   const [totalShifts, setTotalShifts] = useState(0);
+  const [showDelete, setShowDelete] = useState(false); // מודל מחיקת חשבון
 
   const [name, setName]       = useState(userProfile?.Name    || '');
   const [phone, setPhone]     = useState(userProfile?.Phone   || '');
@@ -175,6 +177,22 @@ export const RestaurantProfile: React.FC = () => {
           className="w-full bg-gray-100 text-gray-600 rounded-2xl py-4 font-bold flex items-center justify-center gap-2">
           <LogOut size={18} /> התנתק
         </button>
+
+        {/* אזור מסוכן — מחיקת חשבון */}
+        <button onClick={() => setShowDelete(true)}
+          className="w-full text-red-500 rounded-2xl py-3 font-semibold text-sm flex items-center justify-center gap-2 active:bg-red-50 transition-colors">
+          <Trash2 size={15} /> מחיקת החשבון שלי
+        </button>
+
+        {showDelete && (
+          <DeleteAccountModal
+            onClose={() => setShowDelete(false)}
+            onDeleted={() => {
+              try { localStorage.clear(); } catch { /* ignore */ }
+              resetToLanding();
+            }}
+          />
+        )}
       </div>
     );
   }
