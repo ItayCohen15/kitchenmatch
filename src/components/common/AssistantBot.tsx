@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Sparkles, X, Send } from 'lucide-react';
+import { Bot, Sparkles, X, Send } from 'lucide-react';
 import { api } from '../../api';
 import { useApp } from '../../context/AppContext';
 import { haptic } from '../../utils/haptics';
@@ -53,6 +53,26 @@ export const AssistantBot: React.FC<{ role: BotRole }> = ({ role }) => {
     if (open) bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages.length, thinking, open]);
 
+  // ── הסתרה בגלילה למטה ──
+  // מבטיח שהכפתור לא יכסה תוכן/כפתורים בתחתית המסך: נעלם כשגוללים למטה,
+  // חוזר כשגוללים למעלה או בראש העמוד. (scroll לא עולה בבועות → מאזינים ב-capture.)
+  const [hidden, setHidden] = useState(false);
+  const lastY = useRef(0);
+  useEffect(() => {
+    const onScroll = (e: Event) => {
+      const el = e.target as HTMLElement;
+      if (!el || typeof el.scrollTop !== 'number') return;
+      const y = el.scrollTop;
+      const dy = y - lastY.current;
+      if (y < 40) setHidden(false);
+      else if (dy > 8) setHidden(true);
+      else if (dy < -8) setHidden(false);
+      lastY.current = y;
+    };
+    document.addEventListener('scroll', onScroll, true);
+    return () => document.removeEventListener('scroll', onScroll, true);
+  }, []);
+
   const ask = (text: string) => {
     const q = text.trim();
     if (!q || thinking) return;
@@ -75,16 +95,30 @@ export const AssistantBot: React.FC<{ role: BotRole }> = ({ role }) => {
   return (
     <>
       {/* כפתור צף */}
+      {/* כפתור צף — z-20 בכוונה: מעל תוכן הדף אבל *מתחת* למודלים (backdrop z-40 / פאנל z-50),
+          כדי שלא יצוף מעל חלונות כמו פרופיל עובד, ביטול משמרת או התראות. */}
       {!open && (
-        <div className="fixed inset-x-0 z-[60] flex justify-center px-4 pointer-events-none"
+        <div className="fixed inset-x-0 z-20 flex justify-center px-4 pointer-events-none"
           style={{ bottom: 'calc(env(safe-area-inset-bottom) + 88px)' }}>
           <div className="w-full max-w-sm flex justify-end">
             <button
               onClick={() => { haptic('light'); setOpen(true); }}
               aria-label="עוזר חכם"
-              className="pointer-events-auto w-14 h-14 rounded-full flex items-center justify-center text-white shadow-2xl active:scale-95 transition-transform"
-              style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow: '0 8px 28px rgba(232,160,32,0.45)' }}>
-              <Sparkles size={24} />
+              className="relative w-14 h-14 rounded-full flex items-center justify-center text-white shadow-2xl active:scale-95"
+              style={{
+                background: 'linear-gradient(135deg,#e8a020,#f0c050)',
+                boxShadow: '0 8px 28px rgba(232,160,32,0.45)',
+                transition: 'transform .25s cubic-bezier(0.16,1,0.3,1), opacity .25s ease',
+                transform: hidden ? 'scale(0.55) translateY(14px)' : 'scale(1)',
+                opacity: hidden ? 0 : 1,
+                pointerEvents: hidden ? 'none' : 'auto',
+              }}>
+              <Bot size={26} />
+              {/* ניצוץ קטן — מסמן שזה עוזר חכם */}
+              <span className="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full flex items-center justify-center"
+                style={{ background: '#0d1420', border: '2px solid #f0c050' }}>
+                <Sparkles size={9} style={{ color: '#f0c050' }} />
+              </span>
             </button>
           </div>
         </div>
@@ -107,9 +141,13 @@ export const AssistantBot: React.FC<{ role: BotRole }> = ({ role }) => {
             <div className="flex items-center justify-between px-4 py-3 flex-shrink-0 text-white"
               style={{ background: 'linear-gradient(135deg,#0d1420,#1a2744)' }}>
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center"
+                <div className="relative w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
                   style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
-                  <Sparkles size={18} className="text-white" />
+                  <Bot size={19} className="text-white" />
+                  <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center"
+                    style={{ background: '#0d1420' }}>
+                    <Sparkles size={8} style={{ color: '#f0c050' }} />
+                  </span>
                 </div>
                 <div>
                   <div className="font-black text-sm">סטאף · עוזר</div>
