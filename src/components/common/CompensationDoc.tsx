@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, Printer, ArrowLeftRight } from 'lucide-react';
 import { printHTML } from '../../utils/print';
+import { esc } from '../../utils/escapeHtml';
 import { ROLE_LABELS } from '../../data/mockData';
 
 interface Props {
@@ -80,9 +81,9 @@ export const CompensationDoc: React.FC<Props> = ({ job, viewer, workerName, rest
       </div>
 
       <div class="flow">
-        <div class="party"><div class="label">משלם</div><div class="name">${payerName}</div></div>
+        <div class="party"><div class="label">משלם</div><div class="name">${esc(payerName)}</div></div>
         <div class="arrow">←</div>
-        <div class="party"><div class="label">מקבל</div><div class="name">${receiverName}</div></div>
+        <div class="party"><div class="label">מקבל</div><div class="name">${esc(receiverName)}</div></div>
       </div>
 
       <div class="amount-box">
@@ -91,7 +92,7 @@ export const CompensationDoc: React.FC<Props> = ({ job, viewer, workerName, rest
       </div>
 
       <div class="row"><span>סיבה</span><span>פיצוי בגין ביטול משמרת מאוחר</span></div>
-      <div class="row"><span>תפקיד במשמרת</span><span>${roleLabel}</span></div>
+      <div class="row"><span>תפקיד במשמרת</span><span>${esc(roleLabel)}</span></div>
       <div class="row"><span>תאריך המשמרת</span><span>${shiftDateStr}</span></div>
       <div class="row"><span>צד מבטל</span><span>${cancelledBy === 'worker' ? 'העובד' : 'המסעדה'}</span></div>
 

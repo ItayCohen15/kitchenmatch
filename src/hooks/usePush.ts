@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { api } from '../api';
+import { api, BASE } from '../api';
 
 const VAPID_PUBLIC_KEY = 'BGe7jMp7O9XXvNgEZwO2tXWUIAknrKDil9QUCc3hMaAi5GEEqN6AOHjkF7FkSID46PWscQPGgKG5l3_feaiEJks';
 
@@ -36,8 +36,7 @@ export function usePush(userId?: number) {
           });
         }
 
-        // שלח ל-API
-        const BASE = (import.meta as any).env?.VITE_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://deprive-shakable-fog.ngrok-free.dev');
+        // שלח ל-API (כתובת אחת מרכזית — ראה הערת האבטחה ב-api/index.ts)
       await fetch(`${BASE}/push/subscribe`, {
           method: 'POST',
           headers: {

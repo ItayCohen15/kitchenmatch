@@ -6,6 +6,7 @@ import { api } from '../../api';
 import { haptic } from '../../utils/haptics';
 import { ROLE_LABELS } from '../../data/mockData';
 import { printHTML } from '../../utils/print';
+import { esc } from '../../utils/escapeHtml';
 import { CompensationDoc } from '../common/CompensationDoc';
 import { PayoutAccountCard, type PayoutAccount } from '../common/PayoutAccountCard';
 import { levelFromShifts, effectiveNetMultiplier, effectiveWorkerRate, nextLevelProgress, getLevel } from '../../utils/levels';
@@ -72,12 +73,12 @@ const ShiftSummaryDoc = ({ shift, rate, onClose }: { shift: any; rate: number; o
       </div>
 
       <h2>פרטי משמרת</h2>
-      <div class="row"><span>מסעדה</span><strong>${shift.RestaurantName ?? ''}</strong></div>
-      <div class="row"><span>עיר</span><span>${shift.RestaurantCity ?? ''}</span></div>
-      <div class="row"><span>תפקיד</span><span>${ROLE_LABELS[shift.Role] ?? shift.Role ?? ''}</span></div>
-      <div class="row"><span>תאריך</span><span>${dateStr}</span></div>
-      <div class="row"><span>שעות עבודה</span><span>${hours} שעות</span></div>
-      <div class="row"><span>תעריף שעתי</span><span>₪${shift.HourlyRate}</span></div>
+      <div class="row"><span>מסעדה</span><strong>${esc(shift.RestaurantName)}</strong></div>
+      <div class="row"><span>עיר</span><span>${esc(shift.RestaurantCity)}</span></div>
+      <div class="row"><span>תפקיד</span><span>${esc(ROLE_LABELS[shift.Role] ?? shift.Role)}</span></div>
+      <div class="row"><span>תאריך</span><span>${esc(dateStr)}</span></div>
+      <div class="row"><span>שעות עבודה</span><span>${esc(hours)} שעות</span></div>
+      <div class="row"><span>תעריף שעתי</span><span>₪${esc(shift.HourlyRate)}</span></div>
 
       <h2>פירוט תשלום</h2>
       <div class="row"><span>סכום משמרת (ברוטו)</span><span>₪${gross}</span></div>
@@ -224,25 +225,25 @@ const WorkerInvoiceDoc = ({ shift, worker, onClose }: { shift: any; worker: any;
 
       <div class="section">
         <div class="sec-label">👤 מספק שירות – עוסק עצמאי</div>
-        <div class="field"><b>שם:</b> ${worker?.Name ?? '___________'}</div>
-        <div class="field"><b>טלפון:</b> ${worker?.Phone ?? '___________'}</div>
+        <div class="field"><b>שם:</b> ${esc(worker?.Name ?? '___________')}</div>
+        <div class="field"><b>טלפון:</b> ${esc(worker?.Phone ?? '___________')}</div>
         <div class="field"><b>מס׳ עוסק פטור / מורשה:</b> ___________________________</div>
         <div class="field-note">* מלא מס׳ עוסק ידנית לפני שליחה</div>
       </div>
 
       <div class="section" style="border-right-color:#10b981">
         <div class="sec-label">🏪 ללקוח – מסעדה</div>
-        <div class="field"><b>שם:</b> ${shift.RestaurantName ?? '___________'}</div>
-        <div class="field"><b>עיר:</b> ${shift.RestaurantCity ?? '___________'}</div>
+        <div class="field"><b>שם:</b> ${esc(shift.RestaurantName ?? '___________')}</div>
+        <div class="field"><b>עיר:</b> ${esc(shift.RestaurantCity ?? '___________')}</div>
       </div>
 
       <div class="desc-section">
         <div class="sec-label">📋 פירוט שירות</div>
         <div class="field">שירותי עבודה במטבח – משמרת חד-פעמית</div>
-        <div class="field"><b>תאריך משמרת:</b> ${dateStr}</div>
-        <div class="field"><b>תפקיד:</b> ${ROLE_LABELS[shift.Role] ?? shift.Role ?? ''}</div>
-        <div class="field"><b>שעות עבודה:</b> ${hours} שעות</div>
-        <div class="field"><b>תעריף שעתי:</b> ₪${shift.HourlyRate}</div>
+        <div class="field"><b>תאריך משמרת:</b> ${esc(dateStr)}</div>
+        <div class="field"><b>תפקיד:</b> ${esc(ROLE_LABELS[shift.Role] ?? shift.Role)}</div>
+        <div class="field"><b>שעות עבודה:</b> ${esc(hours)} שעות</div>
+        <div class="field"><b>תעריף שעתי:</b> ₪${esc(shift.HourlyRate)}</div>
       </div>
 
       <div class="total-box">

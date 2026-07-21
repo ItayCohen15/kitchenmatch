@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { GraduationCap, Send, MapPin, Clock, Check, Calendar, Lightbulb, Phone, MessageCircle } from 'lucide-react';
+import { GraduationCap, Send, MapPin, Clock, Check, Calendar, Lightbulb, Phone, MessageCircle, ChevronDown, Archive } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS, visibleShiftRoles } from '../../utils/roles';
@@ -16,6 +16,22 @@ const stageProgress = (s: any) => {
   return Math.max(0, Math.min(100, Math.round(((Date.now() - st) / (en - st)) * 100)));
 };
 
+/* סטאז' "נגמר" = נסגר רשמית, או שתקופת הסטאז' פשוט עברה.
+   בלי התנאי השני, סטאז' שהסתיים אבל המסעדה לא סימנה 'הושלם'
+   היה ממשיך להיתפס כפעיל ולשבת בראש המסך לנצח. */
+const isEndedStage = (s: any) =>
+  s.Status === 'completed' || s.Status === 'cancelled' ||
+  (s.EndTime ? new Date(s.EndTime).getTime() < Date.now() : false);
+
+/* הסטאז' הפעיל = מאושר/פעיל *ושתקופתו טרם הסתיימה* */
+const pickActiveStage = (list: any[]) =>
+  list.find((m: any) => (m.Status === 'confirmed' || m.Status === 'active') && !isEndedStage(m));
+
+const ENDED_LABEL: Record<string, { text: string; cls: string }> = {
+  completed: { text: 'הושלם',  cls: 'bg-green-50 text-green-700' },
+  cancelled: { text: 'בוטל',   cls: 'bg-red-50 text-red-600' },
+};
+
 export const WorkerStages: React.FC = () => {
   const { userProfile, selectWorkerJob, navToWorker } = useApp();
   const wid = userProfile?.Id;
@@ -29,8 +45,12 @@ export const WorkerStages: React.FC = () => {
   const [busy, setBusy] = useState<number | null>(null);
   const [msg, setMsg] = useState('');
   const [showChat, setShowChat] = useState(false);
+  // ארכיון הסטאז'ים שנגמרו — סגור כברירת מחדל, נטען רק בפתיחה
+  const [showEnded, setShowEnded] = useState(false);
+  const [endedSummary, setEndedSummary] = useState<Record<number, { shifts: number; earned: number }>>({});
+  const [loadingEnded, setLoadingEnded] = useState(false);
 
-  const activeStage = mine.find(m => m.Status === 'confirmed' || m.Status === 'active');
+  const activeStage = pickActiveStage(mine);
 
   const load = async () => {
     if (!wid) return;
@@ -43,7 +63,7 @@ export const WorkerStages: React.FC = () => {
     setStages(Array.isArray(stg) ? stg : []);
     const myStages = (Array.isArray(hist) ? hist : []).filter((j: any) => j.JobType === 'stage');
     setMine(myStages);
-    const act = myStages.find((m: any) => m.Status === 'confirmed' || m.Status === 'active');
+    const act = pickActiveStage(myStages);
     if (act) {
       const sh = await api.getStageShifts(Number(act.Id)).catch(() => []);
       setShifts(Array.isArray(sh) ? sh : []);
@@ -78,6 +98,34 @@ export const WorkerStages: React.FC = () => {
 
   const appliedIds = new Set(mine.map(m => Number(m.Id)));
   const openStages = stages.filter(s => allowedRoles.includes(s.Role) && !appliedIds.has(Number(s.Id)));
+
+  /* שלוש קבוצות זרות: פעיל · ממתין לאישור · נגמר (החדש ביותר ראשון) */
+  const endedStages = mine.filter(isEndedStage)
+    .sort((a, b) => new Date(b.EndTime || 0).getTime() - new Date(a.EndTime || 0).getTime());
+  const pendingStages = mine.filter(m =>
+    !isEndedStage(m) && ['pending_approval', 'matched', 'searching'].includes(m.Status));
+
+  /* פתיחת הארכיון — טוענים סיכומים פעם אחת בלבד, לפי דרישה */
+  const toggleEnded = async () => {
+    const next = !showEnded;
+    setShowEnded(next);
+    if (!next || loadingEnded || !endedStages.length) return;
+    if (endedStages.every(s => endedSummary[Number(s.Id)] !== undefined)) return; // כבר נטען
+    setLoadingEnded(true);
+    try {
+      const lists = await Promise.all(
+        endedStages.map(s => api.getStageShifts(Number(s.Id)).catch(() => [])));
+      const map: Record<number, { shifts: number; earned: number }> = {};
+      endedStages.forEach((s, i) => {
+        const done = (Array.isArray(lists[i]) ? lists[i] : []).filter((x: any) => x.Status === 'completed');
+        map[Number(s.Id)] = {
+          shifts: done.length,
+          earned: done.reduce((t: number, x: any) => t + (Number(x.TotalPay) || 0), 0),
+        };
+      });
+      setEndedSummary(prev => ({ ...prev, ...map }));
+    } finally { setLoadingEnded(false); }
+  };
   const lastFeedback = [...shifts].reverse().find(s => s.ImprovementNote || s.NextShiftNote);
   const left = activeStage ? daysLeft(activeStage.EndTime) : 0;
 
@@ -210,7 +258,7 @@ export const WorkerStages: React.FC = () => {
       )}
 
       {/* ממתינים לאישור */}
-      {mine.filter(m => ['pending_approval', 'matched', 'searching'].includes(m.Status)).map(s => (
+      {pendingStages.map(s => (
         <div key={s.Id} className="bg-white rounded-2xl p-4 card-shadow">
           <div className="flex items-center justify-between mb-1">
             <span className="font-bold text-gray-900">{s.RestaurantName}</span>
@@ -250,6 +298,72 @@ export const WorkerStages: React.FC = () => {
           </div>
         ))}
       </div>
+
+      {/* ═══ סטאז'ים שנגמרו — ארכיון מתקפל, תמיד בתחתית המסך ═══ */}
+      {endedStages.length > 0 && (
+        <div className="pt-1">
+          <button onClick={toggleEnded}
+            aria-expanded={showEnded}
+            className="w-full flex items-center gap-2.5 px-4 py-3.5 rounded-2xl transition-colors active:bg-gray-100"
+            style={{ background: '#f8fafc', border: '1px solid #eef2f7' }}>
+            <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center flex-shrink-0"
+              style={{ border: '1px solid #e8edf3' }}>
+              <Archive size={15} className="text-gray-400" />
+            </div>
+            <span className="font-bold text-gray-600 text-sm">סטאז'ים שנגמרו</span>
+            <span className="text-[11px] font-bold text-gray-400 bg-white rounded-full px-2 py-0.5"
+              style={{ border: '1px solid #e8edf3' }}>{endedStages.length}</span>
+            <ChevronDown size={17}
+              className={`text-gray-400 mr-auto transition-transform duration-200 ${showEnded ? 'rotate-180' : ''}`} />
+          </button>
+
+          {showEnded && (
+            <div className="space-y-2 mt-2 stagger-item">
+              {loadingEnded && (
+                <div className="text-center py-3">
+                  <div className="w-5 h-5 border-2 border-gray-300 border-t-transparent rounded-full animate-spin mx-auto" />
+                </div>
+              )}
+              {endedStages.map(s => {
+                const sum = endedSummary[Number(s.Id)];
+                const badge = ENDED_LABEL[s.Status] || { text: 'הסתיים', cls: 'bg-gray-100 text-gray-500' };
+                return (
+                  <div key={s.Id} className="bg-white rounded-2xl p-4 card-shadow opacity-90">
+                    <div className="flex items-start justify-between mb-1.5">
+                      <div>
+                        <div className="font-bold text-gray-700">{s.RestaurantName}</div>
+                        <div className="text-gray-400 text-xs mt-0.5">
+                          {ROLE_LABELS[s.Role] || s.Role}
+                          {s.RestaurantCity ? ` · ${s.RestaurantCity}` : ''}
+                        </div>
+                      </div>
+                      <span className={`text-[10px] font-bold rounded-full px-2 py-1 ${badge.cls}`}>{badge.text}</span>
+                    </div>
+                    <div className="text-gray-400 text-xs flex items-center gap-1 mb-2">
+                      <Calendar size={11} />{fmtDate(s.StartTime)} – {fmtDate(s.EndTime)}
+                    </div>
+                    {/* מה נסגר בסטאז' הזה */}
+                    {sum ? (
+                      <div className="flex gap-2">
+                        <div className="flex-1 rounded-xl py-2 text-center" style={{ background: '#f8fafc' }}>
+                          <div className="font-black text-gray-700 text-sm">{sum.shifts}</div>
+                          <div className="text-[10px] text-gray-400">משמרות הושלמו</div>
+                        </div>
+                        <div className="flex-1 rounded-xl py-2 text-center" style={{ background: '#f0fdf4' }}>
+                          <div className="font-black text-green-600 text-sm">₪{Math.round(sum.earned).toLocaleString()}</div>
+                          <div className="text-[10px] text-gray-400">הרווחת</div>
+                        </div>
+                      </div>
+                    ) : !loadingEnded && (
+                      <div className="text-gray-300 text-[11px] text-center py-1">אין נתוני משמרות</div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* צ'אט עם המסעדה (שרשור = מזהה הסטאז') */}
       {showChat && activeStage && (

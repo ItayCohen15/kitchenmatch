@@ -248,16 +248,10 @@ export const INITIAL_CHAT: Message[] = [
   { id: 'm3', senderId: 'rest1', senderName: 'מסעדת הגן', text: 'מצוין, הכניסה מהחצר האחורית 👨‍🍳', time: '18:07', isOwn: true },
 ];
 
-export const ROLE_LABELS: Record<string, string> = {
-  line_cook: 'טבח',
-  prep_cook: 'טבח הכנות',
-  cleaner: 'עובד ניקיון',
-  bartender: 'ברמן',
-  waiter: 'מלצר',
-  // legacy
-  chef: 'טבח',
-  dishwasher: 'עובד ניקיון',
-};
+// מקור האמת לתפקידים הוא utils/roles.ts — כאן רק ייצוא חוזר, כדי שקבצים
+// שמייבאים ROLE_LABELS מכאן לא יקבלו רשימה ישנה כשמוסיפים תפקיד.
+// (לפני האיחוד היו כאן שתי רשימות נפרדות שנטו להתפצל.)
+export { ROLE_LABELS } from '../utils/roles';
 
 export const EXPERIENCE_LABELS: Record<string, string> = {
   entry: 'מתחיל',

@@ -1,9 +1,18 @@
-// כתובת ה-API: בענן מגדירים VITE_API_URL ב-Vercel; אחרת נפילה למקומי/ngrok
-const BASE =
-  (import.meta as any).env?.VITE_API_URL ||
-  (window.location.hostname === 'localhost'
-    ? 'http://localhost:3001'
-    : 'https://deprive-shakable-fog.ngrok-free.dev');
+// כתובת ה-API — מוגדרת ב-VITE_API_URL (Vercel), עם נפילה למקומי בפיתוח בלבד.
+//
+// ⚠️ אין כאן יותר נפילה לכתובת מרוחקת "ברירת מחדל". קודם היה כאן מנהרת ngrok:
+// אם VITE_API_URL היה נשמט בבנייה, האפליקציה הייתה שולחת סיסמאות וטוקנים
+// לדומיין של צד שלישי — בלי שום אינדיקציה. עדיף להישבר ברעש מאשר לדלוף בשקט.
+function resolveApiBase(): string {
+  const fromEnv = (import.meta as any).env?.VITE_API_URL;
+  if (fromEnv) return String(fromEnv).replace(/\/$/, '');
+  if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+    return 'http://localhost:3001';
+  }
+  throw new Error('VITE_API_URL is not configured — refusing to guess an API host.');
+}
+
+export const BASE = resolveApiBase();
 
 const getToken = () => localStorage.getItem('km_token') || '';
 

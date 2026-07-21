@@ -4,6 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
 import { printHTML } from '../../utils/print';
+import { esc } from '../../utils/escapeHtml';
 import { CompensationDoc } from '../common/CompensationDoc';
 import { restaurantRate } from '../../utils/levels';
 import { haptic } from '../../utils/haptics';
@@ -78,16 +79,16 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
 
       <div class="section" style="border-right-color:#10b981">
         <div class="sec-label">🏪 ללקוח (מסעדה)</div>
-        <div class="field"><b>שם:</b> ${restaurant?.Name ?? job.RestaurantName ?? '___________'}</div>
-        <div class="field"><b>עיר:</b> ${restaurant?.City ?? '___________'}</div>
+        <div class="field"><b>שם:</b> ${esc(restaurant?.Name ?? job.RestaurantName ?? '___________')}</div>
+        <div class="field"><b>עיר:</b> ${esc(restaurant?.City ?? '___________')}</div>
       </div>
 
       <div class="section" style="border-right-color:#3b82f6">
         <div class="sec-label">📋 פירוט שיבוץ</div>
         <div class="field">עמלת תיווך לשיבוץ עובד מטבח – משמרת חד-פעמית</div>
-        <div class="field"><b>תאריך משמרת:</b> ${dateStr}</div>
-        <div class="field"><b>תפקיד:</b> ${ROLE_LABELS[job.Role] ?? job.Role ?? ''}</div>
-        <div class="field"><b>שם עובד:</b> ${job.WorkerName ?? 'לא זמין'}</div>
+        <div class="field"><b>תאריך משמרת:</b> ${esc(dateStr)}</div>
+        <div class="field"><b>תפקיד:</b> ${esc(ROLE_LABELS[job.Role] ?? job.Role)}</div>
+        <div class="field"><b>שם עובד:</b> ${esc(job.WorkerName ?? 'לא זמין')}</div>
         <div class="field"><b>שעות:</b> ${hoursNum.toFixed(2)} שעות</div>
       </div>
 

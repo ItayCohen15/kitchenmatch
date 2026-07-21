@@ -18,6 +18,7 @@ export const MARKET_RATES: Record<string, MarketRate> = {
   line_cook:  { min: 45, max: 60, avg: 52 },                // טבח קו אקסטרה
   prep_cook:  { min: 40, max: 50, avg: 45 },                // טבח הכנות
   bartender:  { min: 50, max: 70, avg: 58, noTips: true },  // ברמן אקסטרה — לא כולל טיפים
+  barista:    { min: 42, max: 55, avg: 48, noTips: true },  // בריסטה בית קפה — לא כולל טיפים
   waiter:     { min: 40, max: 55, avg: 47, noTips: true },  // מלצר אקסטרה — לא כולל טיפים
   cleaner:    { min: 38, max: 48, avg: 42 },                // עובד ניקיון מטבח
   dishwasher: { min: 38, max: 48, avg: 42 },                // שוטף כלים

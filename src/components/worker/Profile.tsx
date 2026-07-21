@@ -2,7 +2,7 @@
 import { Edit3, Star, Award, LogOut, Phone, Check, X, FileText, Trash2, Upload } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
-import { ROLE_LABELS } from '../../data/mockData';
+import { ROLE_LABELS, WORKER_ROLES } from '../../utils/roles';
 import { levelFromShifts, nextLevelProgress } from '../../utils/levels';
 import { LevelBenefits } from '../common/LevelBenefits';
 import { WorkerGallery } from '../common/WorkerGallery';
@@ -154,10 +154,10 @@ export const WorkerProfile: React.FC = () => {
           <label className="text-sm font-semibold text-gray-600 mb-1.5 block">תפקיד</label>
           <select value={editRole} onChange={e => setEditRole(e.target.value)}
             className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-amber-400 outline-none bg-white">
-            <option value="line_cook">טבח</option>
-            <option value="cleaner">עובד ניקיון</option>
-            <option value="bartender">ברמן</option>
-            <option value="waiter">מלצר</option>
+            {/* נגזר מ-WORKER_ROLES — רשימה קשיחה כאן שכחה תפקידים חדשים */}
+            {WORKER_ROLES.map(r => (
+              <option key={r.key} value={r.key}>{r.emoji} {r.label}</option>
+            ))}
           </select>
         </div>
         <div>

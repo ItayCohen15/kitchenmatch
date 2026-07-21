@@ -10,8 +10,9 @@ import { blendedMarket } from '../../utils/marketRates';
 
 const MONTH_NAMES = ['ינו׳','פבר׳','מרץ','אפר׳','מאי','יוני','יולי','אוג׳','ספט׳','אוק׳','נוב׳','דצמ׳'];
 const DAY_NAMES   = ['','ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
-const ROLE_LABELS: Record<string,string> = { chef:'שפים', line_cook:'טבחים', prep_cook:'טבחי הכנות', dishwasher:'מדיחים', cleaner:'ניקיון', bartender:'ברמנים', waiter:'מלצרים' };
-const ROLE_COLORS: Record<string,string> = { chef:'#e8a020', line_cook:'#3b82f6', prep_cook:'#6366f1', dishwasher:'#10b981', cleaner:'#10b981', bartender:'#8b5cf6', waiter:'#f43f5e' };
+// תוויות ברבים (ייחודי למסך הזה — בשאר האפליקציה משתמשים ב-ROLE_LABELS מ-utils/roles)
+const ROLE_LABELS: Record<string,string> = { chef:'שפים', line_cook:'טבחים', prep_cook:'טבחי הכנות', dishwasher:'מדיחים', cleaner:'ניקיון', bartender:'ברמנים', barista:'בריסטות', waiter:'מלצרים' };
+const ROLE_COLORS: Record<string,string> = { chef:'#e8a020', line_cook:'#3b82f6', prep_cook:'#6366f1', dishwasher:'#10b981', cleaner:'#10b981', bartender:'#8b5cf6', barista:'#a16207', waiter:'#f43f5e' };
 
 // אחוז עמלת המסעדה לפי סוג המשמרת: שותפות/סטאז' 4.5%, חירום 12%, רגיל 6.5%
 const restRate = (j: any) =>

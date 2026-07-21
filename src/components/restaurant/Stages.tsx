@@ -8,8 +8,8 @@ import { ChatModal } from '../common/ChatModal';
 
 type Tab = 'mine' | 'post' | 'partners';
 
-// סטאז' מיועד רק לטבחים וברמנים
-const STAGE_ROLES = WORKER_ROLES.filter(r => r.key === 'line_cook' || r.key === 'bartender');
+// סטאז' מיועד למקצועות שנלמדים בקורס: טבחים, ברמנים ובריסטות
+const STAGE_ROLES = WORKER_ROLES.filter(r => ['line_cook', 'bartender', 'barista'].includes(r.key));
 
 const fmtDate = (d?: string) => d ? new Date(d).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit' }) : '';
 const daysLeft = (end?: string) => end ? Math.ceil((new Date(end).getTime() - Date.now()) / 86400000) : 0;

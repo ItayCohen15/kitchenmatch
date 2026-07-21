@@ -1,11 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { CheckCircle } from 'lucide-react';
-
-const BASE =
-  (import.meta as any).env?.VITE_API_URL ||
-  (window.location.hostname === 'localhost'
-    ? 'http://localhost:3001'
-    : 'https://deprive-shakable-fog.ngrok-free.dev');
+// כתובת ה-API מגיעה ממקור אחד (ראה הערת האבטחה ב-api/index.ts)
+import { BASE } from '../api';
 
 interface Props {
   userId: number;

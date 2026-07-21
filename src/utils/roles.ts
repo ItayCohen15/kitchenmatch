@@ -12,6 +12,7 @@ export const WORKER_ROLES: RoleDef[] = [
   { key: 'line_cook', label: 'טבח',          emoji: '🍳', desc: 'מטבח חם/קר · כולל משמרות טבח הכנות' },
   { key: 'cleaner',   label: 'עובד ניקיון',  emoji: '🧽', desc: 'ניקיון מטבח ושטיפת כלים' },
   { key: 'bartender', label: 'ברמן',         emoji: '🍸', desc: 'בר, קוקטיילים ומשקאות' },
+  { key: 'barista',   label: 'בריסטה',       emoji: '☕', desc: 'קפה, אספרסו ובתי קפה' },
   { key: 'waiter',    label: 'מלצר',         emoji: '🍽️', desc: 'שירות שולחנות ומלצרות' },
 ];
 
@@ -21,6 +22,7 @@ export const SHIFT_ROLES: RoleDef[] = [
   { key: 'prep_cook', label: 'טבח הכנות',   emoji: '🔪', desc: 'הכנות מוקדמות · חיתוך · מיזנפלס' },
   { key: 'cleaner',   label: 'עובד ניקיון', emoji: '🧽', desc: 'ניקיון · שטיפת כלים' },
   { key: 'bartender', label: 'ברמן',        emoji: '🍸', desc: 'בר · קוקטיילים · משקאות' },
+  { key: 'barista',   label: 'בריסטה',      emoji: '☕', desc: 'קפה · אספרסו · בית קפה' },
   { key: 'waiter',    label: 'מלצר',        emoji: '🍽️', desc: 'שירות · מלצרות' },
 ];
 
@@ -30,6 +32,7 @@ export const ROLE_LABELS: Record<string, string> = {
   prep_cook: 'טבח הכנות',
   cleaner:   'עובד ניקיון',
   bartender: 'ברמן',
+  barista:   'בריסטה',
   waiter:    'מלצר',
   // legacy
   chef:       'טבח',
@@ -50,6 +53,9 @@ export function visibleShiftRoles(workerRole?: string): string[] {
       return ['cleaner', 'dishwasher'];
     case 'bartender':
       return ['bartender'];
+    case 'barista':
+      // בריסטה הוא מקצוע נפרד (בתי קפה) — לא מוצג לו בר ולהפך.
+      return ['barista'];
     case 'waiter':
       return ['waiter'];
     default:
@@ -75,6 +81,10 @@ export const SKILLS_BY_ROLE: Record<string, { group: string; items: string[] }[]
   bartender: [
     { group: 'סוג מקום', items: ['בר קוקטיילים', 'פאב / בירות', 'מסעדה', 'אירועים / קייטרינג', 'מועדון'] },
     { group: 'מומחיות', items: ['קוקטיילים קלאסיים', 'מיקסולוגיה / קוקטיילים חתומים', 'בירות מהחבית', 'יין', 'קפה / בריסטה', 'פלייר / מהירות'] },
+  ],
+  barista: [
+    { group: 'סוג מקום', items: ['בית קפה שכונתי', 'רשת קפה', 'בית קלייה / ספיישלטי', 'מסעדה', 'מאפייה / קונדיטוריה', 'אירועים / קייטרינג'] },
+    { group: 'מומחיות', items: ['אספרסו ידני', 'לאטה ארט', 'כיול טחינה', 'שיטות חליטה (V60 / קמקס / אירופרס)', 'קולד ברו', 'תפעול מכונה וניקוי', 'קופה / סליקה', 'מאפים וכריכים'] },
   ],
   waiter: [
     { group: 'סוג מסעדה', items: ['פיין דיינינג / שף', 'מסעדה קז׳ואל', 'בית קפה', 'אירועים / קייטרינג', 'בר / פאב'] },
