@@ -222,10 +222,31 @@ export const api = {
       body: JSON.stringify(amount != null ? { amount } : {})
     }).then(handleResponse),
 
-  // הגדרות payout (auto שבועי / שיטה / 4 ספרות אחרונות)
-  updatePayoutSettings: (workerId: number, data: { autoPayoutEnabled?: boolean; payoutMethod?: string; bankLast4?: string }) =>
+  // הגדרות payout (auto שבועי / שיטה). 4 הספרות האחרונות מגיעות
+  // מחברת הסליקה לאחר אימות החשבון — לא ניתנות לעדכון מכאן.
+  updatePayoutSettings: (workerId: number, data: { autoPayoutEnabled?: boolean; payoutMethod?: string }) =>
     fetch(`${BASE}/payments/wallet/${workerId}/settings`, {
       method: 'PUT', headers: headers(), body: JSON.stringify(data)
+    }).then(handleResponse),
+
+  // ---- חשבון קבלת תשלומים (payee onboarding אצל ספק הסליקה) ----
+  //  ⚠️ אין כאן שליחת פרטי בנק — ובכוונה. העובד ממלא אותם בעמוד של
+  //  ספק הסליקה (onboardingUrl), ואנחנו מקבלים רק סטטוס + 4 ספרות.
+  //  { status, hasAccount, bankLast4, reason, isSelfEmployed, required }
+  getPayoutAccount: (workerId: number) =>
+    fetch(`${BASE}/payments/payout-account/${workerId}`, { headers: headers(), cache: 'no-store' }).then(handleResponse),
+
+  // פותח/מחדש onboarding — מחזיר { onboardingUrl, account }
+  startPayoutOnboarding: (workerId: number, returnUrl?: string) =>
+    fetch(`${BASE}/payments/payout-account/${workerId}/onboard`, {
+      method: 'POST', headers: headers(),
+      body: JSON.stringify(returnUrl ? { returnUrl } : {})
+    }).then(handleResponse),
+
+  // בדיקת סטטוס מחודשת מול הספק (אחרי שהעובד חזר מה-onboarding)
+  refreshPayoutAccount: (workerId: number) =>
+    fetch(`${BASE}/payments/payout-account/${workerId}/refresh`, {
+      method: 'POST', headers: headers()
     }).then(handleResponse),
 
   // טעינת ארנק מסעדה (escrow funding) — סליקה אמיתית/סימולציה דרך הספק

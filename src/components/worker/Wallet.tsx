@@ -7,6 +7,7 @@ import { haptic } from '../../utils/haptics';
 import { ROLE_LABELS } from '../../data/mockData';
 import { printHTML } from '../../utils/print';
 import { CompensationDoc } from '../common/CompensationDoc';
+import { PayoutAccountCard, type PayoutAccount } from '../common/PayoutAccountCard';
 import { levelFromShifts, effectiveNetMultiplier, effectiveWorkerRate, nextLevelProgress, getLevel } from '../../utils/levels';
 import { blendedMarket } from '../../utils/marketRates';
 
@@ -373,6 +374,8 @@ export const WorkerWallet: React.FC = () => {
   const [wallet, setWallet]         = useState<any>(null);
   const [withdrawing, setWithdrawing] = useState(false);
   const [withdrawMsg, setWithdrawMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  // חשבון קבלת התשלומים אצל ספק הסליקה (נטען ע"י PayoutAccountCard)
+  const [payoutAcc, setPayoutAcc]   = useState<PayoutAccount | null>(null);
 
   useEffect(() => {
     if (!userProfile?.Id) return;
@@ -380,7 +383,10 @@ export const WorkerWallet: React.FC = () => {
   }, [userProfile?.Id]);
 
   const minPayout = Number(wallet?.minPayout ?? 50);
-  const canWithdraw = wallet && Number(wallet.available) >= minPayout;
+  // חוסמים משיכה כשאין חשבון מאושר — אחרת אין לאן להעביר את הכסף.
+  // (בסימולציה required=false, כך שהזרימה הקיימת ממשיכה לעבוד)
+  const accountBlocked = !!payoutAcc && payoutAcc.required && payoutAcc.status !== 'approved';
+  const canWithdraw = !!wallet && Number(wallet.available) >= minPayout && !accountBlocked;
 
   const handleWithdraw = async () => {
     if (!userProfile?.Id || withdrawing || !canWithdraw) return;
@@ -540,6 +546,11 @@ export const WorkerWallet: React.FC = () => {
       {/* ─── Tab: סקירה ─── */}
       {activeTab === 'overview' && (
         <>
+          {/* 🏦 חשבון קבלת תשלומים — לאן מגיע הכסף (onboarding אצל הספק) */}
+          {userProfile?.Id && (
+            <PayoutAccountCard workerId={userProfile.Id} onAccountChange={setPayoutAcc} />
+          )}
+
           {/* 💳 ארנק התשלומים שלי (PayMe · escrow) */}
           {wallet && (
             <div className="bg-white rounded-2xl p-4 card-shadow">
@@ -570,8 +581,10 @@ export const WorkerWallet: React.FC = () => {
                   : <><ArrowDownToLine size={16}/> משוך ₪{Math.round(Number(wallet.available)||0).toLocaleString()}</>}
               </button>
               {!canWithdraw && (
-                <p className="text-[11px] text-gray-400 text-center mt-2">
-                  מינימום למשיכה: ₪{minPayout} · היתרה תגדל עם סיום משמרות
+                <p className="text-[11px] text-center mt-2 text-gray-400">
+                  {accountBlocked
+                    ? <span className="text-amber-600">👆 השלם תחילה את הגדרת חשבון קבלת התשלומים למעלה</span>
+                    : <>מינימום למשיכה: ₪{minPayout} · היתרה תגדל עם סיום משמרות</>}
                 </p>
               )}
               {wallet.autoPayout && (
