@@ -6,6 +6,7 @@ import { getLevel, levelFromShifts } from '../../utils/levels';
 import { WorkerGallery } from './WorkerGallery';
 import { NewWorkerBadge } from './NewWorkerBadge';
 import { GradBadge } from './GradBadge';
+import { VerifiedBadge } from './VerifiedBadge';
 
 interface Props {
   workerId: number;
@@ -82,6 +83,7 @@ export const WorkerProfileModal: React.FC<Props> = ({ workerId, initial, onClose
                   </div>
                   <div className="flex items-center gap-2 mt-1 flex-wrap">
                     <NewWorkerBadge completedShifts={completed} size="sm" />
+                    <VerifiedBadge isVerified={worker?.IsVerified} size="sm" />
                     <GradBadge isTrainee={worker?.IsTrainee} school={worker?.SchoolName} course={worker?.CourseType} size="sm" />
                     <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full"
                       style={{ background: lvl.gradient, color: 'white' }}>
@@ -165,9 +167,15 @@ export const WorkerProfileModal: React.FC<Props> = ({ workerId, initial, onClose
               </a>
             )}
 
-            <div className="flex items-center gap-1.5 text-green-600 text-xs justify-center">
-              <Shield size={12} /> עובד מאומת ב-Staffly
-            </div>
+            {worker?.IsVerified ? (
+              <div className="flex items-center gap-1.5 text-green-600 text-xs justify-center">
+                <Shield size={12} /> עובד מאומת ב-Staffly
+              </div>
+            ) : (
+              <div className="flex items-center gap-1.5 text-gray-400 text-xs justify-center">
+                <Shield size={12} /> העובד עדיין לא אומת
+              </div>
+            )}
           </div>
         </div>
       </div>

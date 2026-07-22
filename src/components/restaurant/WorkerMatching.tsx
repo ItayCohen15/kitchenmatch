@@ -6,6 +6,7 @@ import { api } from '../../api';
 import { CancelShiftModal } from '../common/CancelShiftModal';
 import { WorkerProfileModal } from '../common/WorkerProfileModal';
 import { NewWorkerBadge } from '../common/NewWorkerBadge';
+import { VerifiedBadge } from '../common/VerifiedBadge';
 import { getLevel } from '../../utils/levels';
 
 // חישוב אחוז התאמה אמיתי (כולל חשיפה לפי רמה)
@@ -210,6 +211,7 @@ export const WorkerMatching: React.FC = () => {
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-bold text-gray-900">{wName}</span>
                     <NewWorkerBadge completedShifts={job.CompletedShifts} size="sm" />
+                    <VerifiedBadge isVerified={job.IsVerified} size="sm" />
                     <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${LEVEL_COLORS[level] || 'text-gray-500 bg-gray-100'}`}>
                       {LEVEL_LABELS[level] || level}
                     </span>

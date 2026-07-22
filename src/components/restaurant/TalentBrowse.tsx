@@ -4,6 +4,7 @@ import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
 import { NewWorkerBadge } from '../common/NewWorkerBadge';
 import { GradBadge } from '../common/GradBadge';
+import { VerifiedBadge } from '../common/VerifiedBadge';
 import { WorkerProfileModal } from '../common/WorkerProfileModal';
 
 /** גילוי טאלנט — מסעדות מגלות בוגרי בתי ספר (תוכנית הכניסה למקצוע) + כלל העובדים */
@@ -114,6 +115,7 @@ export const TalentBrowse: React.FC = () => {
                 <div className="flex items-center gap-1.5 flex-wrap mt-1">
                   <GradBadge isTrainee={w.IsTrainee} school={w.SchoolName} course={w.CourseType} size="sm" />
                   <NewWorkerBadge completedShifts={w.CompletedShifts} size="sm" />
+                  <VerifiedBadge isVerified={w.IsVerified} size="sm" />
                 </div>
                 <div className="text-gray-500 text-xs mt-1">{w.City} · {ROLE_LABELS[w.Role] || w.Role}</div>
                 {skills.length > 0 && (

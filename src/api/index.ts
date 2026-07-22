@@ -359,6 +359,10 @@ export const api = {
     fetch(`${BASE}/admin/workers`, { headers: headers(), cache: 'no-store' }).then(handleResponse),
   adminRestaurants: () =>
     fetch(`${BASE}/admin/restaurants`, { headers: headers(), cache: 'no-store' }).then(handleResponse),
+  adminVerifyWorker: (workerId: number, verified: boolean) =>
+    fetch(`${BASE}/admin/workers/${workerId}/verify`, {
+      method: 'POST', headers: headers(), body: JSON.stringify({ verified }),
+    }).then(handleResponse),
   adminRatings: () =>
     fetch(`${BASE}/admin/ratings`, { headers: headers(), cache: 'no-store' }).then(handleResponse),
   adminJobs: () =>

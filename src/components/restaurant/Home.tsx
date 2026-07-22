@@ -5,6 +5,7 @@ import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
 import { CancelShiftModal } from '../common/CancelShiftModal';
 import { NewWorkerBadge } from '../common/NewWorkerBadge';
+import { VerifiedBadge } from '../common/VerifiedBadge';
 import { UnreadChatBanner } from '../common/ChatsScreen';
 import { isWithinKm } from '../../utils/cities';
 import { SkeletonList } from '../common/Skeleton';
@@ -213,6 +214,7 @@ export const RestaurantHome: React.FC = () => {
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-semibold text-gray-900 text-sm">{wName}</span>
                     <NewWorkerBadge completedShifts={w.CompletedShifts} size="sm" />
+                    <VerifiedBadge isVerified={w.IsVerified} size="sm" />
                     {w.Rating > 0 && <span className="text-xs text-yellow-500 font-bold">★{w.Rating.toFixed(1)}</span>}
                   </div>
                   <div className="text-gray-500 text-xs">{w.City} · {ROLE_LABELS[w.Role] || w.Role}</div>

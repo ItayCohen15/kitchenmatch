@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Search, Star, CheckCircle2, XCircle, Phone, Briefcase, GraduationCap, Download } from 'lucide-react';
+import { Search, Star, CheckCircle2, XCircle, Phone, Briefcase, GraduationCap, Download, BadgeCheck } from 'lucide-react';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../utils/roles';
 import { ils, num, dateShort, LEVEL_LABELS, LEVEL_COLORS } from './format';
@@ -13,6 +13,21 @@ export const AdminUsers: React.FC = () => {
   const [restaurants, setRestaurants] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState('');
+  const [verifying, setVerifying] = useState<number | null>(null);
+
+  // אימות ידני של עובד ("תג מאומת"). משפיע רק על המקור הידני —
+  // עובד שעבר KYC אצל הסליקה נשאר מאומת גם אחרי ביטול ידני.
+  const toggleVerify = async (w: any) => {
+    const next = !w.AdminVerifiedAt;
+    setVerifying(w.Id);
+    try {
+      const res: any = await api.adminVerifyWorker(w.Id, next);
+      setWorkers(prev => prev.map(x => x.Id === w.Id
+        ? { ...x, AdminVerifiedAt: res.AdminVerifiedAt, PayoutStatus: res.PayoutStatus, IsVerified: res.IsVerified }
+        : x));
+    } catch { /* שקט — נשאר במצב הקודם */ }
+    finally { setVerifying(null); }
+  };
 
   const load = () => {
     setLoading(true);
@@ -95,6 +110,7 @@ export const AdminUsers: React.FC = () => {
                   <div className="flex items-center gap-1.5">
                     <span className="text-white font-black text-sm truncate">{w.Name || '—'}</span>
                     <Verified ok={w.IsEmailVerified} />
+                    {w.IsVerified ? <span className="inline-flex items-center gap-0.5 text-[10px] font-bold px-1.5 py-0.5 rounded-md" style={{ background: 'rgba(16,185,129,0.15)', color: '#34d399' }}><BadgeCheck size={9} /> מאומת</span> : null}
                     {w.IsTrainee ? <span className="inline-flex items-center gap-0.5 text-[10px] font-bold px-1.5 py-0.5 rounded-md" style={{ background: 'rgba(244,63,94,0.15)', color: '#fb7185' }}><GraduationCap size={9} /> סטאז'</span> : null}
                   </div>
                   <div className="text-[11px] mt-0.5" style={{ color: 'rgba(255,255,255,0.4)' }}>
@@ -123,6 +139,23 @@ export const AdminUsers: React.FC = () => {
                   <Phone size={10} /> {w.Phone}
                 </div>
               )}
+              {/* אימות ידני — מקור נפרד מ-KYC */}
+              <div className="flex items-center justify-between gap-2 mt-2.5 pt-2.5" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                  {w.PayoutStatus === 'approved'
+                    ? 'אומת דרך KYC של הסליקה'
+                    : w.AdminVerifiedAt
+                      ? 'אומת ידנית על ידך'
+                      : 'לא מאומת'}
+                </span>
+                <button onClick={() => toggleVerify(w)} disabled={verifying === w.Id}
+                  className="text-[11px] font-bold px-2.5 py-1 rounded-lg disabled:opacity-40 flex-shrink-0"
+                  style={w.AdminVerifiedAt
+                    ? { background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.55)', border: '1px solid rgba(255,255,255,0.1)' }
+                    : { background: 'linear-gradient(135deg,#10b981,#059669)', color: '#fff' }}>
+                  {verifying === w.Id ? '...' : w.AdminVerifiedAt ? 'בטל אימות ידני' : 'אמת עובד'}
+                </button>
+              </div>
             </div>
           )) : filtered.map((r: any) => (
             <div key={r.Id} className="rounded-2xl p-3.5" style={{ background: '#111a2b', border: '1px solid rgba(255,255,255,0.06)' }}>

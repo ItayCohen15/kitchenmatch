@@ -7,6 +7,7 @@ import { levelFromShifts, nextLevelProgress } from '../../utils/levels';
 import { LevelBenefits } from '../common/LevelBenefits';
 import { WorkerGallery } from '../common/WorkerGallery';
 import { GradBadge } from '../common/GradBadge';
+import { VerifiedBadge } from '../common/VerifiedBadge';
 import { fileToDataUrl } from '../../utils/image';
 import { DeleteAccountModal } from '../common/DeleteAccountModal';
 
@@ -192,6 +193,7 @@ export const WorkerProfile: React.FC = () => {
                 style={{ background: currentLevel.gradient, color: 'white' }}>
                 {currentLevel.label}
               </span>
+              <VerifiedBadge isVerified={userProfile?.IsVerified} size="sm" />
               <GradBadge isTrainee={userProfile?.IsTrainee} school={userProfile?.SchoolName} course={userProfile?.CourseType} size="sm" />
             </div>
             <div className="flex items-center gap-3 mt-2">

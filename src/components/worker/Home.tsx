@@ -6,6 +6,7 @@ import { api } from '../../api';
 import { visibleShiftRoles, isCookRole } from '../../utils/roles';
 import { isNewWorker, shiftsUntilEstablished, meetsShiftRequirements } from '../../utils/levels';
 import { NewWorkerBadge } from '../common/NewWorkerBadge';
+import { VerifiedBadge } from '../common/VerifiedBadge';
 import { UnreadChatBanner } from '../common/ChatsScreen';
 import { SkeletonList } from '../common/Skeleton';
 import { EmptyState } from '../common/EmptyState';
@@ -101,6 +102,7 @@ export const WorkerHome: React.FC = () => {
                 {LEVEL_LABELS[level] || level}
               </span>
               <NewWorkerBadge completedShifts={completedShifts} size="sm" />
+              <VerifiedBadge isVerified={userProfile?.IsVerified} size="sm" />
               {rating > 0 && <span className="text-yellow-400 text-sm font-bold">★{rating.toFixed(1)}</span>}
             </div>
           </div>
