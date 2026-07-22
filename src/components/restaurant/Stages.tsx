@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { GraduationCap, Check, Star, Send, Users, Plus, X, Calendar, Phone, MessageCircle, Trash2, ChevronRight } from 'lucide-react';
+import { GraduationCap, Check, Star, Send, Users, Plus, X, Calendar, Phone, MessageCircle, Trash2, ChevronRight, Search } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { WORKER_ROLES } from '../../utils/roles';
@@ -181,9 +181,9 @@ export const RestaurantStages: React.FC = () => {
 
           {visibleStages.length === 0 && (
             <div className="text-center py-10 bg-white rounded-2xl card-shadow">
-              <div className="text-4xl mb-2">🎓</div>
+              <GraduationCap size={30} className="text-gray-300 mx-auto mb-2" />
               <p className="text-gray-500 font-medium text-sm">אין עדיין סטאז'ים</p>
-              <p className="text-gray-400 text-xs mt-0.5">פרסם מקום סטאז' כדי לקלוט מתלמד</p>
+              <p className="text-gray-400 text-xs mt-0.5">פרסמו מקום סטאז' כדי לקלוט מתלמד</p>
             </div>
           )}
 
@@ -239,7 +239,7 @@ export const RestaurantStages: React.FC = () => {
                           <div className="text-gray-400 text-xs">{ROLE_LABELS[s.Role] || s.Role} · עד {fmtDate(s.EndTime)}</div>
                         </div>
                       </div>
-                      <span className="text-[11px] font-bold text-green-600 bg-green-50 rounded-full px-2.5 py-1">🎓 פעיל</span>
+                      <span className="text-[11px] font-bold text-green-600 bg-green-50 rounded-full px-2.5 py-1">פעיל</span>
                     </div>
                     <div>
                       <div className="flex justify-between text-[11px] text-gray-400 mb-1">
@@ -271,7 +271,7 @@ export const RestaurantStages: React.FC = () => {
                       <button onClick={() => setKeepJob(s)}
                         className="w-full text-white rounded-2xl py-3.5 font-bold"
                         style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow: '0 4px 16px rgba(232,160,32,0.35)' }}>
-                        ⭐ שמור כעובד קבוע — ₪300
+                        שמור כעובד קבוע — ₪300
                       </button>
                     )}
                   </div>
@@ -287,7 +287,7 @@ export const RestaurantStages: React.FC = () => {
               {groupSearching.map(s => (
                 <div key={s.Id} className="bg-white rounded-2xl p-4 card-shadow space-y-2.5">
                   <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center text-xl flex-shrink-0">🔎</div>
+                    <div className="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center flex-shrink-0"><Search size={18} className="text-gray-400" /></div>
                     <div className="flex-1">
                       <div className="font-bold text-gray-900">{ROLE_LABELS[s.Role] || s.Role}</div>
                       <div className="text-gray-400 text-xs">מתחיל {fmtDate(s.StartTime)} · 3 שבועות</div>
@@ -312,7 +312,7 @@ export const RestaurantStages: React.FC = () => {
               <div className="text-xs font-bold text-gray-400">הסתיימו ({groupDone.length})</div>
               {groupDone.map(s => (
                 <div key={s.Id} className="bg-white rounded-xl px-3.5 py-2.5 card-shadow flex items-center gap-2.5">
-                  <span className="text-green-500">✅</span>
+                  <Check size={16} className="text-green-500 flex-shrink-0" />
                   <span className="font-semibold text-gray-700 text-sm flex-1 truncate">{s.WorkerName || ROLE_LABELS[s.Role] || s.Role}</span>
                   <span className="text-gray-400 text-xs">{fmtDate(s.StartTime)}–{fmtDate(s.EndTime)}</span>
                 </div>
@@ -326,7 +326,7 @@ export const RestaurantStages: React.FC = () => {
       {tab === 'partners' && (
         <div className="space-y-3">
           <div className="bg-amber-50 border border-amber-100 rounded-2xl p-3 text-center">
-            <span className="text-amber-700 text-sm font-semibold">הצוות שגייסת דרך Staffly — הזמן אותם שוב בקלות 🎉</span>
+            <span className="text-amber-700 text-sm font-semibold">הצוות שגייסת דרך Staffly — אפשר להזמין אותם שוב בקלות</span>
           </div>
           {partners.length === 0 && (
             <div className="text-center py-10 bg-white rounded-2xl card-shadow">
@@ -344,7 +344,7 @@ export const RestaurantStages: React.FC = () => {
                   <div className="text-gray-400 text-xs flex items-center gap-2">
                     <span>{ROLE_LABELS[p.Role] || p.Role}</span>
                     {p.Rating > 0 && <span className="flex items-center gap-0.5"><Star size={11} className="text-amber-400 fill-amber-400" />{Number(p.Rating).toFixed(1)}</span>}
-                    <span className="text-green-600 font-semibold">⭐ קבוע</span>
+                    <span className="text-green-600 font-semibold">קבוע</span>
                   </div>
                 </div>
               </div>
@@ -370,7 +370,7 @@ export const RestaurantStages: React.FC = () => {
       {keepJob && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center p-6" style={{ background: 'rgba(13,20,32,0.65)', backdropFilter: 'blur(3px)' }}>
           <div className="bg-white rounded-3xl p-6 w-full max-w-sm text-center space-y-3 shadow-2xl">
-            <div className="text-4xl">⭐</div>
+            <Star size={36} className="text-amber-400 fill-amber-400 mx-auto" />
             <h3 className="font-black text-gray-900 text-lg">לגייס את {keepJob.WorkerName || 'העובד'} לצוות?</h3>
             <p className="text-gray-500 text-sm">
               ייגבו <b>₪300</b> (דמי השמה חד-פעמיים). מכאן ההעסקה ישירה מולך כמעסיק — Staffly אינה צד ביחסי העבודה.
@@ -390,7 +390,7 @@ export const RestaurantStages: React.FC = () => {
       {directFor && (
         <DirectShiftModal partner={directFor} restaurantId={rid}
           onClose={() => setDirectFor(null)}
-          onSent={() => { setDirectFor(null); setMsg('✅ ההצעה נשלחה לעובד'); }} />
+          onSent={() => { setDirectFor(null); setMsg('ההצעה נשלחה לעובד'); }} />
       )}
 
 
@@ -472,10 +472,10 @@ const DirectShiftModal: React.FC<{ partner: any; restaurantId: number; onClose: 
           <input type="number" inputMode="numeric" value={rate} onChange={e => setRate(e.target.value)} placeholder="50" className={inputCls} />
         </div>
         <div>
-          <label className="text-xs font-semibold text-gray-500 mb-1 block">📋 הנחיות לעובד (אופציונלי)</label>
+          <label className="text-xs font-semibold text-gray-500 mb-1 block">הנחיות לעובד (אופציונלי)</label>
           <input type="text" value={duties} onChange={e => setDuties(e.target.value)} placeholder="מה צריך לעשות במשמרת" className={inputCls} />
         </div>
-        <p className="text-amber-700 text-xs text-center bg-amber-50 rounded-xl py-2">{partner.Name} בצוות שלך — הזמנה מהירה למשמרת בודדת 🎉</p>
+        <p className="text-amber-700 text-xs text-center bg-amber-50 rounded-xl py-2">{partner.Name} בצוות שלך — הזמנה מהירה למשמרת בודדת</p>
         {err && <div className="bg-red-50 text-red-600 text-sm rounded-xl px-4 py-2 text-center">{err}</div>}
         <button onClick={send} disabled={sending}
           className="w-full text-white rounded-2xl py-4 font-bold disabled:opacity-40"

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
+import { RefreshCw } from 'lucide-react';
 import type { UserRole } from './types';
 import { AppProvider, useApp } from './context/AppContext';
 import { usePush } from './hooks/usePush';
@@ -28,7 +29,7 @@ class ReloadOnChunkError extends React.Component<{ children: React.ReactNode }, 
     if (this.state.failed) {
       return (
         <div className="flex flex-col items-center justify-center gap-3 p-8 text-center" style={{ height: '100dvh' }}>
-          <div className="text-3xl">🔄</div>
+          <RefreshCw size={28} className="text-amber-500 animate-spin" />
           <p className="text-gray-600 font-semibold text-sm">יש גרסה חדשה — טוען מחדש...</p>
           <button onClick={() => { try { sessionStorage.removeItem('km_chunk_reload'); } catch {} window.location.reload(); }}
             className="bg-amber-500 text-white rounded-2xl px-6 py-3 font-bold text-sm">רענן עכשיו</button>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, AlertTriangle, Trash2 } from 'lucide-react';
+import { X, AlertTriangle, Trash2, Archive } from 'lucide-react';
 import { api } from '../../api';
 import { haptic } from '../../utils/haptics';
 
@@ -67,7 +67,7 @@ export const DeleteAccountModal: React.FC<Props> = ({ onClose, onDeleted }) => {
             </div>
 
             <div>
-              <div className="font-bold text-gray-800 text-sm mb-1.5">🗑 מה יימחק לצמיתות</div>
+              <div className="font-bold text-gray-800 text-sm mb-1.5 flex items-center gap-1.5"><Trash2 size={14} className="text-gray-500" /> מה יימחק לצמיתות</div>
               <ul className="text-xs text-gray-600 space-y-1 leading-relaxed">
                 <li>• השם, האימייל והטלפון שלך</li>
                 <li>• הפרופיל, קורות החיים והגלריה</li>
@@ -77,7 +77,7 @@ export const DeleteAccountModal: React.FC<Props> = ({ onClose, onDeleted }) => {
             </div>
 
             <div>
-              <div className="font-bold text-gray-800 text-sm mb-1.5">📁 מה יישמר (ומדוע)</div>
+              <div className="font-bold text-gray-800 text-sm mb-1.5 flex items-center gap-1.5"><Archive size={14} className="text-gray-500" /> מה יישמר (ומדוע)</div>
               <p className="text-xs text-gray-600 leading-relaxed">
                 רשומות כספיות של משמרות שהושלמו (תשלומים ועמלות) נשמרות <b>ללא זיהוי אישי</b>,
                 כפי שמחייב הדין לצורכי תיעוד חשבונאי ומס.

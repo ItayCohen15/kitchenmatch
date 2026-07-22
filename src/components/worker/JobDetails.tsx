@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { MapPin, Star, Shield, Zap, X } from 'lucide-react';
+import { MapPin, Star, Shield, Zap, X, Search, XCircle, CheckCircle2, Send, ClipboardList } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { ROLE_LABELS } from '../../data/mockData';
 import { api } from '../../api';
@@ -21,7 +21,7 @@ export const JobDetails: React.FC = () => {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
-          <div className="text-4xl mb-3">🔍</div>
+          <Search size={30} className="text-gray-300 mx-auto mb-3" />
           <p className="text-gray-500 font-medium">משמרת לא נמצאה</p>
           <button
             onClick={() => navToWorker('home')}
@@ -100,7 +100,7 @@ export const JobDetails: React.FC = () => {
     return (
       <div className="screen-enter flex flex-col items-center justify-center min-h-[70vh] text-center gap-4 px-6">
         <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center">
-          <span className="text-5xl">❌</span>
+          <XCircle size={44} className="text-red-500" />
         </div>
         <h2 className="text-2xl font-black text-gray-900">המשמרת בוטלה</h2>
         <p className="text-gray-500">המסעדה ביטלה את המשמרת. אם הביטול היה מאוחר, קיבלת פיצוי לארנק.</p>
@@ -118,13 +118,13 @@ export const JobDetails: React.FC = () => {
         {approvedByRestaurant ? (
           <>
             <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center">
-              <span className="text-5xl">✅</span>
+              <CheckCircle2 size={44} className="text-green-500" />
             </div>
-            <h2 className="text-2xl font-black text-gray-900">אושרת!</h2>
+            <h2 className="text-2xl font-black text-gray-900">המשמרת אושרה</h2>
             <p className="text-gray-500">{restaurantName} מחכה לך</p>
             <button onClick={() => navToWorker('navigation')}
               className="w-full bg-green-500 text-white rounded-2xl py-4 font-black text-lg">
-              נסע עכשיו 🚗
+              צא לדרך
             </button>
             <button onClick={() => setShowCancel(true)}
               className="w-full text-red-400 text-sm py-1 font-semibold">
@@ -145,7 +145,7 @@ export const JobDetails: React.FC = () => {
           <>
             <div className="relative w-28 h-28">
               <div className="w-28 h-28 bg-amber-50 rounded-full flex items-center justify-center">
-                <span className="text-5xl">📨</span>
+                <Send size={40} className="text-amber-500" />
               </div>
               <div className="absolute inset-0 rounded-full border-4 border-amber-200 border-t-orange-500 animate-spin" />
             </div>
@@ -274,7 +274,7 @@ export const JobDetails: React.FC = () => {
       {/* מה כוללת המשמרת */}
       {jobDuties && (
         <div className="bg-white rounded-2xl p-4 card-shadow">
-          <h3 className="font-bold text-gray-800 mb-2 text-sm">📋 מה כוללת המשמרת</h3>
+          <h3 className="font-bold text-gray-800 mb-2 text-sm flex items-center gap-1.5"><ClipboardList size={14} className="text-gray-400" /> מה כוללת המשמרת</h3>
           <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-line">{jobDuties}</p>
         </div>
       )}
@@ -302,7 +302,7 @@ export const JobDetails: React.FC = () => {
       {/* הוראות הגעה */}
       {(jobInstructions || restaurantAddress) && (
         <div className="bg-amber-50 border border-orange-100 rounded-2xl p-4">
-          <h3 className="font-bold text-amber-800 mb-2 text-sm">📍 הוראות הגעה</h3>
+          <h3 className="font-bold text-amber-800 mb-2 text-sm flex items-center gap-1.5"><MapPin size={14} /> הוראות הגעה</h3>
           {restaurantAddress && (
             <div className="text-gray-700 text-sm mb-1 font-medium">
               כתובת: {restaurantAddress}{restaurantCity ? `, ${restaurantCity}` : ''}
@@ -316,7 +316,7 @@ export const JobDetails: React.FC = () => {
 
       {/* Payment guarantee */}
       <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-sm text-blue-700">
-        💰 <strong>תשלום מובטח</strong> — {isSelfEmployed
+        <strong>תשלום מובטח</strong> — {isSelfEmployed
           ? 'הכסף יועבר לארנקך לאחר אישור סיום המשמרת על ידי המסעדה.'
           : 'הסכום יועבר לשירות "חשבונית לשכיר" לאחר סיום המשמרת, ומשם נטו אליך.'}
       </div>
@@ -358,7 +358,7 @@ export const JobDetails: React.FC = () => {
                 isEmergency ? 'bg-red-500 shadow-red-200' : 'bg-amber-500 shadow-amber-200'
               }`}
             >
-              {isEmergency ? '🚨 הגש מועמדות חירום' : '📨 הגש מועמדות'}
+              {isEmergency ? 'הגש מועמדות לחירום' : 'הגש מועמדות'}
             </button>
           </>
         )}

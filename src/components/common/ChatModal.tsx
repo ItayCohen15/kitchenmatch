@@ -60,8 +60,8 @@ export const ChatModal: React.FC<Props> = ({ jobId, title, myRole, myName, readO
         <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2 bg-gray-50" style={{ WebkitOverflowScrolling: 'touch' }}>
           {messages.length === 0 && (
             <div className="text-center text-gray-400 text-sm pt-10">
-              <div className="text-3xl mb-2">💬</div>
-              עדיין אין הודעות — תגיד שלום!
+              <MessageCircle size={26} className="text-gray-300 mx-auto mb-2" />
+              עדיין אין הודעות. אפשר לפתוח בשלום.
             </div>
           )}
           {messages.map((m: any) => {

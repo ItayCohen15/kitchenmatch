@@ -46,7 +46,7 @@ export const TalentBrowse: React.FC = () => {
       {/* Mode toggle */}
       <div className="flex bg-white rounded-2xl p-1 card-shadow">
         {[
-          { id: 'grads', label: '🎓 בוגרי בתי ספר' },
+          { id: 'grads', label: 'בוגרי בתי ספר' },
           { id: 'all', label: 'כל העובדים' },
         ].map(t => (
           <button key={t.id} onClick={() => setMode(t.id as any)}

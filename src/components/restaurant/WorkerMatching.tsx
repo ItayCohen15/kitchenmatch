@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useState, useCallback } from 'react';
-import { Shield, MapPin, Star, Check, X, Clock, RefreshCw, Phone, Trash2, Eye } from 'lucide-react';
+import { Shield, MapPin, Star, Check, X, Clock, RefreshCw, Phone, Trash2, Eye, CheckCircle2 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { LEVEL_LABELS, LEVEL_COLORS } from '../../data/mockData';
 import { api } from '../../api';
@@ -109,10 +109,10 @@ export const WorkerMatching: React.FC = () => {
     return (
       <div className="screen-enter flex flex-col items-center justify-center min-h-[70vh] text-center gap-4 px-6">
         <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center">
-          <span className="text-5xl">✅</span>
+          <CheckCircle2 size={44} className="text-green-500" />
         </div>
-        <h2 className="text-2xl font-black text-gray-900">{wName} אושר!</h2>
-        <p className="text-gray-500">עובד על הדרך אליך · עוקב אחר מיקומו...</p>
+        <h2 className="text-2xl font-black text-gray-900">{wName} אושר</h2>
+        <p className="text-gray-500">העובד בדרך אליך. אפשר לעקוב אחר מיקומו כאן.</p>
         <div className="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );

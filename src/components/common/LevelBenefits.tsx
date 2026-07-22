@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, Lock, ChevronDown } from 'lucide-react';
+import { Check, Lock, ChevronDown, Gift } from 'lucide-react';
 import { LEVELS, levelFromShifts } from '../../utils/levels';
 
 interface Props {
@@ -14,7 +14,7 @@ export const LevelBenefits: React.FC<Props> = ({ completedShifts }) => {
   return (
     <div className="bg-white rounded-2xl p-4 card-shadow">
       <div className="flex items-center gap-2 mb-3">
-        <span className="text-lg">🎁</span>
+        <Gift size={18} className="text-amber-500" />
         <h3 className="font-bold text-gray-800">הטבות הרמות</h3>
       </div>
 
@@ -38,7 +38,7 @@ export const LevelBenefits: React.FC<Props> = ({ completedShifts }) => {
                 className="w-full flex items-center gap-2.5 px-3 py-2.5 text-right">
                 <span className="w-9 h-9 rounded-xl flex items-center justify-center text-base flex-shrink-0"
                   style={{ background: reached ? l.gradient : '#f1f5f9' }}>
-                  {reached ? l.emoji : <Lock size={14} className="text-gray-400" />}
+                  {reached ? <Check size={14} className="text-green-500" /> : <Lock size={14} className="text-gray-400" />}
                 </span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
@@ -65,8 +65,8 @@ export const LevelBenefits: React.FC<Props> = ({ completedShifts }) => {
                     </div>
                   ))}
                   {idx > currentIdx && (
-                    <div className="text-[11px] text-amber-600 font-semibold mt-1.5 pt-1.5 border-t border-gray-100">
-                      🔒 נפתח ב-{l.min} משמרות (עוד {Math.max(l.min - completedShifts, 0)})
+                    <div className="text-[11px] text-amber-600 font-semibold mt-1.5 pt-1.5 border-t border-gray-100 flex items-center gap-1">
+                      <Lock size={11} /> נפתח ב-{l.min} משמרות (עוד {Math.max(l.min - completedShifts, 0)})
                     </div>
                   )}
                 </div>

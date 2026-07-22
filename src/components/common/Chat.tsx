@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect, useRef } from 'react';
-import { Send } from 'lucide-react';
+import { Send, MessageCircle } from 'lucide-react';
 import { api } from '../../api';
 
 interface Props {
@@ -56,7 +56,7 @@ export const Chat: React.FC<Props> = ({ jobId, myRole, myName }) => {
 
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-100 flex-shrink-0">
-        <span className="font-bold text-gray-800 text-sm">💬 צ׳אט</span>
+        <span className="font-bold text-gray-800 text-sm flex items-center gap-1.5"><MessageCircle size={15} className="text-gray-400" /> צ׳אט</span>
         <div className="flex items-center gap-2">
           {error && <span className="text-red-500 text-xs">{error}</span>}
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />

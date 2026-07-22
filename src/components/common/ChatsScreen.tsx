@@ -67,7 +67,7 @@ export const ChatsScreen: React.FC<{ role: 'restaurant' | 'worker' }> = ({ role 
 
       {!loading && threads.length === 0 && (
         <div className="text-center py-12 bg-white rounded-2xl card-shadow">
-          <div className="text-4xl mb-2">💬</div>
+          <MessageCircle size={30} className="text-gray-300 mx-auto mb-2" />
           <p className="text-gray-500 font-medium text-sm">אין עדיין שיחות</p>
           <p className="text-gray-400 text-xs mt-0.5">צ'אט נפתח אוטומטית עם כל משמרת או סטאז'</p>
         </div>
@@ -101,7 +101,7 @@ export const ChatsScreen: React.FC<{ role: 'restaurant' | 'worker' }> = ({ role 
                   {locked && <Lock size={11} className="text-gray-300 flex-shrink-0" />}
                 </div>
                 <div className={`text-xs truncate mt-0.5 ${unread ? 'text-gray-700 font-semibold' : 'text-gray-400'}`}>
-                  {t.LastText ? `${mine ? 'אתה: ' : ''}${t.LastText}` : 'אין הודעות עדיין — תגיד שלום 👋'}
+                  {t.LastText ? `${mine ? 'אתה: ' : ''}${t.LastText}` : 'אין הודעות עדיין'}
                 </div>
               </div>
               {/* זמן */}
@@ -162,7 +162,7 @@ export const UnreadChatBanner: React.FC<{ role: 'restaurant' | 'worker'; onOpen:
         <div className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-red-500" />
       </div>
       <div className="flex-1">
-        <div className="font-bold text-white text-sm">💬 {text}</div>
+        <div className="font-bold text-white text-sm">{text}</div>
         <div className="text-white/55 text-xs">לחץ לפתיחת הצ'אט</div>
       </div>
     </button>

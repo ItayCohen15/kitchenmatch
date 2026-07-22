@@ -3,7 +3,7 @@ import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip,
   ResponsiveContainer, PieChart, Pie, Cell,
 } from 'recharts';
-import { TrendingUp, Clock, Star, Zap, ChevronDown, ChevronUp, Flame, Handshake, Scale } from 'lucide-react';
+import { TrendingUp, Clock, Star, Zap, ChevronDown, ChevronUp, Flame, Handshake, Scale, BarChart3, ChefHat, GraduationCap, ClipboardList, Calendar } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { blendedMarket } from '../../utils/marketRates';
@@ -73,7 +73,7 @@ export const RestaurantAnalytics: React.FC = () => {
       <h2 className="text-xl font-black text-gray-900">המרכז הפיננסי</h2>
       <div className="rounded-3xl p-8 text-center text-white"
         style={{ background: 'linear-gradient(135deg,#0d1420,#1a2744)' }}>
-        <div className="text-5xl mb-3">📊</div>
+        <BarChart3 size={40} className="text-gray-500 mx-auto mb-3" />
         <p className="font-bold text-lg">אין עדיין נתונים</p>
         <p className="text-gray-400 text-sm mt-1">התובנות הפיננסיות יופיעו לאחר השלמת משמרות</p>
       </div>
@@ -161,11 +161,11 @@ export const RestaurantAnalytics: React.FC = () => {
 
   // 📋 פילוח לפי סוג משמרת — רגיל / חירום / קבועים / סטאז'רים (שכר ממוצע + עלות)
   const typeOf = (j: any) => j.JobType === 'direct' ? 'partner' : j.JobType === 'stage_shift' ? 'stage' : j.IsEmergency ? 'emergency' : 'regular';
-  const TYPE_META: Record<string, { label: string; emoji: string; color: string }> = {
-    regular:   { label: 'משמרות רגילות', emoji: '🍳', color: '#3b82f6' },
-    emergency: { label: 'משמרות חירום',  emoji: '🚨', color: '#ef4444' },
-    partner:   { label: 'עובדים קבועים', emoji: '🤝', color: '#10b981' },
-    stage:     { label: "סטאז'רים",      emoji: '🎓', color: '#e8a020' },
+  const TYPE_META: Record<string, { label: string; Icon: React.ComponentType<any>; color: string }> = {
+    regular:   { label: 'משמרות רגילות', Icon: ChefHat,       color: '#3b82f6' },
+    emergency: { label: 'משמרות חירום',  Icon: Zap,           color: '#ef4444' },
+    partner:   { label: 'עובדים קבועים', Icon: Handshake,     color: '#10b981' },
+    stage:     { label: "סטאז'רים",      Icon: GraduationCap, color: '#e8a020' },
   };
   const typeMap: Record<string, { count: number; rateSum: number; cost: number; hours: number }> = {};
   jobs.forEach(j => {
@@ -211,18 +211,18 @@ export const RestaurantAnalytics: React.FC = () => {
 
   // 💡 תובנות חכמות (עד 4, לפי מה שרלוונטי) — הכל נשאר בתוך האפליקציה
   const insights: string[] = [];
-  if (emergencyShare >= 30 && emergencyExtra >= 20) insights.push(`⏰ ${emergencyShare}% מהמשמרות שלך הן חירום — תכנון שבועי מראש היה חוסך לך ~₪${Math.round(emergencyExtra).toLocaleString()} בפרמיות`);
-  else if (emergencyExtra >= 20) insights.push(`🚨 משמרות חירום עלו לך ₪${Math.round(emergencyExtra).toLocaleString()} מעבר לעמלה רגילה — פרסום יום מראש משאיר את הכסף אצלך`);
+  if (emergencyShare >= 30 && emergencyExtra >= 20) insights.push(`${emergencyShare}% מהמשמרות שלך הן חירום. תכנון שבועי מראש היה חוסך לך כ־₪${Math.round(emergencyExtra).toLocaleString()} בפרמיות.`);
+  else if (emergencyExtra >= 20) insights.push(`משמרות חירום עלו לך ₪${Math.round(emergencyExtra).toLocaleString()} מעבר לעמלה רגילה. פרסום יום מראש משאיר את הכסף אצלך.`);
   if (partnerSavings >= 10 && partnerROI !== null) insights.push(partnerROI >= 1
-    ? `🤝 ההשקעה בעובדים קבועים (₪${partnerInvestment.toLocaleString()}) כבר החזירה את עצמה — חסכת ₪${Math.round(partnerSavings).toLocaleString()} בעמלות`
-    : `🤝 העובדים הקבועים חסכו לך ₪${Math.round(partnerSavings).toLocaleString()} — עוד ₪${Math.round(partnerInvestment - partnerSavings).toLocaleString()} והם מכסים את דמי ההמרה`);
+    ? `ההשקעה בעובדים קבועים (₪${partnerInvestment.toLocaleString()}) כבר החזירה את עצמה — חסכת ₪${Math.round(partnerSavings).toLocaleString()} בעמלות.`
+    : `העובדים הקבועים חסכו לך ₪${Math.round(partnerSavings).toLocaleString()}. עוד ₪${Math.round(partnerInvestment - partnerSavings).toLocaleString()} והם מכסים את דמי ההמרה.`);
   const repeatNonPartner = topWorkers.find(w => w.count >= 2 && !partnerNames.has(w.name));
-  if (repeatNonPartner) insights.push(`⭐ ${repeatNonPartner.name} השלים אצלך ${repeatNonPartner.count} משמרות — שווה לצרף אותו כעובד קבוע באפליקציה ולרדת לעמלה של 4.5% בלבד`);
+  if (repeatNonPartner) insights.push(`${repeatNonPartner.name} השלים אצלך ${repeatNonPartner.count} משמרות. שווה לצרף אותו כעובד קבוע ולרדת לעמלה של 4.5% בלבד.`);
   const cheapest = benchRows.filter(r => r.diffPct !== null).sort((a, b) => (a.diffPct! - b.diffPct!))[0];
-  if (cheapest && cheapest.diffPct! <= -5) insights.push(`⚖️ אתה משלם ל${cheapest.label} ${Math.abs(cheapest.diffPct!)}% מתחת לשוק — חיסכון חכם, רק שים לב למהירות האיוש`);
-  else if (cheapest && cheapest.diffPct! >= 8) insights.push(`⚖️ השכר שאתה מציע ל${cheapest.label} גבוה ב-${cheapest.diffPct}% מהשוק — זה מאייש מהר, אבל יש מקום להתייעל`);
-  if (nextMonthForecast) insights.push(`📅 לפי ${last3.length} החודשים האחרונים, צפי ההוצאה לחודש הבא: ~₪${Math.round(nextMonthForecast).toLocaleString()}`);
-  if (dayData[0]) insights.push(`📊 ${dayData[0].day} הוא היום העמוס שלך (${dayData[0].shifts} משמרות) — פרסם אליו מוקדם כדי לתפוס את העובדים המדורגים`);
+  if (cheapest && cheapest.diffPct! <= -5) insights.push(`אתה משלם ל${cheapest.label} ${Math.abs(cheapest.diffPct!)}% מתחת לשוק. חיסכון יפה, רק שים לב למהירות האיוש.`);
+  else if (cheapest && cheapest.diffPct! >= 8) insights.push(`השכר שאתה מציע ל${cheapest.label} גבוה ב-${cheapest.diffPct}% מהשוק. זה מאייש מהר, אבל יש מקום להתייעל.`);
+  if (nextMonthForecast) insights.push(`לפי ${last3.length} החודשים האחרונים, צפי ההוצאה לחודש הבא הוא כ־₪${Math.round(nextMonthForecast).toLocaleString()}.`);
+  if (dayData[0]) insights.push(`${dayData[0].day} הוא היום העמוס שלך (${dayData[0].shifts} משמרות). כדאי לפרסם אליו מוקדם כדי לתפוס את העובדים המדורגים.`);
 
   return (
     <div className="screen-enter space-y-5 pb-4">
@@ -334,7 +334,7 @@ export const RestaurantAnalytics: React.FC = () => {
             ))}
           </div>
           <p className="text-gray-400 text-[10px] mt-3 leading-relaxed">
-            📊 הטווחים מתייחסים לשכר <b>אקסטרות</b> (עובדי משמרת מזדמנים) בענף ההסעדה בישראל, 2025 · במלצרות וברמנות — לא כולל טיפים · 💡 שכר מעל השוק מאייש מהר יותר
+            הטווחים מתייחסים לשכר <b>אקסטרות</b> (עובדי משמרת מזדמנים) בענף ההסעדה בישראל, 2025 · במלצרות וברמנות — לא כולל טיפים · שכר מעל השוק מאייש מהר יותר
           </p>
         </div>
       )}
@@ -346,8 +346,8 @@ export const RestaurantAnalytics: React.FC = () => {
           <div className="space-y-2.5">
             {typeRows.map(t => (
               <div key={t.key} className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg flex-shrink-0" style={{ background: t.color + '15' }}>
-                  {t.emoji}
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: t.color + '15' }}>
+                  <t.Icon size={17} style={{ color: t.color }} />
                 </div>
                 <div className="flex-1">
                   <div className="font-semibold text-gray-900 text-sm">{t.label}</div>
@@ -359,7 +359,7 @@ export const RestaurantAnalytics: React.FC = () => {
           </div>
           {typeMap['regular'] && (typeMap['partner'] || typeMap['stage']) && (
             <p className="text-green-600 text-[11px] mt-3 bg-green-50 rounded-lg px-2.5 py-1.5">
-              🤝 קבועים וסטאז'רים עולים לך 4.5% עמלה בלבד — לעומת 6.5% במשמרת רגילה ו-12% בחירום
+              קבועים וסטאז'רים עולים לך 4.5% עמלה בלבד — לעומת 6.5% במשמרת רגילה ו-12% בחירום
             </p>
           )}
         </div>
@@ -368,7 +368,7 @@ export const RestaurantAnalytics: React.FC = () => {
       {/* 🕐 שעות שיא */}
       {hourRows.length > 1 && (
         <div className="bg-white rounded-2xl p-4 card-shadow">
-          <h3 className="font-bold text-gray-800 mb-3">🕐 מתי אתה מוציא הכי הרבה</h3>
+          <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-1.5"><Clock size={16} className="text-gray-400" /> מתי אתה מוציא הכי הרבה</h3>
           <div className="space-y-2">
             {hourRows.map((h, i) => (
               <div key={h.key} className="flex items-center gap-2.5">
@@ -385,7 +385,7 @@ export const RestaurantAnalytics: React.FC = () => {
               </div>
             ))}
           </div>
-          <p className="text-gray-400 text-[11px] mt-2.5">📌 {hourRows[0]?.label} היא תקופת ההוצאה הגדולה שלך ({hourRows[0]?.count} משמרות)</p>
+          <p className="text-gray-400 text-[11px] mt-2.5">{hourRows[0]?.label} היא תקופת ההוצאה הגדולה שלך ({hourRows[0]?.count} משמרות)</p>
         </div>
       )}
 
@@ -405,7 +405,7 @@ export const RestaurantAnalytics: React.FC = () => {
           </BarChart>
         </ResponsiveContainer>
         <p className="text-xs text-gray-400 mt-2 text-center">
-          📊 יום <strong>{dayData[0]?.day}</strong> הכי עמוס — {dayData[0]?.shifts || 0} משמרות
+          יום <strong>{dayData[0]?.day}</strong> הכי עמוס — {dayData[0]?.shifts || 0} משמרות
         </p>
       </div>
 
@@ -442,7 +442,7 @@ export const RestaurantAnalytics: React.FC = () => {
       {/* עובדים מובילים */}
       {topWorkers.length > 0 && (
         <div className="bg-white rounded-2xl p-4 card-shadow">
-          <h3 className="font-bold text-gray-800 mb-3">👨‍🍳 עובדים מובילים</h3>
+          <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-1.5"><ChefHat size={16} className="text-gray-400" /> עובדים מובילים</h3>
           <div className="space-y-2">
             {(showAllWorkers ? topWorkers : topWorkers.slice(0,3)).map((w,i) => (
               <div key={w.name} className="flex items-center gap-3 py-2 border-b border-gray-50 last:border-0">

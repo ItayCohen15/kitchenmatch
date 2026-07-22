@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, ArrowUpRight, CreditCard, CheckCircle2, FileText, X, Printer } from 'lucide-react';
+import { Plus, ArrowUpRight, CreditCard, CheckCircle2, FileText, X, Printer, Lightbulb } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
@@ -71,20 +71,20 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
       </div>
 
       <div class="section">
-        <div class="sec-label">🏢 ספק שירות התיווך</div>
+        <div class="sec-label">ספק שירות התיווך</div>
         <div class="field"><b>שם:</b> Staffly Platform</div>
         <div class="field"><b>תיאור:</b> פלטפורמת שיבוץ כוח אדם למטבחים</div>
         <div class="field"><b>אתר:</b> getstaffly.vercel.app</div>
       </div>
 
       <div class="section" style="border-right-color:#10b981">
-        <div class="sec-label">🏪 ללקוח (מסעדה)</div>
+        <div class="sec-label">ללקוח (מסעדה)</div>
         <div class="field"><b>שם:</b> ${esc(restaurant?.Name ?? job.RestaurantName ?? '___________')}</div>
         <div class="field"><b>עיר:</b> ${esc(restaurant?.City ?? '___________')}</div>
       </div>
 
       <div class="section" style="border-right-color:#3b82f6">
-        <div class="sec-label">📋 פירוט שיבוץ</div>
+        <div class="sec-label">פירוט שיבוץ</div>
         <div class="field">עמלת תיווך לשיבוץ עובד מטבח – משמרת חד-פעמית</div>
         <div class="field"><b>תאריך משמרת:</b> ${esc(dateStr)}</div>
         <div class="field"><b>תפקיד:</b> ${esc(ROLE_LABELS[job.Role] ?? job.Role)}</div>
@@ -159,7 +159,7 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
 
           <div className="p-4 space-y-3">
             <div className="rounded-xl p-3" style={{ background:'#f9fafb', border:'1px solid #e5e7eb' }}>
-              <div className="text-xs font-bold text-gray-500 mb-2">📋 פירוט שיבוץ</div>
+              <div className="text-xs font-bold text-gray-500 mb-2">פירוט שיבוץ</div>
               {[
                 { l:'תפקיד', v: ROLE_LABELS[job.Role] ?? job.Role ?? '' },
                 { l:'עובד',  v: job.WorkerName ?? '—' },
@@ -358,7 +358,7 @@ export const RestaurantWallet: React.FC = () => {
         <div className="flex items-center gap-2 mb-2">
           <div className="w-7 h-7 rounded-lg flex items-center justify-center"
             style={{ background:'rgba(232,160,32,0.15)' }}>
-            <span className="text-sm">💡</span>
+            <Lightbulb size={15} className="text-amber-500" />
           </div>
           <span className="font-bold text-gray-800 text-sm">מבנה עמלות</span>
         </div>
@@ -381,7 +381,7 @@ export const RestaurantWallet: React.FC = () => {
             <span style={{ color:'#e8a020' }}>× 1.065</span>
           </div>
           <div className="flex justify-between text-red-500 mt-1">
-            <span>🚨 משמרת חירום</span>
+            <span>משמרת חירום</span>
             <span className="font-semibold">מסעדה 12% · עובד 4%</span>
           </div>
         </div>
@@ -390,7 +390,7 @@ export const RestaurantWallet: React.FC = () => {
       {/* Subscription */}
       <div className="rounded-2xl p-4 text-white"
         style={{ background:'linear-gradient(135deg,#7c3aed,#6d28d9)' }}>
-        <div className="font-bold mb-1">מנוי Pro מסעדות 🚀</div>
+        <div className="font-bold mb-1">מנוי Pro מסעדות</div>
         <div className="text-purple-100 text-sm mb-3">
           חסוך עד 5% עמלות · עדיפות בשיבוץ · תמיכה 24/7
         </div>
@@ -411,9 +411,9 @@ export const RestaurantWallet: React.FC = () => {
 
         {!loading && jobs.length === 0 && (
           <div className="bg-white rounded-xl p-6 text-center card-shadow">
-            <div className="text-3xl mb-2">📋</div>
+            <FileText size={26} className="text-gray-300 mx-auto mb-2" />
             <p className="text-gray-500 text-sm">אין משמרות עדיין</p>
-            <p className="text-gray-400 text-xs mt-1">פרסם משמרת ראשונה להתחיל</p>
+            <p className="text-gray-400 text-xs mt-1">פרסמו משמרת ראשונה כדי להתחיל</p>
           </div>
         )}
 

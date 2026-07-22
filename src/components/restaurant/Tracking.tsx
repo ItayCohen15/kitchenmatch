@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Phone, MessageCircle, CheckCircle2, X, Clock } from 'lucide-react';
+import { Phone, MessageCircle, CheckCircle2, X, Clock, XCircle, Bell } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { CancelShiftModal } from '../common/CancelShiftModal';
@@ -102,7 +102,7 @@ export const LiveTracking: React.FC = () => {
     return (
       <div className="screen-enter flex flex-col items-center justify-center min-h-[70vh] text-center gap-4 px-6">
         <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center">
-          <span className="text-5xl">❌</span>
+          <XCircle size={44} className="text-red-500" />
         </div>
         <h2 className="text-2xl font-black text-gray-900">העובד ביטל</h2>
         <p className="text-gray-500">{workerName} ביטל את המשמרת. אם הביטול היה מאוחר, קיבלת ₪50 פיצוי לארנק.</p>
@@ -124,7 +124,7 @@ export const LiveTracking: React.FC = () => {
           </div>
           <div>
             <div className="font-bold text-lg">{workerName} בדרך</div>
-            <div className="text-blue-100 text-sm">₪{hourlyRate}/ש׳ · אושר ✅</div>
+            <div className="text-blue-100 text-sm">₪{hourlyRate}/ש׳ · אושר</div>
           </div>
         </div>
       </div>
@@ -147,7 +147,7 @@ export const LiveTracking: React.FC = () => {
       {/* פופאפ — העובד יזם */}
       {workerInitiated && !waitingForWorker && (
         <div className="bg-gradient-to-l from-green-600 to-emerald-500 rounded-2xl p-4 text-white screen-enter">
-          <div className="font-black text-lg mb-1">🔔 {workerName} הגיע!</div>
+          <div className="font-black text-lg mb-1 flex items-center gap-2"><Bell size={18} /> {workerName} הגיע</div>
           <div className="text-green-100 text-sm mb-4">העובד ביקש להתחיל משמרת — אשר?</div>
           <div className="flex gap-3">
             <button onClick={() => setWorkerInit(false)}

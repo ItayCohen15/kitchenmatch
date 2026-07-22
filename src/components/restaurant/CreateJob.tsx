@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { ChevronRight, Zap, Clock, Filter, Star } from 'lucide-react';
+import { ChevronRight, Zap, Clock, Filter, Star, Calendar, ClipboardList, MapPin } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import type { JobRole, ExperienceLevel } from '../../types';
@@ -104,7 +104,7 @@ export const CreateJob: React.FC = () => {
         <div className="mb-4 rounded-2xl p-3 flex items-center gap-2 text-white"
           style={{ background: 'linear-gradient(135deg,#ef4444,#f97316)', boxShadow: '0 4px 16px rgba(239,68,68,0.35)' }}>
           <Zap size={18} className="fill-white" />
-          <span className="font-bold text-sm">🚨 מצב חירום פעיל — עובד דרוש תוך 30 דקות</span>
+          <span className="font-bold text-sm">מצב חירום פעיל — עובד דרוש תוך 30 דקות</span>
         </div>
       )}
       {/* Progress */}
@@ -165,7 +165,7 @@ export const CreateJob: React.FC = () => {
           <div className="bg-white rounded-2xl p-5 card-shadow space-y-4">
             {/* תאריך */}
             <div>
-              <label className="text-sm font-semibold text-gray-700 mb-2 block">📅 תאריך המשמרת</label>
+              <label className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5"><Calendar size={14} className="text-gray-400" /> תאריך המשמרת</label>
               <input
                 type="date"
                 value={shiftDate}
@@ -316,7 +316,7 @@ export const CreateJob: React.FC = () => {
 
             <div className="bg-amber-50 rounded-xl p-3 space-y-1.5">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">עמלה שלך ({restCommPct}%){emergency ? ' 🚨 חירום' : ''}</span>
+                <span className="text-gray-500">עמלה שלך ({restCommPct}%){emergency ? ' · חירום' : ''}</span>
                 <span className="font-bold text-amber-600">+₪{(parseFloat(totalPay) * restCommRate).toFixed(0)}</span>
               </div>
               <div className="flex justify-between text-sm font-bold border-t border-orange-100 pt-1.5">
@@ -332,7 +332,7 @@ export const CreateJob: React.FC = () => {
           {/* מהות המשמרת */}
           <div className="bg-white rounded-2xl p-4 card-shadow">
             <label className="text-sm font-semibold text-gray-700 mb-2 block">
-              📋 מה כוללת המשמרת? <span className="text-gray-400 font-normal">(אופציונלי)</span>
+              מה כוללת המשמרת? <span className="text-gray-400 font-normal">(אופציונלי)</span>
             </label>
             <textarea
               value={duties}
@@ -350,7 +350,7 @@ export const CreateJob: React.FC = () => {
           {/* הוראות הגעה */}
           <div className="bg-white rounded-2xl p-4 card-shadow">
             <label className="text-sm font-semibold text-gray-700 mb-2 block">
-              📍 הוראות הגעה לעובד <span className="text-gray-400 font-normal">(אופציונלי)</span>
+              הוראות הגעה לעובד <span className="text-gray-400 font-normal">(אופציונלי)</span>
             </label>
             <textarea
               value={instructions}
@@ -376,7 +376,7 @@ export const CreateJob: React.FC = () => {
           >
             <Zap size={22} className={emergency ? 'fill-white text-white' : 'text-red-500'} />
             <div className="text-right flex-1">
-              <div className="font-bold">מצב חירום 🚨</div>
+              <div className="font-bold">מצב חירום</div>
               <div className={`text-sm ${emergency ? 'text-red-100' : 'text-gray-500'}`}>
                 עובד תוך 30 דק׳ – דחיפות גבוהה לעובדים קרובים
               </div>
@@ -443,7 +443,7 @@ export const CreateJob: React.FC = () => {
                 onClick={handlePublish}
                 className="flex-1 bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg active:scale-98 transition-transform shadow-lg shadow-amber-200"
               >
-                {emergency ? '🚨 פרסם חירום' : 'פרסם משמרת'}
+                {emergency ? 'פרסם משמרת חירום' : 'פרסם משמרת'}
               </button>
             </div>
           )}

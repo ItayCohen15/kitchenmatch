@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Zap, ChefHat, CheckCircle, Star, LogOut, X, GraduationCap } from 'lucide-react';
+import { Zap, ChefHat, CheckCircle, Star, LogOut, X, GraduationCap, CreditCard, ClipboardList, Users } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
@@ -106,12 +106,12 @@ export const RestaurantHome: React.FC = () => {
 
         <div className="grid grid-cols-3 gap-3">
           {[
-            { label: 'ארנק', value: `₪${walletBalance.toLocaleString()}`, icon: '💳' },
-            { label: 'משמרות', value: `${recentJobs.length}`, icon: '📋' },
-            { label: 'עובדים זמינים', value: `${areaCount}`, icon: '👷' },
+            { label: 'ארנק', value: `₪${walletBalance.toLocaleString()}`, icon: <CreditCard size={18} /> },
+            { label: 'משמרות', value: `${recentJobs.length}`, icon: <ClipboardList size={18} /> },
+            { label: 'עובדים זמינים', value: `${areaCount}`, icon: <Users size={18} /> },
           ].map(s => (
             <div key={s.label} className="bg-white/15 rounded-xl p-3 text-center">
-              <div className="text-xl mb-1">{s.icon}</div>
+              <div className="mb-1 flex justify-center text-amber-100">{s.icon}</div>
               <div className="font-black text-base">{s.value}</div>
               <div className="text-amber-100 text-xs">{s.label}</div>
             </div>
@@ -130,8 +130,8 @@ export const RestaurantHome: React.FC = () => {
             <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
             <span className="font-bold text-sm">
               {activeShift.Status === 'active' ? 'משמרת פעילה עכשיו' :
-               activeShift.Status === 'confirmed' ? '✅ עובד אושר — ממתין להגעה' :
-               '⏳ ממתין לאישור סיום'}
+               activeShift.Status === 'confirmed' ? 'העובד אושר — ממתין להגעה' :
+               'ממתין לאישור סיום'}
             </span>
           </div>
           <div className="font-black text-lg">{activeShift.WorkerName || 'עובד'}</div>
@@ -179,7 +179,7 @@ export const RestaurantHome: React.FC = () => {
         style={{ background: 'linear-gradient(135deg,#8b5cf6,#6366f1)', boxShadow: '0 4px 20px rgba(139,92,246,0.35)' }}>
         <GraduationCap size={26} className="flex-shrink-0" />
         <div className="flex-1">
-          <div className="font-black">🎓 גלה טאלנט טרי</div>
+          <div className="font-black">גלה טאלנט טרי</div>
           <div className="text-white/80 text-xs mt-0.5">בוגרי בתי ספר לבישול/ברמנות — מוכנים להזדמנות הראשונה</div>
         </div>
         <span className="text-xl">‹</span>
@@ -196,8 +196,8 @@ export const RestaurantHome: React.FC = () => {
         {loadingWorkers && <SkeletonList count={3} />}
         {!loadingWorkers && areaWorkers.length === 0 && (
           <div className="bg-white rounded-2xl card-shadow">
-            <EmptyState emoji="👷" title="אין עובדים זמינים באזורך כרגע"
-              subtitle="פרסם משמרת — עובדים מתאימים יקבלו התראה מיידית" />
+            <EmptyState icon={<Users size={26} />} title="אין עובדים זמינים באזורך כרגע"
+              subtitle="פרסמו משמרת ועובדים מתאימים יקבלו התראה מיידית" />
           </div>
         )}
         <div className="space-y-2">

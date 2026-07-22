@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useState } from 'react';
-import { CheckCircle2, Clock, XCircle, Star } from 'lucide-react';
+import { CheckCircle2, Clock, XCircle, Star, ClipboardList } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
@@ -92,7 +92,7 @@ export const WorkerHistory: React.FC = () => {
 
       {!loading && filtered.length === 0 && (
         <div className="bg-white rounded-2xl card-shadow">
-          <EmptyState emoji="📋" title="אין משמרות עדיין"
+          <EmptyState icon={<ClipboardList size={26} />} title="אין משמרות עדיין"
             subtitle="הגש מועמדות למשמרות כדי להתחיל לצבור היסטוריה והכנסות" />
         </div>
       )}

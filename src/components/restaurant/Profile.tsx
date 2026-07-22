@@ -102,22 +102,22 @@ export const RestaurantProfile: React.FC = () => {
           <div className="grid grid-cols-3 gap-3">
             <div className="bg-white/15 rounded-xl p-3 text-center">
               <div className="font-black text-xl">{rating > 0 ? rating.toFixed(1) : '—'}</div>
-              <div className="text-amber-100 text-xs">דירוג ⭐</div>
+              <div className="text-amber-100 text-xs">דירוג</div>
             </div>
             <div className="bg-white/15 rounded-xl p-3 text-center">
               <div className="font-black text-xl">{totalShifts}</div>
-              <div className="text-amber-100 text-xs">משמרות ✅</div>
+              <div className="text-amber-100 text-xs">משמרות</div>
             </div>
             <div className="bg-white/15 rounded-xl p-3 text-center">
               <div className="font-black text-xl">₪{walletBalance.toLocaleString()}</div>
-              <div className="text-amber-100 text-xs">ארנק 💳</div>
+              <div className="text-amber-100 text-xs">ארנק</div>
             </div>
           </div>
         </div>
 
         {/* פרטי קשר */}
         <div className="bg-white rounded-2xl p-4 card-shadow space-y-0">
-          <h3 className="font-bold text-gray-800 mb-3">📋 פרטי המסעדה</h3>
+          <h3 className="font-bold text-gray-800 mb-3">פרטי המסעדה</h3>
           {[
             { icon: <Phone size={15} className="text-green-600"/>, bg: 'bg-green-100', label: 'טלפון',
               value: phone ? <a href={`tel:${phone}`} className="font-semibold text-gray-900">{phone}</a>
@@ -151,7 +151,7 @@ export const RestaurantProfile: React.FC = () => {
 
           {reviews.length === 0 ? (
             <div className="text-center py-4">
-              <div className="text-3xl mb-2">⭐</div>
+              <Star size={26} className="text-gray-200 mx-auto mb-2" />
               <p className="text-gray-400 text-sm">אין ביקורות עדיין</p>
               <p className="text-gray-300 text-xs mt-1">ביקורות יופיעו לאחר השלמת משמרות</p>
             </div>
@@ -208,7 +208,7 @@ export const RestaurantProfile: React.FC = () => {
       <div className="bg-white rounded-2xl p-4 card-shadow space-y-4">
         {[
           { label: 'שם המסעדה', val: name, set: setName, ph: 'שם המסעדה', type: 'text' },
-          { label: '📞 טלפון', val: phone, set: setPhone, ph: '05X-XXXXXXX', type: 'tel' },
+          { label: 'טלפון', val: phone, set: setPhone, ph: '05X-XXXXXXX', type: 'tel' },
           { label: 'עיר', val: city, set: setCity, ph: 'עיר', type: 'text' },
           { label: 'כתובת (רחוב ומספר)', val: address, set: setAddress, ph: 'דיזנגוף 50', type: 'text' },
         ].map(f => (
@@ -230,7 +230,7 @@ export const RestaurantProfile: React.FC = () => {
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               שומר...
             </div>
-          : '✅ שמור שינויים'}
+          : 'שמור שינויים'}
       </button>
     </div>
   );

@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useState } from 'react';
-import { Navigation2, CheckCircle2, X, Phone } from 'lucide-react';
+import { Navigation2, CheckCircle2, X, Phone, XCircle, MapPin, Bell, Clock } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { CancelShiftModal } from '../common/CancelShiftModal';
@@ -103,7 +103,7 @@ export const WorkerNavigation: React.FC = () => {
     return (
       <div className="screen-enter flex flex-col items-center justify-center min-h-[70vh] text-center gap-4 px-6">
         <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center">
-          <span className="text-5xl">❌</span>
+          <XCircle size={44} className="text-red-500" />
         </div>
         <h2 className="text-2xl font-black text-gray-900">המשמרת בוטלה</h2>
         <p className="text-gray-500">{restaurantName} ביטלה את המשמרת. אם הביטול היה מאוחר, קיבלת פיצוי לארנק.</p>
@@ -147,7 +147,7 @@ export const WorkerNavigation: React.FC = () => {
         <a href={wazeUrl} target="_blank" rel="noopener noreferrer"
           className="flex-1 flex items-center justify-center gap-2 bg-[#05C3F9] text-white rounded-2xl py-4 font-bold shadow-lg"
           style={{ textDecoration: 'none' }}>
-          🗺️ נווט בוויז
+          <Navigation2 size={18} /> נווט בוויז
         </a>
         {phone ? (
           <a href={`tel:${phone}`}
@@ -168,8 +168,8 @@ export const WorkerNavigation: React.FC = () => {
       {/* פופאפ — המסעדה יזמה */}
       {restaurantInitiated && !waitingForRestaurant && (
         <div className="bg-gradient-to-l from-green-600 to-emerald-500 rounded-2xl p-4 text-white screen-enter">
-          <div className="font-black text-lg mb-1">🔔 {restaurantName} רוצה להתחיל!</div>
-          <div className="text-green-100 text-sm mb-4">המסעדה מוכנה — האם הגעת?</div>
+          <div className="font-black text-lg mb-1 flex items-center gap-2"><Bell size={18} /> {restaurantName} מבקשת להתחיל</div>
+          <div className="text-green-100 text-sm mb-4">המסעדה מוכנה. הגעת?</div>
           <div className="flex gap-3">
             <button onClick={() => setRestInitiated(false)}
               className="flex-1 bg-white/20 rounded-xl py-3 font-semibold flex items-center justify-center gap-2">
@@ -179,7 +179,7 @@ export const WorkerNavigation: React.FC = () => {
               className="flex-1 bg-white text-green-700 rounded-xl py-3 font-black flex items-center justify-center gap-2">
               {confirming
                 ? <div className="w-4 h-4 border-2 border-green-400 border-t-green-700 rounded-full animate-spin" />
-                : <><CheckCircle2 size={16} /> אני כאן! התחל</>}
+                : <><CheckCircle2 size={16} /> הגעתי, אפשר להתחיל</>}
             </button>
           </div>
         </div>
@@ -188,7 +188,7 @@ export const WorkerNavigation: React.FC = () => {
       {/* ממתין לאישור מסעדה */}
       {waitingForRestaurant && (
         <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-center">
-          <div className="text-2xl mb-2">⏳</div>
+          <Clock size={24} className="text-amber-400 mx-auto mb-2" />
           <div className="font-bold text-amber-800">ממתין לאישור {restaurantName}</div>
           <div className="text-amber-600 text-sm mt-1">שלחנו התראה למסעדה</div>
           <div className="w-5 h-5 border-2 border-amber-400 border-t-transparent rounded-full animate-spin mx-auto mt-2" />
@@ -197,12 +197,12 @@ export const WorkerNavigation: React.FC = () => {
 
       {/* הוראות */}
       <div className="bg-white rounded-2xl p-4 card-shadow">
-        <h3 className="font-bold text-gray-800 mb-3 text-sm">📍 הוראות הגעה</h3>
+        <h3 className="font-bold text-gray-800 mb-3 text-sm flex items-center gap-1.5"><MapPin size={14} className="text-amber-500" /> הוראות הגעה</h3>
         {instructions ? (
           <p className="text-gray-800 text-sm leading-relaxed bg-amber-50 rounded-xl p-3">{instructions}</p>
         ) : (
           <div className="space-y-2">
-            {['הכנס דרך הכניסה הראשית / אחורית', 'בקש את מנהל המשמרת', 'לחץ "צ׳ק-אין" כאן', 'בהצלחה! 👨‍🍳'].map((s, i) => (
+            {['הכנס דרך הכניסה הראשית / אחורית', 'בקש את מנהל המשמרת', 'לחץ "צ׳ק-אין" כאן', 'שיהיה בהצלחה'].map((s, i) => (
               <div key={i} className="flex items-start gap-3">
                 <div className="w-6 h-6 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">{i+1}</div>
                 <span className="text-gray-700 text-sm">{s}</span>
@@ -220,7 +220,7 @@ export const WorkerNavigation: React.FC = () => {
             ? <div className="flex items-center justify-center gap-2">
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />שולח...
               </div>
-            : '📍 הגעתי — צ׳ק-אין'}
+            : 'הגעתי — צ׳ק-אין'}
         </button>
       )}
 

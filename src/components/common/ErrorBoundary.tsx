@@ -1,4 +1,5 @@
 import React from 'react';
+import { AlertTriangle } from 'lucide-react';
 
 // גבול-שגיאה גלובלי — תופס קריסות render כך שהמסך לא נשאר לבן.
 // (משלים את ReloadOnChunkError ב-App.tsx, שמטפל ספציפית בכשל טעינת chunk.)
@@ -22,7 +23,7 @@ export class ErrorBoundary extends React.Component<
     if (this.state.failed) {
       return (
         <div className="flex flex-col items-center justify-center gap-3 p-8 text-center" style={{ height: '100dvh' }}>
-          <div className="text-4xl">😕</div>
+          <AlertTriangle size={36} className="text-amber-400" />
           <p className="text-gray-700 font-bold">משהו השתבש</p>
           <p className="text-gray-400 text-sm">אירעה תקלה לא צפויה. נסה לרענן את האפליקציה.</p>
           <button

@@ -1,5 +1,5 @@
 ﻿import React, { useState } from 'react';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Phone, MapPin, GraduationCap, Check, FileText } from 'lucide-react';
 import { api } from '../api';
 import { WORKER_ROLES, SKILLS_BY_ROLE } from '../utils/roles';
 import { CityAutocomplete } from './common/CityAutocomplete';
@@ -135,7 +135,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                 <CityAutocomplete value={city} onChange={setCity} placeholder="הקלד עיר..." />
               </div>
               <div>
-                <label className="text-sm font-semibold text-gray-600 mb-1.5 block">📞 מספר טלפון</label>
+                <label className="text-sm font-semibold text-gray-600 mb-1.5 flex items-center gap-1.5"><Phone size={14} className="text-gray-400" /> מספר טלפון</label>
                 <input
                   type="tel"
                   inputMode="tel"
@@ -162,7 +162,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                   </div>
                   {street && streetNumber && (
                     <div className="mt-1.5 text-xs text-green-600 font-semibold flex items-center gap-1">
-                      📍 {street} {streetNumber}, {city}
+                      <MapPin size={13} className="inline" /> {street} {streetNumber}, {city}
                     </div>
                   )}
                 </div>
@@ -233,7 +233,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                       className={`w-full p-3 rounded-xl border-2 flex items-center justify-between text-right transition-all ${isTrainee ? 'border-amber-400 bg-amber-50' : 'border-gray-100'}`}
                     >
                       <div>
-                        <div className="font-bold text-gray-900 text-sm">🎓 אני סטודנט/מתלמד</div>
+                        <div className="font-bold text-gray-900 text-sm flex items-center gap-1.5"><GraduationCap size={15} className="text-amber-500" /> אני סטודנט/מתלמד</div>
                         <div className="text-gray-500 text-xs">לומד בקורס בישול/ברמנים — אחפש גם סטאז'</div>
                       </div>
                       <div className={`w-11 h-6 rounded-full transition-colors relative flex-shrink-0 ${isTrainee ? 'bg-amber-500' : 'bg-gray-300'}`}>
@@ -271,12 +271,12 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                     <div className="grid grid-cols-2 gap-2">
                       <button type="button" onClick={() => setIsSelfEmployed(true)}
                         className={`p-3 rounded-xl border-2 text-right transition-all ${isSelfEmployed === true ? 'border-amber-400 bg-amber-50' : 'border-gray-100'}`}>
-                        <div className="font-bold text-gray-900 text-sm">✅ יש לי עוסק</div>
+                        <div className="font-bold text-gray-900 text-sm flex items-center gap-1.5"><Check size={15} className="text-green-500" /> יש לי עוסק</div>
                         <div className="text-gray-500 text-xs mt-0.5">פטור/מורשה — תשלום ישיר, אני מוציא חשבונית</div>
                       </button>
                       <button type="button" onClick={() => setIsSelfEmployed(false)}
                         className={`p-3 rounded-xl border-2 text-right transition-all ${isSelfEmployed === false ? 'border-amber-400 bg-amber-50' : 'border-gray-100'}`}>
-                        <div className="font-bold text-gray-900 text-sm">🧾 אין לי עוסק</div>
+                        <div className="font-bold text-gray-900 text-sm flex items-center gap-1.5"><FileText size={15} className="text-gray-500" /> אין לי עוסק</div>
                         <div className="text-gray-500 text-xs mt-0.5">תשלום דרך "חשבונית לשכיר"</div>
                       </button>
                     </div>
@@ -433,7 +433,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                       <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                       שומר...
                     </div>
-                  ) : '🚀 סיים ויצא לדרך!'}
+                  ) : 'סיום'}
                 </button>
               </div>
             </div>

@@ -45,7 +45,7 @@ export const WorkerEndShift: React.FC = () => {
   const netPay = (grossPay - commission).toFixed(0);
   const restaurantName = job?.RestaurantName || job?.restaurantName || 'המסעדה';
 
-  const QUICK = ['סרוויס מסודר', 'מטבח נקי', 'ניהול טוב', 'אחזור שוב!', 'תנאי עבודה טובים'];
+  const QUICK = ['סרוויס מסודר', 'מטבח נקי', 'ניהול טוב', 'אחזור שוב', 'תנאי עבודה טובים'];
 
   const handleSubmit = async () => {
     if (rating === 0) return;
@@ -76,8 +76,8 @@ export const WorkerEndShift: React.FC = () => {
         <div className="w-28 h-28 bg-green-100 rounded-full flex items-center justify-center">
           <CheckCircle size={56} className="text-green-500" />
         </div>
-        <h2 className="text-2xl font-black text-gray-900">כל הכבוד! 🎉</h2>
-        <p className="text-gray-500">המשמרת הסתיימה בהצלחה</p>
+        <h2 className="text-2xl font-black text-gray-900">המשמרת הסתיימה</h2>
+        <p className="text-gray-500">תודה על העבודה. נתראה במשמרת הבאה.</p>
         <div className="bg-green-50 rounded-2xl px-10 py-5 w-full">
           <div className="text-4xl font-black text-green-600">₪{netPay}</div>
           <div className="text-gray-500 text-sm mt-1">מועבר לארנק שלך</div>
@@ -142,7 +142,7 @@ export const WorkerEndShift: React.FC = () => {
         <StarRating value={rating} onChange={setRating} size={36} />
         {rating > 0 && (
           <div className="text-center text-sm font-semibold text-gray-600 mt-2">
-            {['', '😕 לא טוב', '😐 ממוצע', '🙂 טוב', '😊 מצוין', '🔥 מדהים!'][rating]}
+            {['', 'לא טוב', 'בסדר', 'טוב', 'טוב מאוד', 'מצוין'][rating]}
           </div>
         )}
         <div className="flex gap-2 flex-wrap mt-3">

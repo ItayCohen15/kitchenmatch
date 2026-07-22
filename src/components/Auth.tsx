@@ -135,7 +135,7 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
           <div className="space-y-3">
             {mode === 'register' && (
               <p className="text-xs text-gray-400 text-center bg-gray-50 rounded-xl p-2">
-                📋 לאחר ההרשמה נשלים את פרטי הפרופיל שלך
+                לאחר ההרשמה נשלים את פרטי הפרופיל שלך
               </p>
             )}
             <input

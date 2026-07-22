@@ -90,11 +90,11 @@ export const CancelShiftModal: React.FC<Props> = ({
             {isLate && (
               <div className="rounded-xl p-3 text-xs leading-relaxed"
                 style={{ background:'#fef2f2', border:'1px solid #fecaca', color:'#991b1b' }}>
-                <div className="font-black text-sm mb-1">⚠️ ביטול מאוחר!</div>
+                <div className="font-black text-sm mb-1">ביטול מאוחר</div>
                 נותרו פחות מ-4 שעות לתחילת המשמרת. אם תבטל כעת:
-                <ul className="mt-1.5 space-y-1 pr-1">
-                  <li>💸 <strong>קנס ₪{LATE_FEE}</strong> שיועבר ישירות {cancelledBy === 'worker' ? 'למסעדה' : 'לעובד'}</li>
-                  <li>⭐ <strong>הדירוג שלך יירד בכוכב אחד</strong></li>
+                <ul className="mt-1.5 space-y-1 pr-1 list-disc pr-5">
+                  <li><strong>קנס ₪{LATE_FEE}</strong> שיועבר ישירות {cancelledBy === 'worker' ? 'למסעדה' : 'לעובד'}</li>
+                  <li><strong>הדירוג שלך יירד בכוכב אחד</strong></li>
                 </ul>
               </div>
             )}

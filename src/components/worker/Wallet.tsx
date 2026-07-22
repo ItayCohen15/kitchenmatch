@@ -224,7 +224,7 @@ const WorkerInvoiceDoc = ({ shift, worker, onClose }: { shift: any; worker: any;
       </div>
 
       <div class="section">
-        <div class="sec-label">👤 מספק שירות – עוסק עצמאי</div>
+        <div class="sec-label">מספק שירות – עוסק עצמאי</div>
         <div class="field"><b>שם:</b> ${esc(worker?.Name ?? '___________')}</div>
         <div class="field"><b>טלפון:</b> ${esc(worker?.Phone ?? '___________')}</div>
         <div class="field"><b>מס׳ עוסק פטור / מורשה:</b> ___________________________</div>
@@ -232,13 +232,13 @@ const WorkerInvoiceDoc = ({ shift, worker, onClose }: { shift: any; worker: any;
       </div>
 
       <div class="section" style="border-right-color:#10b981">
-        <div class="sec-label">🏪 ללקוח – מסעדה</div>
+        <div class="sec-label">ללקוח – מסעדה</div>
         <div class="field"><b>שם:</b> ${esc(shift.RestaurantName ?? '___________')}</div>
         <div class="field"><b>עיר:</b> ${esc(shift.RestaurantCity ?? '___________')}</div>
       </div>
 
       <div class="desc-section">
-        <div class="sec-label">📋 פירוט שירות</div>
+        <div class="sec-label">פירוט שירות</div>
         <div class="field">שירותי עבודה במטבח – משמרת חד-פעמית</div>
         <div class="field"><b>תאריך משמרת:</b> ${esc(dateStr)}</div>
         <div class="field"><b>תפקיד:</b> ${esc(ROLE_LABELS[shift.Role] ?? shift.Role)}</div>
@@ -253,7 +253,7 @@ const WorkerInvoiceDoc = ({ shift, worker, onClose }: { shift: any; worker: any;
       </div>
 
       <div class="platform-note">
-        ✅ שולם באמצעות פלטפורמת Staffly<br/>
+        שולם באמצעות פלטפורמת Staffly<br/>
         <b>Staffly אינה צד לחוזה העבודה ואינה המעסיקה.</b><br/>
         הפלטפורמה משמשת כמתווך בין העוסק העצמאי לבין המסעדה בלבד.
       </div>
@@ -306,7 +306,7 @@ const WorkerInvoiceDoc = ({ shift, worker, onClose }: { shift: any; worker: any;
               <div className="text-sm font-bold text-gray-900 leading-tight">{worker?.Name ?? '—'}</div>
               <div className="text-xs text-gray-500">{worker?.Phone ?? '—'}</div>
               <div className="text-[10px] font-medium mt-auto pt-1" style={{ color:'#d97706' }}>
-                ⚠️ הוסף מס׳ עוסק
+                יש להוסיף מס׳ עוסק
               </div>
             </div>
 
@@ -341,7 +341,7 @@ const WorkerInvoiceDoc = ({ shift, worker, onClose }: { shift: any; worker: any;
           </div>
 
           <div className="text-xs text-gray-400 text-center bg-gray-50 rounded-xl p-2.5">
-            📌 זוהי תבנית. הוסף מס׳ עוסק ומע"מ לפני שליחה למסעדה.
+            זוהי תבנית. יש להוסיף מס׳ עוסק ומע"מ לפני שליחה למסעדה.
           </div>
         </div>
 
@@ -396,7 +396,7 @@ export const WorkerWallet: React.FC = () => {
     try {
       const r = await api.requestWithdraw(userProfile.Id);
       if (r?.wallet) setWallet({ ...wallet, ...r.wallet });
-      setWithdrawMsg({ ok: true, text: `הועברו ₪${Math.round(r?.payout?.amount || 0).toLocaleString()} לחשבונך 🎉` });
+      setWithdrawMsg({ ok: true, text: `הועברו ₪${Math.round(r?.payout?.amount || 0).toLocaleString()} לחשבון שלך` });
       haptic('success');
       refreshProfile();
     } catch (e: any) {
@@ -532,8 +532,8 @@ export const WorkerWallet: React.FC = () => {
       {/* Tabs */}
       <div className="flex bg-gray-100 rounded-xl p-1">
         {[
-          { id:'overview', l:'סקירה 📊' },
-          { id:'docs',     l:'מסמכים 📄' },
+          { id:'overview', l:'סקירה' },
+          { id:'docs',     l:'מסמכים' },
         ].map(t => (
           <button key={t.id} onClick={() => setActiveTab(t.id as any)}
             className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${
@@ -584,13 +584,13 @@ export const WorkerWallet: React.FC = () => {
               {!canWithdraw && (
                 <p className="text-[11px] text-center mt-2 text-gray-400">
                   {accountBlocked
-                    ? <span className="text-amber-600">👆 השלם תחילה את הגדרת חשבון קבלת התשלומים למעלה</span>
+                    ? <span className="text-amber-600">כדי למשוך, יש להשלים תחילה את הגדרת חשבון קבלת התשלומים למעלה</span>
                     : <>מינימום למשיכה: ₪{minPayout} · היתרה תגדל עם סיום משמרות</>}
                 </p>
               )}
               {wallet.autoPayout && (
                 <p className="text-[11px] text-center mt-1.5" style={{ color:'#059669' }}>
-                  ⚡ תשלום אוטומטי שבועי פעיל — הכסף יועבר גם בלי שתלחץ
+                  תשלום אוטומטי שבועי פעיל — הכסף יועבר גם בלי שתלחץ
                 </p>
               )}
               {withdrawMsg && (
@@ -615,7 +615,7 @@ export const WorkerWallet: React.FC = () => {
               <div className="font-black text-3xl text-gray-900">₪{Math.round(thisNet).toLocaleString()}</div>
               {projection !== null && (
                 <div className="text-xs text-gray-400 mt-1.5">
-                  📈 בקצב הנוכחי תסיים את החודש עם <b className="text-green-600">~₪{Math.round(projection).toLocaleString()}</b>
+                  בקצב הנוכחי תסיים את החודש עם כ־<b className="text-green-600">₪{Math.round(projection).toLocaleString()}</b>
                 </div>
               )}
             </div>
@@ -654,8 +654,8 @@ export const WorkerWallet: React.FC = () => {
                 </div>
                 <div className="text-[11px] text-gray-400 mt-1.5">
                   {thisNet >= goal
-                    ? '🎉 הגעת ליעד החודשי — כל הכבוד!'
-                    : `${Math.round(thisNet / goal * 100)}% מהיעד · חסרות ₪${Math.round(goal - thisNet).toLocaleString()}${projection && projection >= goal ? ' · בקצב הזה תגיע! 💪' : ''}`}
+                    ? 'הגעת ליעד החודשי'
+                    : `${Math.round(thisNet / goal * 100)}% מהיעד · חסרות ₪${Math.round(goal - thisNet).toLocaleString()}${projection && projection >= goal ? ' · בקצב הזה תגיע ליעד' : ''}`}
                 </div>
               </>
             )}
@@ -683,7 +683,7 @@ export const WorkerWallet: React.FC = () => {
 
           {completed.length > 0 && (
             <div className="bg-white rounded-2xl p-4 card-shadow">
-              <h3 className="font-bold text-gray-800 mb-3">📈 סטטיסטיקות</h3>
+              <h3 className="font-bold text-gray-800 mb-3">סטטיסטיקות</h3>
               <div className="space-y-3">
                 {[
                   { l:'שעות עבודה סה״כ',
@@ -705,7 +705,7 @@ export const WorkerWallet: React.FC = () => {
           {/* 💰 ימי הכסף שלך */}
           {dayRows.length > 1 && (
             <div className="bg-white rounded-2xl p-4 card-shadow">
-              <h3 className="font-bold text-gray-800 mb-3">💰 ימי הכסף שלך</h3>
+              <h3 className="font-bold text-gray-800 mb-3">ימי הכסף שלך</h3>
               <div className="space-y-2">
                 {dayRows.slice(0, 5).map((d, i) => (
                   <div key={d.day} className="flex items-center gap-2.5">
@@ -720,14 +720,14 @@ export const WorkerWallet: React.FC = () => {
                   </div>
                 ))}
               </div>
-              <p className="text-gray-400 text-[11px] mt-2.5">📌 {dayRows[0]?.day} הוא היום הרווחי שלך — תעדף משמרות ביום הזה</p>
+              <p className="text-gray-400 text-[11px] mt-2.5">{dayRows[0]?.day} הוא היום הרווחי שלך — כדאי לתעדף משמרות ביום הזה</p>
             </div>
           )}
 
           {/* 🏆 המסעדות המשתלמות */}
           {topRests.length > 0 && (
             <div className="bg-white rounded-2xl p-4 card-shadow">
-              <h3 className="font-bold text-gray-800 mb-3">🏆 המסעדות המשתלמות לך</h3>
+              <h3 className="font-bold text-gray-800 mb-3">המסעדות המשתלמות לך</h3>
               <div className="space-y-2">
                 {topRests.map((r, i) => (
                   <div key={r.name} className="flex items-center gap-3 py-2 border-b border-gray-50 last:border-0">
@@ -761,7 +761,7 @@ export const WorkerWallet: React.FC = () => {
                 <div className="text-gray-400 text-[11px] mt-0.5">עמלות ששילמת סה"כ</div>
                 {nextCommissionDrop && (
                   <div className="text-amber-600 text-[10px] font-semibold mt-1">
-                    עוד {lvlProg.shiftsNeeded} משמרות → עמלה {(nextCommissionDrop.commission * 100).toFixed(1)}% בלבד
+                    עוד {lvlProg.shiftsNeeded} משמרות לעמלה של {(nextCommissionDrop.commission * 100).toFixed(1)}% בלבד
                   </div>
                 )}
               </div>
@@ -789,7 +789,7 @@ export const WorkerWallet: React.FC = () => {
               </div>
               {rateDiffPct < -5 && (
                 <p className="text-amber-600 text-[11px] mt-2 bg-amber-50 rounded-lg px-2.5 py-1.5">
-                  💡 אתה מתחת לשוק — עם הדירוג שלך אפשר לכוון למשמרות עם שכר גבוה יותר
+                  אתה מתחת לשוק — עם הדירוג שלך אפשר לכוון למשמרות עם שכר גבוה יותר
                 </p>
               )}
             </div>
@@ -797,9 +797,9 @@ export const WorkerWallet: React.FC = () => {
 
           {completed.length === 0 && !loading && (
             <div className="text-center py-10 bg-white rounded-2xl card-shadow">
-              <div className="text-4xl mb-3">💰</div>
+              <Wallet size={30} className="text-gray-300 mx-auto mb-3" />
               <p className="font-bold text-gray-700">אין הכנסות עדיין</p>
-              <p className="text-gray-400 text-sm mt-1">השלם משמרות כדי לצבור הכנסות</p>
+              <p className="text-gray-400 text-sm mt-1">ההכנסות יופיעו כאן לאחר השלמת משמרות</p>
             </div>
           )}
         </>
@@ -810,7 +810,7 @@ export const WorkerWallet: React.FC = () => {
         <div className="space-y-3">
           {/* הסבר */}
           <div className="bg-white rounded-2xl p-4 card-shadow text-xs text-gray-500 leading-relaxed space-y-1.5">
-            <div className="font-bold text-gray-800 text-sm mb-2">📄 המסמכים שלך</div>
+            <div className="font-bold text-gray-800 text-sm mb-2">המסמכים שלך</div>
             <div className="flex items-start gap-2">
               <span className="text-amber-500 font-bold flex-shrink-0">סיכום</span>
               <span>– פירוט תשלום מהפלטפורמה (לא רשמי)</span>
@@ -829,9 +829,9 @@ export const WorkerWallet: React.FC = () => {
 
           {!loading && completed.length === 0 && compensations.length === 0 && (
             <div className="text-center py-10 bg-white rounded-2xl card-shadow">
-              <div className="text-4xl mb-3">📄</div>
+              <FileText size={30} className="text-gray-300 mx-auto mb-3" />
               <p className="font-bold text-gray-700">אין מסמכים עדיין</p>
-              <p className="text-gray-400 text-sm mt-1">מסמכים יופיעו לאחר השלמת משמרות</p>
+              <p className="text-gray-400 text-sm mt-1">המסמכים יופיעו כאן לאחר השלמת משמרות</p>
             </div>
           )}
 

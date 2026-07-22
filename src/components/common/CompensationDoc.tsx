@@ -97,7 +97,7 @@ export const CompensationDoc: React.FC<Props> = ({ job, viewer, workerName, rest
       <div class="row"><span>צד מבטל</span><span>${cancelledBy === 'worker' ? 'העובד' : 'המסעדה'}</span></div>
 
       <div class="note">
-        ✅ סכום זה הועבר <b>ישירות בין הצדדים</b> כפיצוי על ביטול מאוחר.<br/>
+        סכום זה הועבר <b>ישירות בין הצדדים</b> כפיצוי על ביטול מאוחר.<br/>
         <b>Staffly לא גבתה עמלה</b> על תשלום זה.
       </div>
 
@@ -169,7 +169,7 @@ export const CompensationDoc: React.FC<Props> = ({ job, viewer, workerName, rest
 
             <div className="rounded-xl p-3 text-xs leading-relaxed"
               style={{ background:'#f0fdf4', border:'1px solid #86efac', color:'#166534' }}>
-              ✅ הסכום הועבר <strong>ישירות בין הצדדים</strong> — Staffly לא גבתה עמלה.
+              הסכום הועבר <strong>ישירות בין הצדדים</strong> — Staffly לא גבתה עמלה.
             </div>
 
             <div className="rounded-xl p-3 text-xs leading-relaxed"

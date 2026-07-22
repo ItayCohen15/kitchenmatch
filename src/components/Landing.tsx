@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronLeft, Star, Zap, Shield, Clock } from 'lucide-react';
+import { ChevronLeft, Star, Zap, Shield, Clock, Store, ChefHat, Check, Lock } from 'lucide-react';
 
 interface Props {
   onStart: () => void;
@@ -22,11 +22,15 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
   };
 
   const roles = [
-    { id: 'restaurant', emoji: '🍽️', label: 'אני מסעדה', sub: 'דרושים עובדים' },
-    { id: 'worker',     emoji: '🧑‍🍳', label: 'אני עובד',  sub: 'מחפש משמרות' },
+    { id: 'restaurant', Icon: Store,   label: 'אני מסעדה', sub: 'דרושים עובדים' },
+    { id: 'worker',     Icon: ChefHat, label: 'אני עובד',  sub: 'מחפש משמרות' },
   ];
 
-  const chips = ['✓ עובדים מאומתים', '⚡ תוך 30 דקות', '🔒 תשלום מאובטח'];
+  const chips = [
+    { Icon: Check,  text: 'עובדים מאומתים' },
+    { Icon: Zap,    text: 'תוך 30 דקות' },
+    { Icon: Lock,   text: 'תשלום מאובטח' },
+  ];
 
   return (
     <div className="h-full overflow-y-auto" style={{ background: '#f0f2f7' }}>
@@ -54,7 +58,7 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
         {/* Badge */}
         <div className="inline-flex items-center px-3 py-1.5 rounded-full mb-4 relative"
           style={{ background: 'rgba(232,160,32,0.12)', border: '1px solid rgba(232,160,32,0.28)' }}>
-          <span className="text-xs font-bold" style={{ color: '#f0c050' }}>⚡ משמרות אקסטרה — בזמן אמת</span>
+          <span className="text-xs font-bold inline-flex items-center gap-1" style={{ color: '#f0c050' }}><Zap size={12} /> משמרות אקסטרה — בזמן אמת</span>
         </div>
 
         {/* Headline */}
@@ -72,9 +76,9 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
         {/* Trust chips */}
         <div className="flex flex-wrap gap-2 mb-6 relative">
           {chips.map((c, i) => (
-            <span key={i} className="text-[11px] font-semibold px-2.5 py-1 rounded-lg"
+            <span key={i} className="text-[11px] font-semibold px-2.5 py-1 rounded-lg inline-flex items-center gap-1"
               style={{ background: 'rgba(255,255,255,0.07)', color: '#cdd7ea', border: '1px solid rgba(255,255,255,0.10)' }}>
-              {c}
+              <c.Icon size={12} style={{ color: '#f0c050' }} /> {c.text}
             </span>
           ))}
         </div>
@@ -107,7 +111,7 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
                   border: sel ? '2px solid #e8a020' : '2px solid transparent',
                   boxShadow: sel ? '0 8px 24px rgba(232,160,32,0.25)' : '0 2px 10px rgba(13,20,32,0.06)',
                 }}>
-                <div className="text-3xl mb-1.5">{r.emoji}</div>
+                <div className="mb-1.5 flex justify-center"><r.Icon size={26} style={{ color: sel ? '#e8a020' : '#0d1420' }} /></div>
                 <div className="font-black text-sm" style={{ color: sel ? '#fff' : '#0d1420' }}>{r.label}</div>
                 <div className="text-[11px] mt-0.5" style={{ color: sel ? '#e8a020' : '#94a3b8' }}>{r.sub}</div>
               </button>
@@ -136,7 +140,7 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
           style={{ background: 'linear-gradient(135deg,#0d1420,#1a2744)' }}>
           <div className="absolute top-0 right-0 w-40 h-40 rounded-full pointer-events-none"
             style={{ background: 'radial-gradient(circle, rgba(232,160,32,0.13), transparent 70%)', transform: 'translate(30%,-30%)' }} />
-          <h3 className="font-black text-base mb-4 relative" style={{ color: '#e8a020' }}>⚡ איך זה עובד?</h3>
+          <h3 className="font-black text-base mb-4 relative" style={{ color: '#e8a020' }}>איך זה עובד?</h3>
           <div className="space-y-3.5 relative">
             {(activeRole === 'restaurant' ? [
               { n:'1', t:'פרסם משמרת', d:'בחר תפקיד, שעות ושכר' },
@@ -167,7 +171,7 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
         <button onClick={onStart}
           className="w-full text-white font-black text-base rounded-2xl py-4 mb-3 transition-transform active:scale-[0.98]"
           style={{ background: 'linear-gradient(135deg, #e8a020, #f0c050)', boxShadow: '0 8px 28px rgba(232,160,32,0.4)' }}>
-          {activeRole === 'restaurant' ? 'פרסם משמרת ראשונה — בחינם 🚀' : 'מצא משמרת ראשונה — בחינם 🚀'}
+          {activeRole === 'restaurant' ? 'פרסם משמרת ראשונה — בחינם' : 'מצא משמרת ראשונה — בחינם'}
         </button>
 
         <p className="text-center text-gray-400 text-xs pb-8">

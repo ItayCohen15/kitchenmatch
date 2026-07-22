@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Zap, MapPin, Clock, ChevronLeft, Filter } from 'lucide-react';
+import { Zap, MapPin, Clock, ChevronLeft, Filter, ChefHat, WifiOff, Sparkles } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { ROLE_LABELS, LEVEL_LABELS, LEVEL_COLORS } from '../../data/mockData';
 import { api } from '../../api';
@@ -135,17 +135,17 @@ export const WorkerHome: React.FC = () => {
       {isNewWorker(completedShifts) && (
         <div className="rounded-2xl p-3 flex items-center gap-2.5"
           style={{ background:'rgba(59,130,246,0.1)', border:'1px solid rgba(59,130,246,0.25)' }}>
-          <span className="text-xl">🆕</span>
+          <Sparkles size={18} className="text-blue-500 flex-shrink-0" />
           <span className="text-blue-700 font-semibold text-sm">
-            אתה עובד חדש — עוד {shiftsUntilEstablished(completedShifts)} משמרות מוצלחות כדי לבסס את הפרופיל ולהסיר את התג
+            עוד {shiftsUntilEstablished(completedShifts)} משמרות והפרופיל שלך מבוסס. עד אז יופיע לידך תג של עובד חדש.
           </span>
         </div>
       )}
 
       {/* משמרת פעילה — רק הכי אחרונה */}
       {activeShifts.slice(0, 1).map((shift: any) => {
-        const statusLabel = shift.Status === 'confirmed' ? '✅ אושרת! בוא למסעדה' :
-                            shift.Status === 'active' ? '🟢 משמרת פעילה' : '⏳ ממתין לאישור סיום';
+        const statusLabel = shift.Status === 'confirmed' ? 'המשמרת אושרה — אפשר לצאת למסעדה' :
+                            shift.Status === 'active' ? 'משמרת פעילה' : 'ממתין לאישור סיום';
         const btnLabel = shift.Status === 'confirmed' ? 'נסע עכשיו' :
                          shift.Status === 'active' ? 'כנס למשמרת' : 'ראה סטטוס';
         const btnScreen = shift.Status === 'confirmed' ? 'navigation' : 'active_shift';
@@ -155,7 +155,9 @@ export const WorkerHome: React.FC = () => {
             <div className="font-black text-lg">{shift.RestaurantName}</div>
             <div className="text-green-100 text-sm">{shift.RestaurantCity} · ₪{shift.HourlyRate}/ש׳</div>
             {shift.RestaurantAddress && (
-              <div className="text-green-200 text-xs mb-1">📍 {shift.RestaurantAddress}, {shift.RestaurantCity}</div>
+              <div className="text-green-200 text-xs mb-1 flex items-center gap-1">
+                <MapPin size={11} />{shift.RestaurantAddress}, {shift.RestaurantCity}
+              </div>
             )}
             <div className="mb-3" />
             <button
@@ -179,7 +181,7 @@ export const WorkerHome: React.FC = () => {
             <Zap size={22} className="fill-white" />
           </div>
           <div className="flex-1">
-            <div className="font-bold text-sm">🚨 {emergencyJob.RestaurantName} – חירום!</div>
+            <div className="font-bold text-sm">{emergencyJob.RestaurantName} — משמרת חירום</div>
             <div className="text-red-100 text-xs">{emergencyJob.RestaurantCity} · ₪{emergencyJob.HourlyRate}/ש׳</div>
           </div>
           <button
@@ -222,9 +224,9 @@ export const WorkerHome: React.FC = () => {
 
         {!loading && loadError && (
           <div className="text-center py-10 bg-white rounded-2xl card-shadow">
-            <div className="text-4xl mb-3">📡</div>
+            <WifiOff size={30} className="text-gray-300 mx-auto mb-3" />
             <p className="text-gray-600 font-medium">לא הצלחנו לטעון משמרות</p>
-            <p className="text-gray-400 text-sm mt-1 mb-3">בדוק את החיבור לאינטרנט</p>
+            <p className="text-gray-400 text-sm mt-1 mb-3">כדאי לבדוק את החיבור לאינטרנט</p>
             <button onClick={() => { setLoading(true); loadJobs(); }}
               className="bg-amber-500 text-white rounded-xl px-5 py-2 font-bold text-sm active:scale-95 transition-transform">
               נסה שוב
@@ -234,8 +236,8 @@ export const WorkerHome: React.FC = () => {
 
         {!loading && !loadError && filtered.length === 0 && (
           <div className="bg-white rounded-2xl card-shadow">
-            <EmptyState emoji="🍳" title="אין משמרות זמינות כרגע"
-              subtitle="משמרות חדשות נוספות לאורך היום — בדוק שוב מאוחר יותר" />
+            <EmptyState icon={<ChefHat size={26} />} title="אין משמרות זמינות כרגע"
+              subtitle="משמרות חדשות נוספות לאורך היום. כדאי לבדוק שוב מאוחר יותר." />
           </div>
         )}
 
@@ -271,7 +273,7 @@ export const WorkerHome: React.FC = () => {
                 <div className="p-4">
                   {job.IsEmergency && (
                     <div className="inline-flex items-center gap-1.5 mb-2.5 px-2.5 py-1 rounded-full text-white text-xs font-bold badge-emergency">
-                      <Zap size={11} className="fill-white" /> חירום — דרוש מיידי!
+                      <Zap size={11} className="fill-white" /> חירום — דרוש מיידית
                     </div>
                   )}
 

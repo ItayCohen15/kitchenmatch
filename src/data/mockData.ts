@@ -245,7 +245,7 @@ export const ANALYTICS_DATA: AnalyticsData[] = [
 export const INITIAL_CHAT: Message[] = [
   { id: 'm1', senderId: 'rest1', senderName: 'מסעדת הגן', text: 'שלום דניאל! אתה בדרך?', time: '18:05', isOwn: true },
   { id: 'm2', senderId: 'w2', senderName: 'דניאל', text: 'כן! אני כ-5 דקות ממך', time: '18:06', isOwn: false },
-  { id: 'm3', senderId: 'rest1', senderName: 'מסעדת הגן', text: 'מצוין, הכניסה מהחצר האחורית 👨‍🍳', time: '18:07', isOwn: true },
+  { id: 'm3', senderId: 'rest1', senderName: 'מסעדת הגן', text: 'מצוין, הכניסה מהחצר האחורית', time: '18:07', isOwn: true },
 ];
 
 // מקור האמת לתפקידים הוא utils/roles.ts — כאן רק ייצוא חוזר, כדי שקבצים

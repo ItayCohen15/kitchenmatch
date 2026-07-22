@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { X, Bell, CheckCheck } from 'lucide-react';
+import { X, Bell, CheckCheck, Send, CheckCircle2, MapPin, MessageCircle, Flag, Zap } from 'lucide-react';
 import { api } from '../../api';
 import { Skeleton } from './Skeleton';
 import { toast } from './Toast';
@@ -35,13 +35,14 @@ export const NotificationPanel: React.FC<Props> = ({ onClose }) => {
   };
 
   const iconFor = (title: string) => {
-    if (title.includes('מועמדות')) return '📨';
-    if (title.includes('אושר') || title.includes('אישור')) return '✅';
-    if (title.includes('הגיע') || title.includes('צ׳ק')) return '📍';
-    if (title.includes('הודעה') || title.includes('צ׳אט')) return '💬';
-    if (title.includes('סיים') || title.includes('סיום')) return '🏁';
-    if (title.includes('חירום')) return '🚨';
-    return '🔔';
+    const cls = 'text-amber-500';
+    if (title.includes('מועמדות')) return <Send size={18} className={cls} />;
+    if (title.includes('אושר') || title.includes('אישור')) return <CheckCircle2 size={18} className="text-green-500" />;
+    if (title.includes('הגיע') || title.includes('צ׳ק')) return <MapPin size={18} className={cls} />;
+    if (title.includes('הודעה') || title.includes('צ׳אט')) return <MessageCircle size={18} className="text-blue-500" />;
+    if (title.includes('סיים') || title.includes('סיום')) return <Flag size={18} className={cls} />;
+    if (title.includes('חירום')) return <Zap size={18} className="text-red-500" />;
+    return <Bell size={18} className={cls} />;
   };
 
   return (
@@ -102,7 +103,7 @@ export const NotificationPanel: React.FC<Props> = ({ onClose }) => {
               </div>
             ) : notifs.length === 0 ? (
               <div className="text-center py-14 px-6">
-                <div className="text-5xl mb-3">🔔</div>
+                <Bell size={34} className="text-gray-300 mx-auto mb-3" />
                 <div className="font-bold text-gray-700">אין התראות עדיין</div>
                 <div className="text-gray-400 text-sm mt-1">התראות יופיעו כאן בזמן אמת</div>
               </div>
@@ -114,7 +115,7 @@ export const NotificationPanel: React.FC<Props> = ({ onClose }) => {
                       !n.IsRead ? 'bg-amber-50/50' : 'bg-white'
                     }`}>
                     {/* אייקון */}
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-xl"
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
                       style={{ background: !n.IsRead ? 'rgba(232,160,32,0.12)' : '#f8fafc' }}>
                       {iconFor(n.Title)}
                     </div>

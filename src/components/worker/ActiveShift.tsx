@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Clock, CheckCircle2, Phone } from 'lucide-react';
+import { Clock, CheckCircle2, Phone, PartyPopper, Flag } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { Chat } from '../common/Chat';
@@ -74,7 +74,7 @@ export const WorkerActiveShift: React.FC = () => {
   const grossEarned = (hoursWorked * hourlyRate).toFixed(2);
   const netEarned = (hoursWorked * hourlyRate * netMult).toFixed(2);
   const earnedThisMinute = (ratePerSecond * 60).toFixed(2);
-  const QUICK = ['בדרך!', 'מוכן 👍', 'צריך עוד חומרים', '5 דקות ועוד'];
+  const QUICK = ['בדרך', 'מוכן', 'צריך עוד חומרים', 'עוד חמש דקות'];
 
   const handleConfirmEnd = async () => {
     setConfirming(true);
@@ -101,18 +101,18 @@ export const WorkerActiveShift: React.FC = () => {
     return (
       <div className="screen-enter flex flex-col items-center justify-center min-h-[70vh] text-center gap-4 px-6">
         <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center">
-          <span className="text-5xl">🎉</span>
+          <PartyPopper size={44} className="text-green-500" />
         </div>
-        <h2 className="text-2xl font-black text-gray-900">שני הצדדים אישרו!</h2>
-        <p className="text-gray-500">התשלום מועבר... עוד רגע תעבור לדירוג 💰</p>
+        <h2 className="text-2xl font-black text-gray-900">שני הצדדים אישרו</h2>
+        <p className="text-gray-500">התשלום בדרך. עוד רגע תעברו למסך הדירוג.</p>
         <div className="bg-green-50 rounded-2xl p-4 w-full text-center">
           <div className="text-3xl font-black text-green-600">₪{netEarned}</div>
-          <div className="text-gray-400 text-sm mt-1">נטו לאחר עמלה {wRatePct}%{isEmergency ? ' 🚨' : ''}</div>
+          <div className="text-gray-400 text-sm mt-1">נטו לאחר עמלה {wRatePct}%{isEmergency ? ' · משמרת חירום' : ''}</div>
         </div>
         <div className="w-6 h-6 border-2 border-green-400 border-t-transparent rounded-full animate-spin" />
         <button onClick={() => navToWorker('end_shift')}
           className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg">
-          דרג את המסעדה →
+          דרג את המסעדה
         </button>
       </div>
     );
@@ -170,7 +170,11 @@ export const WorkerActiveShift: React.FC = () => {
             <div key={side.label} className={`rounded-xl p-3 text-center border-2 transition-all ${
               side.confirmed ? 'border-green-400 bg-green-50' : 'border-gray-200 bg-gray-50'
             }`}>
-              <div className="text-2xl mb-1">{side.confirmed ? '✅' : '⏳'}</div>
+              <div className="mb-1 flex justify-center">
+                {side.confirmed
+                  ? <CheckCircle2 size={22} className="text-green-500" />
+                  : <Clock size={22} className="text-gray-300" />}
+              </div>
               <div className={`text-xs font-bold truncate ${side.confirmed ? 'text-green-600' : 'text-gray-400'}`}>
                 {side.label}
               </div>
@@ -182,12 +186,12 @@ export const WorkerActiveShift: React.FC = () => {
         </div>
         {!workerConfirmed && restaurantConfirmed && (
           <p className="text-center text-xs text-blue-700 mt-2 bg-blue-50 rounded-lg p-2 font-semibold">
-            💡 {restaurantName} כבר אישר! אשר גם אתה לקבל תשלום.
+            {restaurantName} כבר אישר. אשר גם אתה כדי לקבל את התשלום.
           </p>
         )}
         {workerConfirmed && !restaurantConfirmed && (
           <p className="text-center text-xs text-amber-700 mt-2 bg-amber-50 rounded-lg p-2">
-            ⏳ ממתין לאישור {restaurantName}...
+            ממתין לאישור {restaurantName}
           </p>
         )}
       </div>
@@ -199,8 +203,8 @@ export const WorkerActiveShift: React.FC = () => {
       {!workerConfirmed ? (
         !showConfirmDialog ? (
           <button onClick={() => setShowConfirmDialog(true)}
-            className="w-full bg-gray-900 text-white rounded-2xl py-4 font-bold text-lg active:scale-98 transition-transform">
-            🏁 סיים משמרת
+            className="w-full bg-gray-900 text-white rounded-2xl py-4 font-bold text-lg active:scale-98 transition-transform flex items-center justify-center gap-2">
+            <Flag size={18} /> סיים משמרת
           </button>
         ) : (
           <div className="bg-white rounded-2xl p-4 card-shadow space-y-3 screen-enter">
@@ -226,7 +230,7 @@ export const WorkerActiveShift: React.FC = () => {
       ) : (
         <div className="bg-green-50 border border-green-200 rounded-2xl p-4 text-center">
           <CheckCircle2 size={22} className="text-green-500 mx-auto mb-1" />
-          <p className="font-bold text-green-700 text-sm">אישרת סיום ✅</p>
+          <p className="font-bold text-green-700 text-sm">אישרת סיום</p>
           <p className="text-green-600 text-xs mt-0.5">ממתין לאישור {restaurantName}</p>
         </div>
       )}

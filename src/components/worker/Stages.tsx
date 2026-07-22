@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { GraduationCap, Send, MapPin, Clock, Check, Calendar, Lightbulb, Phone, MessageCircle, ChevronDown, Archive } from 'lucide-react';
+import { GraduationCap, Send, MapPin, Clock, Check, Calendar, Lightbulb, Phone, MessageCircle, ChevronDown, Archive, Search } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS, visibleShiftRoles } from '../../utils/roles';
@@ -74,7 +74,7 @@ export const WorkerStages: React.FC = () => {
 
   const applyStage = async (stageId: number) => {
     setBusy(stageId); setMsg('');
-    try { await api.applyToJob(stageId, wid); setMsg('✅ מועמדות נשלחה! ממתין לאישור המסעדה'); await load(); }
+    try { await api.applyToJob(stageId, wid); setMsg('המועמדות נשלחה. ממתין לאישור המסעדה.'); await load(); }
     catch (e: any) { setMsg(e.message || 'שגיאה בהגשה'); }
     setBusy(null);
   };
@@ -160,7 +160,7 @@ export const WorkerStages: React.FC = () => {
                 <span>{ROLE_LABELS[o.Role] || o.Role}</span>
                 <span className="flex items-center gap-1"><Clock size={12} />{fmtDate(o.StartTime)} · {fmtTime(o.StartTime)}–{fmtTime(o.EndTime)}</span>
               </div>
-              {o.Duties && <p className="text-gray-500 text-xs mb-2">📋 {o.Duties}</p>}
+              {o.Duties && <p className="text-gray-500 text-xs mb-2">{o.Duties}</p>}
               <button onClick={() => acceptOffer(o)} disabled={busy === Number(o.Id)}
                 className="w-full text-white rounded-2xl py-3 font-bold flex items-center justify-center gap-2 disabled:opacity-40"
                 style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
@@ -182,7 +182,7 @@ export const WorkerStages: React.FC = () => {
               </div>
               <div>
                 <div className="font-bold text-gray-900">{activeStage.RestaurantName}</div>
-                <div className="text-gray-400 text-xs">{ROLE_LABELS[activeStage.Role] || activeStage.Role} · סטאז' פעיל 🎓</div>
+                <div className="text-gray-400 text-xs">{ROLE_LABELS[activeStage.Role] || activeStage.Role} · סטאז' פעיל</div>
               </div>
             </div>
             <div className="flex gap-1.5">
@@ -243,9 +243,9 @@ export const WorkerStages: React.FC = () => {
                     </div>
                     <span className="text-amber-600 font-bold text-sm">₪{sh.HourlyRate}/ש'</span>
                   </div>
-                  {sh.Instructions && <div className="text-gray-500 text-xs mt-1">📋 {sh.Instructions}</div>}
+                  {sh.Instructions && <div className="text-gray-500 text-xs mt-1">{sh.Instructions}</div>}
                   {done
-                    ? <div className="text-green-600 text-xs mt-1">✅ הושלמה{sh.TotalPay ? ` · ₪${sh.TotalPay}` : ''}</div>
+                    ? <div className="text-green-600 text-xs mt-1">הושלמה{sh.TotalPay ? ` · ₪${sh.TotalPay}` : ''}</div>
                     : today
                       ? <button onClick={() => checkInShift(sh)} className="mt-2 w-full text-white rounded-lg py-2 text-sm font-bold" style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>כנס למשמרת היום ›</button>
                       : <div className="text-gray-400 text-xs mt-1">מתוכננת</div>}
@@ -274,9 +274,9 @@ export const WorkerStages: React.FC = () => {
         <p className="text-gray-400 text-xs -mt-1">לסטודנטים מקורסי בישול/ברמנים — 3 שבועות של למידה בשטח.</p>
         {openStages.length === 0 && (
           <div className="text-center py-8 bg-white rounded-2xl card-shadow">
-            <div className="text-3xl mb-2">🔎</div>
+            <Search size={26} className="text-gray-300 mx-auto mb-2" />
             <p className="text-gray-500 text-sm font-medium">אין כרגע סטאז'ים פתוחים בתחום שלך</p>
-            <p className="text-gray-400 text-xs">בדוק שוב בקרוב</p>
+            <p className="text-gray-400 text-xs">כדאי לבדוק שוב בקרוב</p>
           </div>
         )}
         {openStages.map(s => (
@@ -289,7 +289,7 @@ export const WorkerStages: React.FC = () => {
               <span>{ROLE_LABELS[s.Role] || s.Role}</span>
               {s.RestaurantCity && <span className="flex items-center gap-1"><MapPin size={12} />{s.RestaurantCity}</span>}
             </div>
-            {s.Duties && <p className="text-gray-500 text-xs mb-2">📋 {s.Duties}</p>}
+            {s.Duties && <p className="text-gray-500 text-xs mb-2">{s.Duties}</p>}
             <button onClick={() => applyStage(Number(s.Id))} disabled={busy === Number(s.Id)}
               className="w-full text-white rounded-2xl py-3 font-bold disabled:opacity-40"
               style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>

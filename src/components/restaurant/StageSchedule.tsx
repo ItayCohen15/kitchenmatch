@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, Phone, MessageCircle, Pencil, Plus, ChevronRight, Star, Lightbulb } from 'lucide-react';
+import { Calendar, Clock, Phone, MessageCircle, Pencil, Plus, ChevronRight, Star, Lightbulb, Check } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
@@ -132,7 +132,7 @@ export const StageSchedule: React.FC = () => {
       {/* משמרת רצה עכשיו */}
       {running.map(sh => (
         <div key={sh.Id} className="bg-gradient-to-l from-green-600 to-emerald-500 rounded-2xl p-4 text-white">
-          <div className="font-bold text-sm mb-1">🟢 משמרת {sh.Status === 'active' ? 'פעילה עכשיו' : 'ממתינה לאישור סיום'}</div>
+          <div className="font-bold text-sm mb-1">משמרת {sh.Status === 'active' ? 'פעילה עכשיו' : 'ממתינה לאישור סיום'}</div>
           <div className="text-green-100 text-sm mb-3">{fmtDayDate(sh.StartTime)} · {fmtTime(sh.StartTime)}–{fmtTime(sh.EndTime)} · ₪{sh.HourlyRate}/ש'</div>
           <button onClick={() => enterShift(sh)} className="w-full bg-white text-green-700 rounded-xl py-2.5 font-black text-sm">
             כנס למשמרת ›
@@ -147,9 +147,9 @@ export const StageSchedule: React.FC = () => {
         </div>
         {!loading && upcoming.length === 0 && (
           <div className="text-center py-6 bg-white rounded-2xl card-shadow">
-            <div className="text-3xl mb-1">🗓️</div>
+            <Calendar size={26} className="text-gray-300 mx-auto mb-1" />
             <p className="text-gray-500 text-sm font-medium">אין משמרות מתוכננות</p>
-            <p className="text-gray-400 text-xs">קבע משמרת חדשה בכפתור למעלה</p>
+            <p className="text-gray-400 text-xs">אפשר לקבוע משמרת חדשה בכפתור שלמעלה</p>
           </div>
         )}
         {upcoming.map(sh => {
@@ -172,7 +172,7 @@ export const StageSchedule: React.FC = () => {
               <div className="text-gray-500 text-xs flex items-center gap-1.5 mb-1">
                 <Clock size={12} /> {fmtTime(sh.StartTime)}–{fmtTime(sh.EndTime)}
               </div>
-              {sh.Instructions && <div className="text-gray-500 text-xs bg-gray-50 rounded-lg px-2.5 py-1.5 mt-1.5">📋 {sh.Instructions}</div>}
+              {sh.Instructions && <div className="text-gray-500 text-xs bg-gray-50 rounded-lg px-2.5 py-1.5 mt-1.5">{sh.Instructions}</div>}
               {today && (
                 <button onClick={() => enterShift(sh)}
                   className="mt-2.5 w-full text-white rounded-xl py-2.5 text-sm font-bold"
@@ -188,7 +188,7 @@ export const StageSchedule: React.FC = () => {
       {/* משמרות שהיו — כולל הדירוג והמשוב שנכתבו */}
       <div className="space-y-2 pb-2">
         <div className="flex items-center gap-1.5 text-xs font-bold text-gray-400">
-          ✅ משמרות שהיו ({past.length})
+          <Check size={13} /> משמרות שהיו ({past.length})
         </div>
         {!loading && past.length === 0 && (
           <p className="text-gray-400 text-xs text-center py-3">עוד לא הושלמו משמרות בסטאז' הזה</p>
@@ -237,7 +237,7 @@ export const StageSchedule: React.FC = () => {
           </div>
         ))}
         <p className="text-amber-700 text-[11px] text-center bg-amber-50 rounded-xl py-2">
-          🎓 בתקופת הסטאז' העמלה שלך {(STAGE_RESTAURANT_COMMISSION * 100).toFixed(1)}% בלבד
+          בתקופת הסטאז' העמלה שלך {(STAGE_RESTAURANT_COMMISSION * 100).toFixed(1)}% בלבד
         </p>
       </div>
 

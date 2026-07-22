@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { CheckCircle, Sparkles } from 'lucide-react';
+import { CheckCircle, Sparkles, GraduationCap } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { StarRating } from '../common/StarRating';
 import { api } from '../../api';
@@ -67,7 +67,7 @@ export const RestaurantEndShift: React.FC = () => {
   const workerInit = workerName.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
   const walletBalance = userProfile?.WalletBalance || 0;
 
-  const QUICK = ['עבודה מעולה!', 'מקצועי ומהיר', 'אשמח לקחת שוב', 'מדהים! 🔥', 'עבד קשה ומסור'];
+  const QUICK = ['עבודה מעולה', 'מקצועי ומהיר', 'אשמח לקחת שוב', 'עבד קשה ומסור'];
   // משוב שלילי → פותחים תא נימוק
   const hasConcern = ['partial', 'no'].includes(skillsAsClaimed) || ['maybe', 'no'].includes(wouldHireAgain);
 
@@ -110,8 +110,8 @@ export const RestaurantEndShift: React.FC = () => {
         <div className="w-28 h-28 bg-green-100 rounded-full flex items-center justify-center">
           <CheckCircle size={56} className="text-green-500" />
         </div>
-        <h2 className="text-2xl font-black text-gray-900">המשמרת הסתיימה! 🎉</h2>
-        <p className="text-gray-500">הדירוג נשלח · תשלום עובד</p>
+        <h2 className="text-2xl font-black text-gray-900">המשמרת הסתיימה</h2>
+        <p className="text-gray-500">הדירוג נשלח והתשלום הועבר לעובד</p>
         <div className="bg-amber-50 rounded-2xl px-8 py-4 w-full text-center">
           <div className="text-3xl font-black text-amber-600">₪{totalCharged}</div>
           <div className="text-gray-500 text-sm">חויב מהארנק שלך</div>
@@ -160,7 +160,7 @@ export const RestaurantEndShift: React.FC = () => {
         <div className="space-y-0">
           {[
             { label: `שכר בפועל (₪${hourlyRate} × ${shiftHours.toFixed(1)} ש׳)`, value: `₪${baseAmount.toFixed(0)}`, color: 'text-gray-800' },
-            { label: `עמלת פלטפורמה (${restCommPct}% מ-₪${baseScheduled.toFixed(0)})${isEmergency ? ' 🚨' : ''}`, value: `₪${restaurantCommission.toFixed(0)}`, color: 'text-gray-800' },
+            { label: `עמלת פלטפורמה (${restCommPct}% מ-₪${baseScheduled.toFixed(0)})${isEmergency ? ' · חירום' : ''}`, value: `₪${restaurantCommission.toFixed(0)}`, color: 'text-gray-800' },
           ].map(r => (
             <div key={r.label} className="flex justify-between text-sm py-2 border-b border-gray-50">
               <span className="text-gray-500">{r.label}</span>
@@ -187,7 +187,7 @@ export const RestaurantEndShift: React.FC = () => {
         <StarRating value={rating} onChange={setRating} size={36} />
         {rating > 0 && (
           <div className="text-center text-sm font-semibold text-gray-600 mt-2">
-            {['', '😕 לא טוב', '😐 ממוצע', '🙂 טוב', '😊 מצוין', '🔥 מדהים!'][rating]}
+            {['', 'לא טוב', 'בסדר', 'טוב', 'טוב מאוד', 'מצוין'][rating]}
           </div>
         )}
         <div className="flex gap-2 flex-wrap mt-3">
@@ -268,17 +268,17 @@ export const RestaurantEndShift: React.FC = () => {
       {isStageShift && (
         <div className="bg-white rounded-2xl p-4 card-shadow space-y-3">
           <div className="flex items-center gap-1.5">
-            <span className="text-lg">🎓</span>
+            <GraduationCap size={18} className="text-amber-500" />
             <h3 className="font-bold text-gray-800 text-sm">משוב סטאז' לעובד</h3>
           </div>
           <div>
-            <label className="text-xs font-semibold text-gray-500 mb-1 block">💡 במה הוא יכול להשתפר למשמרת הבאה?</label>
+            <label className="text-xs font-semibold text-gray-500 mb-1 block">במה הוא יכול להשתפר למשמרת הבאה?</label>
             <textarea value={improvementNote} onChange={e => setImprovementNote(e.target.value)} rows={2}
               placeholder="לדוגמה: לעבוד מהר יותר על מנות פתיחה, לשמור על סדר בתחנה..."
               className="w-full border border-gray-200 rounded-xl p-3 text-sm text-right resize-none focus:border-amber-400 outline-none" />
           </div>
           <div>
-            <label className="text-xs font-semibold text-gray-500 mb-1 block">📋 מה יהיה במשמרת הבאה? (שיתכונן)</label>
+            <label className="text-xs font-semibold text-gray-500 mb-1 block">מה יהיה במשמרת הבאה? (שיתכונן)</label>
             <textarea value={nextShiftNote} onChange={e => setNextShiftNote(e.target.value)} rows={2}
               placeholder="לדוגמה: ערב עמוס, נתמקד בגריל ובמנות עיקריות..."
               className="w-full border border-gray-200 rounded-xl p-3 text-sm text-right resize-none focus:border-amber-400 outline-none" />

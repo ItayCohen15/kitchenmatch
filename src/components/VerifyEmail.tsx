@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, Mail } from 'lucide-react';
 // כתובת ה-API מגיעה ממקור אחד (ראה הערת האבטחה ב-api/index.ts)
 import { BASE } from '../api';
 
@@ -90,7 +90,7 @@ export const VerifyEmail: React.FC<Props> = ({ userId, email, onVerified }) => {
         <div className="text-center mb-8">
           <div className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-4"
             style={{ background: 'rgba(232,160,32,0.15)', border: '2px solid rgba(232,160,32,0.3)' }}>
-            <span style={{ fontSize: 40 }}>📧</span>
+            <Mail size={38} className="text-amber-400" />
           </div>
           <h1 className="text-2xl font-black text-white mb-2">אמת את האימייל שלך</h1>
           <p className="text-gray-400 text-sm">
@@ -151,7 +151,7 @@ export const VerifyEmail: React.FC<Props> = ({ userId, email, onVerified }) => {
         {/* Resend */}
         <div className="text-center">
           {resent ? (
-            <p className="text-green-400 text-sm font-semibold">✅ קוד חדש נשלח!</p>
+            <p className="text-green-400 text-sm font-semibold">קוד חדש נשלח</p>
           ) : (
             <p className="text-gray-500 text-sm">
               לא קיבלת?{' '}

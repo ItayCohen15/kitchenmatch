@@ -85,7 +85,7 @@ export const WorkerProfileModal: React.FC<Props> = ({ workerId, initial, onClose
                     <GradBadge isTrainee={worker?.IsTrainee} school={worker?.SchoolName} course={worker?.CourseType} size="sm" />
                     <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full"
                       style={{ background: lvl.gradient, color: 'white' }}>
-                      {lvl.emoji} {lvl.label}
+                      {lvl.label}
                     </span>
                     {rating > 0 && (
                       <span className="flex items-center gap-0.5 text-yellow-400 text-xs font-bold">

@@ -1,5 +1,5 @@
 ﻿import React, { useState, useRef, useEffect } from 'react';
-import { Edit3, Star, Award, LogOut, Phone, Check, X, FileText, Trash2, Upload } from 'lucide-react';
+import { Edit3, Star, Award, LogOut, Phone, Check, X, FileText, Trash2, Upload, CheckCircle2, Shield, XCircle, Camera, ClipboardList } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS, WORKER_ROLES } from '../../utils/roles';
@@ -142,7 +142,7 @@ export const WorkerProfile: React.FC = () => {
         {[
           { label: 'שם מלא', val: editName, set: setEditName, ph: 'שם מלא', type: 'text' },
           { label: 'עיר', val: editCity, set: setEditCity, ph: 'עיר', type: 'text' },
-          { label: '📞 טלפון', val: phone, set: setPhone, ph: '05X-XXXXXXX', type: 'tel' },
+          { label: 'טלפון', val: phone, set: setPhone, ph: '05X-XXXXXXX', type: 'tel' },
         ].map(f => (
           <div key={f.label}>
             <label className="text-sm font-semibold text-gray-600 mb-1.5 block">{f.label}</label>
@@ -156,7 +156,7 @@ export const WorkerProfile: React.FC = () => {
             className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-amber-400 outline-none bg-white">
             {/* נגזר מ-WORKER_ROLES — רשימה קשיחה כאן שכחה תפקידים חדשים */}
             {WORKER_ROLES.map(r => (
-              <option key={r.key} value={r.key}>{r.emoji} {r.label}</option>
+              <option key={r.key} value={r.key}>{r.label}</option>
             ))}
           </select>
         </div>
@@ -171,7 +171,7 @@ export const WorkerProfile: React.FC = () => {
         className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold disabled:opacity-50 shadow-lg shadow-amber-200">
         {savingProfile
           ? <div className="flex items-center justify-center gap-2"><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />שומר...</div>
-          : '✅ שמור שינויים'}
+          : 'שמור שינויים'}
       </button>
     </div>
   );
@@ -190,7 +190,7 @@ export const WorkerProfile: React.FC = () => {
             <div className="flex items-center gap-2 mt-1">
               <span className="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full"
                 style={{ background: currentLevel.gradient, color: 'white' }}>
-                {currentLevel.emoji} {currentLevel.label}
+                {currentLevel.label}
               </span>
               <GradBadge isTrainee={userProfile?.IsTrainee} school={userProfile?.SchoolName} course={userProfile?.CourseType} size="sm" />
             </div>
@@ -234,13 +234,13 @@ export const WorkerProfile: React.FC = () => {
       {/* Stats */}
       <div className="grid grid-cols-4 gap-2">
         {[
-          { label: 'משמרות', value: completedShifts, icon: '✅' },
-          { label: 'אמינות', value: `${reliabilityScore}%`, icon: '🛡️' },
-          { label: 'ניסיון', value: `${yearsExp} שנ׳`, icon: '⭐' },
-          { label: 'ביטולים', value: noShows, icon: '❌' },
+          { label: 'משמרות', value: completedShifts, icon: <CheckCircle2 size={18} className="text-green-500" /> },
+          { label: 'אמינות', value: `${reliabilityScore}%`, icon: <Shield size={18} className="text-blue-500" /> },
+          { label: 'ניסיון', value: `${yearsExp} שנ׳`, icon: <Star size={18} className="text-amber-500" /> },
+          { label: 'ביטולים', value: noShows, icon: <XCircle size={18} className="text-gray-400" /> },
         ].map(s => (
           <div key={s.label} className="bg-white rounded-xl p-3 card-shadow text-center">
-            <div className="text-lg mb-1">{s.icon}</div>
+            <div className="mb-1 flex justify-center">{s.icon}</div>
             <div className="font-black text-gray-900 text-sm">{s.value}</div>
             <div className="text-gray-400 text-xs">{s.label}</div>
           </div>
@@ -250,7 +250,7 @@ export const WorkerProfile: React.FC = () => {
       {/* טלפון */}
       <div className="bg-white rounded-2xl p-4 card-shadow">
         <div className="flex items-center justify-between mb-1">
-          <h3 className="font-bold text-gray-800 text-sm">📞 מספר טלפון</h3>
+          <h3 className="font-bold text-gray-800 text-sm flex items-center gap-1.5"><Phone size={14} className="text-gray-400" /> מספר טלפון</h3>
           {!editingPhone && (
             <button onClick={() => setEditingPhone(true)} className="text-amber-500 text-sm font-semibold">ערוך</button>
           )}
@@ -282,7 +282,7 @@ export const WorkerProfile: React.FC = () => {
       {/* גלריית עבודות */}
       <div className="bg-white rounded-2xl p-4 card-shadow">
         <div className="flex items-center gap-2 mb-3">
-          <span className="text-lg">📸</span>
+          <Camera size={18} className="text-gray-400" />
           <h3 className="font-bold text-gray-800">גלריית העבודות שלי</h3>
         </div>
         {userProfile?.Id && <WorkerGallery workerId={userProfile.Id} editable />}
@@ -333,7 +333,7 @@ export const WorkerProfile: React.FC = () => {
         <div className="flex items-center justify-between mb-3">
           <span className="inline-flex items-center gap-1.5 font-black px-3 py-1.5 rounded-xl text-sm"
             style={{ background: currentLevel.gradient, color: 'white' }}>
-            {currentLevel.emoji} {currentLevel.label}
+            {currentLevel.label}
           </span>
           <div className="text-left">
             <div className="text-xs text-gray-400">עמלת העובד שלך</div>
@@ -346,7 +346,7 @@ export const WorkerProfile: React.FC = () => {
             <div className="flex justify-between text-sm mb-2">
               <span className="text-gray-500">{completedForLevel} משמרות</span>
               <span className="text-gray-500">
-                עוד <strong className="text-gray-800">{prog.shiftsNeeded}</strong> → {prog.next.emoji} {prog.next.label}
+                עוד <strong className="text-gray-800">{prog.shiftsNeeded}</strong> לרמת {prog.next.label}
               </span>
             </div>
             <div className="bg-gray-100 rounded-full h-3 overflow-hidden">
@@ -357,7 +357,7 @@ export const WorkerProfile: React.FC = () => {
           </>
         ) : (
           <div className="text-center text-sm font-bold py-1" style={{ color:'#6366f1' }}>
-            💎 הגעת לרמה הגבוהה ביותר!
+            הגעת לרמה הגבוהה ביותר
           </div>
         )}
 
@@ -382,7 +382,7 @@ export const WorkerProfile: React.FC = () => {
 
       {/* Info card */}
       <div className="bg-amber-50 border border-orange-100 rounded-2xl p-4">
-        <h3 className="font-bold text-amber-800 mb-2 text-sm">📋 הפרופיל שלך</h3>
+        <h3 className="font-bold text-amber-800 mb-2 text-sm flex items-center gap-1.5"><ClipboardList size={14} /> הפרופיל שלך</h3>
         <p className="text-orange-700 text-xs leading-relaxed">
           ככל שתשלים יותר משמרות ותקבל דירוגים טובים — כך תעלה ברמה ותקבל עדיפות בשיבוצים.
         </p>

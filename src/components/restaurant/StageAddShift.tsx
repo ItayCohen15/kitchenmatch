@@ -115,21 +115,21 @@ export const StageAddShift: React.FC = () => {
           <input type="number" inputMode="numeric" value={rate} onChange={e => setRate(e.target.value)} placeholder="50" className={inputCls} />
         </div>
         <div>
-          <label className="text-sm font-semibold text-gray-600 mb-1.5 block">📋 הנחיות לעובד (אופציונלי)</label>
+          <label className="text-sm font-semibold text-gray-600 mb-1.5 block">הנחיות לעובד (אופציונלי)</label>
           <textarea value={instructions} onChange={e => setInstructions(e.target.value)} rows={3}
             placeholder="לדוגמה: מגיעים בבגדי עבודה, מתחילים בתחנת הסלטים..."
             className={inputCls + ' resize-none text-sm'} />
         </div>
 
         <p className="text-amber-700 text-xs text-center bg-amber-50 rounded-xl py-2">
-          🎓 בתקופת הסטאז' העמלה שלך {(STAGE_RESTAURANT_COMMISSION * 100).toFixed(1)}% בלבד
+          בתקופת הסטאז' העמלה שלך {(STAGE_RESTAURANT_COMMISSION * 100).toFixed(1)}% בלבד
         </p>
         {err && <div className="bg-red-50 text-red-600 text-sm rounded-xl px-4 py-2 text-center">{err}</div>}
 
         <button onClick={save} disabled={saving}
           className="w-full text-white rounded-2xl py-4 font-bold disabled:opacity-40"
           style={{ background: editShift ? 'linear-gradient(135deg,#3b82f6,#6366f1)' : 'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow: '0 4px 16px rgba(232,160,32,0.25)' }}>
-          {saving ? 'שומר...' : editShift ? '💾 שמור שינויים' : '+ הוסף משמרת ללוז'}
+          {saving ? 'שומר...' : editShift ? 'שמור שינויים' : 'הוסף משמרת ללוז'}
         </button>
         {editShift && (
           <p className="text-gray-400 text-[11px] text-center">העובד יקבל התראה על העדכון</p>
