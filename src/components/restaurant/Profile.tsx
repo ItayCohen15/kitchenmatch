@@ -1,11 +1,11 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Edit3, Phone, MapPin, Star, LogOut, ChefHat, TrendingUp, Trash2 } from 'lucide-react';
+import { Edit3, Phone, MapPin, Star, LogOut, ChefHat, TrendingUp, Trash2, Gift, ChevronLeft } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { DeleteAccountModal } from '../common/DeleteAccountModal';
 
 export const RestaurantProfile: React.FC = () => {
-  const { userProfile, setUserProfile, resetToLanding } = useApp();
+  const { userProfile, setUserProfile, resetToLanding, navToRestaurant } = useApp();
   const [editing, setEditing] = useState(false);
   const [reviews, setReviews] = useState<any[]>([]);
   const [totalShifts, setTotalShifts] = useState(0);
@@ -172,6 +172,19 @@ export const RestaurantProfile: React.FC = () => {
             </div>
           )}
         </div>
+
+        {/* חבר מביא חבר */}
+        <button onClick={() => navToRestaurant('referral')}
+          className="w-full bg-white rounded-2xl p-4 card-shadow flex items-center gap-3 text-right active:bg-gray-50 transition-colors">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg,#e8a020,#f5c842)' }}>
+            <Gift size={18} className="text-white" />
+          </div>
+          <div className="flex-1">
+            <div className="font-bold text-gray-800 text-sm">חבר מביא חבר</div>
+            <div className="text-xs text-gray-400">הזמן מסעדות וקבל חודש עמלה מופחתת</div>
+          </div>
+          <ChevronLeft size={18} className="text-gray-300" />
+        </button>
 
         <button onClick={resetToLanding}
           className="w-full bg-gray-100 text-gray-600 rounded-2xl py-4 font-bold flex items-center justify-center gap-2">

@@ -47,12 +47,16 @@ const handleResponse = async (res: Response) => {
 export const api = {
 
   // ========== AUTH ==========
-  register: (email: string, password: string, role: string, name: string, city: string) =>
+  register: (email: string, password: string, role: string, name: string, city: string, refCode?: string) =>
     fetch(`${BASE}/auth/register`, {
       method: 'POST',
       headers: headers(),
-      body: JSON.stringify({ email, password, role, name, city })
+      body: JSON.stringify({ email, password, role, name, city, refCode: refCode || undefined })
     }).then(handleResponse),
+
+  // "חבר מביא חבר" — הקוד, הקישור, הסטטיסטיקות ומצב הפרס של המשתמש
+  getReferral: () =>
+    fetch(`${BASE}/referrals`, { headers: headers(), cache: 'no-store' }).then(handleResponse),
 
   login: (email: string, password: string) =>
     fetch(`${BASE}/auth/login`, {

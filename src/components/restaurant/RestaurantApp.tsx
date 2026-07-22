@@ -16,6 +16,7 @@ import { RestaurantStages } from './Stages';
 import { StageSchedule } from './StageSchedule';
 import { StageAddShift } from './StageAddShift';
 import { TalentBrowse } from './TalentBrowse';
+import { ReferralScreen } from '../common/ReferralScreen';
 import { ChatsScreen } from '../common/ChatsScreen';
 import { AssistantBot } from '../common/AssistantBot';
 import type { RestaurantScreen } from '../../types';
@@ -35,6 +36,7 @@ const SCREEN_TITLES: Record<RestaurantScreen, string> = {
   chats:           "הצ'אטים שלי",
   stage_schedule:  "לוז הסטאז'",
   stage_add_shift: 'קביעת משמרת',
+  referral:        'חבר מביא חבר',
 };
 
 const NAV_TABS: RestaurantScreen[] = ['home', 'create_job', 'stages', 'chats', 'analytics', 'wallet', 'profile', 'stage_schedule', 'stage_add_shift'];
@@ -70,6 +72,7 @@ export const RestaurantApp: React.FC = () => {
     chats:           'home',
     stage_schedule:  'stages',
     stage_add_shift: 'stage_schedule',
+    referral:        'profile',
   };
   const backTo = BACK_MAP[restaurantScreen];
 
@@ -93,6 +96,7 @@ export const RestaurantApp: React.FC = () => {
       case 'chats':           return <ChatsScreen role="restaurant" />;
       case 'stage_schedule':  return <StageSchedule />;
       case 'stage_add_shift': return <StageAddShift />;
+      case 'referral':        return <ReferralScreen />;
     }
   };
 

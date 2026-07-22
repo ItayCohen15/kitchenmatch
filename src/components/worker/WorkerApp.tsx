@@ -12,6 +12,7 @@ import { WorkerWallet } from './Wallet';
 import { WorkerProfile } from './Profile';
 import { WorkerHistory } from './History';
 import { WorkerStages } from './Stages';
+import { ReferralScreen } from '../common/ReferralScreen';
 import { ChatsScreen } from '../common/ChatsScreen';
 import { AssistantBot } from '../common/AssistantBot';
 import type { WorkerScreen } from '../../types';
@@ -27,6 +28,7 @@ const SCREEN_TITLES: Record<WorkerScreen, string> = {
   history:       'ההיסטוריה שלי',
   stages:        "סטאז'",
   chats:         "הצ'אטים שלי",
+  referral:      'חבר מביא חבר',
 };
 
 const NAV_TABS: WorkerScreen[] = ['home', 'stages', 'chats', 'wallet', 'history', 'profile'];
@@ -63,6 +65,7 @@ export const WorkerApp: React.FC = () => {
       active_shift: 'navigation',
       end_shift:    'active_shift',
       stages:       'home',
+      referral:     'profile',
     };
     const dest = backMap[workerScreen];
     if (dest) navToWorker(dest);
@@ -79,6 +82,7 @@ export const WorkerApp: React.FC = () => {
       case 'history':      return <WorkerHistory />;
       case 'profile':      return <WorkerProfile />;
       case 'stages':       return <WorkerStages />;
+      case 'referral':     return <ReferralScreen />;
       case 'chats':        return <ChatsScreen role="worker" />;
     }
   };

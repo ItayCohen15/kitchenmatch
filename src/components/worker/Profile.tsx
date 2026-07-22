@@ -1,5 +1,5 @@
 ﻿import React, { useState, useRef, useEffect } from 'react';
-import { Edit3, Star, Award, LogOut, Phone, Check, X, FileText, Trash2, Upload, CheckCircle2, Shield, XCircle, Camera, ClipboardList } from 'lucide-react';
+import { Edit3, Star, Award, LogOut, Phone, Check, X, FileText, Trash2, Upload, CheckCircle2, Shield, XCircle, Camera, ClipboardList, Gift, ChevronLeft } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS, WORKER_ROLES } from '../../utils/roles';
@@ -12,7 +12,7 @@ import { fileToDataUrl } from '../../utils/image';
 import { DeleteAccountModal } from '../common/DeleteAccountModal';
 
 export const WorkerProfile: React.FC = () => {
-  const { userProfile, resetToLanding, setUserProfile, refreshProfile } = useApp();
+  const { userProfile, resetToLanding, setUserProfile, refreshProfile, navToWorker } = useApp();
   // רענן נתוני פרופיל (משמרות/רמה) מהשרת בכניסה למסך
   useEffect(() => { refreshProfile(); }, [refreshProfile]);
   const completedForLevel = userProfile?.CompletedShifts || 0;
@@ -367,6 +367,19 @@ export const WorkerProfile: React.FC = () => {
           ככל שתעלה ברמה — העמלה יורדת והחשיפה שלך למסעדות גדלה (עדיפות בתוצאות החיפוש).
         </p>
       </div>
+
+      {/* חבר מביא חבר */}
+      <button onClick={() => navToWorker('referral')}
+        className="w-full bg-white rounded-2xl p-4 card-shadow flex items-center gap-3 text-right active:bg-gray-50 transition-colors">
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg,#e8a020,#f5c842)' }}>
+          <Gift size={18} className="text-white" />
+        </div>
+        <div className="flex-1">
+          <div className="font-bold text-gray-800 text-sm">חבר מביא חבר</div>
+          <div className="text-xs text-gray-400">הזמן עובדים וקבל משמרת ללא עמלה</div>
+        </div>
+        <ChevronLeft size={18} className="text-gray-300" />
+      </button>
 
       {/* הטבות מפורטות לכל הרמות */}
       <LevelBenefits completedShifts={completedForLevel} />

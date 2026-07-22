@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { ChefHat, Store, Eye, EyeOff } from 'lucide-react';
 import { api } from '../api';
 import { VerifyEmail } from './VerifyEmail';
@@ -18,6 +18,16 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [pendingVerify, setPendingVerify] = useState<{userId:number,email:string,data:any}|null>(null);
+  const [refCode, setRefCode] = useState('');
+
+  // "חבר מביא חבר" — לכידת קוד ההפניה מה-URL (?ref=CODE) ושמירתו עד ההרשמה
+  useEffect(() => {
+    try {
+      const fromUrl = new URLSearchParams(window.location.search).get('ref');
+      if (fromUrl) localStorage.setItem('km_ref', fromUrl.trim().toUpperCase().slice(0, 16));
+      setRefCode((localStorage.getItem('km_ref') || '').slice(0, 16));
+    } catch { /* ignore */ }
+  }, []);
 
   // חייב להישאר תואם למדיניות בשרת (routes/auth.js)
   const passLenOk = password.length >= 8;
@@ -36,7 +46,8 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
       if (mode === 'login') {
         data = await api.login(email, password);
       } else {
-        data = await api.register(email, password, role, '', '');
+        data = await api.register(email, password, role, '', '', refCode || undefined);
+        localStorage.removeItem('km_ref'); // ההפניה שויכה בשרת — חד-פעמי
       }
       const isNew = mode === 'register';
       // חשבון שטרם אומת — ברישום *וגם* בכניסה. אין טוקן עד שהמייל אומת,
