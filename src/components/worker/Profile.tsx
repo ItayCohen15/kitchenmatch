@@ -2,7 +2,7 @@
 import { Edit3, Star, Award, LogOut, Phone, Check, X, FileText, Trash2, Upload, CheckCircle2, Shield, XCircle, Camera, ClipboardList, Gift, ChevronLeft } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
-import { ROLE_LABELS, WORKER_ROLES } from '../../utils/roles';
+import { WORKER_ROLES, parseRoles, roleLabels } from '../../utils/roles';
 import { levelFromShifts, nextLevelProgress } from '../../utils/levels';
 import { LevelBenefits } from '../common/LevelBenefits';
 import { WorkerGallery } from '../common/WorkerGallery';
@@ -27,7 +27,7 @@ export const WorkerProfile: React.FC = () => {
   const [editingProfile, setEditingProfile] = useState(false);
   const [editName, setEditName] = useState(userProfile?.Name || '');
   const [editCity, setEditCity] = useState(userProfile?.City || '');
-  const [editRole, setEditRole] = useState(userProfile?.Role || 'line_cook');
+  const [editRoles, setEditRoles] = useState<string[]>(parseRoles(userProfile?.Role));
   const [editBio, setEditBio] = useState(userProfile?.Bio || '');
   const [savingProfile, setSavingProfile] = useState(false);
   const [showDelete, setShowDelete] = useState(false); // מודל מחיקת חשבון
@@ -102,12 +102,12 @@ export const WorkerProfile: React.FC = () => {
     setSavingProfile(true);
     try {
       const res = await api.updateWorker(userProfile.Id, {
-        name: editName, city: editCity, role: editRole,
+        name: editName, city: editCity, role: editRoles.join(','),
         hourlyRate: userProfile?.HourlyRate || 0,
         bio: editBio, yearsExp: userProfile?.YearsExp || 0,
         skills: userProfile?.Skills || '', phone,
       });
-      const updated = res?.profile || { ...userProfile, Name: editName, City: editCity, Role: editRole, Bio: editBio };
+      const updated = res?.profile || { ...userProfile, Name: editName, City: editCity, Role: editRoles.join(','), Bio: editBio };
       setUserProfile(updated);
       localStorage.setItem('km_profile', JSON.stringify(updated));
       setEditingProfile(false);
@@ -152,14 +152,19 @@ export const WorkerProfile: React.FC = () => {
           </div>
         ))}
         <div>
-          <label className="text-sm font-semibold text-gray-600 mb-1.5 block">תפקיד</label>
-          <select value={editRole} onChange={e => setEditRole(e.target.value)}
-            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-amber-400 outline-none bg-white">
-            {/* נגזר מ-WORKER_ROLES — רשימה קשיחה כאן שכחה תפקידים חדשים */}
-            {WORKER_ROLES.map(r => (
-              <option key={r.key} value={r.key}>{r.label}</option>
-            ))}
-          </select>
+          <label className="text-sm font-semibold text-gray-600 mb-1.5 block">תפקידים <span className="text-gray-400 font-normal">(אפשר לבחור כמה)</span></label>
+          <div className="flex flex-wrap gap-2">
+            {WORKER_ROLES.map(r => {
+              const sel = editRoles.includes(r.key);
+              return (
+                <button key={r.key} type="button"
+                  onClick={() => setEditRoles(prev => prev.includes(r.key) ? prev.filter(x => x !== r.key) : [...prev, r.key])}
+                  className={`px-3 py-2 rounded-xl border-2 text-sm font-semibold transition-all ${sel ? 'border-amber-400 bg-amber-50 text-amber-600' : 'border-gray-200 bg-white text-gray-600'}`}>
+                  {sel ? '✓ ' : ''}{r.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
         <div>
           <label className="text-sm font-semibold text-gray-600 mb-1.5 block">קצת עליי</label>
@@ -187,7 +192,7 @@ export const WorkerProfile: React.FC = () => {
           </div>
           <div className="flex-1">
             <div className="font-black text-xl">{name}</div>
-            <div className="text-gray-400 text-xs mt-0.5">{userProfile?.City || ''} · {ROLE_LABELS[userProfile?.Role] || userProfile?.Role || ''}</div>
+            <div className="text-gray-400 text-xs mt-0.5">{userProfile?.City || ''} · {roleLabels(userProfile?.Role)}</div>
             <div className="flex items-center gap-2 mt-1">
               <span className="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full"
                 style={{ background: currentLevel.gradient, color: 'white' }}>

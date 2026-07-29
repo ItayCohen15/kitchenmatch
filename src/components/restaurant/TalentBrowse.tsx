@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { GraduationCap, Star } from 'lucide-react';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
+import { roleLabels } from '../../utils/roles';
 import { NewWorkerBadge } from '../common/NewWorkerBadge';
 import { GradBadge } from '../common/GradBadge';
 import { VerifiedBadge } from '../common/VerifiedBadge';
@@ -117,7 +118,7 @@ export const TalentBrowse: React.FC = () => {
                   <NewWorkerBadge completedShifts={w.CompletedShifts} size="sm" />
                   <VerifiedBadge isVerified={w.IsVerified} size="sm" />
                 </div>
-                <div className="text-gray-500 text-xs mt-1">{w.City} · {ROLE_LABELS[w.Role] || w.Role}</div>
+                <div className="text-gray-500 text-xs mt-1">{w.City} · {roleLabels(w.Role)}</div>
                 {skills.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-1.5">
                     {skills.map((s: string) => (

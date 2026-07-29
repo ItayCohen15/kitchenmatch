@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Search, Star, CheckCircle2, XCircle, Phone, Briefcase, GraduationCap, Download, BadgeCheck } from 'lucide-react';
 import { api } from '../../api';
-import { ROLE_LABELS } from '../../utils/roles';
+import { roleLabels } from '../../utils/roles';
 import { ils, num, dateShort, LEVEL_LABELS, LEVEL_COLORS } from './format';
 import { downloadCsv } from './exportCsv';
 
@@ -53,7 +53,7 @@ export const AdminUsers: React.FC = () => {
     if (tab === 'workers') {
       downloadCsv('staffly-workers.csv',
         ['שם', 'אימייל', 'טלפון', 'עיר', 'תפקיד', 'רמה', 'דירוג', 'מס׳ דירוגים', 'משמרות', 'אמינות %', 'תעריף', 'הכנסות', 'מאומת', 'הצטרף'],
-        filtered.map((w: any) => [w.Name, w.Email, w.Phone, w.City, ROLE_LABELS[w.Role] || w.Role, LEVEL_LABELS[w.Level] || w.Level,
+        filtered.map((w: any) => [w.Name, w.Email, w.Phone, w.City, roleLabels(w.Role), LEVEL_LABELS[w.Level] || w.Level,
           Number(w.Rating || 0).toFixed(1), w.RatingCount, w.CompletedShifts, w.ReliabilityScore, w.HourlyRate,
           Math.round(Number(w.TotalEarnings || 0)), w.IsEmailVerified ? 'כן' : 'לא', dateShort(w.JoinedAt)]));
     } else {
@@ -114,7 +114,7 @@ export const AdminUsers: React.FC = () => {
                     {w.IsTrainee ? <span className="inline-flex items-center gap-0.5 text-[10px] font-bold px-1.5 py-0.5 rounded-md" style={{ background: 'rgba(244,63,94,0.15)', color: '#fb7185' }}><GraduationCap size={9} /> סטאז'</span> : null}
                   </div>
                   <div className="text-[11px] mt-0.5" style={{ color: 'rgba(255,255,255,0.4)' }}>
-                    {ROLE_LABELS[w.Role] || w.Role || 'ללא תפקיד'} · {w.City || '—'}
+                    {roleLabels(w.Role) || 'ללא תפקיד'} · {w.City || '—'}
                     {w.Level && <span style={{ color: LEVEL_COLORS[w.Level] }}> · {LEVEL_LABELS[w.Level] || w.Level}</span>}
                   </div>
                   <div className="text-[11px] mt-0.5 truncate" style={{ color: 'rgba(255,255,255,0.3)' }}>{w.Email || '—'}</div>

@@ -3,6 +3,7 @@ import { Zap, ChefHat, CheckCircle, Star, LogOut, X, GraduationCap, CreditCard, 
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
+import { roleLabels } from '../../utils/roles';
 import { CancelShiftModal } from '../common/CancelShiftModal';
 import { NewWorkerBadge } from '../common/NewWorkerBadge';
 import { VerifiedBadge } from '../common/VerifiedBadge';
@@ -217,7 +218,7 @@ export const RestaurantHome: React.FC = () => {
                     <VerifiedBadge isVerified={w.IsVerified} size="sm" />
                     {w.Rating > 0 && <span className="text-xs text-yellow-500 font-bold">★{w.Rating.toFixed(1)}</span>}
                   </div>
-                  <div className="text-gray-500 text-xs">{w.City} · {ROLE_LABELS[w.Role] || w.Role}</div>
+                  <div className="text-gray-500 text-xs">{w.City} · {roleLabels(w.Role)}</div>
                 </div>
                 <div className="flex flex-col items-end gap-1 flex-shrink-0">
                   <span className="text-[10px] font-semibold text-green-600 flex items-center gap-1">

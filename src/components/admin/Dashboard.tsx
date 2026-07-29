@@ -7,7 +7,7 @@ import {
   GraduationCap, ShieldCheck, Trophy, Crown,
 } from 'lucide-react';
 import { api } from '../../api';
-import { ROLE_LABELS } from '../../utils/roles';
+import { ROLE_LABELS, roleLabels } from '../../utils/roles';
 import { ils, num, monthLabel, LEVEL_LABELS, LEVEL_COLORS } from './format';
 
 const Tip = ({ active, payload, label, money }: any) => active && payload?.length ? (
@@ -219,7 +219,7 @@ export const AdminDashboard: React.FC = () => {
                 <div className="flex-1 min-w-0">
                   <div className="text-white font-bold text-sm truncate">{w.Name || '—'}</div>
                   <div className="text-[11px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
-                    {ROLE_LABELS[w.Role] || w.Role || '—'} · {w.City || '—'}
+                    {roleLabels(w.Role) || '—'} · {w.City || '—'}
                     {w.Level && <span style={{ color: LEVEL_COLORS[w.Level] }}> · {LEVEL_LABELS[w.Level] || w.Level}</span>}
                   </div>
                 </div>

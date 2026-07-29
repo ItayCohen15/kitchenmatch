@@ -16,7 +16,18 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
   const [step, setStep] = useState(1);
   const [name, setName] = useState('');
   const [city, setCity] = useState('');
-  const [workerRole, setWorkerRole] = useState('');
+  const [workerRoles, setWorkerRoles] = useState<string[]>([]);
+  const toggleRole = (key: string) =>
+    setWorkerRoles(prev => prev.includes(key) ? prev.filter(r => r !== key) : [...prev, key]);
+  // כישורים לכל התפקידים שנבחרו — מאוחדים לפי קבוצה, בלי כפילויות
+  const skillSections = (() => {
+    const byGroup = new Map<string, string[]>();
+    for (const r of workerRoles) for (const sec of (SKILLS_BY_ROLE[r] || [])) {
+      const cur = byGroup.get(sec.group) || [];
+      byGroup.set(sec.group, [...cur, ...sec.items.filter(i => !cur.includes(i))]);
+    }
+    return [...byGroup.entries()].map(([group, items]) => ({ group, items }));
+  })();
   const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
   const [selectedCuisines, setSelectedCuisines] = useState<string[]>([]);
   const [yearsExp, setYearsExp] = useState('1');
@@ -54,7 +65,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
 
       if (role === 'worker') {
         const res = await api.updateWorker(profileId, {
-          name, city, role: workerRole,
+          name, city, role: workerRoles.join(','),
           hourlyRate: 0, bio,
           yearsExp: parseInt(yearsExp),
           skills: selectedSpecialties.join(','),
@@ -67,7 +78,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
         // השתמש בפרופיל מהשרת אם קיים
         updatedProfile = res?.profile || {
           ...updatedProfile,
-          Skills: selectedSpecialties.join(','), Role: workerRole,
+          Skills: selectedSpecialties.join(','), Role: workerRoles.join(','),
           HourlyRate: 0, Bio: bio,
           YearsExp: parseInt(yearsExp), Level: 'bronze',
           Rating: 0, CompletedShifts: 0, ReliabilityScore: 100,
@@ -185,23 +196,27 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                 <>
                   <h2 className="text-xl font-black text-gray-900">תפקיד וניסיון</h2>
                   <div>
-                    <label className="text-sm font-semibold text-gray-600 mb-2 block">תפקיד ראשי</label>
+                    <label className="text-sm font-semibold text-gray-600 mb-2 block">תפקידים <span className="text-gray-400 font-normal">(אפשר לבחור כמה)</span></label>
                     <div className="space-y-2">
-                      {WORKER_ROLES.map(r => (
-                        <button
-                          key={r.key}
-                          onClick={() => { setWorkerRole(r.key); setSelectedSpecialties([]); }}
-                          className={`w-full p-3 rounded-xl border-2 flex items-center gap-3 text-right transition-all ${
-                            workerRole === r.key ? 'border-amber-400 bg-amber-50' : 'border-gray-100'
-                          }`}
-                        >
-                          <span className="text-2xl">{r.emoji}</span>
-                          <div>
-                            <div className="font-bold text-gray-900">{r.label}</div>
-                            <div className="text-gray-500 text-xs">{r.desc}</div>
-                          </div>
-                        </button>
-                      ))}
+                      {WORKER_ROLES.map(r => {
+                        const sel = workerRoles.includes(r.key);
+                        return (
+                          <button
+                            key={r.key}
+                            onClick={() => toggleRole(r.key)}
+                            className={`w-full p-3 rounded-xl border-2 flex items-center gap-3 text-right transition-all ${
+                              sel ? 'border-amber-400 bg-amber-50' : 'border-gray-100'
+                            }`}
+                          >
+                            <span className="text-2xl">{r.emoji}</span>
+                            <div className="flex-1">
+                              <div className="font-bold text-gray-900">{r.label}</div>
+                              <div className="text-gray-500 text-xs">{r.desc}</div>
+                            </div>
+                            {sel && <span className="text-amber-500 font-black text-lg">✓</span>}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                   <div>
@@ -348,7 +363,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                   <ChevronRight size={20} />
                 </button>
                 <button
-                  disabled={role === 'worker' ? (!workerRole || isSelfEmployed === null) : selectedCuisines.length === 0}
+                  disabled={role === 'worker' ? (!workerRoles.length || isSelfEmployed === null) : selectedCuisines.length === 0}
                   onClick={() => role === 'worker' ? setStep(3) : handleComplete()}
                   className="flex-1 text-white rounded-2xl py-4 font-bold disabled:opacity-40"
                   style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}
@@ -365,7 +380,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
               <h2 className="text-xl font-black text-gray-900">במה אתה מתמחה?</h2>
               <p className="text-gray-500 text-sm">בחר הכל שרלוונטי — ככה המסעדות ידעו בדיוק מה אתה מביא</p>
 
-              {(SKILLS_BY_ROLE[workerRole] || []).map(section => (
+              {skillSections.map(section => (
                 <div key={section.group}>
                   <div className="text-xs font-bold text-gray-400 mb-2 mr-1">{section.group}</div>
                   <div className="grid grid-cols-2 gap-2">

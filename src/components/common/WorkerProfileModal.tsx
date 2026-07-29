@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { X, Star, Phone, FileText, MapPin, Shield } from 'lucide-react';
 import { api } from '../../api';
-import { ROLE_LABELS } from '../../data/mockData';
+import { roleLabels } from '../../utils/roles';
 import { getLevel, levelFromShifts } from '../../utils/levels';
 import { WorkerGallery } from './WorkerGallery';
 import { NewWorkerBadge } from './NewWorkerBadge';
@@ -79,7 +79,7 @@ export const WorkerProfileModal: React.FC<Props> = ({ workerId, initial, onClose
                 <div>
                   <div className="font-black text-lg">{name}</div>
                   <div className="text-gray-400 text-xs">
-                    {city}{role ? ` · ${ROLE_LABELS[role] || role}` : ''}
+                    {city}{role ? ` · ${roleLabels(role)}` : ''}
                   </div>
                   <div className="flex items-center gap-2 mt-1 flex-wrap">
                     <NewWorkerBadge completedShifts={completed} size="sm" />

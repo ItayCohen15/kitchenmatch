@@ -40,10 +40,22 @@ export const ROLE_LABELS: Record<string, string> = {
 };
 
 /**
- * אילו סוגי משמרת רואה עובד לפי תפקידו.
- * טבח רואה גם טבח רגיל וגם טבח הכנות (וגם 'chef' ישן).
+ * פיצול תפקידי עובד ל-list. עובד יכול להיות רב-תפקיד — התפקידים
+ * נשמרים כ-CSV בשדה Role (למשל "waiter,barista"). עובד יחיד-תפקיד
+ * (בלי פסיק) עובד בדיוק כמו קודם — תאימות לאחור מלאה.
  */
-export function visibleShiftRoles(workerRole?: string): string[] {
+export function parseRoles(role?: string): string[] {
+  return (role || '').split(',').map(s => s.trim()).filter(Boolean);
+}
+
+/** תוויות מרובות לתצוגה — "מלצר · בריסטה" */
+export function roleLabels(role?: string): string {
+  const list = parseRoles(role).map(r => ROLE_LABELS[r] || r);
+  return list.length ? list.join(' · ') : '';
+}
+
+/** סוגי המשמרת שרואה תפקיד עובד *יחיד* (טבח רואה גם טבח הכנות, וכו') */
+function visibleForSingleRole(workerRole?: string): string[] {
   switch (workerRole) {
     case 'line_cook':
     case 'chef': // legacy
@@ -63,9 +75,18 @@ export function visibleShiftRoles(workerRole?: string): string[] {
   }
 }
 
-/* האם תפקיד העובד הוא טבח (כולל legacy chef) */
+/**
+ * אילו סוגי משמרת רואה עובד לפי *כל* תפקידיו (איחוד — תומך ברב-תפקיד).
+ */
+export function visibleShiftRoles(workerRole?: string): string[] {
+  const set = new Set<string>();
+  for (const r of parseRoles(workerRole)) for (const s of visibleForSingleRole(r)) set.add(s);
+  return [...set];
+}
+
+/* האם אחד מתפקידי העובד הוא טבח (כולל legacy chef) */
 export function isCookRole(workerRole?: string): boolean {
-  return workerRole === 'line_cook' || workerRole === 'chef';
+  return parseRoles(workerRole).some(r => r === 'line_cook' || r === 'chef');
 }
 
 /**
