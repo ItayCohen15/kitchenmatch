@@ -4,6 +4,7 @@ import { api } from '../api';
 import { WORKER_ROLES, SKILLS_BY_ROLE } from '../utils/roles';
 import { CityAutocomplete } from './common/CityAutocomplete';
 import { StreetAutocomplete } from './common/StreetAutocomplete';
+import { NonSelfEmployedDisclosure } from './common/NonSelfEmployedDisclosure';
 
 interface Props {
   role: 'restaurant' | 'worker';
@@ -35,6 +36,8 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
   const [courseType, setCourseType] = useState('');
   const [schoolName, setSchoolName] = useState('');
   const [isSelfEmployed, setIsSelfEmployed] = useState<boolean | null>(null); // עצמאי / לא-עצמאי (לתשלום)
+  const [showDisclosure, setShowDisclosure] = useState(false);                // חלון גילוי נאות ללא-עצמאי
+  const [nonSelfAckAt, setNonSelfAckAt] = useState<string | null>(null);      // מועד אישור הגילוי (לתיעוד)
   const [bio, setBio] = useState('');
   const [cuisineType, setCuisineType] = useState('');
   const [street, setStreet] = useState('');
@@ -74,6 +77,8 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
           courseType: isTrainee ? (courseType || 'אחר') : null,
           schoolName: isTrainee ? schoolName : null,
           isSelfEmployed: isSelfEmployed === null ? true : isSelfEmployed,
+          // תיעוד אישור הגילוי הנאות (רק כשנבחר לא-עצמאי ואושר)
+          nonSelfEmployedAckAt: isSelfEmployed === false ? nonSelfAckAt : null,
         });
         // השתמש בפרופיל מהשרת אם קיים
         updatedProfile = res?.profile || {
@@ -101,6 +106,12 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
 
   return (
     <div className="h-full overflow-y-auto" style={{ background: 'linear-gradient(160deg, #0d1420 0%, #1a2744 100%)' }}>
+      {showDisclosure && (
+        <NonSelfEmployedDisclosure
+          onAccept={() => { setIsSelfEmployed(false); setNonSelfAckAt(new Date().toISOString()); setShowDisclosure(false); }}
+          onCancel={() => setShowDisclosure(false)}
+        />
+      )}
       <div className="min-h-full flex flex-col items-center justify-start p-6 pb-10" style={{ paddingTop: 'max(env(safe-area-inset-top), 24px)' }}>
       <div className="w-full max-w-sm">
         {/* Header */}
@@ -289,15 +300,16 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                         <div className="font-bold text-gray-900 text-sm flex items-center gap-1.5"><Check size={15} className="text-green-500" /> יש לי עוסק</div>
                         <div className="text-gray-500 text-xs mt-0.5">פטור/מורשה — תשלום ישיר, אני מוציא חשבונית</div>
                       </button>
-                      <button type="button" onClick={() => setIsSelfEmployed(false)}
+                      <button type="button" onClick={() => setShowDisclosure(true)}
                         className={`p-3 rounded-xl border-2 text-right transition-all ${isSelfEmployed === false ? 'border-amber-400 bg-amber-50' : 'border-gray-100'}`}>
                         <div className="font-bold text-gray-900 text-sm flex items-center gap-1.5"><FileText size={15} className="text-gray-500" /> אין לי עוסק</div>
                         <div className="text-gray-500 text-xs mt-0.5">תשלום דרך "חשבונית לשכיר"</div>
                       </button>
                     </div>
                     {isSelfEmployed === false && (
-                      <div className="mt-2 rounded-xl p-2.5 text-xs leading-relaxed" style={{ background:'#fff8e1', border:'1px solid #f59e0b', color:'#92400e' }}>
-                        ℹ️ התשלום יעבור דרך שירות "חשבונית לשכיר" — ינוכו ~5% עמלת שירות + מס/ביטוח לאומי/בריאות. תראה הערכת נטו לפני כל משמרת.
+                      <div className="mt-2 rounded-xl p-2.5 text-xs leading-relaxed flex items-start justify-between gap-2" style={{ background:'#fff8e1', border:'1px solid #f59e0b', color:'#92400e' }}>
+                        <span className="flex items-center gap-1"><Check size={13} className="text-amber-600 flex-shrink-0" /> אישרת תשלום דרך "חשבונית לשכיר".</span>
+                        <button type="button" onClick={() => setShowDisclosure(true)} className="underline font-semibold flex-shrink-0">מידע חשוב</button>
                       </div>
                     )}
                   </div>
