@@ -3,6 +3,7 @@ import { Clock, CheckCircle2, AlertTriangle, PartyPopper, Flag } from 'lucide-re
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { Chat } from '../common/Chat';
+import { toast } from '../common/Toast';
 import { restaurantRate } from '../../utils/levels';
 
 export const ActiveShift: React.FC = () => {
@@ -73,12 +74,25 @@ export const ActiveShift: React.FC = () => {
     setShowConfirmDialog(false);
   };
 
-  // כאשר שני הצדדים אישרו — העבר תשלום + נווט אוטומטית
+  // כאשר שני הצדדים אישרו — העבר תשלום *ואז* נווט. אם הגבייה נכשלת (למשל אין
+  // יתרה בארנק → 402) אסור להציג "התשלום בדרך" — המשמרת לא הושלמה והדירוג ייכשל.
+  // מציגים שגיאה, מחזירים למסך הסיום כדי שאפשר יהיה לטעון ארנק ולסיים שוב.
   useEffect(() => {
     if (!bothDone || !jobId) return;
-    api.completeJob(jobId).catch(() => {});
-    const t = setTimeout(() => navToRestaurant('end_shift'), 2500);
-    return () => clearTimeout(t);
+    let cancelled = false;
+    let navTimer: ReturnType<typeof setTimeout> | undefined;
+    (async () => {
+      try {
+        await api.completeJob(jobId);
+        if (cancelled) return;
+        navTimer = setTimeout(() => navToRestaurant('end_shift'), 2500);
+      } catch (e: any) {
+        if (cancelled) return;
+        toast.error(e?.message || 'התשלום נכשל — ודא שיש יתרה בארנק ונסה לסיים שוב');
+        setBothDone(false);
+      }
+    })();
+    return () => { cancelled = true; if (navTimer) clearTimeout(navTimer); };
   }, [bothDone, jobId]);
 
   if (bothDone) {

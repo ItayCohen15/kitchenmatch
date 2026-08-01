@@ -434,10 +434,14 @@ const DirectShiftModal: React.FC<{ partner: any; restaurantId: number; onClose: 
     if (Number(rate) < 40) { setErr('שכר המינימום הוא ₪40 לשעה'); return; }
     setSending(true); setErr('');
     try {
+      // תמיכה במשמרת חוצת-חצות (למשל 22:00–02:00) — כמו ב-CreateJob
+      const startDate = new Date(`${date}T${start}:00`);
+      const endDate   = new Date(`${date}T${end}:00`);
+      if (endDate <= startDate) endDate.setDate(endDate.getDate() + 1);
       await api.createDirectShift({
         restaurantId, workerId: partner.WorkerId, role: partner.Role,
-        startTime: new Date(`${date}T${start}:00`).toISOString(),
-        endTime: new Date(`${date}T${end}:00`).toISOString(),
+        startTime: startDate.toISOString(),
+        endTime: endDate.toISOString(),
         hourlyRate: Number(rate), duties,
       });
       try { localStorage.setItem(DEFAULTS_KEY, JSON.stringify({ start, end, rate })); } catch {}

@@ -10,6 +10,7 @@ import { GradBadge } from '../common/GradBadge';
 import { VerifiedBadge } from '../common/VerifiedBadge';
 import { fileToDataUrl } from '../../utils/image';
 import { DeleteAccountModal } from '../common/DeleteAccountModal';
+import { toast } from '../common/Toast';
 
 export const WorkerProfile: React.FC = () => {
   const { userProfile, resetToLanding, setUserProfile, refreshProfile, navToWorker } = useApp();
@@ -111,7 +112,9 @@ export const WorkerProfile: React.FC = () => {
       setUserProfile(updated);
       localStorage.setItem('km_profile', JSON.stringify(updated));
       setEditingProfile(false);
-    } catch {}
+    } catch (e: any) {
+      toast.error(e?.message || 'שמירת הפרופיל נכשלה — נסה שוב');
+    }
     setSavingProfile(false);
   };
 
@@ -129,7 +132,9 @@ export const WorkerProfile: React.FC = () => {
       setUserProfile(updated);
       localStorage.setItem('km_profile', JSON.stringify(updated));
       setEditingPhone(false);
-    } catch {}
+    } catch (e: any) {
+      toast.error(e?.message || 'שמירת הטלפון נכשלה — נסה שוב');
+    }
     setSavingPhone(false);
   };
 
@@ -394,7 +399,7 @@ export const WorkerProfile: React.FC = () => {
         <div className="bg-white rounded-2xl p-4 card-shadow">
           <div className="flex items-center justify-between mb-2">
             <h3 className="font-bold text-gray-800">אודותי</h3>
-            <button className="text-amber-500 text-sm font-semibold">ערוך</button>
+            <button onClick={() => setEditingProfile(true)} className="text-amber-500 text-sm font-semibold">ערוך</button>
           </div>
           <p className="text-gray-600 text-sm leading-relaxed">{bio}</p>
         </div>
