@@ -41,7 +41,6 @@ class ReloadOnChunkError extends React.Component<{ children: React.ReactNode }, 
 }
 import { Splash } from './components/Splash';
 import { Landing } from './components/Landing';
-import { ComingSoon } from './components/ComingSoon';
 import { VerifyEmail } from './components/VerifyEmail';
 // ── רובד גימור UX: גבול-שגיאה גלובלי, toasts, באנר אופליין ──
 import { ErrorBoundary } from './components/common/ErrorBoundary';
@@ -136,14 +135,6 @@ const AppContent: React.FC = () => {
   usePush(userProfile?.UserId || userProfile?.userId);
   const [showSplash, setShowSplash] = useState(true);
   const [showLanding, setShowLanding] = useState(false);
-  // דף "בקרוב" זמני למבקרים חיצוניים. המייסד נכנס דרך ?enter=1 (נשמר ל-localStorage).
-  const [enterApp] = useState(() => {
-    try {
-      const p = new URLSearchParams(window.location.search);
-      if (p.get('enter') === '1') localStorage.setItem('km_enter', '1');
-      return localStorage.getItem('km_enter') === '1';
-    } catch { return false; }
-  });
   const [verifyData, setVerifyData] = useState<{userId:number,email:string}|null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
@@ -287,9 +278,8 @@ const AppContent: React.FC = () => {
     <div className="bg-gray-50 flex items-start justify-center" style={{ height: '100dvh', overflow: 'hidden' }}>
       {showSplash && <Splash onDone={() => setShowSplash(false)} />}
       <div className="w-full max-w-sm relative flex flex-col" style={{ height:'100dvh', background:'#f0f2f7', boxShadow:'0 0 80px rgba(232,160,32,0.15), 0 0 0 1px rgba(232,160,32,0.08)' }}>
-        {!token && !enterApp && <ComingSoon />}
-        {!token && enterApp && showLanding && <Landing onStart={() => setShowLanding(false)} />}
-        {!token && enterApp && !showLanding && <Auth onLogin={handleLogin} />}
+        {/* מסך הפתיחה = כניסה/הרשמה ישירות (דף הנחיתה השיווקי מושהה עד שנעדכן אותו) */}
+        {!token && <Auth onLogin={handleLogin} />}
         {showOnboarding && (() => {
           // קרא profileId מ-pendingProfile או מ-localStorage
           const savedProf = (() => { try { return JSON.parse(localStorage.getItem('km_profile') || 'null'); } catch { return null; } })();
