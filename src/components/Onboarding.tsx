@@ -58,6 +58,15 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
   const [phone, setPhone] = useState('');
   const [saving, setSaving] = useState(false);
   const [saveErr, setSaveErr] = useState('');
+  const [phoneErr, setPhoneErr] = useState('');   // שגיאת טלפון — מוצגת ליד השדה עצמו בשלב 1
+
+  // יציאה ממסך ההרשמה. בלי זה משתמש שנתקע (למשל טלפון שכבר בשימוש בחשבון
+  // אחר שלו) היה כלוא במסך הפרטים האישיים בלי שום דרך לחזור אחורה או להתנתק.
+  const startOver = () => {
+    ['km_token', 'km_role', 'km_profile', 'km_onboarding', 'km_screen', 'km_job']
+      .forEach(k => localStorage.removeItem(k));
+    location.reload();
+  };
 
   const totalSteps = role === 'worker' ? 4 : 2;
 
@@ -111,6 +120,16 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
 
       onComplete(updatedProfile);
     } catch (e: any) {
+      // התנגשות טלפון: הבעיה היא בשדה שבשלב 1, ולכן מחזירים את המשתמש *לשם*
+      // עם ההסבר ליד השדה. קודם השגיאה הוצגה בשלב האחרון, רחוק מהשדה הרלוונטי,
+      // והמשתמש נשאר תקוע בלי להבין מה לתקן.
+      if (e?.code === 'phone_taken' || (e?.status === 409 && /טלפון/.test(e?.message || ''))) {
+        setPhoneErr('המספר הזה כבר רשום בחשבון אחר. אפשר להזין מספר אחר, או לחזור ולהתחבר לחשבון הקיים.');
+        setSaveErr('');
+        setStep(1);
+        setSaving(false);
+        return;
+      }
       // אל תמשיך עם פרופיל חלקי — הצג שגיאה ואפשר לנסות שוב
       setSaveErr(e?.message || 'שמירת הפרופיל נכשלה — בדוק חיבור ונסה שוב');
       setSaving(false);
@@ -175,10 +194,24 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                   type="tel"
                   inputMode="tel"
                   value={phone}
-                  onChange={e => setPhone(e.target.value)}
+                  onChange={e => { setPhone(e.target.value); if (phoneErr) setPhoneErr(''); }}
                   placeholder="05X-XXXXXXX"
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-amber-400 outline-none"
+                  className={`w-full border rounded-xl px-4 py-3 text-right outline-none ${
+                    phoneErr ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-amber-400'
+                  }`}
                 />
+                {phoneErr && (
+                  <div className="mt-2 bg-red-50 border border-red-100 rounded-xl px-3 py-2.5 space-y-2">
+                    <p className="text-red-600 text-xs leading-snug">{phoneErr}</p>
+                    <button
+                      type="button"
+                      onClick={startOver}
+                      className="text-xs font-bold text-gray-600 underline"
+                    >
+                      התחבר לחשבון קיים
+                    </button>
+                  </div>
+                )}
               </div>
 
               {role === 'restaurant' && (
@@ -559,6 +592,17 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
           )}
           {saveErr && <div className="mt-3 bg-red-50 text-red-600 text-sm rounded-xl px-4 py-2.5 text-center">{saveErr}</div>}
         </div>
+
+        {/* דלת יציאה — זמינה בכל שלב. משתמש שנתקע (טלפון תפוס, חשבון כפול,
+            התחברות בטעות) חייב דרך לחזור למסך הכניסה ולא להישאר כלוא. */}
+        <button
+          type="button"
+          onClick={startOver}
+          className="w-full mt-4 py-3 text-sm font-semibold"
+          style={{ color: '#8899bb' }}
+        >
+          חזרה למסך הכניסה
+        </button>
       </div>
       </div>
     </div>

@@ -39,7 +39,12 @@ const handleResponse = async (res: Response) => {
         .forEach(k => localStorage.removeItem(k));
       location.reload();
     }
-    throw new Error(msg);
+    // צרף status ו-code לשגיאה כדי שהמסך יוכל להגיב *לסוג* הכשל ולא רק להציג טקסט
+    // (למשל: התנגשות טלפון בהרשמה → החזרה לשלב הפרטים האישיים)
+    const err: any = new Error(msg);
+    err.status = res.status;
+    if (data?.code) err.code = data.code;
+    throw err;
   }
   return data;
 };
