@@ -6,7 +6,7 @@ interface Props { mode: 'restaurant' | 'worker'; active: string; onNav: (id: str
 
 const RESTAURANT_TABS: NavItem[] = [
   { id: 'home',       label: 'בית',     icon: <Home size={20} /> },
-  { id: 'stages',     label: 'התנסות',  icon: <GraduationCap size={20} /> },
+  { id: 'stages',     label: 'סטאז׳',  icon: <GraduationCap size={20} /> },
   { id: 'analytics',  label: 'ניתוח',  icon: <BarChart2 size={20} /> },
   { id: 'wallet',     label: 'ארנק',   icon: <Wallet size={20} /> },
   { id: 'profile',    label: 'פרופיל', icon: <User size={20} /> },
@@ -14,7 +14,7 @@ const RESTAURANT_TABS: NavItem[] = [
 
 const WORKER_TABS: NavItem[] = [
   { id: 'home',    label: 'משמרות',   icon: <Home size={20} /> },
-  { id: 'stages',  label: 'התנסות',   icon: <GraduationCap size={20} /> },
+  { id: 'stages',  label: 'סטאז׳',   icon: <GraduationCap size={20} /> },
   { id: 'wallet',  label: 'הכנסות',  icon: <Wallet size={20} /> },
   { id: 'history', label: 'היסטוריה', icon: <Clock size={20} /> },
   { id: 'profile', label: 'פרופיל',  icon: <User size={20} /> },

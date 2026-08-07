@@ -8,7 +8,7 @@ import { ChatModal } from '../common/ChatModal';
 
 type Tab = 'mine' | 'post' | 'partners';
 
-// התנסות מיועדת למקצועות שנלמדים בקורס: טבחים, ברמנים ובריסטות
+// סטאז׳ מיועדת למקצועות שנלמדים בקורס: טבחים, ברמנים ובריסטות
 const TRIAL_ROLES = WORKER_ROLES.filter(r => ['line_cook', 'bartender', 'barista'].includes(r.key));
 
 const fmtDate = (d?: string) => d ? new Date(d).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit' }) : '';
@@ -19,7 +19,7 @@ const stageProgress = (s: any) => {
   if (!st || !en || en <= st) return 0;
   return Math.max(0, Math.min(100, Math.round(((Date.now() - st) / (en - st)) * 100)));
 };
-/* משמרת התנסות (המודל החדש) מול סטאז' 3-שבועות (רשומות ותיקות שנשארות תקינות) */
+/* משמרת סטאז׳ (המודל החדש) מול סטאז' 3-שבועות (רשומות ותיקות שנשארות תקינות) */
 const isTrial = (s: any) => s.JobType === 'trial';
 const MIN_WAGE = 40;
 
@@ -77,7 +77,7 @@ export const RestaurantStages: React.FC = () => {
       api.getRestaurantJobs(rid).catch(() => []),
       api.getPartners(rid).catch(() => []),
     ]);
-    // התנסויות (המודל החדש) + סטאז'ים ותיקים — כדי שרשומות קיימות לא ייעלמו מהמסך
+    // סטאז׳ים (המודל החדש) + סטאז'ים ותיקים — כדי שרשומות קיימות לא ייעלמו מהמסך
     setStages((Array.isArray(jobs) ? jobs : []).filter((j: any) => j.JobType === 'trial' || j.JobType === 'stage'));
     setPartners(Array.isArray(prt) ? prt : []);
   };
@@ -86,7 +86,7 @@ export const RestaurantStages: React.FC = () => {
 
   const handlePost = async () => {
     if (!role || !startDate || !startTime || !endTime || !wage) { setMsg('מלא תפקיד, תאריך, שעות ושכר'); return; }
-    if (Number(wage) < MIN_WAGE) { setMsg(`שכר המינימום הוא ₪${MIN_WAGE} לשעה — התנסות היא משמרת בתשלום`); return; }
+    if (Number(wage) < MIN_WAGE) { setMsg(`שכר המינימום הוא ₪${MIN_WAGE} לשעה — סטאז׳ היא משמרת בתשלום`); return; }
     setPosting(true); setMsg('');
     try {
       // תמיכה במשמרת חוצת-חצות (22:00–02:00)
@@ -128,7 +128,7 @@ export const RestaurantStages: React.FC = () => {
           <GraduationCap className="text-amber-400" size={22} />
         </div>
         <div>
-          <div className="font-black text-lg leading-tight">התנסות וגיוס</div>
+          <div className="font-black text-lg leading-tight">סטאז׳ וגיוס</div>
           <div className="text-xs" style={{ color: '#8899bb' }}>משמרת אחת · ללא עמלה · סטודנטים ובוגרים</div>
         </div>
       </div>
@@ -136,7 +136,7 @@ export const RestaurantStages: React.FC = () => {
       {/* טאבים — הטופס נפתח רק מכפתור הפרסום */}
       {tab !== 'post' && (
         <div className="flex bg-gray-100 rounded-2xl p-1">
-          {([['mine', 'ההתנסויות שלי'], ['partners', 'הקבועים שלי']] as [Tab, string][]).map(([k, l]) => (
+          {([['mine', 'הסטאז׳ים שלי'], ['partners', 'הקבועים שלי']] as [Tab, string][]).map(([k, l]) => (
             <button key={k} onClick={() => setTab(k)}
               className={`relative flex-1 py-2.5 rounded-xl text-sm font-bold transition-all ${tab === k ? 'bg-white text-gray-900 shadow' : 'text-gray-400'}`}>
               {l}
@@ -154,11 +154,11 @@ export const RestaurantStages: React.FC = () => {
       {tab === 'post' && (
         <>
         <button onClick={() => setTab('mine')} className="flex items-center gap-1 text-gray-400 text-sm font-semibold">
-          <ChevronRight size={18} /> חזרה להתנסויות שלי
+          <ChevronRight size={18} /> חזרה לסטאז׳ים שלי
         </button>
         <div className="bg-white rounded-2xl p-4 card-shadow space-y-4">
           <div className="bg-green-50 border border-green-100 rounded-xl px-3 py-2.5 text-xs text-gray-600 leading-relaxed">
-            <b className="text-green-700">משמרת התנסות אחת</b> — מועמד מקורס בישול/ברמנים מגיע למשמרת בודדת ואתם רואים אותו בעבודה.
+            <b className="text-green-700">משמרת סטאז׳ אחת</b> — מועמד מקורס בישול/ברמנים מגיע למשמרת בודדת ואתם רואים אותו בעבודה.
             <b> ללא עמלה משני הצדדים</b> (רק עמלת הסליקה). אהבתם? אפשר לגייס בתום המשמרת.
           </div>
           <div>
@@ -193,7 +193,7 @@ export const RestaurantStages: React.FC = () => {
             <input type="number" inputMode="numeric" value={wage} onChange={e => setWage(e.target.value)}
               placeholder="50" min={MIN_WAGE} className={inputCls} />
             <p className="text-gray-400 text-xs mt-1">
-              משמרת התנסות היא <b>משמרת בתשלום</b> — מינימום ₪{MIN_WAGE} לשעה. Staffly לא גובה עמלה עליה.
+              משמרת סטאז׳ היא <b>משמרת בתשלום</b> — מינימום ₪{MIN_WAGE} לשעה. Staffly לא גובה עמלה עליה.
             </p>
           </div>
           <div>
@@ -205,7 +205,7 @@ export const RestaurantStages: React.FC = () => {
           <button onClick={handlePost} disabled={posting}
             className="w-full text-white rounded-2xl py-4 font-bold disabled:opacity-40"
             style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow: '0 4px 16px rgba(232,160,32,0.35)' }}>
-            {posting ? 'מפרסם...' : 'פרסם משמרת התנסות'}
+            {posting ? 'מפרסם...' : 'פרסם משמרת סטאז׳'}
           </button>
         </div>
         </>
@@ -217,14 +217,14 @@ export const RestaurantStages: React.FC = () => {
           <button onClick={() => setTab('post')}
             className="w-full text-white rounded-2xl py-4 font-bold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
             style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow: '0 4px 16px rgba(232,160,32,0.35)' }}>
-            <Plus size={18} /> פרסם משמרת התנסות
+            <Plus size={18} /> פרסם משמרת סטאז׳
           </button>
 
           {visibleStages.length === 0 && (
             <div className="text-center py-10 bg-white rounded-2xl card-shadow">
               <GraduationCap size={30} className="text-gray-300 mx-auto mb-2" />
-              <p className="text-gray-500 font-medium text-sm">אין עדיין התנסויות</p>
-              <p className="text-gray-400 text-xs mt-0.5">פרסמו משמרת התנסות כדי להכיר מועמד בעבודה</p>
+              <p className="text-gray-500 font-medium text-sm">אין עדיין סטאז׳ים</p>
+              <p className="text-gray-400 text-xs mt-0.5">פרסמו משמרת סטאז׳ כדי להכיר מועמד בעבודה</p>
             </div>
           )}
 
@@ -258,7 +258,7 @@ export const RestaurantStages: React.FC = () => {
                   ) : (
                     <button onClick={() => approve(Number(s.Id))}
                       className="w-full bg-blue-500 text-white rounded-xl py-3 font-bold flex items-center justify-center gap-2">
-                      <Check size={16} /> {isTrial(s) ? 'אשר את המועמד להתנסות' : "אשר את המועמד לסטאז'"}
+                      <Check size={16} /> {isTrial(s) ? 'אשר את המועמד לסטאז׳' : "אשר את המועמד לסטאז'"}
                     </button>
                   )}
                 </div>
@@ -289,12 +289,12 @@ export const RestaurantStages: React.FC = () => {
                         </div>
                       </div>
                       <span className="text-[11px] font-bold text-green-600 bg-green-50 rounded-full px-2.5 py-1">
-                        {isTrial(s) ? 'התנסות' : 'פעיל'}
+                        {isTrial(s) ? 'סטאז׳' : 'פעיל'}
                       </span>
                     </div>
                     {isTrial(s) ? (
                       <div className="bg-green-50 border border-green-100 rounded-xl px-3 py-2 text-[11px] text-gray-600 leading-snug">
-                        משמרת התנסות · ₪{s.HourlyRate}/שעה · ללא עמלה. בתום המשמרת תוכלו להחליט אם לגייס.
+                        משמרת סטאז׳ · ₪{s.HourlyRate}/שעה · ללא עמלה. בתום המשמרת תוכלו להחליט אם לגייס.
                       </div>
                     ) : (
                       <div>
@@ -351,7 +351,7 @@ export const RestaurantStages: React.FC = () => {
                       <div className="font-bold text-gray-900">{ROLE_LABELS[s.Role] || s.Role}</div>
                       <div className="text-gray-400 text-xs">
                         {isTrial(s)
-                          ? `התנסות · ${fmtDate(s.StartTime)} · ${fmtTime(s.StartTime)}–${fmtTime(s.EndTime)} · ₪${s.HourlyRate}/ש'`
+                          ? `סטאז׳ · ${fmtDate(s.StartTime)} · ${fmtTime(s.StartTime)}–${fmtTime(s.EndTime)} · ₪${s.HourlyRate}/ש'`
                           : `מתחיל ${fmtDate(s.StartTime)} · 3 שבועות`}
                       </div>
                     </div>
@@ -375,7 +375,7 @@ export const RestaurantStages: React.FC = () => {
               <div className="text-xs font-bold text-gray-400">הסתיימו ({groupDone.length})</div>
               {groupDone.map(s => {
                 const hired = partnerIds.has(Number(s.WorkerId));
-                // רגע ההחלטה: התנסות שהסתיימה, יש עובד, ועוד לא גויס
+                // רגע ההחלטה: סטאז׳ שהסתיימה, יש עובד, ועוד לא גויס
                 const canHire = isTrial(s) && !!s.WorkerId && !hired;
                 return (
                   <div key={s.Id} className="bg-white rounded-xl px-3.5 py-2.5 card-shadow space-y-2">
@@ -390,7 +390,7 @@ export const RestaurantStages: React.FC = () => {
                     {canHire && (
                       <>
                         <p className="text-[11px] text-gray-500 leading-snug">
-                          ההתנסות הסתיימה — רוצים להמשיך עם {s.WorkerName || 'העובד'}?
+                          הסטאז׳ הסתיימה — רוצים להמשיך עם {s.WorkerName || 'העובד'}?
                         </p>
                         <button onClick={() => setKeepJob(s)}
                           className="w-full text-white rounded-xl py-2.5 font-bold text-sm"
@@ -417,7 +417,7 @@ export const RestaurantStages: React.FC = () => {
             <div className="text-center py-10 bg-white rounded-2xl card-shadow">
               <Users size={28} className="text-gray-300 mx-auto mb-2" />
               <p className="text-gray-500 font-medium text-sm">אין עדיין עובדים קבועים</p>
-              <p className="text-gray-400 text-xs mt-0.5">גייס מועמד בתום התנסות כדי להתחיל</p>
+              <p className="text-gray-400 text-xs mt-0.5">גייס מועמד בתום סטאז׳ כדי להתחיל</p>
             </div>
           )}
           {partners.map(p => (

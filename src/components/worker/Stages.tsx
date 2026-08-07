@@ -5,6 +5,7 @@ import { api } from '../../api';
 import { ROLE_LABELS, visibleShiftRoles } from '../../utils/roles';
 import { STAGE_WORKER_COMMISSION } from '../../utils/levels';
 import { ChatModal } from '../common/ChatModal';
+import { StageLocked } from './StageLocked';
 
 const fmtDate = (d?: string) => d ? new Date(d).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit' }) : '';
 const fmtTime = (d?: string) => d ? new Date(d).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : '';
@@ -38,12 +39,14 @@ export const WorkerStages: React.FC = () => {
   const workerRole = userProfile?.Role || '';
   const allowedRoles = visibleShiftRoles(workerRole);
 
+  // סטאז׳ פתוח רק לסטודנטים/בוגרים. מי שאינו — מקבל מסך חסום *אך נגיש*
+  // (הסבר + דרך להיפתח + בתי ספר וקורסים), ולא מסך ריק.
   const isTrainee = !!userProfile?.IsTrainee;
 
   const [offers, setOffers] = useState<any[]>([]);
   const [stages, setStages] = useState<any[]>([]);
-  const [trials, setTrials] = useState<any[]>([]);     // התנסויות פתוחות (לסטודנטים/בוגרים)
-  const [myTrials, setMyTrials] = useState<any[]>([]); // ההתנסויות שלי
+  const [trials, setTrials] = useState<any[]>([]);     // סטאז׳ים פתוחות (לסטודנטים/בוגרים)
+  const [myTrials, setMyTrials] = useState<any[]>([]); // הסטאז׳ים שלי
   const [mine, setMine] = useState<any[]>([]);
   const [shifts, setShifts] = useState<any[]>([]);
   const [busy, setBusy] = useState<number | null>(null);
@@ -61,7 +64,7 @@ export const WorkerStages: React.FC = () => {
     const [off, stg, trl, hist] = await Promise.all([
       api.getWorkerOffers(wid).catch(() => []),
       api.getStages().catch(() => []),
-      // התנסויות — השרת מחזיר 403 למי שאינו סטודנט/בוגר, ואז פשוט רשימה ריקה
+      // סטאז׳ים — השרת מחזיר 403 למי שאינו סטודנט/בוגר, ואז פשוט רשימה ריקה
       isTrainee ? api.getTrials().catch(() => []) : Promise.resolve([]),
       api.getWorkerHistory(wid).catch(() => []),
     ]);
@@ -107,7 +110,7 @@ export const WorkerStages: React.FC = () => {
   const appliedIds = new Set(mine.map(m => Number(m.Id)));
   const openStages = stages.filter(s => allowedRoles.includes(s.Role) && !appliedIds.has(Number(s.Id)));
 
-  // ── התנסויות: פתוחות (בתפקיד שלי, בלי חסימת מרחק) + שלי ──
+  // ── סטאז׳ים: פתוחות (בתפקיד שלי, בלי חסימת מרחק) + שלי ──
   const myTrialIds = new Set(myTrials.map(t => Number(t.Id)));
   const openTrials = trials.filter(t => allowedRoles.includes(t.Role) && !myTrialIds.has(Number(t.Id)));
   const activeTrials  = myTrials.filter(t => ['pending_approval', 'matched', 'confirmed', 'active'].includes(t.Status));
@@ -115,11 +118,11 @@ export const WorkerStages: React.FC = () => {
 
   const applyTrial = async (trialId: number) => {
     setBusy(trialId); setMsg('');
-    try { await api.applyToJob(trialId, wid); setMsg('המועמדות להתנסות נשלחה. ממתין לאישור המסעדה.'); await load(); }
+    try { await api.applyToJob(trialId, wid); setMsg('המועמדות לסטאז׳ נשלחה. ממתין לאישור המסעדה.'); await load(); }
     catch (e: any) { setMsg(e.message || 'שגיאה בהגשה'); }
     setBusy(null);
   };
-  // כניסה למשמרת התנסות — זורמת בזרימת המשמרת הרגילה (ניווט → צ'ק-אין → סיום)
+  // כניסה למשמרת סטאז׳ — זורמת בזרימת המשמרת הרגילה (ניווט → צ'ק-אין → סיום)
   const openTrialShift = (t: any) => { selectWorkerJob(String(t.Id), t); navToWorker('navigation'); };
 
   /* שלוש קבוצות זרות: פעיל · ממתין לאישור · נגמר (החדש ביותר ראשון) */
@@ -152,6 +155,10 @@ export const WorkerStages: React.FC = () => {
   const lastFeedback = [...shifts].reverse().find(s => s.ImprovementNote || s.NextShiftNote);
   const left = activeStage ? daysLeft(activeStage.EndTime) : 0;
 
+  // מסך חסום למי שאינו סטודנט/בוגר — אלא אם יש לו סטאז׳ ותיק פעיל/בהיסטוריה
+  // (שלא ננעל בפניו משהו שהוא כבר בתוכו).
+  if (!isTrainee && !mine.length && !myTrials.length) return <StageLocked />;
+
   return (
     <div className="screen-enter space-y-4">
       {/* כותרת */}
@@ -162,17 +169,17 @@ export const WorkerStages: React.FC = () => {
           <GraduationCap className="text-amber-400" size={22} />
         </div>
         <div>
-          <div className="font-black text-lg leading-tight">התנסות והצעות</div>
+          <div className="font-black text-lg leading-tight">סטאז׳ והצעות</div>
           <div className="text-xs" style={{ color: '#8899bb' }}>משמרת אחת להוכיח את עצמך · ללא עמלה</div>
         </div>
       </div>
 
       {msg && <div className="bg-green-50 text-green-700 text-sm rounded-xl px-4 py-2.5 text-center font-semibold">{msg}</div>}
 
-      {/* ══ ההתנסויות שלי ══ */}
+      {/* ══ הסטאז׳ים שלי ══ */}
       {activeTrials.length > 0 && (
         <div className="space-y-2">
-          <h3 className="font-bold text-gray-800 text-sm">ההתנסות שלי</h3>
+          <h3 className="font-bold text-gray-800 text-sm">הסטאז׳ שלי</h3>
           {activeTrials.map(t => {
             const waiting = ['pending_approval', 'matched'].includes(t.Status);
             const today = isToday(t.StartTime);
@@ -193,7 +200,7 @@ export const WorkerStages: React.FC = () => {
                   <button onClick={() => openTrialShift(t)}
                     className="w-full text-white rounded-2xl py-3 font-bold"
                     style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
-                    כנס למשמרת ההתנסות ›
+                    כנס למשמרת הסטאז׳ ›
                   </button>
                 ) : (
                   <div className="text-xs font-semibold text-green-700 bg-green-50 rounded-lg px-3 py-2">
@@ -206,17 +213,17 @@ export const WorkerStages: React.FC = () => {
         </div>
       )}
 
-      {/* ══ התנסויות פתוחות — רק לסטודנטים/בוגרים ══ */}
+      {/* ══ סטאז׳ים פתוחות — רק לסטודנטים/בוגרים ══ */}
       {isTrainee && (
         <div className="space-y-2">
-          <h3 className="font-bold text-gray-800 text-sm">משמרות התנסות פתוחות</h3>
+          <h3 className="font-bold text-gray-800 text-sm">משמרות סטאז׳ פתוחות</h3>
           <p className="text-gray-400 text-xs -mt-1">
             משמרת אחת שבה המסעדה מכירה אותך בעבודה — <b>בתשלום מלא וללא עמלה</b>. אהבו? אפשר להתקבל לעבודה.
           </p>
           {openTrials.length === 0 && (
             <div className="text-center py-8 bg-white rounded-2xl card-shadow">
               <Search size={26} className="text-gray-300 mx-auto mb-2" />
-              <p className="text-gray-500 text-sm font-medium">אין כרגע התנסויות פתוחות בתחום שלך</p>
+              <p className="text-gray-500 text-sm font-medium">אין כרגע סטאז׳ים פתוחות בתחום שלך</p>
               <p className="text-gray-400 text-xs">נשלח לך התראה כשתיפתח אחת</p>
             </div>
           )}
@@ -238,17 +245,17 @@ export const WorkerStages: React.FC = () => {
               <button onClick={() => applyTrial(Number(t.Id))} disabled={busy === Number(t.Id)}
                 className="w-full text-white rounded-2xl py-3 font-bold disabled:opacity-40"
                 style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
-                {busy === Number(t.Id) ? 'שולח...' : 'הגש מועמדות להתנסות'}
+                {busy === Number(t.Id) ? 'שולח...' : 'הגש מועמדות לסטאז׳'}
               </button>
             </div>
           ))}
         </div>
       )}
 
-      {/* התנסויות שהסתיימו */}
+      {/* סטאז׳ים שהסתיימו */}
       {doneTrials.length > 0 && (
         <div className="space-y-2">
-          <h3 className="font-bold text-gray-800 text-sm">התנסויות שהסתיימו</h3>
+          <h3 className="font-bold text-gray-800 text-sm">סטאז׳ים שהסתיימו</h3>
           {doneTrials.map(t => (
             <div key={t.Id} className="bg-white rounded-xl px-3.5 py-2.5 card-shadow flex items-center gap-2.5">
               <Check size={16} className="text-green-500 flex-shrink-0" />
