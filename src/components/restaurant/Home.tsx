@@ -53,8 +53,8 @@ export const RestaurantHome: React.FC = () => {
     const load = () => {
       api.getRestaurantJobs(userProfile.Id)
         .then(data => {
-          // סטאז'ים מנוהלים במסך נפרד — לא נספרים כמשמרת פעילה/אחרונה
-          const all = (Array.isArray(data) ? data : []).filter((j: any) => !['stage', 'stage_shift'].includes(j.JobType));
+          // התנסויות וסטאז'ים מנוהלים במסך נפרד — לא נספרים כמשמרת פעילה/אחרונה
+          const all = (Array.isArray(data) ? data : []).filter((j: any) => !['stage', 'stage_shift', 'trial'].includes(j.JobType));
           const active = all.find((j: any) => ['confirmed','active','pending_completion'].includes(j.Status));
           setActiveShift(active || null);
           setRecentJobs(all.filter((j: any) => !['confirmed','active','pending_completion'].includes(j.Status)).slice(0, 3));

@@ -3,14 +3,14 @@ import { ChevronRight, Zap, Clock, Filter, Star, Calendar, ClipboardList, MapPin
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import type { JobRole, ExperienceLevel } from '../../types';
-import { SHIFT_ROLES } from '../../utils/roles';
+import { SHIFT_ROLES, isEntryRole } from '../../utils/roles';
 import { restaurantRate, EMERGENCY_WORKER_COMMISSION } from '../../utils/levels';
 
-const ROLES = SHIFT_ROLES.map(r => ({ id: r.key as JobRole, label: r.label, icon: r.emoji, desc: r.desc }));
+const ROLES = SHIFT_ROLES.map(r => ({ id: r.key as JobRole, label: r.label, icon: r.emoji, desc: r.desc, entry: !!r.entry }));
 
 const EXPERIENCE: { id: ExperienceLevel; label: string; desc: string }[] = [
   { id: 'any',    label: 'כל הרמות', desc: 'לא משנה — כל ניסיון מתקבל' },
-  { id: 'entry',  label: 'מתחיל',    desc: 'עד שנתיים ניסיון' },
+  { id: 'entry',  label: 'מתחיל',    desc: 'מתאים גם ללא ניסיון · עד שנתיים' },
   { id: 'mid',    label: 'בינוני',   desc: '2–5 שנות ניסיון' },
   { id: 'senior', label: 'מנוסה',    desc: '5+ שנות ניסיון' },
 ];
@@ -126,7 +126,7 @@ export const CreateJob: React.FC = () => {
             {ROLES.map(r => (
               <button
                 key={r.id}
-                onClick={() => setRole(r.id)}
+                onClick={() => { setRole(r.id); if (isEntryRole(r.id)) setExperience('entry'); }}
                 className={`w-full p-4 rounded-2xl border-2 flex items-center gap-4 transition-all ${
                   role === r.id
                     ? 'border-orange-500 bg-amber-50'
@@ -135,7 +135,10 @@ export const CreateJob: React.FC = () => {
               >
                 <span className="text-3xl">{r.icon}</span>
                 <div className="text-right">
-                  <div className="font-bold text-gray-900">{r.label}</div>
+                  <div className="font-bold text-gray-900 flex items-center gap-1.5">
+                    {r.label}
+                    {r.entry && <span className="text-[10px] font-bold text-green-700 bg-green-100 rounded-full px-1.5 py-0.5">מתאים ללא ניסיון</span>}
+                  </div>
                   <div className="text-gray-500 text-sm">{r.desc}</div>
                 </div>
                 <div className={`mr-auto w-5 h-5 rounded-full border-2 flex items-center justify-center ${

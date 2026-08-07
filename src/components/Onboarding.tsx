@@ -1,7 +1,7 @@
 ﻿import React, { useState } from 'react';
 import { ChevronRight, Phone, MapPin, GraduationCap, Check, FileText } from 'lucide-react';
 import { api } from '../api';
-import { WORKER_ROLES, SKILLS_BY_ROLE } from '../utils/roles';
+import { WORKER_ROLES, SKILLS_BY_ROLE, ENTRY_ROLE_KEYS } from '../utils/roles';
 import { CityAutocomplete } from './common/CityAutocomplete';
 import { StreetAutocomplete } from './common/StreetAutocomplete';
 import { NonSelfEmployedDisclosure } from './common/NonSelfEmployedDisclosure';
@@ -20,6 +20,19 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
   const [workerRoles, setWorkerRoles] = useState<string[]>([]);
   const toggleRole = (key: string) =>
     setWorkerRoles(prev => prev.includes(key) ? prev.filter(r => r !== key) : [...prev, key]);
+  // האם לעובד יש ניסיון בתחום — נשאל *לפני* התפקידים וקובע מה מוצג.
+  // null = עוד לא ענה (התפקידים מוסתרים עד שעונה).
+  const [hasExperience, setHasExperience] = useState<boolean | null>(null);
+  const chooseExperience = (val: boolean) => {
+    setHasExperience(val);
+    if (val) {
+      setYearsExp(prev => (prev === '0' ? '1' : prev));
+    } else {
+      // ללא ניסיון: ותק 0, ומשאירים רק תפקידי כניסה שנבחרו (אם בחר מקצועיים לפני שהחליף)
+      setYearsExp('0');
+      setWorkerRoles(prev => prev.filter(r => ENTRY_ROLE_KEYS.has(r)));
+    }
+  };
   // כישורים לכל התפקידים שנבחרו — מאוחדים לפי קבוצה, בלי כפילויות
   const skillSections = (() => {
     const byGroup = new Map<string, string[]>();
@@ -205,11 +218,44 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
             <div className="space-y-4 screen-enter">
               {role === 'worker' ? (
                 <>
-                  <h2 className="text-xl font-black text-gray-900">תפקיד וניסיון</h2>
+                  <h2 className="text-xl font-black text-gray-900">ניסיון ותפקידים</h2>
+
+                  {/* ── שאלת הניסיון — *לפני* בחירת התפקידים, כי היא קובעת מה מוצג ── */}
+                  <div>
+                    <label className="text-sm font-semibold text-gray-600 mb-2 block">יש לך ניסיון בעבודה במסעדנות?</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => chooseExperience(true)}
+                        className={`p-3 rounded-xl border-2 text-center transition-all ${hasExperience === true ? 'border-amber-400 bg-amber-50' : 'border-gray-100'}`}
+                      >
+                        <div className="text-2xl mb-0.5">👨‍🍳</div>
+                        <div className="font-bold text-gray-900 text-sm">יש לי ניסיון</div>
+                        <div className="text-gray-500 text-[11px] leading-tight">עבדתי בתחום</div>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => chooseExperience(false)}
+                        className={`p-3 rounded-xl border-2 text-center transition-all ${hasExperience === false ? 'border-green-400 bg-green-50' : 'border-gray-100'}`}
+                      >
+                        <div className="text-2xl mb-0.5">🌱</div>
+                        <div className="font-bold text-gray-900 text-sm">אין לי ניסיון</div>
+                        <div className="text-gray-500 text-[11px] leading-tight">חדש/ה בתחום</div>
+                      </button>
+                    </div>
+                    <div className="mt-2 text-[11px] text-gray-500 bg-gray-50 border border-gray-100 rounded-xl px-3 py-2 leading-relaxed">
+                      <b className="text-gray-700">חשוב לענות בכיוון:</b> התשובה קובעת אילו משמרות נציע לך ומה המסעדה מצפה לראות.
+                      התאמה מדויקת = יותר סיכוי שיאשרו אותך ופחות אכזבות בשטח. אין תשובה "פחות טובה" —
+                      גם לחסרי ניסיון יש תפקידים פתוחים, ותמיד אפשר לעדכן מהפרופיל בהמשך.
+                    </div>
+                  </div>
+
+                  {hasExperience !== null && (
                   <div>
                     <label className="text-sm font-semibold text-gray-600 mb-2 block">תפקידים <span className="text-gray-400 font-normal">(אפשר לבחור כמה)</span></label>
+                    {hasExperience && (
                     <div className="space-y-2">
-                      {WORKER_ROLES.map(r => {
+                      {WORKER_ROLES.filter(r => !r.entry).map(r => {
                         const sel = workerRoles.includes(r.key);
                         return (
                           <button
@@ -229,16 +275,61 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                         );
                       })}
                     </div>
+                    )}
+
+                    {/* ── תפקידי כניסה — פתוחים לשני המצבים (גם למנוסים, כתוספת) ── */}
+                    <div className={`${hasExperience ? 'mt-4' : ''} mb-2 flex items-center gap-2 rounded-xl bg-green-50 border border-green-100 px-3 py-2`}>
+                      <span className="text-xl flex-shrink-0">🌱</span>
+                      <div>
+                        <div className="text-sm font-bold text-green-700">
+                          {hasExperience ? 'תפקידי כניסה — גם בשבילך' : 'התפקידים שפתוחים בפניך'}
+                        </div>
+                        <div className="text-xs text-gray-500 leading-snug">
+                          {hasExperience
+                            ? 'אפשר לקחת גם משמרות כאלה — עוד הזדמנויות, בלי לפגוע בתפקידים המקצועיים'
+                            : 'התחל מכאן, צבור דירוגים ומשמרות — ומשם מתקדמים לתפקידים המקצועיים'}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      {WORKER_ROLES.filter(r => r.entry).map(r => {
+                        const sel = workerRoles.includes(r.key);
+                        return (
+                          <button
+                            key={r.key}
+                            onClick={() => toggleRole(r.key)}
+                            className={`w-full p-3 rounded-xl border-2 flex items-center gap-3 text-right transition-all ${
+                              sel ? 'border-green-400 bg-green-50' : 'border-gray-100'
+                            }`}
+                          >
+                            <span className="text-2xl">{r.emoji}</span>
+                            <div className="flex-1">
+                              <div className="font-bold text-gray-900 flex items-center gap-1.5">
+                                {r.label}
+                                <span className="text-[10px] font-bold text-green-700 bg-green-100 rounded-full px-1.5 py-0.5">ללא ניסיון</span>
+                              </div>
+                              <div className="text-gray-500 text-xs">{r.desc}</div>
+                            </div>
+                            {sel && <span className="text-green-600 font-black text-lg">✓</span>}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
+                  )}
+
+                  {/* שנות ניסיון — רק למי שהצהיר שיש לו ניסיון (אחרת מאולץ ל-0) */}
+                  {hasExperience === true && (
                   <div>
                     <label className="text-sm font-semibold text-gray-600 mb-2 block">שנות ניסיון</label>
                     <div className="flex gap-2" dir="ltr">
                       {['1', '2', '3', '5', '8+'].map(v => {
-                        const sel = yearsExp === v.replace('+', '');
+                        const val = v.replace('+', '');
+                        const sel = yearsExp === val;
                         return (
                           <button
                             key={v}
-                            onClick={() => setYearsExp(v.replace('+', ''))}
+                            onClick={() => setYearsExp(val)}
                             className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-colors ${
                               sel ? 'text-white' : 'bg-gray-100 text-gray-700'
                             }`}
@@ -250,6 +341,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                       })}
                     </div>
                   </div>
+                  )}
                   {/* סטטוס מתלמד/סטודנט — פותח גישה לסטאז'ים */}
                   <div>
                     <label className="text-sm font-semibold text-gray-600 mb-2 block">סטטוס מקצועי</label>
@@ -375,7 +467,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                   <ChevronRight size={20} />
                 </button>
                 <button
-                  disabled={role === 'worker' ? (!workerRoles.length || isSelfEmployed === null) : selectedCuisines.length === 0}
+                  disabled={role === 'worker' ? (hasExperience === null || !workerRoles.length || isSelfEmployed === null) : selectedCuisines.length === 0}
                   onClick={() => role === 'worker' ? setStep(3) : handleComplete()}
                   className="flex-1 text-white rounded-2xl py-4 font-bold disabled:opacity-40"
                   style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}

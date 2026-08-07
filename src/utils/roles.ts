@@ -5,39 +5,64 @@ export interface RoleDef {
   label: string;
   emoji: string;
   desc: string;
+  entry?: boolean; // תפקיד כניסה — פתוח גם לחסרי ניסיון בתחום
 }
 
-/* תפקידי עובד — מה שעובד נרשם בתורו */
+/* תפקידי עובד — מה שעובד נרשם בתורו.
+   מחולק לשני חלקים: תפקידים מקצועיים (דורשי ניסיון) ותפקידי כניסה (entry:true)
+   הפתוחים גם למי שאין לו ניסיון כלל. עובד מנוסה יכול לבחור גם וגם. */
 export const WORKER_ROLES: RoleDef[] = [
   { key: 'line_cook', label: 'טבח',          emoji: '🍳', desc: 'מטבח חם/קר · כולל משמרות טבח הכנות' },
   { key: 'cleaner',   label: 'עובד ניקיון',  emoji: '🧽', desc: 'ניקיון מטבח ושטיפת כלים' },
   { key: 'bartender', label: 'ברמן',         emoji: '🍸', desc: 'בר, קוקטיילים ומשקאות' },
   { key: 'barista',   label: 'בריסטה',       emoji: '☕', desc: 'קפה, אספרסו ובתי קפה' },
   { key: 'waiter',    label: 'מלצר',         emoji: '🍽️', desc: 'שירות שולחנות ומלצרות' },
+  // ── תפקידי כניסה — ללא צורך בניסיון ──
+  { key: 'runner',     label: 'ראנר',        emoji: '🏃', desc: 'העברת מנות · סידור שולחנות · לא צריך ניסיון', entry: true },
+  { key: 'dishwasher', label: 'שוטף כלים',   emoji: '🧼', desc: 'שטיפת כלים · תפעול מדיח · לא צריך ניסיון',   entry: true },
+  { key: 'prep_cook',  label: 'טבח הכנות',   emoji: '🔪', desc: 'חיתוך · מיזנפלס · הכנות · לא צריך ניסיון',   entry: true },
 ];
 
 /* תפקידי משמרת — מה שמסעדה מפרסמת */
 export const SHIFT_ROLES: RoleDef[] = [
   { key: 'line_cook', label: 'טבח',         emoji: '🍳', desc: 'טבח קו · מטבח חם/קר' },
-  { key: 'prep_cook', label: 'טבח הכנות',   emoji: '🔪', desc: 'הכנות מוקדמות · חיתוך · מיזנפלס' },
   { key: 'cleaner',   label: 'עובד ניקיון', emoji: '🧽', desc: 'ניקיון · שטיפת כלים' },
   { key: 'bartender', label: 'ברמן',        emoji: '🍸', desc: 'בר · קוקטיילים · משקאות' },
   { key: 'barista',   label: 'בריסטה',      emoji: '☕', desc: 'קפה · אספרסו · בית קפה' },
   { key: 'waiter',    label: 'מלצר',        emoji: '🍽️', desc: 'שירות · מלצרות' },
+  // ── תפקידי כניסה — מתאימים גם לעובד ללא ניסיון ──
+  { key: 'prep_cook', label: 'טבח הכנות',   emoji: '🔪', desc: 'הכנות מוקדמות · חיתוך · מיזנפלס', entry: true },
+  { key: 'runner',    label: 'ראנר',        emoji: '🏃', desc: 'העברת מנות · סידור וניקוי שולחנות', entry: true },
+  { key: 'dishwasher',label: 'שוטף כלים',   emoji: '🧼', desc: 'שטיפת כלים · תפעול מדיח · פינוי', entry: true },
 ];
 
 /* תוויות לכל המפתחות (כולל legacy) */
 export const ROLE_LABELS: Record<string, string> = {
-  line_cook: 'טבח',
-  prep_cook: 'טבח הכנות',
-  cleaner:   'עובד ניקיון',
-  bartender: 'ברמן',
-  barista:   'בריסטה',
-  waiter:    'מלצר',
+  line_cook:  'טבח',
+  prep_cook:  'טבח הכנות',
+  cleaner:    'עובד ניקיון',
+  bartender:  'ברמן',
+  barista:    'בריסטה',
+  waiter:     'מלצר',
+  runner:     'ראנר',
+  dishwasher: 'שוטף כלים',
   // legacy
   chef:       'טבח',
-  dishwasher: 'עובד ניקיון',
 };
+
+/* מפתחות תפקידי הכניסה — פתוחים גם לחסרי ניסיון */
+export const ENTRY_ROLE_KEYS = new Set(['runner', 'dishwasher', 'prep_cook']);
+
+/** האם תפקיד הוא תפקיד כניסה (פתוח לעובד ללא ניסיון) */
+export function isEntryRole(key?: string): boolean {
+  return !!key && ENTRY_ROLE_KEYS.has(key);
+}
+
+/** האם *כל* תפקידי העובד הם תפקידי כניסה (עובד ללא ניסיון) */
+export function isEntryOnly(role?: string): boolean {
+  const list = parseRoles(role);
+  return list.length > 0 && list.every(r => ENTRY_ROLE_KEYS.has(r));
+}
 
 /**
  * פיצול תפקידי עובד ל-list. עובד יכול להיות רב-תפקיד — התפקידים
@@ -59,17 +84,28 @@ function visibleForSingleRole(workerRole?: string): string[] {
   switch (workerRole) {
     case 'line_cook':
     case 'chef': // legacy
+      // טבח מנוסה רואה גם משמרות "טבח הכנות" (תפקיד כניסה שהוא כשיר לו)
       return ['line_cook', 'prep_cook', 'chef'];
+    case 'prep_cook':
+      // טבח הכנות (כניסה) — רק משמרות הכנות, לא משמרות טבח קו המקצועיות
+      return ['prep_cook'];
     case 'cleaner':
-    case 'dishwasher': // legacy
+      // עובד ניקיון רואה גם משמרות שטיפת כלים
       return ['cleaner', 'dishwasher'];
+    case 'dishwasher':
+      // שוטף כלים (כניסה) רואה גם משמרות ניקיון (עבודה קרובה)
+      return ['dishwasher', 'cleaner'];
     case 'bartender':
       return ['bartender'];
     case 'barista':
       // בריסטה הוא מקצוע נפרד (בתי קפה) — לא מוצג לו בר ולהפך.
       return ['barista'];
     case 'waiter':
-      return ['waiter'];
+      // מלצר מנוסה רואה גם משמרות ראנר (תפקיד כניסה שהוא כשיר לו)
+      return ['waiter', 'runner'];
+    case 'runner':
+      // ראנר (כניסה) — רק משמרות ראנר, לא מלצרות המקצועית
+      return ['runner'];
     default:
       return workerRole ? [workerRole] : [];
   }
@@ -114,5 +150,15 @@ export const SKILLS_BY_ROLE: Record<string, { group: string; items: string[] }[]
   cleaner: [
     { group: 'תחומי ניקיון', items: ['שטיפת כלים', 'ניקיון מטבח', 'ניקיון אולם', 'תפעול מדיח תעשייתי', 'פינוי וסידור', 'ניקיון סוף יום'] },
     { group: 'יתרונות', items: ['עמידה בקצב גבוה', 'עבודה במשמרות לילה', 'ניסיון במטבח מוסדי', 'הקפדה על תברואה'] },
+  ],
+  // ── תפקידי כניסה — בלי דרישת ניסיון, רק יתרונות/זמינות ──
+  runner: [
+    { group: 'יתרונות', items: ['זריזות וקצב מהיר', 'עמידה בעומס', 'שירותיות ויחס לאורח', 'ראש גדול', 'עבודת צוות'] },
+  ],
+  dishwasher: [
+    { group: 'יתרונות', items: ['עמידה בקצב גבוה', 'סדר וניקיון', 'תפעול מדיח תעשייתי', 'עבודה במשמרות לילה', 'הקפדה על תברואה'] },
+  ],
+  prep_cook: [
+    { group: 'יתרונות', items: ['חיתוך ירקות', 'סדר ומיזנפלס', 'עבודה מסודרת ונקייה', 'הקפדה על תברואה', 'עמידה בהוראות'] },
   ],
 };

@@ -38,8 +38,12 @@ export const WorkerStages: React.FC = () => {
   const workerRole = userProfile?.Role || '';
   const allowedRoles = visibleShiftRoles(workerRole);
 
+  const isTrainee = !!userProfile?.IsTrainee;
+
   const [offers, setOffers] = useState<any[]>([]);
   const [stages, setStages] = useState<any[]>([]);
+  const [trials, setTrials] = useState<any[]>([]);     // התנסויות פתוחות (לסטודנטים/בוגרים)
+  const [myTrials, setMyTrials] = useState<any[]>([]); // ההתנסויות שלי
   const [mine, setMine] = useState<any[]>([]);
   const [shifts, setShifts] = useState<any[]>([]);
   const [busy, setBusy] = useState<number | null>(null);
@@ -54,13 +58,17 @@ export const WorkerStages: React.FC = () => {
 
   const load = async () => {
     if (!wid) return;
-    const [off, stg, hist] = await Promise.all([
+    const [off, stg, trl, hist] = await Promise.all([
       api.getWorkerOffers(wid).catch(() => []),
       api.getStages().catch(() => []),
+      // התנסויות — השרת מחזיר 403 למי שאינו סטודנט/בוגר, ואז פשוט רשימה ריקה
+      isTrainee ? api.getTrials().catch(() => []) : Promise.resolve([]),
       api.getWorkerHistory(wid).catch(() => []),
     ]);
     setOffers(Array.isArray(off) ? off : []);
     setStages(Array.isArray(stg) ? stg : []);
+    setTrials(Array.isArray(trl) ? trl : []);
+    setMyTrials((Array.isArray(hist) ? hist : []).filter((j: any) => j.JobType === 'trial'));
     const myStages = (Array.isArray(hist) ? hist : []).filter((j: any) => j.JobType === 'stage');
     setMine(myStages);
     const act = pickActiveStage(myStages);
@@ -98,6 +106,21 @@ export const WorkerStages: React.FC = () => {
 
   const appliedIds = new Set(mine.map(m => Number(m.Id)));
   const openStages = stages.filter(s => allowedRoles.includes(s.Role) && !appliedIds.has(Number(s.Id)));
+
+  // ── התנסויות: פתוחות (בתפקיד שלי, בלי חסימת מרחק) + שלי ──
+  const myTrialIds = new Set(myTrials.map(t => Number(t.Id)));
+  const openTrials = trials.filter(t => allowedRoles.includes(t.Role) && !myTrialIds.has(Number(t.Id)));
+  const activeTrials  = myTrials.filter(t => ['pending_approval', 'matched', 'confirmed', 'active'].includes(t.Status));
+  const doneTrials    = myTrials.filter(t => t.Status === 'completed');
+
+  const applyTrial = async (trialId: number) => {
+    setBusy(trialId); setMsg('');
+    try { await api.applyToJob(trialId, wid); setMsg('המועמדות להתנסות נשלחה. ממתין לאישור המסעדה.'); await load(); }
+    catch (e: any) { setMsg(e.message || 'שגיאה בהגשה'); }
+    setBusy(null);
+  };
+  // כניסה למשמרת התנסות — זורמת בזרימת המשמרת הרגילה (ניווט → צ'ק-אין → סיום)
+  const openTrialShift = (t: any) => { selectWorkerJob(String(t.Id), t); navToWorker('navigation'); };
 
   /* שלוש קבוצות זרות: פעיל · ממתין לאישור · נגמר (החדש ביותר ראשון) */
   const endedStages = mine.filter(isEndedStage)
@@ -139,12 +162,104 @@ export const WorkerStages: React.FC = () => {
           <GraduationCap className="text-amber-400" size={22} />
         </div>
         <div>
-          <div className="font-black text-lg leading-tight">סטאז' והצעות</div>
-          <div className="text-xs" style={{ color: '#8899bb' }}>למד מקצוע בשטח · הפוך לעובד קבוע</div>
+          <div className="font-black text-lg leading-tight">התנסות והצעות</div>
+          <div className="text-xs" style={{ color: '#8899bb' }}>משמרת אחת להוכיח את עצמך · ללא עמלה</div>
         </div>
       </div>
 
       {msg && <div className="bg-green-50 text-green-700 text-sm rounded-xl px-4 py-2.5 text-center font-semibold">{msg}</div>}
+
+      {/* ══ ההתנסויות שלי ══ */}
+      {activeTrials.length > 0 && (
+        <div className="space-y-2">
+          <h3 className="font-bold text-gray-800 text-sm">ההתנסות שלי</h3>
+          {activeTrials.map(t => {
+            const waiting = ['pending_approval', 'matched'].includes(t.Status);
+            const today = isToday(t.StartTime);
+            return (
+              <div key={t.Id} className="bg-white rounded-2xl p-4 card-shadow border-2 border-green-100">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-bold text-gray-900">{t.RestaurantName}</span>
+                  <span className="text-green-600 font-black">₪{t.HourlyRate}/ש'</span>
+                </div>
+                <div className="text-gray-500 text-xs flex items-center gap-3 mb-2 flex-wrap">
+                  <span>{ROLE_LABELS[t.Role] || t.Role}</span>
+                  <span className="flex items-center gap-1"><Clock size={12} />{fmtDate(t.StartTime)} · {fmtTime(t.StartTime)}–{fmtTime(t.EndTime)}</span>
+                  {t.RestaurantCity && <span className="flex items-center gap-1"><MapPin size={12} />{t.RestaurantCity}</span>}
+                </div>
+                {waiting ? (
+                  <div className="text-xs font-semibold text-amber-600 bg-amber-50 rounded-lg px-3 py-2">ממתין לאישור המסעדה</div>
+                ) : today ? (
+                  <button onClick={() => openTrialShift(t)}
+                    className="w-full text-white rounded-2xl py-3 font-bold"
+                    style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
+                    כנס למשמרת ההתנסות ›
+                  </button>
+                ) : (
+                  <div className="text-xs font-semibold text-green-700 bg-green-50 rounded-lg px-3 py-2">
+                    אושרת! נתראה ב-{fmtDate(t.StartTime)} · הכל בלי עמלה
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* ══ התנסויות פתוחות — רק לסטודנטים/בוגרים ══ */}
+      {isTrainee && (
+        <div className="space-y-2">
+          <h3 className="font-bold text-gray-800 text-sm">משמרות התנסות פתוחות</h3>
+          <p className="text-gray-400 text-xs -mt-1">
+            משמרת אחת שבה המסעדה מכירה אותך בעבודה — <b>בתשלום מלא וללא עמלה</b>. אהבו? אפשר להתקבל לעבודה.
+          </p>
+          {openTrials.length === 0 && (
+            <div className="text-center py-8 bg-white rounded-2xl card-shadow">
+              <Search size={26} className="text-gray-300 mx-auto mb-2" />
+              <p className="text-gray-500 text-sm font-medium">אין כרגע התנסויות פתוחות בתחום שלך</p>
+              <p className="text-gray-400 text-xs">נשלח לך התראה כשתיפתח אחת</p>
+            </div>
+          )}
+          {openTrials.map(t => (
+            <div key={t.Id} className="bg-white rounded-2xl p-4 card-shadow">
+              <div className="flex items-center justify-between mb-1">
+                <span className="font-bold text-gray-900">{t.RestaurantName}</span>
+                <span className="text-green-600 font-black">₪{t.HourlyRate}/ש'</span>
+              </div>
+              <div className="text-gray-500 text-xs flex items-center gap-3 mb-2 flex-wrap">
+                <span>{ROLE_LABELS[t.Role] || t.Role}</span>
+                <span className="flex items-center gap-1"><Clock size={12} />{fmtDate(t.StartTime)} · {fmtTime(t.StartTime)}–{fmtTime(t.EndTime)}</span>
+                {t.RestaurantCity && <span className="flex items-center gap-1"><MapPin size={12} />{t.RestaurantCity}</span>}
+              </div>
+              {t.Duties && <p className="text-gray-500 text-xs mb-2">{t.Duties}</p>}
+              <div className="text-[11px] text-green-700 bg-green-50 border border-green-100 rounded-lg px-2.5 py-1.5 mb-2">
+                ללא עמלה — תקבל את השכר המלא
+              </div>
+              <button onClick={() => applyTrial(Number(t.Id))} disabled={busy === Number(t.Id)}
+                className="w-full text-white rounded-2xl py-3 font-bold disabled:opacity-40"
+                style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
+                {busy === Number(t.Id) ? 'שולח...' : 'הגש מועמדות להתנסות'}
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* התנסויות שהסתיימו */}
+      {doneTrials.length > 0 && (
+        <div className="space-y-2">
+          <h3 className="font-bold text-gray-800 text-sm">התנסויות שהסתיימו</h3>
+          {doneTrials.map(t => (
+            <div key={t.Id} className="bg-white rounded-xl px-3.5 py-2.5 card-shadow flex items-center gap-2.5">
+              <Check size={16} className="text-green-500 flex-shrink-0" />
+              <span className="font-semibold text-gray-700 text-sm flex-1 truncate">{t.RestaurantName}</span>
+              <span className="text-gray-400 text-xs flex-shrink-0">
+                {fmtDate(t.StartTime)}{t.TotalPay ? ` · ₪${Math.round(Number(t.TotalPay))}` : ''}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* הצעות ישירות */}
       {offers.length > 0 && (
@@ -268,17 +383,11 @@ export const WorkerStages: React.FC = () => {
         </div>
       ))}
 
-      {/* סטאז'ים זמינים */}
+      {/* סטאז'ים זמינים (מודל ותיק — מוצג רק אם קיימים בפועל) */}
+      {openStages.length > 0 && (
       <div className="space-y-2">
         <h3 className="font-bold text-gray-800 text-sm">סטאז'ים זמינים</h3>
         <p className="text-gray-400 text-xs -mt-1">לסטודנטים מקורסי בישול/ברמנים — 3 שבועות של למידה בשטח.</p>
-        {openStages.length === 0 && (
-          <div className="text-center py-8 bg-white rounded-2xl card-shadow">
-            <Search size={26} className="text-gray-300 mx-auto mb-2" />
-            <p className="text-gray-500 text-sm font-medium">אין כרגע סטאז'ים פתוחים בתחום שלך</p>
-            <p className="text-gray-400 text-xs">כדאי לבדוק שוב בקרוב</p>
-          </div>
-        )}
         {openStages.map(s => (
           <div key={s.Id} className="bg-white rounded-2xl p-4 card-shadow">
             <div className="flex items-center justify-between mb-1">
@@ -298,6 +407,7 @@ export const WorkerStages: React.FC = () => {
           </div>
         ))}
       </div>
+      )}
 
       {/* ═══ סטאז'ים שנגמרו — ארכיון מתקפל, תמיד בתחתית המסך ═══ */}
       {endedStages.length > 0 && (

@@ -248,7 +248,7 @@ export const WorkerProfile: React.FC = () => {
         {[
           { label: 'משמרות', value: completedShifts, icon: <CheckCircle2 size={18} className="text-green-500" /> },
           { label: 'אמינות', value: `${reliabilityScore}%`, icon: <Shield size={18} className="text-blue-500" /> },
-          { label: 'ניסיון', value: `${yearsExp} שנ׳`, icon: <Star size={18} className="text-amber-500" /> },
+          { label: 'ניסיון', value: yearsExp > 0 ? `${yearsExp} שנ׳` : 'ללא', icon: <Star size={18} className="text-amber-500" /> },
           { label: 'ביטולים', value: noShows, icon: <XCircle size={18} className="text-gray-400" /> },
         ].map(s => (
           <div key={s.label} className="bg-white rounded-xl p-3 card-shadow text-center">

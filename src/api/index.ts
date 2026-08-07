@@ -310,6 +310,14 @@ export const api = {
       body: JSON.stringify({ jobId, fromUserId, toUserId, score, comment, toRole, ...(extra || {}) })
     }).then(handleResponse),
 
+  // ========== TRIAL (משמרת התנסות) ==========
+  // משמרת אחת בתשלום מלא, ללא עמלה, לסטודנטים/בוגרים בלבד
+  createTrial: (trial: object) =>
+    fetch(`${BASE}/jobs/trial`, { method: 'POST', headers: headers(), body: JSON.stringify(trial) }).then(handleResponse),
+
+  getTrials: () =>
+    fetch(`${BASE}/jobs/trials`, { headers: headers() }).then(handleResponse),
+
   // ========== STAGES / PARTNERSHIPS ==========
   createStage: (stage: object) =>
     fetch(`${BASE}/jobs/stage`, { method: 'POST', headers: headers(), body: JSON.stringify(stage) }).then(handleResponse),
