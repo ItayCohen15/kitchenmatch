@@ -52,7 +52,7 @@ export const RestaurantApp: React.FC = () => {
     const load = () => api.getThreads('restaurant', userProfile.Id)
       .then((d: any) => {
         const list = Array.isArray(d) ? d : [];
-        setChatUnread(list.filter((t: any) => chatSeen.isUnread(Number(t.JobId), t.LastMsgId, t.LastSenderRole, 'restaurant')).length);
+        setChatUnread(list.filter((t: any) => chatSeen.isUnread(t)).length);
       })
       .catch(() => {});
     load();
@@ -61,13 +61,17 @@ export const RestaurantApp: React.FC = () => {
   }, [userProfile?.Id]);
 
   const showNav = NAV_TABS.includes(restaurantScreen);
-  const showTopBar = !['active_shift'].includes(restaurantScreen);
+  // ⚠️ אין להסתיר את הסרגל העליון במסך משמרת פעילה: הוא גם לא ב-NAV_TABS,
+  // כך שבלי הסרגל אין ממנו *שום* יציאה — והמסעדה נתקעת (למשל כשהגבייה
+  // נכשלת ואי אפשר להגיע לארנק כדי לטעון). המשמרת נשארת פעילה בשרת.
+  const showTopBar = true;
 
   // מסכים פנימיים — חץ חזרה במקום כפתור היציאה
   const BACK_MAP: Partial<Record<RestaurantScreen, RestaurantScreen>> = {
     create_job:      'home',
     worker_matching: 'home',
     live_tracking:   'home',
+    active_shift:    'home',
     talent:          'home',
     chats:           'home',
     stage_schedule:  'stages',

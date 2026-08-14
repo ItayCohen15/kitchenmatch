@@ -326,7 +326,13 @@ export const CreateJob: React.FC = () => {
                 <span className="text-gray-700">סה״כ תשלם</span>
                 <span className="text-amber-600">₪{(parseFloat(totalPay) * (1 + restCommRate)).toFixed(0)}</span>
               </div>
-              <p className="text-gray-400 text-xs text-center pt-1">
+              {/* מע"מ: הסכומים לפני מע"מ. שיעורו על שכר העובד תלוי במעמד
+                  שלו (עוסק מורשה מחייב, עוסק פטור לא) — ולכן הסכום המדויק
+                  ידוע רק אחרי שהעובד מאושר. העמלה תמיד חייבת במע"מ. */}
+              <p className="text-gray-500 text-xs text-center pt-1 border-t border-orange-100">
+                הסכומים <b>אינם כוללים מע"מ</b> — יתווסף כדין
+              </p>
+              <p className="text-gray-400 text-xs text-center">
                 העובד ישלם {workerSidePct}% נוסף מצידו
               </p>
             </div>

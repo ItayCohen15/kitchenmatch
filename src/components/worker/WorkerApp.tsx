@@ -45,7 +45,7 @@ export const WorkerApp: React.FC = () => {
     const load = () => api.getThreads('worker', userProfile.Id)
       .then((d: any) => {
         const list = Array.isArray(d) ? d : [];
-        setChatUnread(list.filter((t: any) => chatSeen.isUnread(Number(t.JobId), t.LastMsgId, t.LastSenderRole, 'worker')).length);
+        setChatUnread(list.filter((t: any) => chatSeen.isUnread(t)).length);
       })
       .catch(() => {});
     load();

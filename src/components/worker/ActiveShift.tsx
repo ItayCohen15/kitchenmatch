@@ -3,6 +3,7 @@ import { Clock, CheckCircle2, Phone, PartyPopper, Flag } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { Chat } from '../common/Chat';
+import { toast } from '../common/Toast';
 import { effectiveNetMultiplier, effectiveWorkerRate, levelFromShifts } from '../../utils/levels';
 
 export const WorkerActiveShift: React.FC = () => {
@@ -15,8 +16,13 @@ export const WorkerActiveShift: React.FC = () => {
   const [bothDone, setBothDone] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
+  // חותמת הצ'ק-אין מהשרת — מקור האמת לשעון (localStorage נדרס בכל כניסה מחדש)
+  const [serverStart, setServerStart] = useState<Date | null>(null);
   // בסיס זמן יציב — בלי זה נוצר Date חדש בכל רינדור וה-interval מתאפס (השעון קופץ)
-  const startTime = useMemo(() => shiftStartTime || new Date(Date.now() - 30 * 60000), [shiftStartTime]);
+  const startTime = useMemo(
+    () => serverStart || shiftStartTime || new Date(Date.now() - 30 * 60000),
+    [serverStart, shiftStartTime]
+  );
   const hourlyRate = job ? Number(job.HourlyRate ?? job.hourlyRate ?? 0) : 0;
   const restaurantName: string = job?.RestaurantName || job?.restaurantName || 'המסעדה';
   const jobId: number = job ? Number(job.Id ?? job.id ?? 0) : 0;
@@ -47,6 +53,10 @@ export const WorkerActiveShift: React.FC = () => {
         if (!status || status.error) return;
         setWorkerConfirmed(Boolean(status.WorkerConfirmedEnd));
         setRestaurantConfirmed(Boolean(status.RestaurantConfirmedEnd));
+        if (status.ActualStart) {
+          const d = new Date(status.ActualStart);
+          if (!isNaN(d.getTime())) setServerStart(prev => (prev?.getTime() === d.getTime() ? prev : d));
+        }
         // אם שני הצדדים אישרו — עבור לסיום
         if (status.Status === 'pending_completion' ||
            (status.WorkerConfirmedEnd && status.RestaurantConfirmedEnd)) {
@@ -85,7 +95,11 @@ export const WorkerActiveShift: React.FC = () => {
       // בדוק מיד מה הסטטוס בDB
       const status = await api.getEndStatus(jobId);
       if (status?.WorkerConfirmedEnd && status?.RestaurantConfirmedEnd) setBothDone(true);
-    } catch {}
+    } catch (e: any) {
+      // כשל שקט כאן משמעו שהעובד בטוח שאישר סיום, האישור לא נרשם,
+      // והתשלום נתקע. חייבים לומר לו לנסות שוב.
+      toast.error(e?.message || 'האישור לא נשמר — נסה שוב');
+    }
     setConfirming(false);
     setShowConfirmDialog(false);
   };

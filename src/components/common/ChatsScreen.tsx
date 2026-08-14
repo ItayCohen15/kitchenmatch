@@ -75,7 +75,7 @@ export const ChatsScreen: React.FC<{ role: 'restaurant' | 'worker' }> = ({ role 
 
       <div className="space-y-2">
         {threads.map(t => {
-          const unread = chatSeen.isUnread(Number(t.JobId), t.LastMsgId, t.LastSenderRole, role);
+          const unread = chatSeen.isUnread(t);
           const mine = t.LastSenderRole === role;
           const initials = (t.Name || '?').split(' ').map((n: string) => n[0]).join('').slice(0, 2);
           const locked = !t.CanSend;
@@ -138,7 +138,7 @@ export const UnreadChatBanner: React.FC<{ role: 'restaurant' | 'worker'; onOpen:
     const check = () => api.getThreads(role, pid)
       .then((d: any) => {
         const list = Array.isArray(d) ? d : [];
-        const ur = list.find(t => chatSeen.isUnread(Number(t.JobId), t.LastMsgId, t.LastSenderRole, role));
+        const ur = list.find(t => chatSeen.isUnread(t));
         setUnreadThread(ur || null);
       })
       .catch(() => {});

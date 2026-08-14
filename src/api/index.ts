@@ -315,6 +315,21 @@ export const api = {
       body: JSON.stringify({ jobId, fromUserId, toUserId, score, comment, toRole, ...(extra || {}) })
     }).then(handleResponse),
 
+  // ========== גילוי נאות (consents) ==========
+  // הנוסח מגיע מהשרת כדי שמה שהוצג = מה שנשמר ברשומת האישור
+  getConsentDoc: (type: string) =>
+    fetch(`${BASE}/consents/${type}`, { headers: headers() }).then(handleResponse),
+
+  ackConsent: (type: string, version: string) =>
+    fetch(`${BASE}/consents/${type}/ack`, {
+      method: 'POST', headers: headers(),
+      body: JSON.stringify({ version, checkboxTicked: true }),
+    }).then(handleResponse),
+
+  // סמן שרשור צ'אט כנקרא (נשמר בשרת — חוצה מכשירים)
+  markChatRead: (jobId: number) =>
+    fetch(`${BASE}/messages/${jobId}/read`, { method: 'PUT', headers: headers() }).then(handleResponse),
+
   // ========== TRIAL (משמרת סטאז׳) ==========
   // משמרת אחת בתשלום מלא, ללא עמלה, לסטודנטים/בוגרים בלבד
   createTrial: (trial: object) =>
@@ -392,7 +407,13 @@ export const api = {
     fetch(`${BASE}/admin/ai-analysis`, { method: 'POST', headers: headers() }).then(handleResponse),
 };
 
-// ── מעקב "נקרא" לצ'אטים (מקומי) ──
+// ── מעקב "נקרא" לצ'אטים ──
+//  מקור האמת הוא *השרת* (טבלת ChatReads), והוא מחזיר IsUnread לכל שרשור.
+//  ⚠️ קודם כל המצב ישב ב-localStorage בלבד, ולכן צ'אט שנקרא בנייד נשאר
+//  מסומן "לא נקרא" במחשב, וכל ניקוי נתונים החזיר הכול ל"לא נקרא".
+//
+//  ה-localStorage נשאר רק כשכבת *תצוגה מיידית*: ברגע שפותחים צ'אט הסימון
+//  נעלם מיד, בלי לחכות לסבב הפולינג הבא. השרת גובר תוך שניות.
 export const chatSeen = {
   get(): Record<string, number> {
     try { return JSON.parse(localStorage.getItem('km_chat_seen') || '{}'); } catch { return {}; }
@@ -403,8 +424,12 @@ export const chatSeen = {
       if ((m[jobId] || 0) < lastMsgId) { m[jobId] = lastMsgId; localStorage.setItem('km_chat_seen', JSON.stringify(m)); }
     } catch {}
   },
-  isUnread(jobId: number, lastMsgId?: number | null, lastSenderRole?: string, myRole?: string): boolean {
-    if (!lastMsgId || !lastSenderRole || lastSenderRole === myRole) return false;
-    return (chatSeen.get()[jobId] || 0) < lastMsgId;
+  /** האם השרשור לא נקרא — לפי השרת, עם עקיפה מקומית לפתיחה שהרגע קרתה */
+  isUnread(thread: any): boolean {
+    if (!thread) return false;
+    if (!(thread.IsUnread === true || thread.IsUnread === 1)) return false;
+    // נפתח כרגע במכשיר הזה? אל תהבהב עד שהשרת יעדכן
+    const seen = chatSeen.get()[Number(thread.JobId)] || 0;
+    return seen < Number(thread.LastMsgId || 0);
   },
 };

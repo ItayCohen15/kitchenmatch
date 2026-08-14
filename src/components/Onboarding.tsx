@@ -48,7 +48,11 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
   const [isTrainee, setIsTrainee] = useState(false);
   const [courseType, setCourseType] = useState('');
   const [schoolName, setSchoolName] = useState('');
-  const [isSelfEmployed, setIsSelfEmployed] = useState<boolean | null>(null); // עצמאי / לא-עצמאי (לתשלום)
+  // מעמד תעסוקתי בשתי שאלות: קודם עצמאי/לא, ואז (לעצמאי) פטור/מורשה.
+  // taxStatus הוא מה שנשמר: 'exempt' | 'licensed' | 'none'
+  const [selfEmployedChoice, setSelfEmployedChoice] = useState<boolean | null>(null);
+  const [taxStatus, setTaxStatus] = useState<'exempt' | 'licensed' | 'none' | null>(null);
+  const isSelfEmployed = taxStatus === null ? null : taxStatus !== 'none';
   const [showDisclosure, setShowDisclosure] = useState(false);                // חלון גילוי נאות ללא-עצמאי
   const [nonSelfAckAt, setNonSelfAckAt] = useState<string | null>(null);      // מועד אישור הגילוי (לתיעוד)
   const [bio, setBio] = useState('');
@@ -98,6 +102,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
           isTrainee,
           courseType: isTrainee ? (courseType || 'אחר') : null,
           schoolName: isTrainee ? schoolName : null,
+          taxStatus,
           isSelfEmployed: isSelfEmployed === null ? true : isSelfEmployed,
           // תיעוד אישור הגילוי הנאות (רק כשנבחר לא-עצמאי ואושר)
           nonSelfEmployedAckAt: isSelfEmployed === false ? nonSelfAckAt : null,
@@ -139,8 +144,13 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
   return (
     <div className="h-full overflow-y-auto" style={{ background: 'linear-gradient(160deg, #0d1420 0%, #1a2744 100%)' }}>
       {showDisclosure && (
+        /* האישור המלא (גרסה + נוסח + סימון התיבה) נשמר בשרת ב-ConsentAcks
+           ברגע הלחיצה; nonSelfAckAt נשאר רק לתאימות עם השדה הישן ב-Workers. */
         <NonSelfEmployedDisclosure
-          onAccept={() => { setIsSelfEmployed(false); setNonSelfAckAt(new Date().toISOString()); setShowDisclosure(false); }}
+          onAccept={() => {
+            setSelfEmployedChoice(false); setTaxStatus('none');
+            setNonSelfAckAt(new Date().toISOString()); setShowDisclosure(false);
+          }}
           onCancel={() => setShowDisclosure(false)}
         />
       )}
@@ -416,22 +426,47 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                     )}
                   </div>
 
-                  {/* מעמד תעסוקתי — קובע איך מתבצע התשלום */}
+                  {/* ── מעמד תעסוקתי — שתי שאלות ── */}
+                  {/* שאלה 1: עצמאי או לא. שאלה 2 (רק לעצמאי): פטור או מורשה.
+                      ההבחנה השנייה קריטית — עוסק מורשה מחייב מע"מ ועוסק פטור לא. */}
                   <div>
                     <label className="text-sm font-semibold text-gray-600 mb-2 block">מעמד תעסוקתי (לתשלום)</label>
                     <div className="grid grid-cols-2 gap-2">
-                      <button type="button" onClick={() => setIsSelfEmployed(true)}
-                        className={`p-3 rounded-xl border-2 text-right transition-all ${isSelfEmployed === true ? 'border-amber-400 bg-amber-50' : 'border-gray-100'}`}>
-                        <div className="font-bold text-gray-900 text-sm flex items-center gap-1.5"><Check size={15} className="text-green-500" /> יש לי עוסק</div>
-                        <div className="text-gray-500 text-xs mt-0.5">פטור/מורשה — תשלום ישיר, אני מוציא חשבונית</div>
+                      <button type="button" onClick={() => { setSelfEmployedChoice(true); setTaxStatus(null); }}
+                        className={`p-3 rounded-xl border-2 text-right transition-all ${selfEmployedChoice === true ? 'border-amber-400 bg-amber-50' : 'border-gray-100'}`}>
+                        <div className="font-bold text-gray-900 text-sm flex items-center gap-1.5"><Check size={15} className="text-green-500" /> אני עצמאי</div>
+                        <div className="text-gray-500 text-xs mt-0.5">תשלום ישיר, אני מוציא חשבונית</div>
                       </button>
                       <button type="button" onClick={() => setShowDisclosure(true)}
-                        className={`p-3 rounded-xl border-2 text-right transition-all ${isSelfEmployed === false ? 'border-amber-400 bg-amber-50' : 'border-gray-100'}`}>
-                        <div className="font-bold text-gray-900 text-sm flex items-center gap-1.5"><FileText size={15} className="text-gray-500" /> אין לי עוסק</div>
+                        className={`p-3 rounded-xl border-2 text-right transition-all ${selfEmployedChoice === false ? 'border-amber-400 bg-amber-50' : 'border-gray-100'}`}>
+                        <div className="font-bold text-gray-900 text-sm flex items-center gap-1.5"><FileText size={15} className="text-gray-500" /> אני לא עצמאי</div>
                         <div className="text-gray-500 text-xs mt-0.5">תשלום דרך "חשבונית לשכיר"</div>
                       </button>
                     </div>
-                    {isSelfEmployed === false && (
+
+                    {/* שאלה 2 — נפתחת רק אחרי בחירת "אני עצמאי" */}
+                    {selfEmployedChoice === true && (
+                      <div className="mt-3 screen-enter">
+                        <label className="text-sm font-semibold text-gray-600 mb-2 block">איזה סוג עוסק?</label>
+                        <div className="grid grid-cols-2 gap-2">
+                          <button type="button" onClick={() => setTaxStatus('exempt')}
+                            className={`p-3 rounded-xl border-2 text-right transition-all ${taxStatus === 'exempt' ? 'border-amber-400 bg-amber-50' : 'border-gray-100'}`}>
+                            <div className="font-bold text-gray-900 text-sm">עוסק פטור</div>
+                            <div className="text-gray-500 text-xs mt-0.5">לא מחייב מע"מ</div>
+                          </button>
+                          <button type="button" onClick={() => setTaxStatus('licensed')}
+                            className={`p-3 rounded-xl border-2 text-right transition-all ${taxStatus === 'licensed' ? 'border-amber-400 bg-amber-50' : 'border-gray-100'}`}>
+                            <div className="font-bold text-gray-900 text-sm">עוסק מורשה</div>
+                            <div className="text-gray-500 text-xs mt-0.5">מחייב מע"מ</div>
+                          </button>
+                        </div>
+                        <p className="text-gray-400 text-[11px] mt-1.5 leading-snug">
+                          לא בטוח? זה מופיע באישור פתיחת העוסק שלך. אפשר לעדכן בהמשך מהפרופיל.
+                        </p>
+                      </div>
+                    )}
+
+                    {taxStatus === 'none' && (
                       <div className="mt-2 rounded-xl p-2.5 text-xs leading-relaxed flex items-start justify-between gap-2" style={{ background:'#fff8e1', border:'1px solid #f59e0b', color:'#92400e' }}>
                         <span className="flex items-center gap-1"><Check size={13} className="text-amber-600 flex-shrink-0" /> אישרת תשלום דרך "חשבונית לשכיר".</span>
                         <button type="button" onClick={() => setShowDisclosure(true)} className="underline font-semibold flex-shrink-0">מידע חשוב</button>
@@ -500,7 +535,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                   <ChevronRight size={20} />
                 </button>
                 <button
-                  disabled={role === 'worker' ? (hasExperience === null || !workerRoles.length || isSelfEmployed === null) : selectedCuisines.length === 0}
+                  disabled={role === 'worker' ? (hasExperience === null || !workerRoles.length || taxStatus === null) : selectedCuisines.length === 0}
                   onClick={() => role === 'worker' ? setStep(3) : handleComplete()}
                   className="flex-1 text-white rounded-2xl py-4 font-bold disabled:opacity-40"
                   style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}

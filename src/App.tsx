@@ -72,7 +72,7 @@ async function resolveScreen(role: string, profile: any,
           localStorage.setItem('km_screen', 'navigation');
           navToWorker('navigation');
         } else if (active.Status === 'active') {
-          startShift();
+          startShift(active.ActualStart);   // חותמת הצ'ק-אין מהשרת, לא "עכשיו"
           localStorage.setItem('km_screen', 'active_shift');
           navToWorker('active_shift');
         } else if (active.Status === 'pending_completion') {
@@ -101,7 +101,7 @@ async function resolveScreen(role: string, profile: any,
           localStorage.setItem('km_screen', 'live_tracking');
           navToRestaurant('live_tracking');
         } else if (active.Status === 'active') {
-          startShift();
+          startShift(active.ActualStart);   // חותמת הצ'ק-אין מהשרת, לא "עכשיו"
           localStorage.setItem('km_screen', 'active_shift');
           navToRestaurant('active_shift');
         } else if (active.Status === 'pending_completion') {

@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Clock, CheckCircle2, AlertTriangle, PartyPopper, Flag } from 'lucide-react';
+import { Clock, CheckCircle2, AlertTriangle, PartyPopper, Flag, Wallet } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { Chat } from '../common/Chat';
@@ -16,8 +16,16 @@ export const ActiveShift: React.FC = () => {
   const [bothDone, setBothDone] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showReport, setShowReport] = useState(false);
+  // כשל בגבייה — עוצר את ה-poller מלהדליק שוב bothDone (אחרת לולאת toast אינסופית כל 5 שניות)
+  const [payError, setPayError] = useState<string | null>(null);
+  const payBlocked = useRef(false);
+  // חותמת הצ'ק-אין מהשרת — מקור האמת לשעון (localStorage נדרס בכל כניסה מחדש)
+  const [serverStart, setServerStart] = useState<Date | null>(null);
   // בסיס זמן יציב — מונע איפוס ה-interval בכל רינדור (השעון קופץ)
-  const startTime = useMemo(() => shiftStartTime || new Date(Date.now() - 42 * 60000), [shiftStartTime]);
+  const startTime = useMemo(
+    () => serverStart || shiftStartTime || new Date(Date.now() - 42 * 60000),
+    [serverStart, shiftStartTime]
+  );
   const hourlyRate: number = job ? Number(job.HourlyRate ?? job.hourlyRate ?? 0) : 0;
   const workerName: string = job?.WorkerName || 'העובד';
   const workerInit = workerName.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
@@ -37,6 +45,14 @@ export const ActiveShift: React.FC = () => {
         if (!status || status.error) return;
         setWorkerConfirmed(Boolean(status.WorkerConfirmedEnd));
         setRestaurantConfirmed(Boolean(status.RestaurantConfirmedEnd));
+        if (status.ActualStart) {
+          const d = new Date(status.ActualStart);
+          if (!isNaN(d.getTime())) setServerStart(prev => (prev?.getTime() === d.getTime() ? prev : d));
+        }
+        // אם הגבייה כבר נכשלה — אל תדליק שוב bothDone. השרת עדיין מדווח
+        // ששני הצדדים אישרו, כך שבלי החסם הזה כל 5 שניות מנסים לחייב מחדש
+        // ומקבלים עוד toast — לולאה שאין ממנה מוצא במסך.
+        if (payBlocked.current) return;
         if (status.Status === 'pending_completion' ||
            (status.WorkerConfirmedEnd && status.RestaurantConfirmedEnd)) {
           setBothDone(true);
@@ -69,7 +85,11 @@ export const ActiveShift: React.FC = () => {
       if (res.bothConfirmed) { setBothDone(true); return; }
       const status = await api.getEndStatus(jobId);
       if (status?.WorkerConfirmedEnd && status?.RestaurantConfirmedEnd) setBothDone(true);
-    } catch {}
+    } catch (e: any) {
+      // בלי ההודעה הזו הכפתור פשוט "נרגע" והמסעדה משוכנעת שאישרה — בזמן
+      // שהאישור לא נרשם, המשמרת נשארת פתוחה והעובד לא מקבל תשלום.
+      toast.error(e?.message || 'האישור לא נשמר — נסה שוב');
+    }
     setConfirming(false);
     setShowConfirmDialog(false);
   };
@@ -88,12 +108,46 @@ export const ActiveShift: React.FC = () => {
         navTimer = setTimeout(() => navToRestaurant('end_shift'), 2500);
       } catch (e: any) {
         if (cancelled) return;
-        toast.error(e?.message || 'התשלום נכשל — ודא שיש יתרה בארנק ונסה לסיים שוב');
+        payBlocked.current = true;
+        setPayError(e?.message || 'התשלום נכשל — ודא שיש יתרה בארנק ונסה שוב');
         setBothDone(false);
       }
     })();
     return () => { cancelled = true; if (navTimer) clearTimeout(navTimer); };
   }, [bothDone, jobId]);
+
+  // הגבייה נכשלה — מסך פעולה, לא לולאת שגיאות. חובה שיהיה מכאן מוצא
+  // לארנק, אחרת המסעדה תקועה: אין ניווט תחתון במסך משמרת פעילה.
+  if (payError) {
+    return (
+      <div className="screen-enter flex flex-col items-center justify-center min-h-[70vh] text-center gap-4 px-2">
+        <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center">
+          <AlertTriangle size={38} className="text-red-500" />
+        </div>
+        <h2 className="text-xl font-black text-gray-900">התשלום לא עבר</h2>
+        <p className="text-gray-500 text-sm">{payError}</p>
+        <div className="bg-amber-50 rounded-2xl p-4 w-full text-center">
+          <div className="text-2xl font-black text-amber-600">₪{totalWithFee}</div>
+          <div className="text-gray-400 text-xs mt-1">הסכום לחיוב (כולל {restCommPct}% עמלה)</div>
+        </div>
+        <p className="text-gray-400 text-xs">המשמרת לא נסגרה. {workerName} עדיין ממתין לתשלום.</p>
+        <div className="w-full flex flex-col gap-2">
+          <button onClick={() => navToRestaurant('wallet')}
+            className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg flex items-center justify-center gap-2">
+            <Wallet size={18} /> טען את הארנק
+          </button>
+          <button onClick={() => { payBlocked.current = false; setPayError(null); setBothDone(true); }}
+            className="w-full bg-gray-900 text-white rounded-2xl py-3 font-bold">
+            נסה לחייב שוב
+          </button>
+          <button onClick={() => navToRestaurant('home')}
+            className="w-full bg-gray-100 text-gray-600 rounded-2xl py-3 font-semibold text-sm">
+            חזרה למסך הראשי
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (bothDone) {
     return (

@@ -22,7 +22,7 @@ interface AppContextValue extends AppState {
   navToRestaurant: (screen: RestaurantScreen) => void;
   navToWorker: (screen: WorkerScreen) => void;
   setActiveJob: (job: Job | null) => void;
-  startShift: () => void;
+  startShift: (at?: Date | string | null) => void;
   setEmergencyMode: (v: boolean) => void;
   selectWorkerJob: (jobId: string, jobData?: any) => void;
   getSelectedJob: () => any;
@@ -87,10 +87,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     localStorage.setItem('km_screen', screen);
   }, []);
 
-  const startShift = useCallback(() => {
-    const now = new Date();
-    setShiftStartTime(now);
-    localStorage.setItem('km_shift_start', now.toISOString());
+  // at = חותמת הצ'ק-אין מהשרת (ActualStart). קריטי: בלי הפרמטר הזה כל כניסה
+  // מחדש לאפליקציה באמצע משמרת דרסה את זמן ההתחלה ב"עכשיו" — הטיימר חזר
+  // ל-00:00:00 והצבירה ל-₪0 מול עובד שכבר עבד שעתיים.
+  const startShift = useCallback((at?: Date | string | null) => {
+    const t = at ? new Date(at) : null;
+    const start = t && !isNaN(t.getTime()) ? t : new Date();
+    setShiftStartTime(start);
+    localStorage.setItem('km_shift_start', start.toISOString());
   }, []);
 
   const selectWorkerJob = useCallback((jobId: string, jobData?: any) => {

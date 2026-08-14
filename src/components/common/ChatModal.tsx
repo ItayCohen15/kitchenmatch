@@ -22,9 +22,13 @@ export const ChatModal: React.FC<Props> = ({ jobId, title, myRole, myName, readO
     .then((d: any) => {
       const list = Array.isArray(d) ? d : [];
       setMessages(list);
-      // סמן כנקרא — ההודעה האחרונה שראינו
+      // סמן כנקרא: מקומית להיעלמות מיידית של הסימון, ובשרת כדי שזה יחזיק
+      // גם במכשירים אחרים ואחרי ניקוי נתונים.
       const last = list[list.length - 1];
-      if (last?.Id) chatSeen.mark(jobId, Number(last.Id));
+      if (last?.Id) {
+        chatSeen.mark(jobId, Number(last.Id));
+        api.markChatRead(jobId).catch(() => {});
+      }
     })
     .catch(() => {});
   useEffect(() => { load(); const iv = setInterval(load, 4000); return () => clearInterval(iv); }, [jobId]);
