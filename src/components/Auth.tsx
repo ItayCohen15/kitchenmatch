@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { ChefHat, Store, Eye, EyeOff } from 'lucide-react';
+import { ChefHat, Store, Eye, EyeOff, ArrowLeft, ShieldCheck } from 'lucide-react';
 import { api } from '../api';
 import { VerifyEmail } from './VerifyEmail';
 
@@ -88,134 +88,101 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6" style={{ background: '#131626', paddingTop: 'max(env(safe-area-inset-top), 24px)' }}>
-      <div className="w-full max-w-sm">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="w-20 h-20 rounded-3xl overflow-hidden mx-auto mb-4" style={{ boxShadow: '0 10px 26px rgba(0,0,0,0.4)' }}>
-            <img src="/logo.svg" alt="Staffly" className="w-full h-full object-cover" />
-          </div>
-          <h1 className="text-3xl font-extrabold">
-            <span className="text-white">Staff</span><span style={{ color: '#5354d3' }}>ly</span>
-          </h1>
-          <p className="text-sm mt-1.5" dir="ltr" style={{ color: '#8a97ad' }}>Find your shift. Fill your team.</p>
+    <div className="auth-mi">
+      <div className="ami-glow" />
+      <div className="ami-weave" />
+      <div className="ami-wrap">
+        {/* Brand */}
+        <div className="ami-brand">
+          <img src="/logo.svg" alt="Staffly" className="ami-logo" />
+          <span className="ami-word">Staffly</span>
         </div>
 
-        {/* Card */}
-        <div className="bg-white rounded-2xl p-6" style={{ border: '1px solid #e7e9ef', boxShadow: '0 2px 8px rgba(20,28,44,0.08), 0 16px 34px rgba(20,28,44,0.14)' }}>
-          {/* Tabs */}
-          <div className="flex bg-gray-100 rounded-2xl p-1 mb-6">
-            {['login', 'register'].map(m => (
-              <button
-                key={m}
-                onClick={() => { setMode(m as any); setError(''); }}
-                className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                  mode === m ? 'bg-white text-gray-900 shadow' : 'text-gray-400'
-                }`}
-              >
-                {m === 'login' ? 'כניסה' : 'הרשמה'}
-              </button>
-            ))}
-          </div>
+        {/* Hero */}
+        <div className="ami-hero">
+          <h1>המשמרת הבאה שלך<br /><b>מתחילה כאן.</b></h1>
+          <p className="ami-motto" dir="ltr">Find your shift. Fill your team.</p>
+        </div>
 
-          {/* Role selector (only register) */}
+        {/* Segmented control — כניסה / הרשמה */}
+        <div className="ami-seg">
+          <button type="button" className={mode === 'login' ? 'on' : ''}
+            onClick={() => { setMode('login'); setError(''); }}>כניסה</button>
+          <button type="button" className={mode === 'register' ? 'on' : ''}
+            onClick={() => { setMode('register'); setError(''); }}>הרשמה</button>
+        </div>
+
+        {/* Form */}
+        <div className="ami-form">
           {mode === 'register' && (
-            <div className="grid grid-cols-2 gap-2 mb-5">
-              <button
-                onClick={() => setRole('restaurant')}
-                className={`p-3 rounded-xl border-2 text-center transition-all ${
-                  role === 'restaurant' ? 'border-[#5354d3] bg-[#ecebfd]' : 'border-gray-100'
-                }`}
-              >
-                <Store size={20} className={`mx-auto mb-1 ${role === 'restaurant' ? 'text-[#5354d3]' : 'text-gray-400'}`} />
-                <div className="text-xs font-bold text-gray-700">מסעדה</div>
-              </button>
-              <button
-                onClick={() => setRole('worker')}
-                className={`p-3 rounded-xl border-2 text-center transition-all ${
-                  role === 'worker' ? 'border-[#5354d3] bg-[#ecebfd]' : 'border-gray-100'
-                }`}
-              >
-                <ChefHat size={20} className={`mx-auto mb-1 ${role === 'worker' ? 'text-[#5354d3]' : 'text-gray-400'}`} />
-                <div className="text-xs font-bold text-gray-700">עובד</div>
-              </button>
-            </div>
+            <>
+              <div className="ami-rolelab">אני מצטרף/ת בתור</div>
+              <div className="ami-roles">
+                <button type="button" className={`ami-role ${role === 'restaurant' ? 'on' : ''}`}
+                  onClick={() => setRole('restaurant')}>
+                  <Store size={15} /> מסעדה
+                </button>
+                <button type="button" className={`ami-role ${role === 'worker' ? 'on' : ''}`}
+                  onClick={() => setRole('worker')}>
+                  <ChefHat size={15} /> עובד
+                </button>
+              </div>
+            </>
           )}
 
-          {/* Fields */}
-          <div className="space-y-3">
-            {mode === 'register' && (
-              <p className="text-xs text-gray-400 text-center bg-gray-50 rounded-xl p-2">
-                לאחר ההרשמה נשלים את פרטי הפרופיל שלך
-              </p>
-            )}
-            <input
-              type="email"
-              inputMode="email"
-              autoComplete="email"
-              autoCapitalize="none"
-              enterKeyHint="next"
-              placeholder="אימייל"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right text-sm focus:border-[#5354d3] focus:ring-2 focus:ring-[#c7c7f5] outline-none"
-            />
-            <div className="relative">
-              <input
-                type={showPass ? 'text' : 'password'}
-                placeholder="סיסמא"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
-                enterKeyHint="go"
-                onKeyDown={e => { if (e.key === 'Enter') handleSubmit(); }}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 pr-4 pl-12 text-right text-sm focus:border-[#5354d3] focus:ring-2 focus:ring-[#c7c7f5] outline-none"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPass(s => !s)}
-                className="absolute left-1 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-gray-400 active:text-gray-600"
-              >
-                {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
-            {/* דרישות סיסמה — חיווי חי בהרשמה */}
-            {mode === 'register' && (
-              <div className="flex flex-wrap gap-x-3 gap-y-1 px-1">
-                <span className={`text-[11px] font-semibold ${passLenOk ? 'text-green-600' : 'text-gray-400'}`}>
-                  {passLenOk ? '✓' : '•'} לפחות 8 תווים
-                </span>
-                <span className={`text-[11px] font-semibold ${passUpperOk ? 'text-green-600' : 'text-gray-400'}`}>
-                  {passUpperOk ? '✓' : '•'} אות גדולה (A-Z)
-                </span>
-                <span className={`text-[11px] font-semibold ${passDigitOk ? 'text-green-600' : 'text-gray-400'}`}>
-                  {passDigitOk ? '✓' : '•'} ספרה
-                </span>
-              </div>
-            )}
+          <div className="ami-field">
+            <input id="ami-email" type="email" inputMode="email" autoComplete="email"
+              autoCapitalize="none" enterKeyHint="next" placeholder=" "
+              value={email} onChange={e => setEmail(e.target.value)} />
+            <label htmlFor="ami-email">אימייל</label>
           </div>
 
-          {/* Error */}
-          {error && (
-            <div className="mt-3 bg-red-50 text-red-600 text-sm rounded-xl px-4 py-2 text-center">
-              {error}
+          <div className="ami-field pw">
+            <input id="ami-pass" type={showPass ? 'text' : 'password'} placeholder=" "
+              value={password} onChange={e => setPassword(e.target.value)}
+              autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
+              enterKeyHint="go" onKeyDown={e => { if (e.key === 'Enter') handleSubmit(); }} />
+            <label htmlFor="ami-pass">סיסמה</label>
+            <button type="button" className="ami-eye" onClick={() => setShowPass(s => !s)}
+              aria-label={showPass ? 'הסתר סיסמה' : 'הצג סיסמה'}>
+              {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
+
+          {/* דרישות סיסמה — חיווי חי בהרשמה */}
+          {mode === 'register' && (
+            <div className="ami-hints">
+              <span className={`ami-hint ${passLenOk ? 'ok' : ''}`}>{passLenOk ? '✓' : '•'} 8+ תווים</span>
+              <span className={`ami-hint ${passUpperOk ? 'ok' : ''}`}>{passUpperOk ? '✓' : '•'} אות גדולה A-Z</span>
+              <span className={`ami-hint ${passDigitOk ? 'ok' : ''}`}>{passDigitOk ? '✓' : '•'} ספרה</span>
             </div>
           )}
 
-          {/* Submit */}
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="w-full rounded-xl py-4 font-bold text-base mt-5 disabled:opacity-50 active:scale-[0.98] transition-transform"
-            style={{ background: '#5354d3', color: '#ffffff' }}
-          >
+          {error && <div className="ami-err">{error}</div>}
+
+          <button className="ami-submit" onClick={handleSubmit} disabled={loading}>
             {loading ? (
-              <div className="flex items-center justify-center gap-2">
-                <div className="w-4 h-4 border-2 border-black/20 border-t-black/70 rounded-full animate-spin" />
+              <>
+                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 טוען...
-              </div>
-            ) : mode === 'login' ? 'כניסה' : 'הרשמה'}
+              </>
+            ) : (
+              <>{mode === 'login' ? 'כניסה' : 'הרשמה'} <ArrowLeft size={17} /></>
+            )}
           </button>
+        </div>
+
+        {/* Footer */}
+        <div className="ami-foot">
+          <div className="ami-trust">
+            <ShieldCheck size={12} /> מאובטח בהצפנה <span className="sep" /> ללא עמלת הרשמה
+          </div>
+          <div className="ami-switch">
+            {mode === 'login' ? 'אין לך חשבון? ' : 'כבר יש לך חשבון? '}
+            <button type="button" onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError(''); }}>
+              {mode === 'login' ? 'הרשמה' : 'כניסה'}
+            </button>
+          </div>
         </div>
       </div>
     </div>
