@@ -88,21 +88,21 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6" style={{ background: 'linear-gradient(135deg, #0d1420 0%, #1a2744 100%)', paddingTop: 'max(env(safe-area-inset-top), 24px)' }}>
+    <div className="min-h-screen flex flex-col items-center justify-center p-6" style={{ background: '#0d1420', paddingTop: 'max(env(safe-area-inset-top), 24px)' }}>
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="w-24 h-24 rounded-3xl overflow-hidden mx-auto mb-4" style={{ boxShadow: '0 8px 32px rgba(232,160,32,0.3)' }}>
+          <div className="w-20 h-20 rounded-3xl overflow-hidden mx-auto mb-4" style={{ boxShadow: '0 10px 26px rgba(0,0,0,0.4)' }}>
             <img src="/logo.svg" alt="Staffly" className="w-full h-full object-cover" />
           </div>
-          <h1 className="text-3xl font-black">
+          <h1 className="text-3xl font-extrabold">
             <span className="text-white">Staff</span><span style={{ color: '#e8a020' }}>ly</span>
           </h1>
-          <p className="text-sm mt-1" dir="ltr" style={{ color: '#8899bb' }}>Find your shift. Fill your team.</p>
+          <p className="text-sm mt-1.5" dir="ltr" style={{ color: '#8a97ad' }}>Find your shift. Fill your team.</p>
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-3xl p-6 shadow-2xl">
+        <div className="bg-white rounded-2xl p-6" style={{ border: '1px solid #e7e9ef', boxShadow: '0 2px 8px rgba(20,28,44,0.08), 0 16px 34px rgba(20,28,44,0.14)' }}>
           {/* Tabs */}
           <div className="flex bg-gray-100 rounded-2xl p-1 mb-6">
             {['login', 'register'].map(m => (
@@ -206,11 +206,12 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-base mt-5 disabled:opacity-50 active:scale-98 transition-transform"
+            className="w-full rounded-xl py-4 font-bold text-base mt-5 disabled:opacity-50 active:scale-[0.98] transition-transform"
+            style={{ background: '#e8a020', color: '#241803' }}
           >
             {loading ? (
               <div className="flex items-center justify-center gap-2">
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <div className="w-4 h-4 border-2 border-black/20 border-t-black/70 rounded-full animate-spin" />
                 טוען...
               </div>
             ) : mode === 'login' ? 'כניסה' : 'הרשמה'}

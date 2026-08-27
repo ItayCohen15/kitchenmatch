@@ -17,7 +17,7 @@ export const NewWorkerBadge: React.FC<Props> = ({ completedShifts, size = 'md' }
       className={`inline-flex items-center gap-1 rounded-full font-bold text-white ${
         sm ? 'text-[9px] px-1.5 py-0.5' : 'text-[11px] px-2 py-0.5'
       }`}
-      style={{ background: 'linear-gradient(135deg,#3b82f6,#6366f1)' }}
+      style={{ background: '#3b74d1' }}
     >
       <Sparkles size={sm ? 9 : 11} className="fill-white" />
       עובד חדש

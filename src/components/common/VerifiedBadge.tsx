@@ -16,7 +16,7 @@ export const VerifiedBadge: React.FC<Props> = ({ isVerified, size = 'md' }) => {
       className={`inline-flex items-center gap-1 rounded-full font-bold text-white ${
         sm ? 'text-[9px] px-1.5 py-0.5' : 'text-[11px] px-2 py-0.5'
       }`}
-      style={{ background: 'linear-gradient(135deg,#10b981,#059669)' }}
+      style={{ background: '#1f9d6b' }}
     >
       <BadgeCheck size={sm ? 9 : 12} />
       מאומת

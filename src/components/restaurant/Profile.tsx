@@ -3,6 +3,7 @@ import { Edit3, Phone, MapPin, Star, LogOut, ChefHat, TrendingUp, Trash2, Gift, 
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { DeleteAccountModal } from '../common/DeleteAccountModal';
+import { avatarTone } from '../../utils/colors';
 
 export const RestaurantProfile: React.FC = () => {
   const { userProfile, setUserProfile, resetToLanding, navToRestaurant } = useApp();
@@ -72,14 +73,15 @@ export const RestaurantProfile: React.FC = () => {
       <div className="screen-enter space-y-4 pb-4">
 
         {/* כרטיס ראשי */}
-        <div className="bg-gradient-to-l from-gray-900 to-gray-800 rounded-2xl p-5 text-white">
+        <div className="rounded-2xl p-5 text-white" style={{ background:'#14233d' }}>
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center font-black text-2xl shadow-inner">
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center font-bold text-2xl shadow-inner"
+                style={{ background: avatarTone(name).bg, color: avatarTone(name).fg }}>
                 {initials}
               </div>
               <div>
-                <div className="font-black text-xl leading-tight">{name || 'שם לא הוגדר'}</div>
+                <div className="font-bold text-xl leading-tight">{name || 'שם לא הוגדר'}</div>
                 {city && (
                   <div className="text-amber-100 text-sm flex items-center gap-1 mt-0.5">
                     <MapPin size={12}/>{address ? `${address}, ${city}` : city}
@@ -101,15 +103,15 @@ export const RestaurantProfile: React.FC = () => {
 
           <div className="grid grid-cols-3 gap-3">
             <div className="bg-white/15 rounded-xl p-3 text-center">
-              <div className="font-black text-xl">{rating > 0 ? rating.toFixed(1) : '—'}</div>
+              <div className="font-bold text-xl">{rating > 0 ? rating.toFixed(1) : '—'}</div>
               <div className="text-amber-100 text-xs">דירוג</div>
             </div>
             <div className="bg-white/15 rounded-xl p-3 text-center">
-              <div className="font-black text-xl">{totalShifts}</div>
+              <div className="font-bold text-xl">{totalShifts}</div>
               <div className="text-amber-100 text-xs">משמרות</div>
             </div>
             <div className="bg-white/15 rounded-xl p-3 text-center">
-              <div className="font-black text-xl">₪{walletBalance.toLocaleString()}</div>
+              <div className="font-bold text-xl">₪{walletBalance.toLocaleString()}</div>
               <div className="text-amber-100 text-xs">ארנק</div>
             </div>
           </div>
@@ -176,8 +178,8 @@ export const RestaurantProfile: React.FC = () => {
         {/* חבר מביא חבר */}
         <button onClick={() => navToRestaurant('referral')}
           className="w-full bg-white rounded-2xl p-4 card-shadow flex items-center gap-3 text-right active:bg-gray-50 transition-colors">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg,#e8a020,#f5c842)' }}>
-            <Gift size={18} className="text-white" />
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: '#e8a020' }}>
+            <Gift size={18} style={{ color:'#241803' }} />
           </div>
           <div className="flex-1">
             <div className="font-bold text-gray-800 text-sm">חבר מביא חבר</div>
@@ -214,7 +216,7 @@ export const RestaurantProfile: React.FC = () => {
   return (
     <div className="screen-enter space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-black text-gray-900">עריכת פרופיל</h2>
+        <h2 className="text-xl font-bold text-gray-900">עריכת פרופיל</h2>
         <button onClick={() => setEditing(false)} className="text-gray-400 text-sm">ביטול</button>
       </div>
 
@@ -237,7 +239,7 @@ export const RestaurantProfile: React.FC = () => {
       {error && <div className="bg-red-50 text-red-600 text-sm rounded-xl px-4 py-3 text-center">{error}</div>}
 
       <button onClick={handleSave} disabled={saving || !name}
-        className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-base disabled:opacity-50 shadow-lg shadow-amber-200">
+        className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-base disabled:opacity-50">
         {saving
           ? <div className="flex items-center justify-center gap-2">
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

@@ -7,6 +7,7 @@ import { levelFromShifts, netMultiplier } from '../../utils/levels';
 import { SkeletonList } from '../common/Skeleton';
 import { EmptyState } from '../common/EmptyState';
 import { toast } from '../common/Toast';
+import { roleDot } from '../../utils/colors';
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
   completed:          { label: 'הושלם',      color: 'text-green-600 bg-green-50',  icon: <CheckCircle2 size={14} /> },
@@ -50,18 +51,18 @@ export const WorkerHistory: React.FC = () => {
   return (
     <div className="screen-enter space-y-4">
       {/* Summary */}
-      <div className="bg-gradient-to-l from-gray-900 to-gray-800 rounded-2xl p-4 text-white">
+      <div className="rounded-2xl p-4 text-white" style={{ background: '#14233d' }}>
         <div className="grid grid-cols-3 gap-3 text-center">
           <div>
-            <div className="text-xl font-black text-green-400">₪{totalEarned.toFixed(0)}</div>
+            <div className="text-xl font-bold text-green-400">₪{totalEarned.toFixed(0)}</div>
             <div className="text-gray-400 text-xs">סה״כ הכנסות</div>
           </div>
           <div>
-            <div className="text-xl font-black">{shifts.filter(s => s.Status === 'completed').length}</div>
+            <div className="text-xl font-bold">{shifts.filter(s => s.Status === 'completed').length}</div>
             <div className="text-gray-400 text-xs">משמרות הושלמו</div>
           </div>
           <div>
-            <div className="text-xl font-black text-amber-400">
+            <div className="text-xl font-bold text-amber-400">
               {shifts.filter(s => ['confirmed','active'].includes(s.Status)).length}
             </div>
             <div className="text-gray-400 text-xs">משמרות קרובות</div>
@@ -120,7 +121,8 @@ export const WorkerHistory: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-                <span className="bg-blue-50 text-blue-600 rounded-full px-2.5 py-0.5 text-xs font-semibold">
+                <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold" style={{ background: '#f4f2ec', color: '#5a5348' }}>
+                  <span className="w-2 h-2 rounded-full inline-block" style={{ background: roleDot(shift.Role) }} />
                   {ROLE_LABELS[shift.Role] || shift.Role}
                 </span>
                 <span>{dateStr}</span>
@@ -145,24 +147,24 @@ export const WorkerHistory: React.FC = () => {
                       if (fee > 0 && shift.CancelledBy === 'restaurant') {
                         return (<>
                           <div className="text-xs text-gray-400">פיצוי ביטול</div>
-                          <div className="font-black text-lg text-green-600">+₪{fee.toFixed(0)}</div>
+                          <div className="font-bold text-lg text-green-600">+₪{fee.toFixed(0)}</div>
                         </>);
                       }
                       // העובד ביטל מאוחר → שילם קנס
                       if (fee > 0 && shift.CancelledBy === 'worker') {
                         return (<>
                           <div className="text-xs text-gray-400">קנס ביטול</div>
-                          <div className="font-black text-lg text-red-500">-₪{fee.toFixed(0)}</div>
+                          <div className="font-bold text-lg text-red-500">-₪{fee.toFixed(0)}</div>
                         </>);
                       }
                       return (<>
                         <div className="text-xs text-gray-400">בוטל</div>
-                        <div className="font-black text-lg text-red-300">—</div>
+                        <div className="font-bold text-lg text-red-300">—</div>
                       </>);
                     }
                     return (<>
                       <div className="text-xs text-gray-400">נטו (לאחר עמלה)</div>
-                      <div className={`font-black text-lg ${shift.Status === 'completed' ? 'text-green-600' : 'text-gray-400'}`}>₪{net}</div>
+                      <div className={`font-bold text-lg ${shift.Status === 'completed' ? 'text-green-600' : 'text-gray-400'}`}>₪{net}</div>
                     </>);
                   })()}
                 </div>

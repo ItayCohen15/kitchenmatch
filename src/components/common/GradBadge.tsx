@@ -23,7 +23,7 @@ export const GradBadge: React.FC<Props> = ({ isTrainee, school, course, size = '
       className={`inline-flex items-center gap-1 rounded-full font-bold text-white ${
         sm ? 'text-[9px] px-1.5 py-0.5' : 'text-[11px] px-2 py-0.5'
       }`}
-      style={{ background: 'linear-gradient(135deg,#8b5cf6,#6366f1)' }}
+      style={{ background: '#9a5ba6' }}
     >
       <GraduationCap size={sm ? 9 : 12} />
       {label}

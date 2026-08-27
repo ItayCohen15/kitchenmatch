@@ -37,7 +37,7 @@ const KPI = ({ icon, label, value, sub, color }: any) => (
     <div className={`w-9 h-9 rounded-xl flex items-center justify-center mb-3`} style={{ background: color + '20' }}>
       <span style={{ color }}>{icon}</span>
     </div>
-    <div className="font-black text-gray-900 text-xl leading-tight">{value}</div>
+    <div className="font-bold text-gray-900 text-xl leading-tight">{value}</div>
     {sub && <div className="text-xs font-medium mt-0.5" style={{ color }}>{sub}</div>}
     <div className="text-gray-400 text-xs mt-0.5">{label}</div>
   </div>
@@ -70,9 +70,9 @@ export const RestaurantAnalytics: React.FC = () => {
 
   if (jobs.length === 0) return (
     <div className="screen-enter space-y-4">
-      <h2 className="text-xl font-black text-gray-900">המרכז הפיננסי</h2>
+      <h2 className="text-xl font-bold text-gray-900">המרכז הפיננסי</h2>
       <div className="rounded-3xl p-8 text-center text-white"
-        style={{ background: 'linear-gradient(135deg,#0d1420,#1a2744)' }}>
+        style={{ background: '#14233d' }}>
         <BarChart3 size={40} className="text-gray-500 mx-auto mb-3" />
         <p className="font-bold text-lg">אין עדיין נתונים</p>
         <p className="text-gray-400 text-sm mt-1">התובנות הפיננסיות יופיעו לאחר השלמת משמרות</p>
@@ -228,7 +228,7 @@ export const RestaurantAnalytics: React.FC = () => {
     <div className="screen-enter space-y-5 pb-4">
 
       {/* ── HERO: החודש שלך ── */}
-      <div className="rounded-3xl p-5 text-white" style={{ background: 'linear-gradient(135deg,#0d1420,#1a2744)' }}>
+      <div className="rounded-3xl p-5 text-white" style={{ background: '#14233d' }}>
         <div className="flex items-center justify-between mb-1">
           <span className="text-gray-400 text-sm">הוצאות {MONTH_NAMES[now.getMonth()]} (כולל עמלות)</span>
           {changePct !== null && (
@@ -237,7 +237,7 @@ export const RestaurantAnalytics: React.FC = () => {
             </span>
           )}
         </div>
-        <div className="text-4xl font-black mb-3" style={{ color: '#e8a020' }}>
+        <div className="text-4xl font-bold mb-3" style={{ color: '#e8a020' }}>
           ₪{Math.round(thisSpend).toLocaleString()}
         </div>
         <div className="grid grid-cols-3 gap-2.5">
@@ -247,7 +247,7 @@ export const RestaurantAnalytics: React.FC = () => {
             { l: 'צפי לסוף החודש', v: projection ? `₪${Math.round(projection).toLocaleString()}` : '—' },
           ].map(s => (
             <div key={s.l} className="bg-white/10 rounded-xl p-2.5 text-center">
-              <div className="font-black text-sm">{s.v}</div>
+              <div className="font-bold text-sm">{s.v}</div>
               <div className="text-gray-500 text-[10px] mt-0.5">{s.l}</div>
             </div>
           ))}
@@ -264,17 +264,17 @@ export const RestaurantAnalytics: React.FC = () => {
 
       {/* 🤝 + 🚨 כרטיסי כסף */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="rounded-2xl p-4 card-shadow" style={{ background: 'linear-gradient(135deg,#064e3b,#065f46)' }}>
+        <div className="rounded-2xl p-4 card-shadow" style={{ background: '#1f9d6b' }}>
           <Handshake size={18} className="text-green-300 mb-2" />
-          <div className="font-black text-white text-xl">₪{Math.round(partnerSavings).toLocaleString()}</div>
+          <div className="font-bold text-white text-xl">₪{Math.round(partnerSavings).toLocaleString()}</div>
           <div className="text-green-200 text-xs mt-0.5">חסכת עם קבועים וסטאז'רים</div>
           <div className="text-green-300/60 text-[10px] mt-1">
             עמלה 4.5% · {partnerJobs.length} משמרות{partnerROI !== null ? (partnerROI >= 1 ? ' · ההשקעה הוחזרה ✓' : ` · ${Math.round(partnerROI * 100)}% מההשקעה הוחזרה`) : ''}
           </div>
         </div>
-        <div className="rounded-2xl p-4 card-shadow" style={{ background: 'linear-gradient(135deg,#7f1d1d,#991b1b)' }}>
+        <div className="rounded-2xl p-4 card-shadow" style={{ background: '#e5484d' }}>
           <Flame size={18} className="text-red-300 mb-2" />
-          <div className="font-black text-white text-xl">₪{Math.round(emergencyExtra).toLocaleString()}</div>
+          <div className="font-bold text-white text-xl">₪{Math.round(emergencyExtra).toLocaleString()}</div>
           <div className="text-red-200 text-xs mt-0.5">פרמיית חירום ששילמת</div>
           <div className="text-red-300/60 text-[10px] mt-1">{emergencyJobs.length} משמרות חירום · תכנון מראש חוסך</div>
         </div>
@@ -376,7 +376,7 @@ export const RestaurantAnalytics: React.FC = () => {
                 <div className="flex-1 h-5 bg-gray-50 rounded-lg overflow-hidden">
                   <div className="h-full rounded-lg" style={{
                     width: `${Math.max(Math.round(h.cost / maxHourCost * 100), 8)}%`,
-                    background: i === 0 ? 'linear-gradient(90deg,#e8a020,#f0c050)' : '#e2e8f0',
+                    background: i === 0 ? '#e8a020' : '#e2e8f0',
                   }} />
                 </div>
                 <span className={`text-xs font-bold w-16 text-left flex-shrink-0 ${i === 0 ? 'text-amber-600' : 'text-gray-400'}`}>
@@ -473,7 +473,7 @@ export const RestaurantAnalytics: React.FC = () => {
 
       {/* 💡 תובנות חכמות */}
       {insights.length > 0 && (
-        <div className="rounded-2xl p-4 text-white" style={{background:'linear-gradient(135deg,#0d1420,#1a2744)'}}>
+        <div className="rounded-2xl p-4 text-white" style={{background:'#14233d'}}>
           <div className="flex items-center gap-2 mb-3">
             <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{background:'rgba(232,160,32,0.2)'}}>
               <Zap size={16} style={{color:'#e8a020'}}/>
@@ -483,13 +483,13 @@ export const RestaurantAnalytics: React.FC = () => {
           <div className="space-y-2.5">
             {insights.slice(0, 4).map((t, i) => (
               <div key={i} className="text-gray-300 text-sm leading-relaxed flex items-start gap-2">
-                <span className="text-amber-400 font-black flex-shrink-0 mt-0.5">·</span>
+                <span className="text-amber-400 font-bold flex-shrink-0 mt-0.5">·</span>
                 <span>{t}</span>
               </div>
             ))}
           </div>
           <button onClick={() => navToRestaurant('create_job')}
-            className="mt-3.5 text-xs font-black rounded-lg px-3 py-1.5 active:scale-95 transition-transform"
+            className="mt-3.5 text-xs font-bold rounded-lg px-3 py-1.5 active:scale-95 transition-transform"
             style={{ background:'#e8a020', color:'#0d1420' }}>
             פרסם משמרת מתוכננת ›
           </button>

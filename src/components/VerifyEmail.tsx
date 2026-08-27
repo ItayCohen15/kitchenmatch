@@ -83,7 +83,7 @@ export const VerifyEmail: React.FC<Props> = ({ userId, email, onVerified }) => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6"
-      style={{ background: 'linear-gradient(135deg, #0d1420 0%, #1a2744 100%)', paddingTop: 'max(env(safe-area-inset-top), 24px)' }}>
+      style={{ background: '#14233d', paddingTop: 'max(env(safe-area-inset-top), 24px)' }}>
 
       <div className="w-full max-w-sm">
         {/* Icon */}
@@ -92,7 +92,7 @@ export const VerifyEmail: React.FC<Props> = ({ userId, email, onVerified }) => {
             style={{ background: 'rgba(232,160,32,0.15)', border: '2px solid rgba(232,160,32,0.3)' }}>
             <Mail size={38} className="text-amber-400" />
           </div>
-          <h1 className="text-2xl font-black text-white mb-2">אמת את האימייל שלך</h1>
+          <h1 className="text-2xl font-bold text-white mb-2">אמת את האימייל שלך</h1>
           <p className="text-gray-400 text-sm">
             שלחנו קוד של 6 ספרות ל:
             <br />
@@ -114,7 +114,7 @@ export const VerifyEmail: React.FC<Props> = ({ userId, email, onVerified }) => {
                 value={digit}
                 onChange={e => handleChange(i, e.target.value)}
                 onKeyDown={e => { if (e.key === 'Backspace' && !code[i] && i > 0) inputs.current[i-1]?.focus(); }}
-                className="w-12 h-14 text-center text-2xl font-black rounded-xl border-2 outline-none transition-all"
+                className="w-12 h-14 text-center text-2xl font-bold rounded-xl border-2 outline-none transition-all"
                 style={{
                   borderColor: digit ? '#e8a020' : '#e5e7eb',
                   background: digit ? 'rgba(232,160,32,0.05)' : '#f9fafb',
@@ -133,8 +133,8 @@ export const VerifyEmail: React.FC<Props> = ({ userId, email, onVerified }) => {
           <button
             onClick={() => handleVerify()}
             disabled={loading || code.join('').length !== 6}
-            className="w-full text-white font-black text-base rounded-2xl py-4 disabled:opacity-40"
-            style={{ background: 'linear-gradient(135deg, #e8a020, #f0c050)', boxShadow: '0 4px 20px rgba(232,160,32,0.3)' }}>
+            className="w-full font-bold text-base rounded-2xl py-4 disabled:opacity-40"
+            style={{ background: '#e8a020', color: '#241803' }}>
             {loading ? (
               <div className="flex items-center justify-center gap-2">
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

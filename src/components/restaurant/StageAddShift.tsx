@@ -82,13 +82,13 @@ export const StageAddShift: React.FC = () => {
 
       {/* כותרת */}
       <div className="rounded-3xl p-4 text-white flex items-center gap-3"
-        style={{ background: 'linear-gradient(135deg, #0d1420 0%, #1a2744 100%)' }}>
+        style={{ background: '#14233d' }}>
         <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
           style={{ background: 'rgba(232,160,32,0.18)', border: '1px solid rgba(232,160,32,0.3)' }}>
           <Calendar className="text-amber-400" size={20} />
         </div>
         <div>
-          <div className="font-black text-lg leading-tight">{editShift ? 'עריכת משמרת' : 'משמרת חדשה'}</div>
+          <div className="font-bold text-lg leading-tight">{editShift ? 'עריכת משמרת' : 'משמרת חדשה'}</div>
           <div className="text-xs" style={{ color: '#8899bb' }}>בלוז הסטאז' של {workerName}</div>
         </div>
       </div>
@@ -127,8 +127,8 @@ export const StageAddShift: React.FC = () => {
         {err && <div className="bg-red-50 text-red-600 text-sm rounded-xl px-4 py-2 text-center">{err}</div>}
 
         <button onClick={save} disabled={saving}
-          className="w-full text-white rounded-2xl py-4 font-bold disabled:opacity-40"
-          style={{ background: editShift ? 'linear-gradient(135deg,#3b82f6,#6366f1)' : 'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow: '0 4px 16px rgba(232,160,32,0.25)' }}>
+          className="w-full rounded-2xl py-4 font-bold disabled:opacity-40"
+          style={{ background: editShift ? '#3b74d1' : '#e8a020', color: editShift ? '#ffffff' : '#241803' }}>
           {saving ? 'שומר...' : editShift ? 'שמור שינויים' : 'הוסף משמרת ללוז'}
         </button>
         {editShift && (

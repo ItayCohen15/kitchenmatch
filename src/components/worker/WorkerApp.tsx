@@ -90,7 +90,7 @@ export const WorkerApp: React.FC = () => {
   return (
     <div className="flex flex-col h-full">
       <header className="px-4 flex items-center justify-between flex-shrink-0"
-        style={{ background:'linear-gradient(135deg, #080c14 0%, #0f1829 100%)', borderBottom:'1px solid rgba(255,255,255,0.06)', paddingTop:'max(env(safe-area-inset-top), 12px)', paddingBottom:'12px' }}>
+        style={{ background:'#0d1420', borderBottom:'1px solid rgba(255,255,255,0.07)', paddingTop:'max(env(safe-area-inset-top), 12px)', paddingBottom:'12px' }}>
         <div className="flex items-center gap-2">
           {showBack ? (
             <button onClick={handleBack} className="font-bold text-xl" style={{color:'rgba(255,255,255,0.6)'}}>‹</button>
@@ -101,9 +101,9 @@ export const WorkerApp: React.FC = () => {
           )}
         </div>
         <div className="flex items-center gap-2">
-          <span className="font-black text-base text-white">{SCREEN_TITLES[workerScreen]}</span>
-          <div className="w-8 h-8 rounded-xl flex items-center justify-center text-white text-xs font-black"
-            style={{ background:'linear-gradient(135deg,#e8a020,#f5c842)', boxShadow:'0 2px 8px rgba(232,160,32,0.4)' }}>
+          <span className="font-bold text-base text-white">{SCREEN_TITLES[workerScreen]}</span>
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold"
+            style={{ background:'#e8a020', color:'#241803' }}>
             {initials}
           </div>
         </div>

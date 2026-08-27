@@ -11,6 +11,7 @@ import { UnreadChatBanner } from '../common/ChatsScreen';
 import { SkeletonList } from '../common/Skeleton';
 import { EmptyState } from '../common/EmptyState';
 import { haptic } from '../../utils/haptics';
+import { avatarTone, roleDot } from '../../utils/colors';
 
 export const WorkerHome: React.FC = () => {
   const { navToWorker, selectWorkerJob, userProfile, refreshProfile } = useApp();
@@ -88,11 +89,12 @@ export const WorkerHome: React.FC = () => {
     <div className="screen-enter space-y-4 pb-2">
       {/* Worker header */}
       <div className="rounded-3xl p-5 text-white relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #060a10 0%, #0d1829 50%, #091020 100%)',
-                 border: '1px solid rgba(255,255,255,0.07)',
-                 boxShadow: '0 8px 40px rgba(0,0,0,0.5)' }}>
+        style={{ background: '#12203a',
+                 border: '1px solid rgba(255,255,255,0.06)',
+                 boxShadow: '0 4px 16px rgba(20,28,44,0.16)' }}>
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-14 h-14 bg-amber-500 rounded-2xl flex items-center justify-center font-black text-xl">
+          <div className="w-14 h-14 rounded-xl flex items-center justify-center font-bold text-xl"
+            style={{ background:'#e8a020', color:'#241803' }}>
             {initials}
           </div>
           <div className="flex-1">
@@ -122,7 +124,7 @@ export const WorkerHome: React.FC = () => {
             { label: 'אמינות', value: `${reliabilityScore}%`, color: 'text-blue-400' },
           ].map(s => (
             <div key={s.label} className="bg-white/10 rounded-xl p-3 text-center">
-              <div className={`font-black text-lg ${s.color}`}>{s.value}</div>
+              <div className={`font-bold text-lg ${s.color}`}>{s.value}</div>
               <div className="text-gray-400 text-xs">{s.label}</div>
             </div>
           ))}
@@ -152,9 +154,9 @@ export const WorkerHome: React.FC = () => {
                          shift.Status === 'active' ? 'כנס למשמרת' : 'ראה סטטוס';
         const btnScreen = shift.Status === 'confirmed' ? 'navigation' : 'active_shift';
         return (
-          <div key={shift.Id} className="bg-gradient-to-l from-green-600 to-emerald-500 rounded-2xl p-4 text-white">
+          <div key={shift.Id} className="rounded-2xl p-4 text-white" style={{ background:'#1f9d6b' }}>
             <div className="font-bold text-sm mb-1">{statusLabel}</div>
-            <div className="font-black text-lg">{shift.RestaurantName}</div>
+            <div className="font-bold text-lg">{shift.RestaurantName}</div>
             <div className="text-green-100 text-sm">{shift.RestaurantCity} · ₪{shift.HourlyRate}/ש׳</div>
             {shift.RestaurantAddress && (
               <div className="text-green-200 text-xs mb-1 flex items-center gap-1">
@@ -168,7 +170,7 @@ export const WorkerHome: React.FC = () => {
                 // אל תתחיל משמרת — רק נווט לצ'ק-אין
                 navToWorker(btnScreen as any);
               }}
-              className="w-full bg-white text-green-700 rounded-xl py-2.5 font-black text-sm"
+              className="w-full bg-white text-green-700 rounded-xl py-2.5 font-bold text-sm"
             >
               {btnLabel} ›
             </button>
@@ -256,22 +258,13 @@ export const WorkerHome: React.FC = () => {
             return (
               <div key={job.Id} className="overflow-hidden stagger-item"
                 style={{
-                  borderRadius: 20,
-                  background: 'linear-gradient(145deg, #0f1829 0%, #0a1020 100%)',
-                  border: job.IsEmergency ? '1px solid rgba(239,68,68,0.3)' : '1px solid rgba(232,160,32,0.15)',
-                  boxShadow: job.IsEmergency
-                    ? '0 4px 24px rgba(239,68,68,0.15), 0 1px 0 rgba(255,255,255,0.04) inset'
-                    : '0 4px 24px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.04) inset',
-                  transition: 'transform 0.15s ease',
+                  borderRadius: 16,
+                  background: '#ffffff',
+                  border: job.IsEmergency ? '1px solid rgba(229,72,77,0.35)' : '1px solid #e7e9ef',
+                  boxShadow: '0 1px 2px rgba(20,28,44,0.05), 0 4px 12px rgba(20,28,44,0.06)',
+                  transition: 'transform 0.1s ease',
                   animationDelay: `${Math.min(idx, 8) * 45}ms`,
                 }}>
-                {/* פס גלו עליון */}
-                <div className="h-0.5 w-full" style={{
-                  background: job.IsEmergency
-                    ? 'linear-gradient(90deg,transparent,#ef4444,transparent)'
-                    : 'linear-gradient(90deg,transparent,#e8a020,transparent)'
-                }} />
-
                 <div className="p-4">
                   {job.IsEmergency && (
                     <div className="inline-flex items-center gap-1.5 mb-2.5 px-2.5 py-1 rounded-full text-white text-xs font-bold badge-emergency">
@@ -281,49 +274,41 @@ export const WorkerHome: React.FC = () => {
 
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="flex items-center gap-3 flex-1 min-w-0">
-                      {/* אייקון מסעדה */}
-                      <div className="w-11 h-11 rounded-xl flex items-center justify-center font-black text-sm text-white flex-shrink-0"
-                        style={{ background: job.IsEmergency ? 'linear-gradient(135deg,#ef4444,#f97316)' : 'linear-gradient(135deg,#1a2744,#0d1420)' }}>
+                      {/* אייקון מסעדה — צבע לפי שם */}
+                      <div className="w-11 h-11 rounded-xl flex items-center justify-center font-bold text-sm flex-shrink-0"
+                        style={job.IsEmergency
+                          ? { background: '#e5484d', color: '#fff' }
+                          : { background: avatarTone(job.RestaurantName).bg, color: avatarTone(job.RestaurantName).fg }}>
                         {(job.RestaurantName || 'R').slice(0,2)}
                       </div>
                       <div className="min-w-0">
-                        <div className="font-black text-white truncate">{job.RestaurantName}</div>
-                        <div className="flex items-center gap-1 text-xs mt-0.5" style={{color:'rgba(255,255,255,0.4)'}}>
+                        <div className="font-bold text-gray-900 truncate">{job.RestaurantName}</div>
+                        <div className="flex items-center gap-1 text-xs mt-0.5 text-gray-400">
                           <MapPin size={10} />{job.RestaurantCity}
                         </div>
                       </div>
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <div className="font-black text-xl glow-gold" style={{ color: '#e8a020' }}>₪{job.HourlyRate}</div>
-                      <div className="text-xs" style={{color:'rgba(255,255,255,0.3)'}}>/שעה</div>
+                      <div className="font-bold text-xl" style={{ color: '#b9791a' }}>₪{job.HourlyRate}</div>
+                      <div className="text-xs text-gray-400">/שעה</div>
                     </div>
                   </div>
 
-                  {/* פרטים */}
-                  <div className="flex items-center gap-2 flex-wrap mb-3.5">
-                    <span className="text-xs font-bold px-2.5 py-1 rounded-full text-white"
-                      style={{ background: 'linear-gradient(135deg,#3b82f6,#6366f1)' }}>
-                      {ROLE_LABELS[job.Role] || job.Role}
-                    </span>
-                    <div className="flex items-center gap-1 bg-gray-50 rounded-full px-2.5 py-1 text-gray-500 text-xs">
-                      <Clock size={11} />{startStr}–{endStr}
-                    </div>
-                    <div className="bg-gray-50 rounded-full px-2.5 py-1 text-gray-500 text-xs">
-                      {dateStr}
-                    </div>
+                  {/* פרטים — שורה אחת נקייה עם נקודת-צבע לתפקיד */}
+                  <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-3">
+                    <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: roleDot(job.Role) }} />
+                    {ROLE_LABELS[job.Role] || job.Role} · {dateStr} · {startStr}–{endStr}
                   </div>
 
                   {/* Footer */}
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1 rounded-xl px-3 py-2 text-center"
-                      style={{background:'rgba(52,211,153,0.08)', border:'1px solid rgba(52,211,153,0.15)'}}>
-                      <div className="font-black text-base glow-green" style={{color:'#34d399'}}>₪{totalPay.toFixed(0)}</div>
-                      <div className="text-[10px]" style={{color:'rgba(52,211,153,0.6)'}}>סה״כ ({hours} ש׳)</div>
+                  <div className="flex items-center justify-between pt-3" style={{ borderTop: '1px solid #f0f1f4' }}>
+                    <div className="text-sm text-gray-500">
+                      סה״כ <span className="font-bold text-gray-800">₪{totalPay.toFixed(0)}</span> · {hours} שעות
                     </div>
                     <button onClick={() => handleJobPress(String(job.Id), job)}
-                      className="flex-1 text-white rounded-xl py-2.5 font-bold text-sm flex items-center justify-center gap-1"
-                      style={{ background: job.IsEmergency ? 'linear-gradient(135deg,#ef4444,#f97316)' : 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
-                      צפה בפרטים <ChevronLeft size={15} />
+                      className="rounded-lg px-4 py-2 font-bold text-sm flex items-center gap-1"
+                      style={{ background: job.IsEmergency ? '#e5484d' : '#e8a020', color: job.IsEmergency ? '#fff' : '#241803' }}>
+                      צפה בפרטים <ChevronLeft size={14} />
                     </button>
                   </div>
                 </div>

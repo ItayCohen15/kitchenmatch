@@ -11,6 +11,7 @@ import { VerifiedBadge } from '../common/VerifiedBadge';
 import { fileToDataUrl } from '../../utils/image';
 import { DeleteAccountModal } from '../common/DeleteAccountModal';
 import { toast } from '../common/Toast';
+import { levelTone } from '../../utils/colors';
 
 export const WorkerProfile: React.FC = () => {
   const { userProfile, resetToLanding, setUserProfile, refreshProfile, navToWorker } = useApp();
@@ -141,7 +142,7 @@ export const WorkerProfile: React.FC = () => {
   if (editingProfile) return (
     <div className="screen-enter space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-black text-gray-900">עריכת פרופיל</h2>
+        <h2 className="text-xl font-bold text-gray-900">עריכת פרופיל</h2>
         <button onClick={() => setEditingProfile(false)} className="text-gray-400 text-sm">ביטול</button>
       </div>
       <div className="bg-white rounded-2xl p-4 card-shadow space-y-4">
@@ -179,7 +180,7 @@ export const WorkerProfile: React.FC = () => {
         </div>
       </div>
       <button onClick={handleSaveProfile} disabled={savingProfile || !editName}
-        className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold disabled:opacity-50 shadow-lg shadow-amber-200">
+        className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold disabled:opacity-50">
         {savingProfile
           ? <div className="flex items-center justify-center gap-2"><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />שומר...</div>
           : 'שמור שינויים'}
@@ -190,17 +191,17 @@ export const WorkerProfile: React.FC = () => {
   return (
     <div className="screen-enter space-y-4">
       {/* Profile header */}
-      <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-5 text-white">
+      <div className="rounded-2xl p-5 text-white" style={{ background: '#14233d' }}>
         <div className="flex items-center gap-4 mb-4">
-          <div className="w-20 h-20 bg-amber-500 rounded-2xl flex items-center justify-center font-black text-2xl">
+          <div className="w-20 h-20 bg-amber-500 rounded-2xl flex items-center justify-center font-bold text-2xl">
             {initials}
           </div>
           <div className="flex-1">
-            <div className="font-black text-xl">{name}</div>
+            <div className="font-bold text-xl">{name}</div>
             <div className="text-gray-400 text-xs mt-0.5">{userProfile?.City || ''} · {roleLabels(userProfile?.Role)}</div>
             <div className="flex items-center gap-2 mt-1">
               <span className="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full"
-                style={{ background: currentLevel.gradient, color: 'white' }}>
+                style={{ background: levelTone(level).bg, color: levelTone(level).fg }}>
                 {currentLevel.label}
               </span>
               <VerifiedBadge isVerified={userProfile?.IsVerified} size="sm" />
@@ -253,7 +254,7 @@ export const WorkerProfile: React.FC = () => {
         ].map(s => (
           <div key={s.label} className="bg-white rounded-xl p-3 card-shadow text-center">
             <div className="mb-1 flex justify-center">{s.icon}</div>
-            <div className="font-black text-gray-900 text-sm">{s.value}</div>
+            <div className="font-bold text-gray-900 text-sm">{s.value}</div>
             <div className="text-gray-400 text-xs">{s.label}</div>
           </div>
         ))}
@@ -343,13 +344,13 @@ export const WorkerProfile: React.FC = () => {
 
         {/* badge רמה נוכחית + עמלה */}
         <div className="flex items-center justify-between mb-3">
-          <span className="inline-flex items-center gap-1.5 font-black px-3 py-1.5 rounded-xl text-sm"
-            style={{ background: currentLevel.gradient, color: 'white' }}>
+          <span className="inline-flex items-center gap-1.5 font-bold px-3 py-1.5 rounded-xl text-sm"
+            style={{ background: levelTone(level).bg, color: levelTone(level).fg }}>
             {currentLevel.label}
           </span>
           <div className="text-left">
             <div className="text-xs text-gray-400">עמלת העובד שלך</div>
-            <div className="font-black text-green-600 text-sm">{(currentLevel.commission * 100).toFixed(1)}%</div>
+            <div className="font-bold text-green-600 text-sm">{(currentLevel.commission * 100).toFixed(1)}%</div>
           </div>
         </div>
 
@@ -363,7 +364,7 @@ export const WorkerProfile: React.FC = () => {
             </div>
             <div className="bg-gray-100 rounded-full h-3 overflow-hidden">
               <div className="h-3 rounded-full transition-all"
-                style={{ width: `${prog.progress}%`, background: currentLevel.gradient }} />
+                style={{ width: `${prog.progress}%`, background: levelTone(level).fg }} />
             </div>
             <div className="text-xs text-gray-400 mt-1 text-center">{prog.progress}% מהדרך לרמה הבאה</div>
           </>
@@ -381,8 +382,8 @@ export const WorkerProfile: React.FC = () => {
       {/* חבר מביא חבר */}
       <button onClick={() => navToWorker('referral')}
         className="w-full bg-white rounded-2xl p-4 card-shadow flex items-center gap-3 text-right active:bg-gray-50 transition-colors">
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg,#e8a020,#f5c842)' }}>
-          <Gift size={18} className="text-white" />
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: '#e8a020' }}>
+          <Gift size={18} style={{ color: '#241803' }} />
         </div>
         <div className="flex-1">
           <div className="font-bold text-gray-800 text-sm">חבר מביא חבר</div>

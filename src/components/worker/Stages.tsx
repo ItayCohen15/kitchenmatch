@@ -6,6 +6,7 @@ import { ROLE_LABELS, visibleShiftRoles } from '../../utils/roles';
 import { STAGE_WORKER_COMMISSION } from '../../utils/levels';
 import { ChatModal } from '../common/ChatModal';
 import { StageLocked } from './StageLocked';
+import { avatarTone } from '../../utils/colors';
 
 const fmtDate = (d?: string) => d ? new Date(d).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit' }) : '';
 const fmtTime = (d?: string) => d ? new Date(d).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : '';
@@ -163,13 +164,13 @@ export const WorkerStages: React.FC = () => {
     <div className="screen-enter space-y-4">
       {/* כותרת */}
       <div className="rounded-3xl p-4 text-white flex items-center gap-3"
-        style={{ background: 'linear-gradient(135deg, #0d1420 0%, #1a2744 100%)' }}>
+        style={{ background: '#14233d' }}>
         <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
           style={{ background: 'rgba(232,160,32,0.18)', border: '1px solid rgba(232,160,32,0.3)' }}>
           <GraduationCap className="text-amber-400" size={22} />
         </div>
         <div>
-          <div className="font-black text-lg leading-tight">סטאז׳ והצעות</div>
+          <div className="font-bold text-lg leading-tight">סטאז׳ והצעות</div>
           <div className="text-xs" style={{ color: '#8899bb' }}>משמרת אחת להוכיח את עצמך · ללא עמלה</div>
         </div>
       </div>
@@ -187,7 +188,7 @@ export const WorkerStages: React.FC = () => {
               <div key={t.Id} className="bg-white rounded-2xl p-4 card-shadow border-2 border-green-100">
                 <div className="flex items-center justify-between mb-1">
                   <span className="font-bold text-gray-900">{t.RestaurantName}</span>
-                  <span className="text-green-600 font-black">₪{t.HourlyRate}/ש'</span>
+                  <span className="text-green-600 font-bold">₪{t.HourlyRate}/ש'</span>
                 </div>
                 <div className="text-gray-500 text-xs flex items-center gap-3 mb-2 flex-wrap">
                   <span>{ROLE_LABELS[t.Role] || t.Role}</span>
@@ -198,8 +199,8 @@ export const WorkerStages: React.FC = () => {
                   <div className="text-xs font-semibold text-amber-600 bg-amber-50 rounded-lg px-3 py-2">ממתין לאישור המסעדה</div>
                 ) : today ? (
                   <button onClick={() => openTrialShift(t)}
-                    className="w-full text-white rounded-2xl py-3 font-bold"
-                    style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
+                    className="w-full rounded-2xl py-3 font-bold"
+                    style={{ background: '#e8a020', color: '#241803' }}>
                     כנס למשמרת הסטאז׳ ›
                   </button>
                 ) : (
@@ -231,7 +232,7 @@ export const WorkerStages: React.FC = () => {
             <div key={t.Id} className="bg-white rounded-2xl p-4 card-shadow">
               <div className="flex items-center justify-between mb-1">
                 <span className="font-bold text-gray-900">{t.RestaurantName}</span>
-                <span className="text-green-600 font-black">₪{t.HourlyRate}/ש'</span>
+                <span className="text-green-600 font-bold">₪{t.HourlyRate}/ש'</span>
               </div>
               <div className="text-gray-500 text-xs flex items-center gap-3 mb-2 flex-wrap">
                 <span>{ROLE_LABELS[t.Role] || t.Role}</span>
@@ -243,8 +244,8 @@ export const WorkerStages: React.FC = () => {
                 ללא עמלה — תקבל את השכר המלא
               </div>
               <button onClick={() => applyTrial(Number(t.Id))} disabled={busy === Number(t.Id)}
-                className="w-full text-white rounded-2xl py-3 font-bold disabled:opacity-40"
-                style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
+                className="w-full rounded-2xl py-3 font-bold disabled:opacity-40"
+                style={{ background: '#e8a020', color: '#241803' }}>
                 {busy === Number(t.Id) ? 'שולח...' : 'הגש מועמדות לסטאז׳'}
               </button>
             </div>
@@ -276,7 +277,7 @@ export const WorkerStages: React.FC = () => {
             <div key={o.Id} className="bg-white rounded-2xl p-4 card-shadow border-2 border-amber-200">
               <div className="flex items-center justify-between mb-1">
                 <span className="font-bold text-gray-900">{o.RestaurantName}</span>
-                <span className="text-amber-600 font-black">₪{o.HourlyRate}/ש'</span>
+                <span className="text-amber-600 font-bold">₪{o.HourlyRate}/ש'</span>
               </div>
               <div className="text-gray-500 text-xs flex items-center gap-3 mb-2">
                 <span>{ROLE_LABELS[o.Role] || o.Role}</span>
@@ -284,8 +285,8 @@ export const WorkerStages: React.FC = () => {
               </div>
               {o.Duties && <p className="text-gray-500 text-xs mb-2">{o.Duties}</p>}
               <button onClick={() => acceptOffer(o)} disabled={busy === Number(o.Id)}
-                className="w-full text-white rounded-2xl py-3 font-bold flex items-center justify-center gap-2 disabled:opacity-40"
-                style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
+                className="w-full rounded-2xl py-3 font-bold flex items-center justify-center gap-2 disabled:opacity-40"
+                style={{ background: '#e8a020', color: '#241803' }}>
                 <Check size={16} /> {busy === Number(o.Id) ? 'מאשר...' : 'אשר וקבל משמרת'}
               </button>
             </div>
@@ -299,7 +300,8 @@ export const WorkerStages: React.FC = () => {
           {/* כותרת + פעולות קשר */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-2xl bg-amber-500 text-white flex items-center justify-center font-black">
+              <div className="w-11 h-11 rounded-2xl flex items-center justify-center font-bold"
+                style={{ background: avatarTone(activeStage.RestaurantName).bg, color: avatarTone(activeStage.RestaurantName).fg }}>
                 {(activeStage.RestaurantName || 'מ').slice(0, 2)}
               </div>
               <div>
@@ -328,7 +330,7 @@ export const WorkerStages: React.FC = () => {
               <span>{left > 0 ? `עוד ${left} ימים` : 'הסתיימה התקופה'}</span>
             </div>
             <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-              <div className="h-full rounded-full" style={{ width: `${stageProgress(activeStage)}%`, background: 'linear-gradient(90deg,#e8a020,#f0c050)' }} />
+              <div className="h-full rounded-full" style={{ width: `${stageProgress(activeStage)}%`, background: '#e8a020' }} />
             </div>
           </div>
 
@@ -369,7 +371,7 @@ export const WorkerStages: React.FC = () => {
                   {done
                     ? <div className="text-green-600 text-xs mt-1">הושלמה{sh.TotalPay ? ` · ₪${sh.TotalPay}` : ''}</div>
                     : today
-                      ? <button onClick={() => checkInShift(sh)} className="mt-2 w-full text-white rounded-lg py-2 text-sm font-bold" style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>כנס למשמרת היום ›</button>
+                      ? <button onClick={() => checkInShift(sh)} className="mt-2 w-full rounded-lg py-2 text-sm font-bold" style={{ background: '#e8a020', color: '#241803' }}>כנס למשמרת היום ›</button>
                       : <div className="text-gray-400 text-xs mt-1">מתוכננת</div>}
                 </div>
               );
@@ -407,8 +409,8 @@ export const WorkerStages: React.FC = () => {
             </div>
             {s.Duties && <p className="text-gray-500 text-xs mb-2">{s.Duties}</p>}
             <button onClick={() => applyStage(Number(s.Id))} disabled={busy === Number(s.Id)}
-              className="w-full text-white rounded-2xl py-3 font-bold disabled:opacity-40"
-              style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
+              className="w-full rounded-2xl py-3 font-bold disabled:opacity-40"
+              style={{ background: '#e8a020', color: '#241803' }}>
               {busy === Number(s.Id) ? 'שולח...' : "הגש מועמדות לסטאז'"}
             </button>
           </div>
@@ -463,11 +465,11 @@ export const WorkerStages: React.FC = () => {
                     {sum ? (
                       <div className="flex gap-2">
                         <div className="flex-1 rounded-xl py-2 text-center" style={{ background: '#f8fafc' }}>
-                          <div className="font-black text-gray-700 text-sm">{sum.shifts}</div>
+                          <div className="font-bold text-gray-700 text-sm">{sum.shifts}</div>
                           <div className="text-[10px] text-gray-400">משמרות הושלמו</div>
                         </div>
                         <div className="flex-1 rounded-xl py-2 text-center" style={{ background: '#f0fdf4' }}>
-                          <div className="font-black text-green-600 text-sm">₪{Math.round(sum.earned).toLocaleString()}</div>
+                          <div className="font-bold text-green-600 text-sm">₪{Math.round(sum.earned).toLocaleString()}</div>
                           <div className="text-[10px] text-gray-400">הרווחת</div>
                         </div>
                       </div>

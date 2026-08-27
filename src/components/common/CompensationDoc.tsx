@@ -55,7 +55,7 @@ export const CompensationDoc: React.FC<Props> = ({ job, viewer, workerName, rest
         .party .label{font-size:10px;color:#9ca3af;margin-bottom:3px}
         .party .name{font-size:13px;font-weight:700}
         .arrow{font-size:18px;color:#e8a020}
-        .amount-box{background:linear-gradient(135deg,#0d1420,#1a2744);color:white;
+        .amount-box{background:#14233d;color:white;
                     padding:16px;border-radius:10px;margin:14px 0;text-align:center}
         .amount-label{font-size:12px;color:#9ca3af;margin-bottom:4px}
         .amount{font-size:30px;font-weight:900;color:${amountColor}}
@@ -114,7 +114,7 @@ export const CompensationDoc: React.FC<Props> = ({ job, viewer, workerName, rest
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm" onClick={onClose} />
+      <div className="fixed inset-0 bg-black/50 z-40" onClick={onClose} />
       <div className="fixed inset-x-0 z-50 flex items-center justify-center px-4 pointer-events-none"
         style={{
           top: 'calc(env(safe-area-inset-top) + 64px)',
@@ -124,10 +124,10 @@ export const CompensationDoc: React.FC<Props> = ({ job, viewer, workerName, rest
           style={{ maxHeight: '100%' }}>
 
           {/* Header */}
-          <div className="flex-shrink-0 p-4 text-white" style={{ background:'linear-gradient(135deg,#0d1420,#1a2744)' }}>
+          <div className="flex-shrink-0 p-4 text-white" style={{ background:'#14233d' }}>
             <div className="flex items-center justify-between mb-2">
               <div>
-                <div className="font-black text-sm">{title}</div>
+                <div className="font-bold text-sm">{title}</div>
                 <div className="text-gray-400 text-xs mt-0.5">{docId}</div>
               </div>
               <button onClick={onClose} className="w-8 h-8 rounded-xl flex items-center justify-center bg-white/15">
@@ -136,7 +136,7 @@ export const CompensationDoc: React.FC<Props> = ({ job, viewer, workerName, rest
             </div>
             <div className="flex items-center justify-between">
               <div className="text-gray-400 text-xs">{viewerReceived ? 'פיצוי שקיבלת' : 'קנס ששילמת'}</div>
-              <div className="text-2xl font-black" style={{ color: amountColor }}>{amountSign}₪{fee.toFixed(0)}</div>
+              <div className="text-2xl font-bold" style={{ color: amountColor }}>{amountSign}₪{fee.toFixed(0)}</div>
             </div>
           </div>
 
@@ -181,8 +181,8 @@ export const CompensationDoc: React.FC<Props> = ({ job, viewer, workerName, rest
           {/* Footer */}
           <div className="flex-shrink-0 px-4 py-3 border-t border-gray-100">
             <button onClick={handlePrint}
-              className="w-full text-white rounded-2xl py-3 font-bold flex items-center justify-center gap-2 text-sm"
-              style={{ background:'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow:'0 4px 16px rgba(232,160,32,0.3)' }}>
+              className="w-full rounded-2xl py-3 font-bold flex items-center justify-center gap-2 text-sm"
+              style={{ background:'#e8a020', color:'#241803' }}>
               <Printer size={16} /> הדפס אסמכתא
             </button>
           </div>

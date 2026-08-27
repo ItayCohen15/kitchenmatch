@@ -4,12 +4,39 @@
 
 /* ===== BRAND TOKENS ===== */
 :root {
-  --gold:   #e8a020;
-  --gold-l: #f5c842;
-  --dark:   #080c14;
-  --navy:   #0f1829;
-  --card:   rgba(255,255,255,0.04);
-  --border: rgba(255,255,255,0.08);
+  --gold:       #e8a020;
+  --gold-deep:  #c8841a;   /* pressed / borders */
+  --gold-tint:  #fbf1db;   /* soft gold wash on light */
+  --on-gold:    #241803;   /* text that sits on gold */
+
+  --navy:       #14233d;   /* primary dark surface (flat) */
+  --navy-2:     #0d1420;   /* deeper dark surface / app chrome */
+  --ink:        #26221b;   /* primary text on light (warm) */
+  --muted:      #7c7568;   /* secondary text on light (warm) */
+
+  --paper:      #f6f4ef;   /* app background (warm ivory) */
+  --surface:    #ffffff;   /* card surface */
+  --line:       #ece7dd;   /* hairline on light (warm) */
+  --line-dark:  rgba(255,255,255,0.08); /* hairline on dark */
+
+  /* צבעי חיים — לאווטרים, קטגוריות ורגעים (שטוח בלבד) */
+  --coral: #ef5f3c;
+  --amber: #f2a71b;
+  --teal:  #12a594;
+  --green: #1f9d6b;
+  --blue:  #3b74d1;
+  --plum:  #9a5ba6;
+  --live:  #12a594;   /* "זמין"/פעיל */
+  --danger:#e5484d;   /* חירום */
+
+  /* Neutral, believable shadows — no colored glow */
+  --shadow-sm:   0 1px 2px rgba(20,28,44,0.06);
+  --shadow-card: 0 1px 2px rgba(20,28,44,0.05), 0 4px 12px rgba(20,28,44,0.06);
+  --shadow-pop:  0 2px 8px rgba(20,28,44,0.08), 0 16px 34px rgba(20,28,44,0.14);
+
+  --r-card: 16px;
+  --r-ctrl: 12px;
+  --r-tile: 14px;
 }
 
 /* ===== BASE ===== */
@@ -22,16 +49,20 @@
 html {
   height: 100%; height: -webkit-fill-available;
   direction: rtl;
-  background: #080c14;
+  background: var(--paper);
   overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   min-height: 100dvh;
   direction: rtl;
-  background: #0d1120;
+  background: var(--paper);
+  color: var(--ink);
   overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   position: fixed;
   width: 100%;
 }
@@ -45,36 +76,38 @@ body {
 /* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar { width: 2px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(20,28,44,0.14); border-radius: 4px; }
 
-/* ===== ANIMATIONS ===== */
-.screen-enter { animation: slideUp 0.28s cubic-bezier(0.16,1,0.3,1); }
+/* ===== MOTION — subtle, purposeful ===== */
+.screen-enter { animation: slideUp 0.26s cubic-bezier(0.22,1,0.36,1); }
 
 @keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
+  from { transform: translateY(8px); opacity: 0; }
+  to   { transform: translateY(0);   opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { transform: translateY(6px); opacity: 0; }
+  to   { transform: translateY(0);   opacity: 1; }
+}
+.stagger-item { animation: fadeInUp 0.3s cubic-bezier(0.22,1,0.36,1) both; }
+
+@keyframes toastIn {
+  from { transform: translateY(12px); opacity: 0; }
   to   { transform: translateY(0);    opacity: 1; }
 }
+.toast-in { animation: toastIn 0.22s cubic-bezier(0.22,1,0.36,1); }
 
-@keyframes goldPulse {
-  0%,100% { text-shadow: 0 0 8px rgba(232,160,32,0.5); }
-  50%     { text-shadow: 0 0 20px rgba(232,160,32,0.9), 0 0 40px rgba(232,160,32,0.4); }
-}
-
-@keyframes greenGlow {
-  0%,100% { text-shadow: 0 0 8px rgba(52,211,153,0.4); }
-  50%     { text-shadow: 0 0 20px rgba(52,211,153,0.8), 0 0 40px rgba(52,211,153,0.3); }
-}
-
-@keyframes borderGlow {
-  0%,100% { box-shadow: 0 0 0 1px rgba(232,160,32,0.2), 0 8px 32px rgba(0,0,0,0.4); }
-  50%     { box-shadow: 0 0 0 1px rgba(232,160,32,0.5), 0 8px 32px rgba(232,160,32,0.15); }
+/* כיבוד העדפת "פחות תנועה" — נגישות */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
 }
 
 /* ===== SKELETON (shimmer loaders) ===== */
 .skeleton {
   position: relative;
   overflow: hidden;
-  background: #e7ebf2;
+  background: #e9ebf0;
   border-radius: 10px;
 }
 .skeleton::after {
@@ -82,83 +115,62 @@ body {
   position: absolute;
   inset: 0;
   transform: translateX(-100%);
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.65), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
   animation: shimmer 1.4s infinite;
 }
 @keyframes shimmer { 100% { transform: translateX(100%); } }
 
-/* ===== TOAST ===== */
-@keyframes toastIn {
-  from { transform: translateY(16px); opacity: 0; }
-  to   { transform: translateY(0);    opacity: 1; }
-}
-.toast-in { animation: toastIn 0.25s cubic-bezier(0.16,1,0.3,1); }
-
-/* ===== LIST STAGGER (subtle entrance) ===== */
-@keyframes fadeInUp {
-  from { transform: translateY(10px); opacity: 0; }
-  to   { transform: translateY(0);    opacity: 1; }
-}
-.stagger-item { animation: fadeInUp 0.32s cubic-bezier(0.16,1,0.3,1) both; }
-
-/* כיבוד העדפת "פחות תנועה" — נגישות */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
-}
-
-/* ===== GLASS ===== */
-.glass {
-  background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.1);
-}
-
+/* ===== SURFACES ===== */
+.glass,
 .glass-card {
-  background: linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.03) 100%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.09);
-  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-card);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
-/* ===== PREMIUM CARD (light screens) ===== */
 .card-shadow {
-  background: #ffffff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 12px 32px rgba(0,0,0,0.08);
-  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-card);
+  border-radius: var(--r-card);
 }
 
-/* ===== JOB CARD ===== */
 .job-card {
-  background: #fff;
-  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.07);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.15s ease, transform 0.1s ease;
 }
-.job-card:active { transform: scale(0.985); box-shadow: 0 2px 12px rgba(0,0,0,0.15); }
+.job-card:active { transform: translateY(0.5px); box-shadow: var(--shadow-sm); }
 
-/* ===== GLOW EFFECTS ===== */
-.glow-gold { animation: goldPulse 2.5s ease-in-out infinite; }
-.glow-green { animation: greenGlow 2.5s ease-in-out infinite; }
-.glow-border { animation: borderGlow 3s ease-in-out infinite; }
+/* ===== GLOW → NEUTRAL (kept as no-ops so old class names render calmly) ===== */
+.glow-gold, .glow-green, .glow-border { animation: none; text-shadow: none; box-shadow: none; }
 
+/* ===== BUTTONS ===== */
 .btn-gold {
-  background: linear-gradient(135deg, #e8a020 0%, #f5c842 100%);
-  box-shadow: 0 4px 24px rgba(232,160,32,0.45);
-  transition: box-shadow 0.2s ease, transform 0.15s ease;
+  background: var(--gold);
+  color: var(--on-gold);
+  box-shadow: none;
+  transition: background 0.15s ease, transform 0.1s ease;
 }
-.btn-gold:active { transform: scale(0.97); box-shadow: 0 2px 12px rgba(232,160,32,0.3); }
+.btn-gold:active { background: var(--gold-deep); transform: translateY(0.5px); }
 
 .btn-dark {
-  background: linear-gradient(135deg, #1a2744 0%, #0d1420 100%);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  background: var(--navy);
+  color: #fff;
+  box-shadow: none;
+  transition: background 0.15s ease, transform 0.1s ease;
 }
+.btn-dark:active { background: var(--navy-2); transform: translateY(0.5px); }
 
-/* ===== DARK SCREEN BG ===== */
+/* ===== DARK SCREEN BG (flat) ===== */
 .dark-screen {
-  background: linear-gradient(160deg, #080c14 0%, #0f1829 50%, #0a1020 100%);
+  background: var(--navy-2);
   min-height: 100%;
 }
 
@@ -174,6 +186,6 @@ nav.fixed { padding-bottom: env(safe-area-inset-bottom); }
 
 /* ===== BADGE ===== */
 .badge-emergency {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
-  box-shadow: 0 2px 12px rgba(239,68,68,0.5);
+  background: #e5484d;
+  box-shadow: none;
 }

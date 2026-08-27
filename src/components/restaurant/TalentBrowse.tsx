@@ -3,6 +3,7 @@ import { GraduationCap, Star } from 'lucide-react';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
 import { roleLabels } from '../../utils/roles';
+import { avatarTone } from '../../utils/colors';
 import { NewWorkerBadge } from '../common/NewWorkerBadge';
 import { GradBadge } from '../common/GradBadge';
 import { VerifiedBadge } from '../common/VerifiedBadge';
@@ -33,12 +34,10 @@ export const TalentBrowse: React.FC = () => {
     <div className="screen-enter space-y-4 pb-2">
       {/* Hero */}
       <div className="rounded-2xl p-5 text-white relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg,#0d1420,#1a2744)' }}>
-        <div className="absolute top-0 left-0 w-40 h-40 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.25), transparent 70%)', transform: 'translate(-30%,-30%)' }} />
+        style={{ background: '#14233d' }}>
         <div className="flex items-center gap-2 mb-1 relative">
           <GraduationCap size={22} style={{ color: '#e8a020' }} />
-          <h2 className="font-black text-lg">טאלנט טרי · תוכנית הכניסה</h2>
+          <h2 className="font-bold text-lg">טאלנט טרי · תוכנית הכניסה</h2>
         </div>
         <p className="text-gray-300 text-sm leading-relaxed relative">
           בוגרי בתי ספר לבישול וברמנות שמחפשים את ההזדמנות הראשונה — מאומנים, מלאי מוטיבציה, ומוכנים להיכנס למטבח שלך.
@@ -54,7 +53,7 @@ export const TalentBrowse: React.FC = () => {
           <button key={t.id} onClick={() => setMode(t.id as any)}
             className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all"
             style={{
-              background: mode === t.id ? 'linear-gradient(135deg,#0d1420,#1a2744)' : 'transparent',
+              background: mode === t.id ? '#14233d' : 'transparent',
               color: mode === t.id ? '#fff' : '#94a3b8',
             }}>
             {t.label}
@@ -100,8 +99,8 @@ export const TalentBrowse: React.FC = () => {
           return (
             <button key={w.Id} onClick={() => setViewId(w.Id)}
               className="w-full bg-white rounded-2xl p-3.5 flex items-start gap-3 card-shadow text-right active:scale-[0.99] transition-transform">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-black flex-shrink-0"
-                style={{ background: w.IsTrainee ? 'linear-gradient(135deg,#8b5cf6,#6366f1)' : 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center font-bold flex-shrink-0"
+                style={{ background: avatarTone(wName).bg, color: avatarTone(wName).fg }}>
                 {ini}
               </div>
               <div className="flex-1 min-w-0">

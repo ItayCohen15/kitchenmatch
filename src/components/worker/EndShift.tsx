@@ -76,10 +76,10 @@ export const WorkerEndShift: React.FC = () => {
         <div className="w-28 h-28 bg-green-100 rounded-full flex items-center justify-center">
           <CheckCircle size={56} className="text-green-500" />
         </div>
-        <h2 className="text-2xl font-black text-gray-900">המשמרת הסתיימה</h2>
+        <h2 className="text-2xl font-bold text-gray-900">המשמרת הסתיימה</h2>
         <p className="text-gray-500">תודה על העבודה. נתראה במשמרת הבאה.</p>
         <div className="bg-green-50 rounded-2xl px-10 py-5 w-full">
-          <div className="text-4xl font-black text-green-600">₪{netPay}</div>
+          <div className="text-4xl font-bold text-green-600">₪{netPay}</div>
           <div className="text-gray-500 text-sm mt-1">מועבר לארנק שלך</div>
         </div>
         <div className="flex items-center gap-2 text-gray-400 text-sm">
@@ -93,23 +93,23 @@ export const WorkerEndShift: React.FC = () => {
 
   return (
     <div className="screen-enter space-y-4">
-      <h2 className="text-xl font-black text-gray-900">סיכום המשמרת</h2>
+      <h2 className="text-xl font-bold text-gray-900">סיכום המשמרת</h2>
 
       {/* כרטיס הכנסה */}
-      <div className="bg-gradient-to-br from-green-600 to-emerald-500 text-white rounded-2xl p-5">
+      <div className="text-white rounded-2xl p-5" style={{ background: '#1f9d6b' }}>
         <div className="text-green-100 text-sm mb-1">הרווחת היום</div>
-        <div className="text-4xl font-black mb-4">₪{netPay}</div>
+        <div className="text-4xl font-bold mb-4">₪{netPay}</div>
         <div className="grid grid-cols-3 gap-3 text-center">
           <div className="bg-white/15 rounded-xl p-3">
-            <div className="font-black text-lg">{shiftHours.toFixed(1)}</div>
+            <div className="font-bold text-lg">{shiftHours.toFixed(1)}</div>
             <div className="text-green-100 text-xs">שעות</div>
           </div>
           <div className="bg-white/15 rounded-xl p-3">
-            <div className="font-black text-lg">₪{hourlyRate}</div>
+            <div className="font-bold text-lg">₪{hourlyRate}</div>
             <div className="text-green-100 text-xs">/שעה</div>
           </div>
           <div className="bg-white/15 rounded-xl p-3">
-            <div className="font-black text-lg text-yellow-300">-{ratePct}%</div>
+            <div className="font-bold text-lg text-yellow-300">-{ratePct}%</div>
             <div className="text-green-100 text-xs">עמלה</div>
           </div>
         </div>
@@ -130,7 +130,7 @@ export const WorkerEndShift: React.FC = () => {
           ))}
           <div className="flex justify-between pt-3">
             <span className="font-bold text-gray-900">סה״כ לארנק</span>
-            <span className="font-black text-green-600 text-lg">₪{netPay}</span>
+            <span className="font-bold text-green-600 text-lg">₪{netPay}</span>
           </div>
         </div>
       </div>
@@ -171,7 +171,7 @@ export const WorkerEndShift: React.FC = () => {
       <button
         onClick={handleSubmit}
         disabled={rating === 0 || submitting}
-        className="w-full bg-green-500 text-white rounded-2xl py-4 font-bold text-lg disabled:opacity-40 active:scale-98 transition-transform shadow-lg shadow-green-200"
+        className="w-full bg-green-500 text-white rounded-2xl py-4 font-bold text-lg disabled:opacity-40 active:scale-98 transition-transform shadow-lg"
       >
         {submitting ? (
           <div className="flex items-center justify-center gap-2">

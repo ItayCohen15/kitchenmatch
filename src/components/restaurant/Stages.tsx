@@ -4,6 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { WORKER_ROLES } from '../../utils/roles';
 import { ROLE_LABELS } from '../../data/mockData';
+import { avatarTone } from '../../utils/colors';
 import { ChatModal } from '../common/ChatModal';
 
 type Tab = 'mine' | 'post' | 'partners';
@@ -122,13 +123,13 @@ export const RestaurantStages: React.FC = () => {
     <div className="screen-enter space-y-4">
       {/* כותרת */}
       <div className="rounded-3xl p-4 text-white flex items-center gap-3"
-        style={{ background: 'linear-gradient(135deg, #0d1420 0%, #1a2744 100%)' }}>
+        style={{ background: '#14233d' }}>
         <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
           style={{ background: 'rgba(232,160,32,0.18)', border: '1px solid rgba(232,160,32,0.3)' }}>
           <GraduationCap className="text-amber-400" size={22} />
         </div>
         <div>
-          <div className="font-black text-lg leading-tight">סטאז׳ וגיוס</div>
+          <div className="font-bold text-lg leading-tight">סטאז׳ וגיוס</div>
           <div className="text-xs" style={{ color: '#8899bb' }}>משמרת אחת · ללא עמלה · סטודנטים ובוגרים</div>
         </div>
       </div>
@@ -203,8 +204,8 @@ export const RestaurantStages: React.FC = () => {
               className={inputCls + ' resize-none text-sm'} />
           </div>
           <button onClick={handlePost} disabled={posting}
-            className="w-full text-white rounded-2xl py-4 font-bold disabled:opacity-40"
-            style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow: '0 4px 16px rgba(232,160,32,0.35)' }}>
+            className="w-full rounded-2xl py-4 font-bold disabled:opacity-40"
+            style={{ background: '#e8a020', color: '#241803' }}>
             {posting ? 'מפרסם...' : 'פרסם משמרת סטאז׳'}
           </button>
         </div>
@@ -215,8 +216,8 @@ export const RestaurantStages: React.FC = () => {
       {tab === 'mine' && (
         <div className="space-y-4">
           <button onClick={() => setTab('post')}
-            className="w-full text-white rounded-2xl py-4 font-bold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
-            style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow: '0 4px 16px rgba(232,160,32,0.35)' }}>
+            className="w-full rounded-2xl py-4 font-bold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
+            style={{ background: '#e8a020', color: '#241803' }}>
             <Plus size={18} /> פרסם משמרת סטאז׳
           </button>
 
@@ -237,7 +238,8 @@ export const RestaurantStages: React.FC = () => {
               {groupApplicants.map(s => (
                 <div key={s.Id} className="bg-white rounded-2xl p-4 card-shadow border border-blue-100 space-y-2.5">
                   <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-2xl bg-blue-500 text-white flex items-center justify-center font-black">
+                    <div className="w-11 h-11 rounded-2xl flex items-center justify-center font-bold"
+                      style={{ background: avatarTone(s.WorkerName).bg, color: avatarTone(s.WorkerName).fg }}>
                       {(s.WorkerName || 'מ').split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
                     </div>
                     <div className="flex-1">
@@ -276,7 +278,8 @@ export const RestaurantStages: React.FC = () => {
                   <div key={s.Id} className="bg-white rounded-2xl p-4 card-shadow space-y-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-11 h-11 rounded-2xl bg-amber-500 text-white flex items-center justify-center font-black">
+                        <div className="w-11 h-11 rounded-2xl flex items-center justify-center font-bold"
+                          style={{ background: avatarTone(s.WorkerName).bg, color: avatarTone(s.WorkerName).fg }}>
                           {(s.WorkerName || 'ע').split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
                         </div>
                         <div>
@@ -304,7 +307,7 @@ export const RestaurantStages: React.FC = () => {
                         </div>
                         <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
                           <div className="h-full rounded-full transition-all"
-                            style={{ width: `${stageProgress(s)}%`, background: 'linear-gradient(90deg,#e8a020,#f0c050)' }} />
+                            style={{ width: `${stageProgress(s)}%`, background: '#e8a020' }} />
                         </div>
                       </div>
                     )}
@@ -328,8 +331,8 @@ export const RestaurantStages: React.FC = () => {
                     </div>
                     {left <= 0 && !partnerIds.has(Number(s.WorkerId)) && (
                       <button onClick={() => setKeepJob(s)}
-                        className="w-full text-white rounded-2xl py-3.5 font-bold"
-                        style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow: '0 4px 16px rgba(232,160,32,0.35)' }}>
+                        className="w-full rounded-2xl py-3.5 font-bold"
+                        style={{ background: '#e8a020', color: '#241803' }}>
                         גייס לצוות — דמי השמה ₪300
                       </button>
                     )}
@@ -393,8 +396,8 @@ export const RestaurantStages: React.FC = () => {
                           הסטאז׳ הסתיימה — רוצים להמשיך עם {s.WorkerName || 'העובד'}?
                         </p>
                         <button onClick={() => setKeepJob(s)}
-                          className="w-full text-white rounded-xl py-2.5 font-bold text-sm"
-                          style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
+                          className="w-full rounded-xl py-2.5 font-bold text-sm"
+                          style={{ background: '#e8a020', color: '#241803' }}>
                           גייס לצוות — דמי השמה ₪300
                         </button>
                       </>
@@ -423,7 +426,8 @@ export const RestaurantStages: React.FC = () => {
           {partners.map(p => (
             <div key={p.WorkerId} className="bg-white rounded-2xl p-4 card-shadow">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-11 h-11 rounded-2xl bg-amber-500 text-white flex items-center justify-center font-black">{(p.Name || 'ע').slice(0, 2)}</div>
+                <div className="w-11 h-11 rounded-2xl flex items-center justify-center font-bold"
+                  style={{ background: avatarTone(p.Name).bg, color: avatarTone(p.Name).fg }}>{(p.Name || 'ע').slice(0, 2)}</div>
                 <div className="flex-1">
                   <div className="font-bold text-gray-900">{p.Name}</div>
                   <div className="text-gray-400 text-xs flex items-center gap-2">
@@ -435,8 +439,8 @@ export const RestaurantStages: React.FC = () => {
               </div>
               <div className="flex gap-2">
                 <button onClick={() => setDirectFor(p)}
-                  className="flex-1 text-white rounded-xl py-2.5 font-bold text-sm flex items-center justify-center gap-1.5"
-                  style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
+                  className="flex-1 rounded-xl py-2.5 font-bold text-sm flex items-center justify-center gap-1.5"
+                  style={{ background: '#e8a020', color: '#241803' }}>
                   <Send size={14} /> שלח משמרת
                 </button>
                 {p.Phone && (
@@ -453,10 +457,10 @@ export const RestaurantStages: React.FC = () => {
 
       {/* מודאל שמירת עובד (₪300) */}
       {keepJob && (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center p-6" style={{ background: 'rgba(13,20,32,0.65)', backdropFilter: 'blur(3px)' }}>
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-6" style={{ background: 'rgba(13,20,32,0.65)' }}>
           <div className="bg-white rounded-3xl p-6 w-full max-w-sm text-center space-y-3 shadow-2xl">
             <Star size={36} className="text-amber-400 fill-amber-400 mx-auto" />
-            <h3 className="font-black text-gray-900 text-lg">לגייס את {keepJob.WorkerName || 'העובד'} לצוות?</h3>
+            <h3 className="font-bold text-gray-900 text-lg">לגייס את {keepJob.WorkerName || 'העובד'} לצוות?</h3>
             <p className="text-gray-500 text-sm">
               ייגבו <b>₪300</b> — דמי השמה <b>חד-פעמיים</b>. מכאן ההעסקה ישירה מולך כמעסיק, ללא עמלה נוספת אף פעם —
               Staffly אינה צד ביחסי העבודה.
@@ -467,8 +471,8 @@ export const RestaurantStages: React.FC = () => {
             <div className="flex gap-2 pt-1">
               <button onClick={() => setKeepJob(null)} className="flex-1 bg-gray-100 text-gray-600 rounded-2xl py-3 font-bold">ביטול</button>
               <button onClick={doKeep} disabled={keeping}
-                className="flex-1 text-white rounded-2xl py-3 font-bold disabled:opacity-40"
-                style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
+                className="flex-1 rounded-2xl py-3 font-bold disabled:opacity-40"
+                style={{ background: '#e8a020', color: '#241803' }}>
                 {keeping ? '...' : 'כן, גייס (₪300)'}
               </button>
             </div>
@@ -539,10 +543,10 @@ const DirectShiftModal: React.FC<{ partner: any; restaurantId: number; onClose: 
   };
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4" style={{ background: 'rgba(13,20,32,0.65)', backdropFilter: 'blur(3px)' }}>
+    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4" style={{ background: 'rgba(13,20,32,0.65)' }}>
       <div className="bg-white rounded-3xl p-5 w-full max-w-md max-h-[85vh] overflow-y-auto space-y-3 shadow-2xl">
         <div className="flex items-center justify-between pb-2 border-b border-gray-100">
-          <h3 className="font-black text-gray-900 text-lg">משמרת ל{partner.Name}</h3>
+          <h3 className="font-bold text-gray-900 text-lg">משמרת ל{partner.Name}</h3>
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500"><X size={17} /></button>
         </div>
         <div>
@@ -571,8 +575,8 @@ const DirectShiftModal: React.FC<{ partner: any; restaurantId: number; onClose: 
         <p className="text-amber-700 text-xs text-center bg-amber-50 rounded-xl py-2">{partner.Name} בצוות שלך — הזמנה מהירה למשמרת בודדת</p>
         {err && <div className="bg-red-50 text-red-600 text-sm rounded-xl px-4 py-2 text-center">{err}</div>}
         <button onClick={send} disabled={sending}
-          className="w-full text-white rounded-2xl py-4 font-bold disabled:opacity-40"
-          style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow: '0 4px 16px rgba(232,160,32,0.35)' }}>
+          className="w-full rounded-2xl py-4 font-bold disabled:opacity-40"
+          style={{ background: '#e8a020', color: '#241803' }}>
           {sending ? 'שולח...' : 'שלח הצעת משמרת'}
         </button>
       </div>

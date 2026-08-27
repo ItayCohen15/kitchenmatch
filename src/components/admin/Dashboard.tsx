@@ -32,14 +32,14 @@ const Kpi = ({ icon, label, value, sub, color }: any) => (
     <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-2.5" style={{ background: color + '22' }}>
       <span style={{ color }}>{icon}</span>
     </div>
-    <div className="font-black text-white text-xl leading-tight">{value}</div>
+    <div className="font-bold text-white text-xl leading-tight">{value}</div>
     <div className="text-[11px] font-medium mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>{label}</div>
     {sub && <div className="text-[11px] font-bold mt-0.5" style={{ color }}>{sub}</div>}
   </Card>
 );
 
 const SectionTitle: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <h3 className="text-white font-black text-sm mb-2.5 mt-1">{children}</h3>
+  <h3 className="text-white font-bold text-sm mb-2.5 mt-1">{children}</h3>
 );
 
 export const AdminDashboard: React.FC = () => {
@@ -79,24 +79,24 @@ export const AdminDashboard: React.FC = () => {
     <div className="space-y-4 pb-4">
       {/* ===== הכנסת הפלטפורמה — גיבור ===== */}
       <div className="rounded-3xl p-5 relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #1a2744 0%, #0f1829 100%)', border: '1px solid rgba(232,160,32,0.25)', boxShadow: '0 8px 40px rgba(232,160,32,0.12)' }}>
+        style={{ background: '#14233d', border: '1px solid rgba(232,160,32,0.25)' }}>
         <div className="flex items-center gap-2 mb-1">
           <Wallet size={15} style={{ color: '#e8a020' }} />
           <span className="text-xs font-bold" style={{ color: 'rgba(255,255,255,0.6)' }}>סך הכנסות הפלטפורמה</span>
         </div>
-        <div className="text-4xl font-black" style={{ color: '#f5c842' }}>{ils(revenue.platformRevenue)}</div>
+        <div className="text-4xl font-bold" style={{ color: '#f5c842' }}>{ils(revenue.platformRevenue)}</div>
         <div className="flex gap-4 mt-3">
           <div>
             <div className="text-[11px]" style={{ color: 'rgba(255,255,255,0.4)' }}>עמלות משמרות</div>
-            <div className="text-sm font-black text-white">{ils(revenue.commissionFromShifts)}</div>
+            <div className="text-sm font-bold text-white">{ils(revenue.commissionFromShifts)}</div>
           </div>
           <div>
             <div className="text-[11px]" style={{ color: 'rgba(255,255,255,0.4)' }}>דמי שמירת עובד</div>
-            <div className="text-sm font-black text-white">{ils(revenue.brokerFees)}</div>
+            <div className="text-sm font-bold text-white">{ils(revenue.brokerFees)}</div>
           </div>
           <div>
             <div className="text-[11px]" style={{ color: 'rgba(255,255,255,0.4)' }}>30 ימים</div>
-            <div className="text-sm font-black" style={{ color: '#34d399' }}>+{ils(revenue.commission30d)}</div>
+            <div className="text-sm font-bold" style={{ color: '#34d399' }}>+{ils(revenue.commission30d)}</div>
           </div>
         </div>
       </div>
@@ -200,7 +200,7 @@ export const AdminDashboard: React.FC = () => {
                   <span style={{ color: 'rgba(255,255,255,0.5)' }}>{num(r.cnt)}</span>
                 </div>
                 <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
-                  <div className="h-full rounded-full" style={{ width: `${(r.cnt / maxRole) * 100}%`, background: 'linear-gradient(90deg,#e8a020,#f5c842)' }} />
+                  <div className="h-full rounded-full" style={{ width: `${(r.cnt / maxRole) * 100}%`, background: '#e8a020' }} />
                 </div>
               </div>
             ))}
@@ -215,7 +215,7 @@ export const AdminDashboard: React.FC = () => {
           <div className="space-y-2">
             {data.topWorkers.map((w: any, i: number) => (
               <div key={w.Id} className="flex items-center gap-3 py-1.5">
-                <span className="font-black text-sm w-5 text-center" style={{ color: i === 0 ? '#f5c842' : 'rgba(255,255,255,0.3)' }}>{i + 1}</span>
+                <span className="font-bold text-sm w-5 text-center" style={{ color: i === 0 ? '#f5c842' : 'rgba(255,255,255,0.3)' }}>{i + 1}</span>
                 <div className="flex-1 min-w-0">
                   <div className="text-white font-bold text-sm truncate">{w.Name || '—'}</div>
                   <div className="text-[11px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
@@ -224,7 +224,7 @@ export const AdminDashboard: React.FC = () => {
                   </div>
                 </div>
                 <div className="text-left">
-                  <div className="text-sm font-black text-white">{num(w.CompletedShifts)} <span className="text-[10px] font-medium" style={{ color: 'rgba(255,255,255,0.4)' }}>משמרות</span></div>
+                  <div className="text-sm font-bold text-white">{num(w.CompletedShifts)} <span className="text-[10px] font-medium" style={{ color: 'rgba(255,255,255,0.4)' }}>משמרות</span></div>
                   <div className="text-[11px] font-bold flex items-center gap-0.5 justify-end" style={{ color: '#f5c842' }}>
                     <Star size={10} fill="#f5c842" /> {Number(w.Rating || 0).toFixed(1)}
                   </div>
@@ -242,13 +242,13 @@ export const AdminDashboard: React.FC = () => {
           <div className="space-y-2">
             {data.topRestaurants.map((r: any, i: number) => (
               <div key={r.Id} className="flex items-center gap-3 py-1.5">
-                <span className="font-black text-sm w-5 text-center" style={{ color: i === 0 ? '#e8a020' : 'rgba(255,255,255,0.3)' }}>{i + 1}</span>
+                <span className="font-bold text-sm w-5 text-center" style={{ color: i === 0 ? '#e8a020' : 'rgba(255,255,255,0.3)' }}>{i + 1}</span>
                 <div className="flex-1 min-w-0">
                   <div className="text-white font-bold text-sm truncate">{r.Name || '—'}</div>
                   <div className="text-[11px]" style={{ color: 'rgba(255,255,255,0.4)' }}>{r.City || '—'} · {num(r.shifts)} משמרות</div>
                 </div>
                 <div className="text-left">
-                  <div className="text-sm font-black" style={{ color: '#34d399' }}>{ils(r.commission)}</div>
+                  <div className="text-sm font-bold" style={{ color: '#34d399' }}>{ils(r.commission)}</div>
                   <div className="text-[10px]" style={{ color: 'rgba(255,255,255,0.4)' }}>מחזור {ils(r.spend)}</div>
                 </div>
               </div>

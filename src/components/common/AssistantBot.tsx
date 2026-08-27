@@ -104,10 +104,10 @@ export const AssistantBot: React.FC<{ role: BotRole }> = ({ role }) => {
             <button
               onClick={() => { haptic('light'); setOpen(true); }}
               aria-label="עוזר חכם"
-              className="relative w-14 h-14 rounded-full flex items-center justify-center text-white shadow-2xl active:scale-95"
+              className="relative w-14 h-14 rounded-full flex items-center justify-center shadow-2xl active:scale-95"
               style={{
-                background: 'linear-gradient(135deg,#e8a020,#f0c050)',
-                boxShadow: '0 8px 28px rgba(232,160,32,0.45)',
+                background: '#e8a020',
+                color: '#241803',
                 transition: 'transform .25s cubic-bezier(0.16,1,0.3,1), opacity .25s ease',
                 transform: hidden ? 'scale(0.55) translateY(14px)' : 'scale(1)',
                 opacity: hidden ? 0 : 1,
@@ -129,7 +129,7 @@ export const AssistantBot: React.FC<{ role: BotRole }> = ({ role }) => {
         <div onClick={() => setOpen(false)}
           className="fixed inset-0 z-[80] flex items-center justify-center p-4"
           style={{
-            background: 'rgba(13,20,32,0.65)', backdropFilter: 'blur(3px)',
+            background: 'rgba(13,20,32,0.65)',
             paddingTop: 'max(env(safe-area-inset-top), 16px)',
             paddingBottom: 'max(env(safe-area-inset-bottom), 16px)',
           }}>
@@ -139,18 +139,18 @@ export const AssistantBot: React.FC<{ role: BotRole }> = ({ role }) => {
 
             {/* כותרת */}
             <div className="flex items-center justify-between px-4 py-3 flex-shrink-0 text-white"
-              style={{ background: 'linear-gradient(135deg,#0d1420,#1a2744)' }}>
+              style={{ background: '#14233d' }}>
               <div className="flex items-center gap-2.5">
                 <div className="relative w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
-                  <Bot size={19} className="text-white" />
+                  style={{ background: '#e8a020' }}>
+                  <Bot size={19} style={{ color: '#241803' }} />
                   <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center"
                     style={{ background: '#0d1420' }}>
                     <Sparkles size={8} style={{ color: '#f0c050' }} />
                   </span>
                 </div>
                 <div>
-                  <div className="font-black text-sm">סטאף · עוזר</div>
+                  <div className="font-bold text-sm">סטאף · עוזר</div>
                   <div className="text-[11px]" style={{ color: '#8899bb' }}>כאן לענות על כל שאלה</div>
                 </div>
               </div>
@@ -221,8 +221,8 @@ export const AssistantBot: React.FC<{ role: BotRole }> = ({ role }) => {
                   className="flex-1 border border-gray-200 bg-gray-50 rounded-2xl px-4 py-2.5 text-sm text-right outline-none focus:border-amber-400 focus:bg-white"
                 />
                 <button onClick={() => ask(input)} disabled={thinking || !input.trim()}
-                  className="w-10 h-10 rounded-2xl flex items-center justify-center text-white disabled:opacity-40 flex-shrink-0 active:scale-95 transition-transform"
-                  style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
+                  className="w-10 h-10 rounded-2xl flex items-center justify-center disabled:opacity-40 flex-shrink-0 active:scale-95 transition-transform"
+                  style={{ background: '#e8a020', color: '#241803' }}>
                   <Send size={17} style={{ transform: 'scaleX(-1)' }} />
                 </button>
               </div>

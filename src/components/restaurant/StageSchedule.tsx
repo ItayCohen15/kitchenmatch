@@ -4,6 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
 import { STAGE_RESTAURANT_COMMISSION } from '../../utils/levels';
+import { avatarTone } from '../../utils/colors';
 import { ChatModal } from '../common/ChatModal';
 
 const fmtDate = (d?: string) => d ? new Date(d).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit' }) : '';
@@ -76,15 +77,15 @@ export const StageSchedule: React.FC = () => {
       </button>
 
       {/* כרטיס הסטאז' */}
-      <div className="rounded-3xl p-4 text-white space-y-3" style={{ background: 'linear-gradient(135deg, #0d1420 0%, #1a2744 100%)' }}>
+      <div className="rounded-3xl p-4 text-white space-y-3" style={{ background: '#14233d' }}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg"
-              style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-lg"
+              style={{ background: avatarTone(workerName).bg, color: avatarTone(workerName).fg }}>
               {initials}
             </div>
             <div>
-              <div className="font-black text-lg leading-tight">{workerName}</div>
+              <div className="font-bold text-lg leading-tight">{workerName}</div>
               <div className="text-xs" style={{ color: '#8899bb' }}>
                 {ROLE_LABELS[stage.Role] || stage.Role} · סטאז' עד {fmtDate(stage.EndTime)}
               </div>
@@ -111,15 +112,15 @@ export const StageSchedule: React.FC = () => {
             <span>{left > 0 ? `עוד ${left} ימים` : 'הסתיימה התקופה'}</span>
           </div>
           <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
-            <div className="h-full rounded-full" style={{ width: `${stageProgress(stage)}%`, background: 'linear-gradient(90deg,#e8a020,#f0c050)' }} />
+            <div className="h-full rounded-full" style={{ width: `${stageProgress(stage)}%`, background: '#e8a020' }} />
           </div>
         </div>
       </div>
 
       {/* קביעת משמרת חדשה */}
       <button onClick={addShift}
-        className="w-full text-white rounded-2xl py-4 font-bold flex items-center justify-center gap-2"
-        style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow: '0 4px 16px rgba(232,160,32,0.35)' }}>
+        className="w-full rounded-2xl py-4 font-bold flex items-center justify-center gap-2"
+        style={{ background: '#e8a020', color: '#241803' }}>
         <Plus size={18} /> קבע משמרת חדשה
       </button>
 
@@ -131,10 +132,10 @@ export const StageSchedule: React.FC = () => {
 
       {/* משמרת רצה עכשיו */}
       {running.map(sh => (
-        <div key={sh.Id} className="bg-gradient-to-l from-green-600 to-emerald-500 rounded-2xl p-4 text-white">
+        <div key={sh.Id} className="rounded-2xl p-4 text-white" style={{ background: '#1f9d6b' }}>
           <div className="font-bold text-sm mb-1">משמרת {sh.Status === 'active' ? 'פעילה עכשיו' : 'ממתינה לאישור סיום'}</div>
           <div className="text-green-100 text-sm mb-3">{fmtDayDate(sh.StartTime)} · {fmtTime(sh.StartTime)}–{fmtTime(sh.EndTime)} · ₪{sh.HourlyRate}/ש'</div>
-          <button onClick={() => enterShift(sh)} className="w-full bg-white text-green-700 rounded-xl py-2.5 font-black text-sm">
+          <button onClick={() => enterShift(sh)} className="w-full bg-white text-green-700 rounded-xl py-2.5 font-bold text-sm">
             כנס למשמרת ›
           </button>
         </div>
@@ -175,8 +176,8 @@ export const StageSchedule: React.FC = () => {
               {sh.Instructions && <div className="text-gray-500 text-xs bg-gray-50 rounded-lg px-2.5 py-1.5 mt-1.5">{sh.Instructions}</div>}
               {today && (
                 <button onClick={() => enterShift(sh)}
-                  className="mt-2.5 w-full text-white rounded-xl py-2.5 text-sm font-bold"
-                  style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
+                  className="mt-2.5 w-full rounded-xl py-2.5 text-sm font-bold"
+                  style={{ background: '#e8a020', color: '#241803' }}>
                   כנס למשמרת היום ›
                 </button>
               )}

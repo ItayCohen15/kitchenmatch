@@ -40,7 +40,7 @@ export const AdminRatings: React.FC = () => {
           <button key={id} onClick={() => setFilter(id)}
             className="flex-1 py-2 rounded-xl text-xs font-bold transition-all"
             style={filter === id
-              ? { background: 'linear-gradient(135deg,#e8a020,#f5c842)', color: '#0a0f1a' }
+              ? { background: '#e8a020', color: '#0a0f1a' }
               : { background: '#111a2b', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.06)' }}>
             {label}
           </button>
@@ -52,7 +52,7 @@ export const AdminRatings: React.FC = () => {
         <div className="rounded-2xl p-3 mb-3 flex items-center justify-between" style={{ background: '#111a2b', border: '1px solid rgba(255,255,255,0.06)' }}>
           <span className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>{filtered.length} דירוגים</span>
           <div className="flex items-center gap-1.5">
-            <span className="text-lg font-black" style={{ color: '#f5c842' }}>{avg.toFixed(2)}</span>
+            <span className="text-lg font-bold" style={{ color: '#f5c842' }}>{avg.toFixed(2)}</span>
             <Stars score={Math.round(avg)} />
           </div>
         </div>

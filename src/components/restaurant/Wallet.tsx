@@ -48,7 +48,7 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
         .calc-table td{padding:7px 4px;border-bottom:1px solid #f5f5f5}
         .calc-table .total-row td{font-weight:900;font-size:15px;color:#d97706;
                                    border-top:2px solid #e8a020;border-bottom:none;padding-top:10px}
-        .total-box{background:linear-gradient(135deg,#0d1420,#1a2744);color:white;
+        .total-box{background:#14233d;color:white;
                    padding:14px;border-radius:10px;margin:14px 0}
         .total-label{font-size:11px;color:#9ca3af;margin-bottom:3px}
         .total-amount{font-size:26px;font-weight:900;color:#e8a020}
@@ -124,7 +124,7 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm" onClick={onClose} />
+      <div className="fixed inset-0 bg-black/50 z-40" onClick={onClose} />
       <div className="fixed inset-x-0 z-50 flex items-center justify-center px-4 pointer-events-none"
         style={{
           top: 'calc(env(safe-area-inset-top) + 64px)',
@@ -134,10 +134,10 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
         style={{ maxHeight: '100%' }}>
 
         {/* Header – דביק */}
-        <div className="flex-shrink-0 p-4 text-white" style={{ background:'linear-gradient(135deg,#0d1420,#1a2744)' }}>
+        <div className="flex-shrink-0 p-4 text-white" style={{ background:'#14233d' }}>
           <div className="flex items-center justify-between mb-2">
             <div>
-              <div className="font-black text-sm">קבלת עמלת תיווך</div>
+              <div className="font-bold text-sm">קבלת עמלת תיווך</div>
               <div className="text-gray-400 text-xs mt-0.5">Staffly · {receiptNum}</div>
             </div>
             <button onClick={onClose} className="w-8 h-8 rounded-xl flex items-center justify-center bg-white/10">
@@ -146,7 +146,7 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
           </div>
           <div className="flex items-center justify-between">
             <div className="text-gray-400 text-xs">עמלת תיווך ({commPct}%){job.IsEmergency ? ' · חירום' : ''}</div>
-            <div className="text-2xl font-black" style={{ color:'#e8a020' }}>₪{commStr}</div>
+            <div className="text-2xl font-bold" style={{ color:'#e8a020' }}>₪{commStr}</div>
           </div>
         </div>
 
@@ -188,7 +188,7 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
               </div>
               <div className="flex justify-between pt-3 pb-1">
                 <span className="font-bold text-gray-900">סה"כ ששילמת</span>
-                <span className="font-black text-gray-900 text-lg">₪{totalStr}</span>
+                <span className="font-bold text-gray-900 text-lg">₪{totalStr}</span>
               </div>
             </div>
           </div>
@@ -197,8 +197,8 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
         {/* כפתור – דביק */}
         <div className="flex-shrink-0 px-4 py-3 border-t border-gray-100">
           <button onClick={handlePrint}
-            className="w-full text-white rounded-2xl py-3 font-bold flex items-center justify-center gap-2 text-sm"
-            style={{ background:'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow:'0 4px 16px rgba(232,160,32,0.3)' }}>
+            className="w-full rounded-2xl py-3 font-bold flex items-center justify-center gap-2 text-sm"
+            style={{ background:'#e8a020', color:'#241803' }}>
             <Printer size={16} /> הדפס קבלת עמלה
           </button>
         </div>
@@ -281,9 +281,9 @@ export const RestaurantWallet: React.FC = () => {
     <div className="screen-enter space-y-4">
 
       {/* Balance card */}
-      <div className="rounded-3xl p-5 text-white" style={{ background:'linear-gradient(135deg,#0d1420,#1a2744)' }}>
+      <div className="rounded-3xl p-5 text-white" style={{ background:'#14233d' }}>
         <div className="text-gray-400 text-sm mb-1">יתרה בארנק</div>
-        <div className="text-4xl font-black mb-1" style={{ color:'#e8a020' }}>
+        <div className="text-4xl font-bold mb-1" style={{ color:'#e8a020' }}>
           ₪{walletBalance.toLocaleString()}
         </div>
         {name && <div className="text-gray-400 text-sm mb-3">{name}</div>}
@@ -294,7 +294,7 @@ export const RestaurantWallet: React.FC = () => {
             <Plus size={16} /> טען כסף
           </button>
           <button className="rounded-xl py-3 flex items-center justify-center gap-2 font-semibold text-sm"
-            style={{ background:'linear-gradient(135deg,#e8a020,#f0c050)' }}>
+            style={{ background:'#e8a020', color:'#241803' }}>
             <CreditCard size={16} /> כרטיס אשראי
           </button>
         </div>
@@ -347,7 +347,7 @@ export const RestaurantWallet: React.FC = () => {
           { label:'משמרות',       value: jobs.length,                                  color:'text-green-500' },
         ].map(s => (
           <div key={s.label} className="bg-white rounded-xl p-3 card-shadow text-center">
-            <div className={`font-black text-lg ${s.color}`}>{s.value}</div>
+            <div className={`font-bold text-lg ${s.color}`}>{s.value}</div>
             <div className="text-gray-500 text-xs mt-0.5">{s.label}</div>
           </div>
         ))}
@@ -389,7 +389,7 @@ export const RestaurantWallet: React.FC = () => {
 
       {/* Subscription */}
       <div className="rounded-2xl p-4 text-white"
-        style={{ background:'linear-gradient(135deg,#7c3aed,#6d28d9)' }}>
+        style={{ background:'#9a5ba6' }}>
         <div className="font-bold mb-1">מנוי Pro מסעדות</div>
         <div className="text-purple-100 text-sm mb-3">
           חסוך עד 5% עמלות · עדיפות בשיבוץ · תמיכה 24/7

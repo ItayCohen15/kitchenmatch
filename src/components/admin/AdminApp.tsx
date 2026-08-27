@@ -43,15 +43,15 @@ export const AdminApp: React.FC = () => {
     <div className="flex flex-col h-full" style={{ background: '#0a0f1a' }}>
       {/* Header */}
       <header className="px-4 flex items-center justify-between flex-shrink-0"
-        style={{ background: 'linear-gradient(135deg, #080c14 0%, #0f1829 100%)', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingTop: 'max(env(safe-area-inset-top), 12px)', paddingBottom: '12px' }}>
+        style={{ background: '#0d1420', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingTop: 'max(env(safe-area-inset-top), 12px)', paddingBottom: '12px' }}>
         <button onClick={resetToLanding} style={{ color: 'rgba(255,255,255,0.4)' }} title="יציאה">
           <LogOut size={18} />
         </button>
         <div className="flex items-center gap-2">
-          <span className="font-black text-base text-white">{TITLES[screen]}</span>
+          <span className="font-bold text-base text-white">{TITLES[screen]}</span>
           <div className="w-8 h-8 rounded-xl flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg,#e8a020,#f5c842)', boxShadow: '0 2px 8px rgba(232,160,32,0.4)' }}>
-            <ShieldCheck size={16} className="text-white" />
+            style={{ background: '#e8a020' }}>
+            <ShieldCheck size={16} style={{ color: '#241803' }} />
           </div>
         </div>
         <div style={{ width: 18 }} />
@@ -64,10 +64,10 @@ export const AdminApp: React.FC = () => {
 
       {/* Bottom nav */}
       <nav className="fixed bottom-0 right-0 left-0 z-50"
-        style={{ background: 'linear-gradient(to top, #080c14 0%, transparent 100%)' }}>
+        style={{ background: 'transparent' }}>
         <div className="max-w-md mx-auto px-3" style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 8px)' }}>
           <div className="flex overflow-hidden rounded-2xl mb-2"
-            style={{ background: 'rgba(10,14,24,0.92)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 -2px 30px rgba(0,0,0,0.5)' }}>
+            style={{ background: '#0d1420', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 16px rgba(20,28,44,0.10)' }}>
             {TABS.map(tab => {
               const isActive = screen === tab.id;
               return (

@@ -33,24 +33,18 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
   ];
 
   return (
-    <div className="h-full overflow-y-auto" style={{ background: '#f0f2f7' }}>
+    <div className="h-full overflow-y-auto" style={{ background: '#f6f4ef' }}>
 
       {/* Hero */}
       <div className="relative overflow-hidden px-5 pt-9 pb-9"
-        style={{ background: 'radial-gradient(125% 85% at 82% 0%, #22335c 0%, #1a2744 45%, #0d1420 100%)' }}>
-        {/* glow blobs */}
-        <div className="absolute top-0 right-0 w-72 h-72 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(232,160,32,0.20), transparent 70%)', transform: 'translate(30%,-30%)' }} />
-        <div className="absolute bottom-0 left-0 w-56 h-56 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(232,160,32,0.10), transparent 70%)', transform: 'translate(-30%,30%)' }} />
-
+        style={{ background: '#14233d' }}>
         {/* Logo */}
         <div className="flex items-center gap-3 mb-8 relative" style={{ marginTop: 'env(safe-area-inset-top)' }}>
           <div className="w-14 h-14 rounded-2xl overflow-hidden flex-shrink-0"
-            style={{ boxShadow: '0 10px 30px rgba(232,160,32,0.40)' }}>
+            style={{ boxShadow: '0 4px 16px rgba(20,28,44,0.10)' }}>
             <img src="/logo.svg" alt="Staffly" className="w-full h-full object-cover" />
           </div>
-          <div className="font-black text-3xl tracking-tight leading-none">
+          <div className="font-bold text-3xl tracking-tight leading-none">
             <span className="text-white">Staff</span><span style={{ color: '#e8a020' }}>ly</span>
           </div>
         </div>
@@ -63,7 +57,7 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
 
         {/* Headline */}
         <div className="relative mb-5">
-          <h1 className="text-4xl font-black text-white mb-3" dir="ltr" style={{ lineHeight: 1.08 }}>
+          <h1 className="text-4xl font-bold text-white mb-3" dir="ltr" style={{ lineHeight: 1.08 }}>
             Find your shift.
             <br />
             <span style={{ color: '#e8a020' }}>Fill your team.</span>
@@ -85,8 +79,8 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
 
         {/* CTA */}
         <button onClick={onStart}
-          className="w-full text-white font-black text-lg rounded-2xl py-4 flex items-center justify-center gap-2 relative transition-transform active:scale-[0.98]"
-          style={{ background: 'linear-gradient(135deg, #e8a020, #f0c050)', boxShadow: '0 8px 30px rgba(232,160,32,0.45)' }}>
+          className="w-full font-bold text-lg rounded-2xl py-4 flex items-center justify-center gap-2 relative transition-transform active:scale-[0.98]"
+          style={{ background: '#e8a020', color: '#241803' }}>
           התחל עכשיו — בחינם
           <ChevronLeft size={20} />
         </button>
@@ -107,12 +101,12 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
               <button key={r.id} onClick={() => setActiveRole(r.id as any)}
                 className="rounded-2xl p-4 text-center transition-all active:scale-[0.98]"
                 style={{
-                  background: sel ? 'linear-gradient(135deg,#0d1420,#1a2744)' : '#fff',
+                  background: sel ? '#14233d' : '#fff',
                   border: sel ? '2px solid #e8a020' : '2px solid transparent',
-                  boxShadow: sel ? '0 8px 24px rgba(232,160,32,0.25)' : '0 2px 10px rgba(13,20,32,0.06)',
+                  boxShadow: sel ? '0 4px 16px rgba(20,28,44,0.10)' : '0 2px 10px rgba(13,20,32,0.06)',
                 }}>
                 <div className="mb-1.5 flex justify-center"><r.Icon size={26} style={{ color: sel ? '#e8a020' : '#0d1420' }} /></div>
-                <div className="font-black text-sm" style={{ color: sel ? '#fff' : '#0d1420' }}>{r.label}</div>
+                <div className="font-bold text-sm" style={{ color: sel ? '#fff' : '#0d1420' }}>{r.label}</div>
                 <div className="text-[11px] mt-0.5" style={{ color: sel ? '#e8a020' : '#94a3b8' }}>{r.sub}</div>
               </button>
             );
@@ -123,8 +117,8 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
         <div className="space-y-3 mb-6">
           {features[activeRole].map((f, i) => (
             <div key={i} className="bg-white rounded-2xl p-4 card-shadow flex items-start gap-4">
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 text-white"
-                style={{ background: 'linear-gradient(135deg, #e8a020, #f0c050)', boxShadow: '0 4px 12px rgba(232,160,32,0.3)' }}>
+              <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{ background: '#e8a020', color: '#241803' }}>
                 {f.icon}
               </div>
               <div>
@@ -137,10 +131,8 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
 
         {/* How it works */}
         <div className="rounded-2xl p-5 mb-6 text-white relative overflow-hidden"
-          style={{ background: 'linear-gradient(135deg,#0d1420,#1a2744)' }}>
-          <div className="absolute top-0 right-0 w-40 h-40 rounded-full pointer-events-none"
-            style={{ background: 'radial-gradient(circle, rgba(232,160,32,0.13), transparent 70%)', transform: 'translate(30%,-30%)' }} />
-          <h3 className="font-black text-base mb-4 relative" style={{ color: '#e8a020' }}>איך זה עובד?</h3>
+          style={{ background: '#14233d' }}>
+          <h3 className="font-bold text-base mb-4 relative" style={{ color: '#e8a020' }}>איך זה עובד?</h3>
           <div className="space-y-3.5 relative">
             {(activeRole === 'restaurant' ? [
               { n:'1', t:'פרסם משמרת', d:'בחר תפקיד, שעות ושכר' },
@@ -154,7 +146,7 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
               { n:'4', t:'עבוד ותרוויח', d:'תשלום ישיר אחרי כל משמרת' },
             ]).map(s => (
               <div key={s.n} className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full flex items-center justify-center font-black text-sm flex-shrink-0"
+                <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0"
                   style={{ background: 'rgba(232,160,32,0.18)', color: '#e8a020', border: '1px solid rgba(232,160,32,0.30)' }}>
                   {s.n}
                 </div>
@@ -169,8 +161,8 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
 
         {/* Final CTA */}
         <button onClick={onStart}
-          className="w-full text-white font-black text-base rounded-2xl py-4 mb-3 transition-transform active:scale-[0.98]"
-          style={{ background: 'linear-gradient(135deg, #e8a020, #f0c050)', boxShadow: '0 8px 28px rgba(232,160,32,0.4)' }}>
+          className="w-full font-bold text-base rounded-2xl py-4 mb-3 transition-transform active:scale-[0.98]"
+          style={{ background: '#e8a020', color: '#241803' }}>
           {activeRole === 'restaurant' ? 'פרסם משמרת ראשונה — בחינם' : 'מצא משמרת ראשונה — בחינם'}
         </button>
 

@@ -268,11 +268,12 @@ export const LEVEL_LABELS: Record<string, string> = {
   pro: 'פרו', // legacy
 };
 
+// תגי-רמה עשירים — מרגישים כמו פרס (רקע רך + טקסט עשיר)
 export const LEVEL_COLORS: Record<string, string> = {
-  bronze: 'text-amber-700 bg-amber-50',
+  bronze: 'text-amber-800 bg-amber-100',
   silver: 'text-slate-600 bg-slate-100',
-  gold: 'text-yellow-600 bg-yellow-50',
-  platinum: 'text-cyan-600 bg-cyan-50',
-  diamond: 'text-indigo-600 bg-indigo-50',
-  pro: 'text-purple-600 bg-purple-50', // legacy
+  gold: 'text-yellow-800 bg-yellow-100',
+  platinum: 'text-teal-700 bg-teal-50',
+  diamond: 'text-indigo-700 bg-indigo-50',
+  pro: 'text-purple-700 bg-purple-50', // legacy
 };

@@ -8,6 +8,7 @@ import { WorkerProfileModal } from '../common/WorkerProfileModal';
 import { NewWorkerBadge } from '../common/NewWorkerBadge';
 import { VerifiedBadge } from '../common/VerifiedBadge';
 import { getLevel } from '../../utils/levels';
+import { avatarTone } from '../../utils/colors';
 
 // חישוב אחוז התאמה אמיתי (כולל חשיפה לפי רמה)
 const calcMatchScore = (worker: any, restaurantCuisine: string): number => {
@@ -112,7 +113,7 @@ export const WorkerMatching: React.FC = () => {
         <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center">
           <CheckCircle2 size={44} className="text-green-500" />
         </div>
-        <h2 className="text-2xl font-black text-gray-900">{wName} אושר</h2>
+        <h2 className="text-2xl font-bold text-gray-900">{wName} אושר</h2>
         <p className="text-gray-500">העובד בדרך אליך. אפשר לעקוב אחר מיקומו כאן.</p>
         <div className="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
       </div>
@@ -122,7 +123,7 @@ export const WorkerMatching: React.FC = () => {
   return (
     <div className="screen-enter space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-black text-gray-900">מועמדים למשמרת</h2>
+        <h2 className="text-xl font-bold text-gray-900">מועמדים למשמרת</h2>
         <button onClick={loadApplicants} className="text-gray-400 p-1 rounded-lg">
           <RefreshCw size={16} />
         </button>
@@ -201,7 +202,8 @@ export const WorkerMatching: React.FC = () => {
               <div className="flex items-start gap-3 mb-3 cursor-pointer"
                 onClick={() => setViewWorker(job)}>
                 <div className="relative flex-shrink-0">
-                  <div className="w-14 h-14 bg-amber-500 rounded-2xl flex items-center justify-center text-white font-black text-lg">
+                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-lg"
+                    style={{ background: avatarTone(wName).bg, color: avatarTone(wName).fg }}>
                     {wInit}
                   </div>
                   <div className="absolute -bottom-1 -left-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white" />
@@ -241,7 +243,7 @@ export const WorkerMatching: React.FC = () => {
                 <div className="text-right flex-shrink-0">
                   {(job.WorkerRating || 0) > 0 ? (
                     <>
-                      <div className="text-yellow-500 font-black text-lg">★{Number(job.WorkerRating).toFixed(1)}</div>
+                      <div className="text-yellow-500 font-bold text-lg">★{Number(job.WorkerRating).toFixed(1)}</div>
                       <div className="text-gray-400 text-xs">דירוג</div>
                     </>
                   ) : (
@@ -254,17 +256,17 @@ export const WorkerMatching: React.FC = () => {
               <div className="grid grid-cols-3 gap-2 py-2 border-t border-b border-gray-50 mb-3">
                 <div className="text-center">
                   <div className="text-xs text-gray-400 mb-0.5">התאמה</div>
-                  <div className={`font-black text-sm ${matchScore >= 75 ? 'text-green-600' : matchScore >= 55 ? 'text-yellow-500' : 'text-gray-500'}`}>
+                  <div className={`font-bold text-sm ${matchScore >= 75 ? 'text-green-600' : matchScore >= 55 ? 'text-yellow-500' : 'text-gray-500'}`}>
                     {matchScore}%
                   </div>
                 </div>
                 <div className="text-center">
                   <div className="text-xs text-gray-400 mb-0.5">אמינות</div>
-                  <div className="font-black text-blue-600 text-sm">{job.ReliabilityScore || 100}%</div>
+                  <div className="font-bold text-blue-600 text-sm">{job.ReliabilityScore || 100}%</div>
                 </div>
                 <div className="text-center">
                   <div className="text-xs text-gray-400 mb-0.5">משמרות</div>
-                  <div className="font-black text-gray-700 text-sm">{job.CompletedShifts || 0}</div>
+                  <div className="font-bold text-gray-700 text-sm">{job.CompletedShifts || 0}</div>
                 </div>
               </div>
 

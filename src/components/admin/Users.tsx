@@ -73,7 +73,7 @@ export const AdminUsers: React.FC = () => {
           <button key={id} onClick={() => setTab(id)}
             className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all"
             style={tab === id
-              ? { background: 'linear-gradient(135deg,#e8a020,#f5c842)', color: '#0a0f1a' }
+              ? { background: '#e8a020', color: '#0a0f1a' }
               : { background: '#111a2b', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.06)' }}>
             {label}
           </button>
@@ -108,7 +108,7 @@ export const AdminUsers: React.FC = () => {
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-white font-black text-sm truncate">{w.Name || '—'}</span>
+                    <span className="text-white font-bold text-sm truncate">{w.Name || '—'}</span>
                     <Verified ok={w.IsEmailVerified} />
                     {w.IsVerified ? <span className="inline-flex items-center gap-0.5 text-[10px] font-bold px-1.5 py-0.5 rounded-md" style={{ background: 'rgba(16,185,129,0.15)', color: '#34d399' }}><BadgeCheck size={9} /> מאומת</span> : null}
                     {w.IsTrainee ? <span className="inline-flex items-center gap-0.5 text-[10px] font-bold px-1.5 py-0.5 rounded-md" style={{ background: 'rgba(244,63,94,0.15)', color: '#fb7185' }}><GraduationCap size={9} /> סטאז'</span> : null}
@@ -152,7 +152,7 @@ export const AdminUsers: React.FC = () => {
                   className="text-[11px] font-bold px-2.5 py-1 rounded-lg disabled:opacity-40 flex-shrink-0"
                   style={w.AdminVerifiedAt
                     ? { background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.55)', border: '1px solid rgba(255,255,255,0.1)' }
-                    : { background: 'linear-gradient(135deg,#10b981,#059669)', color: '#fff' }}>
+                    : { background: '#1f9d6b', color: '#fff' }}>
                   {verifying === w.Id ? '...' : w.AdminVerifiedAt ? 'בטל אימות ידני' : 'אמת עובד'}
                 </button>
               </div>
@@ -162,7 +162,7 @@ export const AdminUsers: React.FC = () => {
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-white font-black text-sm truncate">{r.Name || '—'}</span>
+                    <span className="text-white font-bold text-sm truncate">{r.Name || '—'}</span>
                     <Verified ok={r.IsEmailVerified} />
                   </div>
                   <div className="text-[11px] mt-0.5" style={{ color: 'rgba(255,255,255,0.4)' }}>
@@ -199,7 +199,7 @@ export const AdminUsers: React.FC = () => {
 
 const Stat = ({ label, value, highlight, icon }: any) => (
   <div className="text-center">
-    <div className="text-sm font-black leading-tight" style={{ color: highlight ? '#34d399' : '#fff' }}>{value}</div>
+    <div className="text-sm font-bold leading-tight" style={{ color: highlight ? '#34d399' : '#fff' }}>{value}</div>
     <div className="text-[9px] mt-0.5 flex items-center gap-0.5 justify-center" style={{ color: 'rgba(255,255,255,0.35)' }}>{icon}{label}</div>
   </div>
 );

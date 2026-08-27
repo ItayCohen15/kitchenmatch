@@ -7,6 +7,7 @@ import { WorkerGallery } from './WorkerGallery';
 import { NewWorkerBadge } from './NewWorkerBadge';
 import { GradBadge } from './GradBadge';
 import { VerifiedBadge } from './VerifiedBadge';
+import { avatarTone, levelTone } from '../../utils/colors';
 
 interface Props {
   workerId: number;
@@ -59,7 +60,7 @@ export const WorkerProfileModal: React.FC<Props> = ({ workerId, initial, onClose
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm" onClick={onClose} />
+      <div className="fixed inset-0 bg-black/50 z-40" onClick={onClose} />
       <div className="fixed inset-x-0 z-50 flex items-center justify-center px-4 pointer-events-none"
         style={{
           top: 'calc(env(safe-area-inset-top) + 64px)',
@@ -69,15 +70,15 @@ export const WorkerProfileModal: React.FC<Props> = ({ workerId, initial, onClose
           style={{ maxHeight: '100%' }}>
 
           {/* Header */}
-          <div className="flex-shrink-0 p-4 text-white" style={{ background:'linear-gradient(135deg,#0d1420,#1a2744)' }}>
+          <div className="flex-shrink-0 p-4 text-white" style={{ background:'#14233d' }}>
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-14 h-14 rounded-2xl flex items-center justify-center font-black text-lg"
-                  style={{ background: lvl.gradient }}>
+                <div className="w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-lg"
+                  style={{ background: avatarTone(name).bg, color: avatarTone(name).fg }}>
                   {initials}
                 </div>
                 <div>
-                  <div className="font-black text-lg">{name}</div>
+                  <div className="font-bold text-lg">{name}</div>
                   <div className="text-gray-400 text-xs">
                     {city}{role ? ` · ${roleLabels(role)}` : ''}
                   </div>
@@ -86,7 +87,7 @@ export const WorkerProfileModal: React.FC<Props> = ({ workerId, initial, onClose
                     <VerifiedBadge isVerified={worker?.IsVerified} size="sm" />
                     <GradBadge isTrainee={worker?.IsTrainee} school={worker?.SchoolName} course={worker?.CourseType} size="sm" />
                     <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full"
-                      style={{ background: lvl.gradient, color: 'white' }}>
+                      style={{ background: levelTone(lvl.key).bg, color: levelTone(lvl.key).fg }}>
                       {lvl.label}
                     </span>
                     {rating > 0 && (
@@ -113,7 +114,7 @@ export const WorkerProfileModal: React.FC<Props> = ({ workerId, initial, onClose
                 { l:'ניסיון', v: `${yearsExp} שנ׳` },
               ].map(s => (
                 <div key={s.l} className="bg-gray-50 rounded-xl p-2 text-center">
-                  <div className="font-black text-gray-900 text-sm">{s.v}</div>
+                  <div className="font-bold text-gray-900 text-sm">{s.v}</div>
                   <div className="text-gray-400 text-[10px]">{s.l}</div>
                 </div>
               ))}

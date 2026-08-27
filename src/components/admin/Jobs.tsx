@@ -51,7 +51,7 @@ export const AdminJobs: React.FC = () => {
           <button key={id} onClick={() => setFilter(id)}
             className="flex-1 py-2 rounded-xl text-xs font-bold transition-all"
             style={filter === id
-              ? { background: 'linear-gradient(135deg,#e8a020,#f5c842)', color: '#0a0f1a' }
+              ? { background: '#e8a020', color: '#0a0f1a' }
               : { background: '#111a2b', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.06)' }}>
             {label}
           </button>
@@ -84,7 +84,7 @@ export const AdminJobs: React.FC = () => {
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="text-white font-black text-sm">{ROLE_LABELS[j.Role] || j.Role || '—'}</span>
+                      <span className="text-white font-bold text-sm">{ROLE_LABELS[j.Role] || j.Role || '—'}</span>
                       {j.IsEmergency ? <Zap size={12} style={{ color: '#fb923c' }} /> : null}
                       {(j.JobType && j.JobType !== 'regular') && (
                         <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md"
@@ -126,7 +126,7 @@ export const AdminJobs: React.FC = () => {
 
 const Mini = ({ label, value, highlight }: any) => (
   <div className="text-center">
-    <div className="text-sm font-black" style={{ color: highlight ? '#34d399' : '#fff' }}>{value}</div>
+    <div className="text-sm font-bold" style={{ color: highlight ? '#34d399' : '#fff' }}>{value}</div>
     <div className="text-[9px] mt-0.5" style={{ color: 'rgba(255,255,255,0.35)' }}>{label}</div>
   </div>
 );

@@ -5,6 +5,7 @@ import { api } from '../../api';
 import { Chat } from '../common/Chat';
 import { toast } from '../common/Toast';
 import { restaurantRate } from '../../utils/levels';
+import { avatarTone } from '../../utils/colors';
 
 export const ActiveShift: React.FC = () => {
   const { navToRestaurant, shiftStartTime, getSelectedJob, userProfile } = useApp();
@@ -124,10 +125,10 @@ export const ActiveShift: React.FC = () => {
         <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center">
           <AlertTriangle size={38} className="text-red-500" />
         </div>
-        <h2 className="text-xl font-black text-gray-900">התשלום לא עבר</h2>
+        <h2 className="text-xl font-bold text-gray-900">התשלום לא עבר</h2>
         <p className="text-gray-500 text-sm">{payError}</p>
         <div className="bg-amber-50 rounded-2xl p-4 w-full text-center">
-          <div className="text-2xl font-black text-amber-600">₪{totalWithFee}</div>
+          <div className="text-2xl font-bold text-amber-600">₪{totalWithFee}</div>
           <div className="text-gray-400 text-xs mt-1">הסכום לחיוב (כולל {restCommPct}% עמלה)</div>
         </div>
         <p className="text-gray-400 text-xs">המשמרת לא נסגרה. {workerName} עדיין ממתין לתשלום.</p>
@@ -155,10 +156,10 @@ export const ActiveShift: React.FC = () => {
         <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center">
           <PartyPopper size={44} className="text-green-500" />
         </div>
-        <h2 className="text-2xl font-black text-gray-900">שני הצדדים אישרו</h2>
+        <h2 className="text-2xl font-bold text-gray-900">שני הצדדים אישרו</h2>
         <p className="text-gray-500">התשלום בדרך. עוד רגע תעברו למסך הדירוג.</p>
         <div className="bg-amber-50 rounded-2xl p-4 w-full text-center">
-          <div className="text-3xl font-black text-amber-600">₪{totalWithFee}</div>
+          <div className="text-3xl font-bold text-amber-600">₪{totalWithFee}</div>
           <div className="text-gray-400 text-sm mt-1">סה״כ חויב (כולל {restCommPct}% עמלה){isEmergency ? ' · משמרת חירום' : ''}</div>
         </div>
         <div className="w-6 h-6 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
@@ -173,7 +174,7 @@ export const ActiveShift: React.FC = () => {
   return (
     <div className="screen-enter flex flex-col gap-3">
       {/* Live banner */}
-      <div className="bg-gradient-to-l from-green-600 to-emerald-500 rounded-2xl p-4 text-white">
+      <div className="bg-[#1f9d6b] rounded-2xl p-4 text-white">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <div className="w-2.5 h-2.5 bg-white rounded-full animate-pulse" />
@@ -181,11 +182,12 @@ export const ActiveShift: React.FC = () => {
           </div>
           <div className="flex items-center gap-2 bg-white/20 rounded-xl px-3 py-1">
             <Clock size={14} />
-            <span className="font-black text-lg tracking-widest">{fmt(elapsed)}</span>
+            <span className="font-bold text-lg tracking-widest">{fmt(elapsed)}</span>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center text-white font-black">
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center font-bold"
+            style={{ background: avatarTone(workerName).bg, color: avatarTone(workerName).fg }}>
             {workerInit}
           </div>
           <div className="flex-1">
@@ -194,7 +196,7 @@ export const ActiveShift: React.FC = () => {
           </div>
           <div className="text-right">
             <div className="text-xs text-green-100">תשלם עד כה</div>
-            <div className="font-black text-xl">₪{totalWithFee}</div>
+            <div className="font-bold text-xl">₪{totalWithFee}</div>
             <div className="text-green-200 text-xs">₪{perMinute}/דק׳ · +{restCommPct}%</div>
           </div>
         </div>
@@ -251,7 +253,7 @@ export const ActiveShift: React.FC = () => {
           <div className="bg-white rounded-2xl p-4 card-shadow space-y-3 screen-enter">
             <h3 className="font-bold text-gray-900 text-center">בטוח שתרצה לסיים?</h3>
             <div className="bg-amber-50 rounded-xl p-3 text-center">
-              <div className="text-xl font-black text-amber-600">₪{totalWithFee}</div>
+              <div className="text-xl font-bold text-amber-600">₪{totalWithFee}</div>
               <div className="text-gray-400 text-xs">יחויב לאחר אישור שני הצדדים</div>
             </div>
             <div className="flex gap-3">

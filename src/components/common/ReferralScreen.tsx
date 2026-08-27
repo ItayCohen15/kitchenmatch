@@ -45,10 +45,10 @@ export const ReferralScreen: React.FC = () => {
   return (
     <div className="space-y-4 pb-4">
       {/* כותרת + הסבר קצר */}
-      <div className="rounded-2xl p-4 text-white" style={{ background: 'linear-gradient(135deg,#0d1420,#1a2744)' }}>
+      <div className="rounded-2xl p-4 text-white" style={{ background: '#14233d' }}>
         <div className="flex items-center gap-2">
           <Gift size={20} className="text-amber-400" />
-          <h2 className="font-black text-lg">חבר מביא חבר</h2>
+          <h2 className="font-bold text-lg">חבר מביא חבר</h2>
         </div>
         <p className="text-gray-300 text-sm mt-1 leading-relaxed">
           {isWorker
@@ -60,34 +60,34 @@ export const ReferralScreen: React.FC = () => {
       {/* הפרס שלי */}
       {isWorker ? (
         <div className="rounded-2xl p-4 card-shadow flex items-center gap-3"
-          style={{ background: 'linear-gradient(135deg,#ecfdf5,#ffffff)', border: '1px solid #d1fae5' }}>
+          style={{ background: '#ecfdf5', border: '1px solid #d1fae5' }}>
           <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg,#10b981,#059669)' }}>
+            style={{ background: '#1f9d6b' }}>
             <Ticket size={20} className="text-white" />
           </div>
           <div>
-            <div className="text-2xl font-black text-gray-900 leading-none">{data.freeShifts || 0}</div>
+            <div className="text-2xl font-bold text-gray-900 leading-none">{data.freeShifts || 0}</div>
             <div className="text-xs text-gray-500 mt-0.5">משמרות ללא עמלה זמינות</div>
           </div>
         </div>
       ) : (
         <div className="rounded-2xl p-4 card-shadow flex items-center gap-3"
-          style={{ background: 'linear-gradient(135deg,#fffbeb,#ffffff)', border: '1px solid #fde68a' }}>
+          style={{ background: '#fffbeb', border: '1px solid #fde68a' }}>
           <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg,#e8a020,#f5c842)' }}>
-            <Percent size={20} className="text-white" />
+            style={{ background: '#e8a020' }}>
+            <Percent size={20} style={{ color: '#241803' }} />
           </div>
           <div className="flex-1">
             {data.reducedActive ? (
               <>
-                <div className="text-sm font-black text-gray-900">עמלה מופחתת פעילה — {reducedPct}%</div>
+                <div className="text-sm font-bold text-gray-900">עמלה מופחתת פעילה — {reducedPct}%</div>
                 <div className="text-xs text-gray-500 mt-0.5 flex items-center gap-1">
                   <Clock size={11} /> בתוקף עד {endDate}
                 </div>
               </>
             ) : (
               <>
-                <div className="text-sm font-black text-gray-900">חודש עמלה מופחתת ({reducedPct}%)</div>
+                <div className="text-sm font-bold text-gray-900">חודש עמלה מופחתת ({reducedPct}%)</div>
                 <div className="text-xs text-gray-500 mt-0.5">יופעל כשמסעדה שהזמנתם תשלים 3 משמרות</div>
               </>
             )}
@@ -99,7 +99,7 @@ export const ReferralScreen: React.FC = () => {
       <div className="bg-white rounded-2xl p-4 card-shadow">
         <div className="text-xs font-bold text-gray-500 mb-2">הקוד שלך</div>
         <div className="flex items-center justify-between bg-gray-50 rounded-xl px-3 py-2.5 mb-3">
-          <span className="font-black tracking-widest text-gray-900 text-lg">{code}</span>
+          <span className="font-bold tracking-widest text-gray-900 text-lg">{code}</span>
           <span className="text-[11px] text-gray-400">קוד אישי</span>
         </div>
         <div className="flex gap-2">
@@ -133,7 +133,7 @@ export const ReferralScreen: React.FC = () => {
               : 'ואתם מקבלים חודש עמלה מופחתת — אוטומטית.',
           ].map((step, i) => (
             <li key={i} className="flex items-start gap-2.5 text-sm text-gray-700">
-              <span className="w-5 h-5 rounded-md bg-gray-900 text-white text-[11px] font-black flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
+              <span className="w-5 h-5 rounded-md bg-gray-900 text-white text-[11px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
               <span>{step}</span>
             </li>
           ))}
@@ -144,12 +144,12 @@ export const ReferralScreen: React.FC = () => {
       <div className="grid grid-cols-2 gap-3">
         <div className="bg-white rounded-2xl p-4 card-shadow text-center">
           <Users size={18} className="text-amber-500 mx-auto mb-1" />
-          <div className="text-2xl font-black text-gray-900 leading-none">{data.invited || 0}</div>
+          <div className="text-2xl font-bold text-gray-900 leading-none">{data.invited || 0}</div>
           <div className="text-xs text-gray-500 mt-1">{isWorker ? 'עובדים שהזמנת' : 'מסעדות שהזמנת'}</div>
         </div>
         <div className="bg-white rounded-2xl p-4 card-shadow text-center">
           <CheckCircle2 size={18} className="text-green-500 mx-auto mb-1" />
-          <div className="text-2xl font-black text-gray-900 leading-none">{data.completed || 0}</div>
+          <div className="text-2xl font-bold text-gray-900 leading-none">{data.completed || 0}</div>
           <div className="text-xs text-gray-500 mt-1">{isWorker ? 'השלימו וזיכו אותך' : 'השלימו 3 משמרות'}</div>
         </div>
       </div>

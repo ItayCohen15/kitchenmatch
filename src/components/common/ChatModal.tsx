@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Send, MessageCircle, Lock } from 'lucide-react';
 import { api, chatSeen } from '../../api';
+import { avatarTone } from '../../utils/colors';
 
 interface Props {
   jobId: number;            // שרשור ההודעות (לסטאז' — מזהה הסטאז')
@@ -44,16 +45,17 @@ export const ChatModal: React.FC<Props> = ({ jobId, title, myRole, myName, readO
   };
 
   return (
-    <div onClick={onClose} className="fixed inset-0 z-[70] flex items-center justify-center p-4" style={{ background: 'rgba(13,20,32,0.65)', backdropFilter: 'blur(3px)', paddingTop: 'max(env(safe-area-inset-top), 16px)', paddingBottom: 'max(env(safe-area-inset-bottom), 16px)' }}>
+    <div onClick={onClose} className="fixed inset-0 z-[70] flex items-center justify-center p-4" style={{ background: 'rgba(13,20,32,0.65)', paddingTop: 'max(env(safe-area-inset-top), 16px)', paddingBottom: 'max(env(safe-area-inset-bottom), 16px)' }}>
       <div onClick={e => e.stopPropagation()} className="bg-white rounded-3xl w-full max-w-md shadow-2xl flex flex-col overflow-hidden" style={{ height: 'min(560px, 85dvh)' }}>
         {/* כותרת */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 flex-shrink-0">
           <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center font-black text-sm">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm"
+              style={{ background: avatarTone(title).bg, color: avatarTone(title).fg }}>
               {(title || 'צ').slice(0, 2)}
             </div>
             <div>
-              <div className="font-black text-gray-900 text-sm">{title}</div>
+              <div className="font-bold text-gray-900 text-sm">{title}</div>
               <div className="text-gray-400 text-[11px] flex items-center gap-1"><MessageCircle size={10} /> צ'אט סטאז'</div>
             </div>
           </div>
@@ -103,8 +105,8 @@ export const ChatModal: React.FC<Props> = ({ jobId, title, myRole, myName, readO
                 className="flex-1 border border-gray-200 bg-gray-50 rounded-2xl px-4 py-2.5 text-sm text-right outline-none focus:border-amber-400 focus:bg-white"
               />
               <button onClick={send} disabled={sending || !text.trim()}
-                className="w-10 h-10 rounded-2xl flex items-center justify-center text-white disabled:opacity-40 flex-shrink-0"
-                style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
+                className="w-10 h-10 rounded-2xl flex items-center justify-center disabled:opacity-40 flex-shrink-0"
+                style={{ background: '#e8a020', color: '#241803' }}>
                 <Send size={17} style={{ transform: 'scaleX(-1)' }} />
               </button>
             </div>

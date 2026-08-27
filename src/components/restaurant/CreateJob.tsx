@@ -102,7 +102,7 @@ export const CreateJob: React.FC = () => {
       {/* באנר מצב חירום — כשנכנסים דרך כפתור החירום */}
       {emergency && (
         <div className="mb-4 rounded-2xl p-3 flex items-center gap-2 text-white"
-          style={{ background: 'linear-gradient(135deg,#ef4444,#f97316)', boxShadow: '0 4px 16px rgba(239,68,68,0.35)' }}>
+          style={{ background: '#e5484d' }}>
           <Zap size={18} className="fill-white" />
           <span className="font-bold text-sm">מצב חירום פעיל — עובד דרוש תוך 30 דקות</span>
         </div>
@@ -120,7 +120,7 @@ export const CreateJob: React.FC = () => {
       {/* Step 1 – Role */}
       {step === 1 && (
         <div className="space-y-3 screen-enter">
-          <h2 className="text-xl font-black text-gray-900">איזה תפקיד צריך?</h2>
+          <h2 className="text-xl font-bold text-gray-900">איזה תפקיד צריך?</h2>
           <p className="text-gray-500 text-sm">בחר את התפקיד הנדרש לסרוויס</p>
           <div className="space-y-3 mt-4">
             {ROLES.map(r => (
@@ -162,7 +162,7 @@ export const CreateJob: React.FC = () => {
       {/* Step 2 – Times */}
       {step === 2 && (
         <div className="space-y-4 screen-enter">
-          <h2 className="text-xl font-black text-gray-900">מתי המשמרת?</h2>
+          <h2 className="text-xl font-bold text-gray-900">מתי המשמרת?</h2>
           <p className="text-gray-500 text-sm">הגדר שעות התחלה וסיום</p>
 
           <div className="bg-white rounded-2xl p-5 card-shadow space-y-4">
@@ -221,7 +221,7 @@ export const CreateJob: React.FC = () => {
       {/* Step 3 – Wage + Experience */}
       {step === 3 && (
         <div className="space-y-4 screen-enter">
-          <h2 className="text-xl font-black text-gray-900">תגמול ורמת ניסיון</h2>
+          <h2 className="text-xl font-bold text-gray-900">תגמול ורמת ניסיון</h2>
 
           <div className="bg-white rounded-2xl p-5 card-shadow">
             <label className="text-sm font-semibold text-gray-700 mb-2 block">שכר לשעה (₪)</label>
@@ -231,7 +231,7 @@ export const CreateJob: React.FC = () => {
                 type="number"
                 value={wage}
                 onChange={e => setWage(e.target.value)}
-                className={`w-full border rounded-xl py-3 pr-10 pl-4 text-gray-900 font-black text-2xl text-right ${
+                className={`w-full border rounded-xl py-3 pr-10 pl-4 text-gray-900 font-bold text-2xl text-right ${
                   wage && !wageValid ? 'border-red-300' : 'border-gray-200'
                 }`}
                 min={MIN_WAGE}
@@ -300,7 +300,7 @@ export const CreateJob: React.FC = () => {
       {/* Step 4 – Summary + Publish */}
       {step === 4 && (
         <div className="space-y-4 screen-enter">
-          <h2 className="text-xl font-black text-gray-900">סיכום ופרסום</h2>
+          <h2 className="text-xl font-bold text-gray-900">סיכום ופרסום</h2>
 
           <div className="bg-white rounded-2xl p-5 card-shadow space-y-4">
             {[
@@ -450,7 +450,7 @@ export const CreateJob: React.FC = () => {
               </button>
               <button
                 onClick={handlePublish}
-                className="flex-1 bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg active:scale-98 transition-transform shadow-lg shadow-amber-200"
+                className="flex-1 bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg active:scale-98 transition-transform"
               >
                 {emergency ? 'פרסם משמרת חירום' : 'פרסם משמרת'}
               </button>

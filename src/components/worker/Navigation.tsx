@@ -105,7 +105,7 @@ export const WorkerNavigation: React.FC = () => {
         <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center">
           <XCircle size={44} className="text-red-500" />
         </div>
-        <h2 className="text-2xl font-black text-gray-900">המשמרת בוטלה</h2>
+        <h2 className="text-2xl font-bold text-gray-900">המשמרת בוטלה</h2>
         <p className="text-gray-500">{restaurantName} ביטלה את המשמרת. אם הביטול היה מאוחר, קיבלת פיצוי לארנק.</p>
         <button onClick={() => navToWorker('home')}
           className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg">
@@ -118,7 +118,7 @@ export const WorkerNavigation: React.FC = () => {
   return (
     <div className="screen-enter flex flex-col gap-4">
       {/* כרטיס כחול */}
-      <div className="bg-gradient-to-l from-blue-600 to-blue-500 rounded-2xl p-4 text-white">
+      <div className="rounded-2xl p-4 text-white" style={{ background: '#3b74d1' }}>
         <div className="flex items-center gap-3 mb-3">
           <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
             <Navigation2 size={22} className="fill-white" />
@@ -135,7 +135,7 @@ export const WorkerNavigation: React.FC = () => {
             { v: endStr,   l: 'סיום',   c: 'text-white' },
           ].map(s => (
             <div key={s.l} className="flex-1 bg-white/15 rounded-xl p-3 text-center">
-              <div className={`text-lg font-black ${s.c}`}>{s.v}</div>
+              <div className={`text-lg font-bold ${s.c}`}>{s.v}</div>
               <div className="text-blue-100 text-xs">{s.l}</div>
             </div>
           ))}
@@ -167,8 +167,8 @@ export const WorkerNavigation: React.FC = () => {
 
       {/* פופאפ — המסעדה יזמה */}
       {restaurantInitiated && !waitingForRestaurant && (
-        <div className="bg-gradient-to-l from-green-600 to-emerald-500 rounded-2xl p-4 text-white screen-enter">
-          <div className="font-black text-lg mb-1 flex items-center gap-2"><Bell size={18} /> {restaurantName} מבקשת להתחיל</div>
+        <div className="rounded-2xl p-4 text-white screen-enter" style={{ background: '#1f9d6b' }}>
+          <div className="font-bold text-lg mb-1 flex items-center gap-2"><Bell size={18} /> {restaurantName} מבקשת להתחיל</div>
           <div className="text-green-100 text-sm mb-4">המסעדה מוכנה. הגעת?</div>
           <div className="flex gap-3">
             <button onClick={() => setRestInitiated(false)}
@@ -176,7 +176,7 @@ export const WorkerNavigation: React.FC = () => {
               <X size={16} /> עוד לא
             </button>
             <button onClick={handleConfirm} disabled={confirming}
-              className="flex-1 bg-white text-green-700 rounded-xl py-3 font-black flex items-center justify-center gap-2">
+              className="flex-1 bg-white text-green-700 rounded-xl py-3 font-bold flex items-center justify-center gap-2">
               {confirming
                 ? <div className="w-4 h-4 border-2 border-green-400 border-t-green-700 rounded-full animate-spin" />
                 : <><CheckCircle2 size={16} /> הגעתי, אפשר להתחיל</>}
@@ -215,7 +215,7 @@ export const WorkerNavigation: React.FC = () => {
       {/* כפתור צ'ק-אין */}
       {!waitingForRestaurant && !restaurantInitiated && (
         <button onClick={handleInitiate} disabled={initiating}
-          className="w-full bg-amber-500 text-white rounded-2xl py-4 font-black text-lg shadow-lg shadow-amber-200 active:scale-98 transition-transform">
+          className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg shadow-lg active:scale-98 transition-transform">
           {initiating
             ? <div className="flex items-center justify-center gap-2">
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />שולח...

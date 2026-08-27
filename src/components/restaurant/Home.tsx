@@ -13,6 +13,7 @@ import { SkeletonList } from '../common/Skeleton';
 import { EmptyState } from '../common/EmptyState';
 import { toast } from '../common/Toast';
 import { haptic } from '../../utils/haptics';
+import { avatarTone } from '../../utils/colors';
 
 export const RestaurantHome: React.FC = () => {
   const { navToRestaurant, navToWorker, userProfile, resetToLanding, selectWorkerJob, refreshProfile, setEmergencyMode } = useApp();
@@ -84,9 +85,9 @@ export const RestaurantHome: React.FC = () => {
     <div className="screen-enter space-y-4 pb-2">
       {/* Header */}
       <div className="rounded-3xl p-5 text-white relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #0d1420 0%, #1a2744 60%, #0f2444 100%)' }}>
+        style={{ background: '#12203a', boxShadow: '0 4px 16px rgba(20,28,44,0.16)' }}>
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center font-black text-lg">
+          <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center font-bold text-lg">
             {initials}
           </div>
           <div className="flex-1">
@@ -112,9 +113,9 @@ export const RestaurantHome: React.FC = () => {
             { label: 'משמרות', value: `${recentJobs.length}`, icon: <ClipboardList size={18} /> },
             { label: 'עובדים זמינים', value: `${areaCount}`, icon: <Users size={18} /> },
           ].map(s => (
-            <div key={s.label} className="bg-white/15 rounded-xl p-3 text-center">
+            <div key={s.label} className="bg-white/10 rounded-xl p-3 text-center">
               <div className="mb-1 flex justify-center text-amber-100">{s.icon}</div>
-              <div className="font-black text-base">{s.value}</div>
+              <div className="font-bold text-base">{s.value}</div>
               <div className="text-amber-100 text-xs">{s.label}</div>
             </div>
           ))}
@@ -127,7 +128,7 @@ export const RestaurantHome: React.FC = () => {
 
       {/* משמרת פעילה */}
       {activeShift && (
-        <div className="bg-gradient-to-l from-green-600 to-emerald-500 rounded-2xl p-4 text-white">
+        <div className="rounded-2xl p-4 text-white" style={{ background:'#1f9d6b' }}>
           <div className="flex items-center gap-2 mb-1">
             <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
             <span className="font-bold text-sm">
@@ -136,12 +137,12 @@ export const RestaurantHome: React.FC = () => {
                'ממתין לאישור סיום'}
             </span>
           </div>
-          <div className="font-black text-lg">{activeShift.WorkerName || 'עובד'}</div>
+          <div className="font-bold text-lg">{activeShift.WorkerName || 'עובד'}</div>
           <div className="text-green-100 text-sm mb-3">
             {ROLE_LABELS[activeShift.Role] || activeShift.Role} · ₪{activeShift.HourlyRate}/ש׳
           </div>
           <button onClick={handleEnterActiveShift}
-            className="w-full bg-white text-green-700 rounded-xl py-2.5 font-black text-sm">
+            className="w-full bg-white text-green-700 rounded-xl py-2.5 font-bold text-sm">
             {activeShift.Status === 'confirmed' ? 'מעקב עובד ›' : 'כנס למשמרת ›'}
           </button>
         </div>
@@ -153,38 +154,38 @@ export const RestaurantHome: React.FC = () => {
         <div className="grid grid-cols-2 gap-3">
           <button
             onClick={() => { haptic('light'); setEmergencyMode(false); navToRestaurant('create_job'); }}
-            className="text-white rounded-2xl p-4 text-right active:scale-95 transition-transform"
-            style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)', boxShadow: '0 4px 20px rgba(232,160,32,0.4)' }}
+            className="rounded-2xl p-4 text-right active:scale-[0.98] transition-transform"
+            style={{ background: '#e8a020', color: '#241803' }}
           >
             <ChefHat size={24} className="mb-2" />
-            <div className="font-black">פרסם משמרת</div>
-            <div className="text-white/75 text-xs mt-0.5">מצא עובד עכשיו</div>
+            <div className="font-bold">פרסם משמרת</div>
+            <div className="text-xs mt-0.5" style={{ color:'#5a4410' }}>מצא עובד עכשיו</div>
           </button>
           <button
             onClick={() => { haptic('medium'); setEmergencyMode(true); navToRestaurant('create_job'); }}
-            className="text-white rounded-2xl p-4 text-right active:scale-95 transition-transform"
-            style={{ background: 'linear-gradient(135deg,#ef4444,#f97316)', boxShadow: '0 4px 20px rgba(239,68,68,0.4)' }}
+            className="text-white rounded-2xl p-4 text-right active:scale-[0.98] transition-transform"
+            style={{ background: '#e5484d' }}
           >
             <div className="flex items-center gap-1 mb-2">
               <Zap size={18} className="fill-white" />
               <span className="text-xs font-bold bg-white/20 px-2 py-0.5 rounded-full">חירום</span>
             </div>
-            <div className="font-black">מצב חירום</div>
-            <div className="text-white/75 text-xs mt-0.5">עובד תוך 30 דקות</div>
+            <div className="font-bold">מצב חירום</div>
+            <div className="text-white/80 text-xs mt-0.5">לאיוש דחוף עכשיו</div>
           </button>
         </div>
       </div>
 
       {/* Talent program entry */}
       <button onClick={() => navToRestaurant('talent')}
-        className="w-full rounded-2xl p-4 text-white text-right active:scale-[0.99] transition-transform flex items-center gap-3"
-        style={{ background: 'linear-gradient(135deg,#8b5cf6,#6366f1)', boxShadow: '0 4px 20px rgba(139,92,246,0.35)' }}>
-        <GraduationCap size={26} className="flex-shrink-0" />
+        className="w-full rounded-2xl p-4 text-right active:scale-[0.99] transition-transform flex items-center gap-3"
+        style={{ background: '#fbf1db', border: '1px solid #f0e0b8' }}>
+        <GraduationCap size={26} className="flex-shrink-0" style={{ color: '#c8841a' }} />
         <div className="flex-1">
-          <div className="font-black">גלה טאלנט טרי</div>
-          <div className="text-white/80 text-xs mt-0.5">בוגרי בתי ספר לבישול/ברמנות — מוכנים להזדמנות הראשונה</div>
+          <div className="font-bold" style={{ color: '#3a2e12' }}>גלה טאלנט טרי</div>
+          <div className="text-xs mt-0.5" style={{ color: '#8a733e' }}>בוגרי בתי ספר לבישול/ברמנות — מוכנים להזדמנות הראשונה</div>
         </div>
-        <span className="text-xl">‹</span>
+        <span className="text-xl" style={{ color: '#c8841a' }}>‹</span>
       </button>
 
       {/* Available workers nearby */}
@@ -208,7 +209,8 @@ export const RestaurantHome: React.FC = () => {
             const wInitials = wName.split(' ').map((n: string) => n[0]).join('').slice(0,2);
             return (
               <div key={w.Id} className="bg-white rounded-xl p-3 flex items-center gap-3 card-shadow">
-                <div className="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0"
+                  style={{ background: avatarTone(wName).bg, color: avatarTone(wName).fg }}>
                   {wInitials}
                 </div>
                 <div className="flex-1 min-w-0">

@@ -13,7 +13,7 @@ const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({ chi
 );
 
 const SectionTitle: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <h3 className="text-white font-black text-sm mb-2.5">{children}</h3>
+  <h3 className="text-white font-bold text-sm mb-2.5">{children}</h3>
 );
 
 const Metric = ({ icon, label, value, hint, tone = 'neutral' }: any) => {
@@ -23,7 +23,7 @@ const Metric = ({ icon, label, value, hint, tone = 'neutral' }: any) => {
       <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-2" style={{ background: color + '22' }}>
         <span style={{ color }}>{icon}</span>
       </div>
-      <div className="font-black text-white text-lg leading-tight">{value}</div>
+      <div className="font-bold text-white text-lg leading-tight">{value}</div>
       <div className="text-[11px] font-medium mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>{label}</div>
       {hint && <div className="text-[10px] mt-1 font-bold" style={{ color }}>{hint}</div>}
     </Card>
@@ -176,36 +176,36 @@ export const AdminInsights: React.FC = () => {
     <div className="space-y-4 pb-4">
       {/* ===== יועץ חכם ===== */}
       <div className="rounded-3xl p-5 relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #1a2744 0%, #0f1829 100%)', border: `1px solid ${statusColor}40`, boxShadow: `0 8px 40px ${statusColor}1a` }}>
+        style={{ background: '#14233d', border: `1px solid ${statusColor}40` }}>
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <Sparkles size={16} style={{ color: '#f5c842' }} />
-            <span className="font-black text-white text-sm">היועץ החכם</span>
+            <span className="font-bold text-white text-sm">היועץ החכם</span>
           </div>
-          <span className="text-[11px] font-black px-2.5 py-1 rounded-lg" style={{ background: statusColor + '22', color: statusColor }}>{adv.status.label}</span>
+          <span className="text-[11px] font-bold px-2.5 py-1 rounded-lg" style={{ background: statusColor + '22', color: statusColor }}>{adv.status.label}</span>
         </div>
         <p className="text-[13px] leading-relaxed mb-3" style={{ color: 'rgba(255,255,255,0.75)' }}>{adv.headline}</p>
 
         {adv.strengths.length > 0 && (
           <div className="mb-3">
-            <div className="flex items-center gap-1.5 mb-1.5"><CheckCircle2 size={13} style={{ color: '#34d399' }} /><span className="text-xs font-black" style={{ color: '#34d399' }}>מה עובד</span></div>
+            <div className="flex items-center gap-1.5 mb-1.5"><CheckCircle2 size={13} style={{ color: '#34d399' }} /><span className="text-xs font-bold" style={{ color: '#34d399' }}>מה עובד</span></div>
             {adv.strengths.map((s, i) => <p key={i} className="text-[12px] leading-relaxed flex gap-1.5 mb-0.5" style={{ color: 'rgba(255,255,255,0.7)' }}><span style={{ color: '#34d399' }}>•</span><span>{s}</span></p>)}
           </div>
         )}
         {adv.risks.length > 0 && (
           <div className="mb-3">
-            <div className="flex items-center gap-1.5 mb-1.5"><AlertTriangle size={13} style={{ color: '#f87171' }} /><span className="text-xs font-black" style={{ color: '#f87171' }}>סיכונים</span></div>
+            <div className="flex items-center gap-1.5 mb-1.5"><AlertTriangle size={13} style={{ color: '#f87171' }} /><span className="text-xs font-bold" style={{ color: '#f87171' }}>סיכונים</span></div>
             {adv.risks.map((s, i) => <p key={i} className="text-[12px] leading-relaxed flex gap-1.5 mb-0.5" style={{ color: 'rgba(255,255,255,0.7)' }}><span style={{ color: '#f87171' }}>•</span><span>{s}</span></p>)}
           </div>
         )}
         {adv.actions.length > 0 && (
           <div className="mb-3">
-            <div className="flex items-center gap-1.5 mb-1.5"><Rocket size={13} style={{ color: '#60a5fa' }} /><span className="text-xs font-black" style={{ color: '#60a5fa' }}>צעדים לצמיחה</span></div>
+            <div className="flex items-center gap-1.5 mb-1.5"><Rocket size={13} style={{ color: '#60a5fa' }} /><span className="text-xs font-bold" style={{ color: '#60a5fa' }}>צעדים לצמיחה</span></div>
             <div className="space-y-2">
               {adv.actions.map((a, i) => (
                 <div key={i} className="rounded-xl p-2.5" style={{ background: 'rgba(0,0,0,0.25)' }}>
                   <div className="flex gap-2">
-                    <span className="font-black text-xs flex-shrink-0" style={{ color: '#60a5fa' }}>{i + 1}</span>
+                    <span className="font-bold text-xs flex-shrink-0" style={{ color: '#60a5fa' }}>{i + 1}</span>
                     <div>
                       <div className="text-[13px] font-bold text-white leading-snug">{a.title}</div>
                       <div className="text-[11px] mt-0.5 leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>{a.why}</div>
@@ -220,7 +220,7 @@ export const AdminInsights: React.FC = () => {
           <div className="rounded-xl p-3 flex items-start gap-2" style={{ background: 'rgba(245,200,66,0.1)', border: '1px solid rgba(245,200,66,0.2)' }}>
             <Target size={14} className="flex-shrink-0 mt-0.5" style={{ color: '#f5c842' }} />
             <div>
-              <span className="text-xs font-black" style={{ color: '#f5c842' }}>המטריקה של החודש: {adv.focus.metric}</span>
+              <span className="text-xs font-bold" style={{ color: '#f5c842' }}>המטריקה של החודש: {adv.focus.metric}</span>
               <p className="text-[11px] mt-0.5 leading-relaxed" style={{ color: 'rgba(255,255,255,0.65)' }}>{adv.focus.why}</p>
             </div>
           </div>
@@ -233,7 +233,7 @@ export const AdminInsights: React.FC = () => {
         const list = showOnline ? presence.online : (presence.recent || []);
         return (
           <Card>
-            <h3 className="text-white font-black text-sm mb-3 flex items-center gap-2">
+            <h3 className="text-white font-bold text-sm mb-3 flex items-center gap-2">
               <span className="relative flex h-2.5 w-2.5">
                 {showOnline && <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-60" style={{ background: '#34d399' }} />}
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5" style={{ background: showOnline ? '#34d399' : 'rgba(255,255,255,0.3)' }} />
@@ -327,7 +327,7 @@ export const AdminInsights: React.FC = () => {
                   <span style={{ color: 'rgba(255,255,255,0.5)' }}>{num(c.shifts)} משמרות · {ils(c.commission)}</span>
                 </div>
                 <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
-                  <div className="h-full rounded-full" style={{ width: `${(c.shifts / maxCity) * 100}%`, background: 'linear-gradient(90deg,#e8a020,#f5c842)' }} />
+                  <div className="h-full rounded-full" style={{ width: `${(c.shifts / maxCity) * 100}%`, background: '#e8a020' }} />
                 </div>
               </div>
             ))}

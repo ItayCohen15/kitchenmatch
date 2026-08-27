@@ -50,7 +50,7 @@ export const NonSelfEmployedDisclosure: React.FC<Props> = ({ onAccept, onCancel 
 
   const shell = (children: React.ReactNode) => (
     <>
-      <div className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm" onClick={onCancel} />
+      <div className="fixed inset-0 bg-black/50 z-40" onClick={onCancel} />
       <div className="fixed inset-x-0 z-50 flex items-center justify-center px-3 pointer-events-none"
         style={{ top: 'calc(env(safe-area-inset-top) + 24px)', bottom: 'calc(env(safe-area-inset-bottom) + 24px)' }}>
         <div className="flex flex-col bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-sm pointer-events-auto"
@@ -62,11 +62,11 @@ export const NonSelfEmployedDisclosure: React.FC<Props> = ({ onAccept, onCancel 
   );
 
   const header = (title: string) => (
-    <div className="flex-shrink-0 p-4 text-white" style={{ background: 'linear-gradient(135deg,#b45309,#e8a020)' }}>
+    <div className="flex-shrink-0 p-4" style={{ background: '#e8a020', color: '#241803' }}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 min-w-0">
           <Info size={18} className="flex-shrink-0" />
-          <span className="font-black text-base truncate">{title}</span>
+          <span className="font-bold text-base truncate">{title}</span>
         </div>
         <button onClick={onCancel} aria-label="סגור"
           className="w-9 h-9 rounded-xl flex items-center justify-center bg-white/15 active:bg-white/30 transition-colors flex-shrink-0">
@@ -102,7 +102,7 @@ export const NonSelfEmployedDisclosure: React.FC<Props> = ({ onAccept, onCancel 
           <Check size={26} className="text-green-600" />
         </div>
         <div>
-          <h3 className="font-black text-gray-900">האישור נשמר</h3>
+          <h3 className="font-bold text-gray-900">האישור נשמר</h3>
           <p className="text-sm text-gray-600 mt-1.5 leading-relaxed">
             כדי שנוכל לשלם לך, נותר להשלים הרשמה קצרה מול <strong>{doc.partnerName}</strong> —
             שם תחתום על טופס 6101 וייפוי הכוח ותעלה את המסמכים הנדרשים. תהליך חד-פעמי.
@@ -110,8 +110,8 @@ export const NonSelfEmployedDisclosure: React.FC<Props> = ({ onAccept, onCancel 
         </div>
         <a href={doc.partnerUrl} target="_blank" rel="noopener noreferrer"
           onClick={() => setTimeout(() => onAccept(doc.version), 300)}
-          className="w-full py-3.5 rounded-2xl font-bold text-sm text-white flex items-center justify-center gap-2"
-          style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
+          className="w-full py-3.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-2"
+          style={{ background: '#e8a020', color: '#241803' }}>
           <ExternalLink size={16} /> להרשמה ב{doc.partnerName}
         </a>
         <button onClick={() => onAccept(doc.version)} className="w-full py-2.5 text-sm font-semibold text-gray-500">
@@ -172,8 +172,8 @@ export const NonSelfEmployedDisclosure: React.FC<Props> = ({ onAccept, onCancel 
           חזור
         </button>
         <button onClick={confirm} disabled={!ack || saving}
-          className="flex-1 py-3 rounded-2xl font-bold text-sm text-white disabled:opacity-40 transition-opacity"
-          style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
+          className="flex-1 py-3 rounded-2xl font-bold text-sm disabled:opacity-40 transition-opacity"
+          style={{ background: '#e8a020', color: '#241803' }}>
           {saving ? 'שומר...' : 'הבנתי, המשך'}
         </button>
       </div>

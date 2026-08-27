@@ -3,6 +3,7 @@ import { MessageCircle, GraduationCap, Lock } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api, chatSeen } from '../../api';
 import { ChatModal } from './ChatModal';
+import { avatarTone } from '../../utils/colors';
 
 // תצוגת זמן: היום → שעה, אחרת תאריך קצר
 const fmtWhen = (d?: string) => {
@@ -46,13 +47,13 @@ export const ChatsScreen: React.FC<{ role: 'restaurant' | 'worker' }> = ({ role 
     <div className="screen-enter space-y-4">
       {/* כותרת */}
       <div className="rounded-3xl p-4 text-white flex items-center gap-3"
-        style={{ background: 'linear-gradient(135deg, #0d1420 0%, #1a2744 100%)' }}>
+        style={{ background: '#14233d' }}>
         <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
           style={{ background: 'rgba(232,160,32,0.18)', border: '1px solid rgba(232,160,32,0.3)' }}>
           <MessageCircle className="text-amber-400" size={22} />
         </div>
         <div>
-          <div className="font-black text-lg leading-tight">הצ'אטים שלי</div>
+          <div className="font-bold text-lg leading-tight">הצ'אטים שלי</div>
           <div className="text-xs" style={{ color: '#8899bb' }}>
             {role === 'restaurant' ? 'שיחות עם העובדים שלך' : 'שיחות עם מסעדות'}
           </div>
@@ -84,7 +85,8 @@ export const ChatsScreen: React.FC<{ role: 'restaurant' | 'worker' }> = ({ role 
               className="w-full bg-white rounded-2xl p-3.5 card-shadow flex items-center gap-3 text-right active:scale-[0.99] transition-transform">
               {/* אווטאר */}
               <div className="relative flex-shrink-0">
-                <div className="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center font-black">
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center font-bold"
+                  style={{ background: avatarTone(t.Name).bg, color: avatarTone(t.Name).fg }}>
                   {initials}
                 </div>
                 {unread && <div className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-red-500 border-2 border-white" />}
@@ -92,7 +94,7 @@ export const ChatsScreen: React.FC<{ role: 'restaurant' | 'worker' }> = ({ role 
               {/* תוכן */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5">
-                  <span className={`text-sm truncate ${unread ? 'font-black text-gray-900' : 'font-bold text-gray-800'}`}>{t.Name}</span>
+                  <span className={`text-sm truncate ${unread ? 'font-bold text-gray-900' : 'font-bold text-gray-800'}`}>{t.Name}</span>
                   {t.JobType === 'stage' && (
                     <span className="flex items-center gap-0.5 text-[10px] font-bold text-amber-600 bg-amber-50 rounded-full px-1.5 py-0.5 flex-shrink-0">
                       <GraduationCap size={10} /> סטאז'
@@ -156,7 +158,7 @@ export const UnreadChatBanner: React.FC<{ role: 'restaurant' | 'worker'; onOpen:
   return (
     <button onClick={() => onOpen(Number(unreadThread.JobId))}
       className="w-full rounded-2xl p-3.5 flex items-center gap-3 text-right active:scale-[0.98] transition-transform"
-      style={{ background: 'linear-gradient(135deg,#1a2744,#0f2444)', border: '1px solid rgba(232,160,32,0.35)' }}>
+      style={{ background: '#14233d', border: '1px solid rgba(232,160,32,0.35)' }}>
       <div className="relative flex-shrink-0">
         <MessageCircle size={22} className="text-amber-400" />
         <div className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-red-500" />

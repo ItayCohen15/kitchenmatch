@@ -48,7 +48,7 @@ export const NotificationPanel: React.FC<Props> = ({ onClose }) => {
   return (
     <>
       {/* Backdrop */}
-      <div className="fixed inset-0 bg-black/40 z-40 backdrop-blur-sm" onClick={onClose} />
+      <div className="fixed inset-0 bg-black/40 z-40" onClick={onClose} />
 
       {/* Panel */}
       <div className="fixed top-0 left-0 right-0 z-50 max-w-sm mx-auto"
@@ -58,14 +58,14 @@ export const NotificationPanel: React.FC<Props> = ({ onClose }) => {
 
           {/* Header */}
           <div className="flex items-center justify-between px-5 pt-5 pb-4"
-            style={{ background: 'linear-gradient(135deg, #0d1420, #1a2744)' }}>
+            style={{ background: '#14233d' }}>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center"
                 style={{ background: 'rgba(232,160,32,0.2)' }}>
                 <Bell size={18} style={{ color: '#e8a020' }} />
               </div>
               <div>
-                <div className="font-black text-white text-lg">התראות</div>
+                <div className="font-bold text-white text-lg">התראות</div>
                 {unread > 0 && (
                   <div className="text-xs" style={{ color: '#e8a020' }}>{unread} לא נקראו</div>
                 )}

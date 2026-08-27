@@ -275,9 +275,9 @@ const AppContent: React.FC = () => {
   const showApp = token && userRole && !needsOnboarding;
 
   return (
-    <div className="bg-gray-50 flex items-start justify-center" style={{ height: '100dvh', overflow: 'hidden' }}>
+    <div className="flex items-start justify-center" style={{ height: '100dvh', overflow: 'hidden', background: '#e8e4db' }}>
       {showSplash && <Splash onDone={() => setShowSplash(false)} />}
-      <div className="w-full max-w-sm relative flex flex-col" style={{ height:'100dvh', background:'#f0f2f7', boxShadow:'0 0 80px rgba(232,160,32,0.15), 0 0 0 1px rgba(232,160,32,0.08)' }}>
+      <div className="w-full max-w-sm relative flex flex-col" style={{ height:'100dvh', background:'#f6f4ef', boxShadow:'0 0 0 1px rgba(38,34,27,0.06), 0 18px 50px rgba(38,34,27,0.14)' }}>
         {/* מסך הפתיחה = כניסה/הרשמה ישירות (דף הנחיתה השיווקי מושהה עד שנעדכן אותו) */}
         {!token && <Auth onLogin={handleLogin} />}
         {showOnboarding && (() => {

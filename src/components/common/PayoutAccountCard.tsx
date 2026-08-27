@@ -171,7 +171,7 @@ export const PayoutAccountCard: React.FC<{
         </p>
         <button onClick={handleOnboard} disabled={busy}
           className="w-full rounded-xl py-2.5 text-xs font-bold text-white disabled:opacity-50"
-          style={{ background: 'linear-gradient(135deg,#dc2626,#ef4444)' }}>
+          style={{ background: '#e5484d' }}>
           {busy ? 'רגע...' : 'נסה שוב'}
         </button>
         {err && <div className="text-red-600 text-[11px] text-center mt-2">{err}</div>}
@@ -181,7 +181,7 @@ export const PayoutAccountCard: React.FC<{
 
   /* ─── טרם הוגדר ─── */
   return (
-    <div className="rounded-2xl p-4 card-shadow text-white" style={{ background: 'linear-gradient(135deg,#0d1420,#1a2744)' }}>
+    <div className="rounded-2xl p-4 card-shadow text-white" style={{ background: '#14233d' }}>
       <div className="flex items-center gap-2 mb-1.5">
         <Landmark size={17} style={{ color: '#e8a020' }} />
         <span className="font-bold text-sm">הגדר לאן יגיע הכסף</span>
@@ -195,7 +195,7 @@ export const PayoutAccountCard: React.FC<{
       </p>
       <button onClick={handleOnboard} disabled={busy}
         className="w-full rounded-xl py-3 text-sm font-bold text-gray-900 flex items-center justify-center gap-2 disabled:opacity-60"
-        style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
+        style={{ background: '#e8a020' }}>
         {busy
           ? <><div className="w-4 h-4 border-2 border-gray-900/30 border-t-gray-900 rounded-full animate-spin" /> פותח...</>
           : <><ExternalLink size={15} /> הגדרת קבלת תשלומים</>}

@@ -34,7 +34,7 @@ export const NetBreakdown: React.FC<Props> = ({ base, stafflyRate, isSelfEmploye
         <>
           <div className="flex justify-between items-center py-2.5 bg-green-50 rounded-xl px-2 mt-2">
             <span className="text-gray-700 font-bold text-sm">תקבל נטו</span>
-            <span className="font-black text-green-600 text-lg">{money(b.net)}</span>
+            <span className="font-bold text-green-600 text-lg">{money(b.net)}</span>
           </div>
           <p className="text-[11px] text-gray-400 mt-2">
             כעצמאי — התשלום ישיר אליך; עליך להוציא חשבונית למסעדה על הברוטו ({money(b.base)}).
@@ -48,7 +48,7 @@ export const NetBreakdown: React.FC<Props> = ({ base, stafflyRate, isSelfEmploye
           <Row label="מס הכנסה (הערכה)" value={`-${money(b.incomeTax)}`} red />
           <div className="flex justify-between items-center py-2.5 bg-green-50 rounded-xl px-2 mt-2">
             <span className="text-gray-700 font-bold text-sm">נטו משוער לעובד</span>
-            <span className="font-black text-green-600 text-lg">≈ {money(b.net)}</span>
+            <span className="font-bold text-green-600 text-lg">≈ {money(b.net)}</span>
           </div>
           <div className="mt-2 rounded-xl p-2.5 text-[11px] leading-relaxed"
             style={{ background: '#fff8e1', border: '1px solid #f59e0b', color: '#92400e' }}>

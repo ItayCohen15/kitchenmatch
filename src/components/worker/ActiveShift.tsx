@@ -117,10 +117,10 @@ export const WorkerActiveShift: React.FC = () => {
         <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center">
           <PartyPopper size={44} className="text-green-500" />
         </div>
-        <h2 className="text-2xl font-black text-gray-900">שני הצדדים אישרו</h2>
+        <h2 className="text-2xl font-bold text-gray-900">שני הצדדים אישרו</h2>
         <p className="text-gray-500">התשלום בדרך. עוד רגע תעברו למסך הדירוג.</p>
         <div className="bg-green-50 rounded-2xl p-4 w-full text-center">
-          <div className="text-3xl font-black text-green-600">₪{netEarned}</div>
+          <div className="text-3xl font-bold text-green-600">₪{netEarned}</div>
           <div className="text-gray-400 text-sm mt-1">נטו לאחר עמלה {wRatePct}%{isEmergency ? ' · משמרת חירום' : ''}</div>
         </div>
         <div className="w-6 h-6 border-2 border-green-400 border-t-transparent rounded-full animate-spin" />
@@ -135,7 +135,7 @@ export const WorkerActiveShift: React.FC = () => {
   return (
     <div className="screen-enter flex flex-col gap-3">
       {/* Live banner */}
-      <div className="bg-gradient-to-l from-green-600 to-emerald-500 rounded-2xl p-4 text-white">
+      <div className="rounded-2xl p-4 text-white" style={{ background: '#1f9d6b' }}>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <div className="w-2.5 h-2.5 bg-white rounded-full animate-pulse" />
@@ -143,13 +143,13 @@ export const WorkerActiveShift: React.FC = () => {
           </div>
           <div className="flex items-center gap-2 bg-white/20 rounded-xl px-3 py-1">
             <Clock size={14} />
-            <span className="font-black text-lg tracking-widest">{fmt(elapsed)}</span>
+            <span className="font-bold text-lg tracking-widest">{fmt(elapsed)}</span>
           </div>
         </div>
         <div className="flex items-center justify-between">
           <div>
             <div className="text-green-100 text-xs">הרוויח עד כה (נטו)</div>
-            <div className="text-3xl font-black glow-green">₪{netEarned}</div>
+            <div className="text-3xl font-bold">₪{netEarned}</div>
             <div className="text-green-200 text-xs">ברוטו ₪{grossEarned} · ₪{earnedThisMinute}/דק׳</div>
           </div>
           <div className="text-right">
@@ -224,7 +224,7 @@ export const WorkerActiveShift: React.FC = () => {
           <div className="bg-white rounded-2xl p-4 card-shadow space-y-3 screen-enter">
             <h3 className="font-bold text-gray-900 text-center">בטוח שתרצה לסיים?</h3>
             <div className="bg-green-50 rounded-xl p-3 text-center">
-              <div className="text-xl font-black text-green-600">₪{netEarned} נטו</div>
+              <div className="text-xl font-bold text-green-600">₪{netEarned} נטו</div>
               <div className="text-gray-400 text-xs">יועבר לאחר אישור שני הצדדים</div>
             </div>
             <div className="flex gap-3">

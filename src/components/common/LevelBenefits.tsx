@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Check, Lock, ChevronDown, Gift } from 'lucide-react';
 import { LEVELS, levelFromShifts } from '../../utils/levels';
+import { levelTone } from '../../utils/colors';
 
 interface Props {
   completedShifts: number;
@@ -28,24 +29,24 @@ export const LevelBenefits: React.FC<Props> = ({ completedShifts }) => {
             <div key={l.key}
               className="rounded-xl overflow-hidden border transition-all"
               style={{
-                borderColor: isCurrent ? 'transparent' : '#f1f5f9',
+                borderColor: isCurrent ? '#e8a020' : '#f1f5f9',
                 background: isCurrent ? 'rgba(232,160,32,0.06)' : 'white',
-                boxShadow: isCurrent ? '0 0 0 2px rgba(232,160,32,0.35)' : 'none',
+                boxShadow: 'none',
               }}>
 
               {/* כותרת רמה */}
               <button onClick={() => setExpanded(isOpen ? null : l.key)}
                 className="w-full flex items-center gap-2.5 px-3 py-2.5 text-right">
                 <span className="w-9 h-9 rounded-xl flex items-center justify-center text-base flex-shrink-0"
-                  style={{ background: reached ? l.gradient : '#f1f5f9' }}>
+                  style={{ background: reached ? levelTone(l.key).bg : '#f1f5f9' }}>
                   {reached ? <Check size={14} className="text-green-500" /> : <Lock size={14} className="text-gray-400" />}
                 </span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className={`font-bold text-sm ${reached ? 'text-gray-900' : 'text-gray-400'}`}>{l.label}</span>
                     {isCurrent && (
-                      <span className="text-[10px] font-bold text-white px-1.5 py-0.5 rounded-full"
-                        style={{ background: l.gradient }}>הרמה שלך</span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
+                        style={{ background: levelTone(l.key).bg, color: levelTone(l.key).fg }}>הרמה שלך</span>
                     )}
                   </div>
                   <div className="text-xs text-gray-400">{l.min}+ משמרות · עמלה {(l.commission*100).toFixed(1)}%</div>

@@ -36,7 +36,7 @@ export const DeleteAccountModal: React.FC<Props> = ({ onClose, onDeleted }) => {
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm" onClick={onClose} />
+      <div className="fixed inset-0 bg-black/50 z-40" onClick={onClose} />
       <div className="fixed inset-x-0 z-50 flex items-center justify-center px-4 pointer-events-none"
         style={{
           top: 'calc(env(safe-area-inset-top) + 48px)',
@@ -46,11 +46,11 @@ export const DeleteAccountModal: React.FC<Props> = ({ onClose, onDeleted }) => {
           style={{ maxHeight: '100%' }}>
 
           {/* כותרת */}
-          <div className="flex-shrink-0 p-4 text-white" style={{ background: 'linear-gradient(135deg,#7f1d1d,#b91c1c)' }}>
+          <div className="flex-shrink-0 p-4 text-white" style={{ background: '#b91c1c' }}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <AlertTriangle size={18} />
-                <span className="font-black text-base">מחיקת חשבון</span>
+                <span className="font-bold text-base">מחיקת חשבון</span>
               </div>
               <button onClick={onClose}
                 className="w-10 h-10 rounded-xl flex items-center justify-center bg-white/15 active:bg-white/30 transition-colors">
@@ -123,7 +123,7 @@ export const DeleteAccountModal: React.FC<Props> = ({ onClose, onDeleted }) => {
             </button>
             <button onClick={handleDelete} disabled={!canDelete}
               className="flex-1 py-3 rounded-2xl font-bold text-sm text-white disabled:opacity-40 flex items-center justify-center gap-2"
-              style={{ background: 'linear-gradient(135deg,#dc2626,#b91c1c)' }}>
+              style={{ background: '#dc2626' }}>
               {busy
                 ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 : <><Trash2 size={15} /> מחק לצמיתות</>}

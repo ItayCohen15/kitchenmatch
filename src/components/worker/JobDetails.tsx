@@ -7,6 +7,7 @@ import { CancelShiftModal } from '../common/CancelShiftModal';
 import { effectiveWorkerRate, levelFromShifts } from '../../utils/levels';
 import { estimateNet } from '../../utils/payrollEstimate';
 import { NetBreakdown } from '../common/NetBreakdown';
+import { avatarTone } from '../../utils/colors';
 
 export const JobDetails: React.FC = () => {
   const { navToWorker, getSelectedJob, userProfile } = useApp();
@@ -102,7 +103,7 @@ export const JobDetails: React.FC = () => {
         <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center">
           <XCircle size={44} className="text-red-500" />
         </div>
-        <h2 className="text-2xl font-black text-gray-900">המשמרת בוטלה</h2>
+        <h2 className="text-2xl font-bold text-gray-900">המשמרת בוטלה</h2>
         <p className="text-gray-500">המסעדה ביטלה את המשמרת. אם הביטול היה מאוחר, קיבלת פיצוי לארנק.</p>
         <button onClick={() => navToWorker('home')}
           className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg">
@@ -120,10 +121,10 @@ export const JobDetails: React.FC = () => {
             <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center">
               <CheckCircle2 size={44} className="text-green-500" />
             </div>
-            <h2 className="text-2xl font-black text-gray-900">המשמרת אושרה</h2>
+            <h2 className="text-2xl font-bold text-gray-900">המשמרת אושרה</h2>
             <p className="text-gray-500">{restaurantName} מחכה לך</p>
             <button onClick={() => navToWorker('navigation')}
-              className="w-full bg-green-500 text-white rounded-2xl py-4 font-black text-lg">
+              className="w-full bg-green-500 text-white rounded-2xl py-4 font-bold text-lg">
               צא לדרך
             </button>
             <button onClick={() => setShowCancel(true)}
@@ -150,7 +151,7 @@ export const JobDetails: React.FC = () => {
               <div className="absolute inset-0 rounded-full border-4 border-amber-200 border-t-orange-500 animate-spin" />
             </div>
             <div className="text-center">
-              <h2 className="text-2xl font-black text-gray-900">מועמדות נשלחה!</h2>
+              <h2 className="text-2xl font-bold text-gray-900">מועמדות נשלחה!</h2>
               <p className="text-gray-500 mt-1">ממתין לאישור <strong>{restaurantName}</strong></p>
             </div>
             <div className="w-full bg-white rounded-2xl p-4 card-shadow space-y-3">
@@ -168,7 +169,7 @@ export const JobDetails: React.FC = () => {
               </div>
               <div className="border-t pt-3 flex items-center justify-between">
                 <span className="font-bold text-gray-900">תקבל נטו</span>
-                <span className="font-black text-green-600 text-xl">₪{netPay}</span>
+                <span className="font-bold text-green-600 text-xl">₪{netPay}</span>
               </div>
             </div>
             <div className="flex items-center gap-2 text-gray-400 text-sm">
@@ -213,7 +214,7 @@ export const JobDetails: React.FC = () => {
     return (
       <div className="screen-enter flex flex-col items-center justify-center min-h-[70vh] text-center gap-4">
         <div className="w-16 h-16 border-4 border-amber-200 border-t-orange-500 rounded-full animate-spin" />
-        <h2 className="text-xl font-black text-gray-900">שולח מועמדות...</h2>
+        <h2 className="text-xl font-bold text-gray-900">שולח מועמדות...</h2>
         <p className="text-gray-500">רגע אחד</p>
       </div>
     );
@@ -222,16 +223,15 @@ export const JobDetails: React.FC = () => {
   return (
     <div className="screen-enter space-y-4">
       {/* Header */}
-      <div className={`rounded-2xl p-5 text-white ${isEmergency
-        ? 'bg-gradient-to-l from-red-600 to-red-500'
-        : 'bg-gradient-to-l from-gray-900 to-gray-800'}`}>
+      <div className="rounded-2xl p-5 text-white"
+        style={{ background: isEmergency ? '#e5484d' : '#14233d' }}>
         {isEmergency && (
           <div className="flex items-center gap-2 mb-3 bg-white/20 rounded-lg px-3 py-1.5 w-fit">
             <Zap size={14} className="fill-white" />
             <span className="text-sm font-bold">חירום – דרוש תוך 30 דק׳</span>
           </div>
         )}
-        <h2 className="text-2xl font-black mb-1">{restaurantName}</h2>
+        <h2 className="text-2xl font-bold mb-1">{restaurantName}</h2>
         {restaurantCity && (
           <div className="flex items-center gap-2 text-amber-100 text-sm mb-4">
             <MapPin size={14} />
@@ -240,15 +240,15 @@ export const JobDetails: React.FC = () => {
         )}
         <div className="grid grid-cols-3 gap-3">
           <div className="bg-white/15 rounded-xl p-3 text-center">
-            <div className="font-black text-xl">₪{hourlyRate}</div>
+            <div className="font-bold text-xl">₪{hourlyRate}</div>
             <div className="text-amber-100 text-xs">/שעה</div>
           </div>
           <div className="bg-white/15 rounded-xl p-3 text-center">
-            <div className="font-black text-xl">{hours}</div>
+            <div className="font-bold text-xl">{hours}</div>
             <div className="text-amber-100 text-xs">שעות</div>
           </div>
           <div className="bg-white/15 rounded-xl p-3 text-center">
-            <div className="font-black text-xl text-green-300">₪{netPay}</div>
+            <div className="font-bold text-xl text-green-300">₪{netPay}</div>
             <div className="text-amber-100 text-xs">לכיסך</div>
           </div>
         </div>
@@ -283,7 +283,8 @@ export const JobDetails: React.FC = () => {
       <div className="bg-white rounded-2xl p-4 card-shadow">
         <h3 className="font-bold text-gray-800 mb-3 text-sm">אודות המסעדה</h3>
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center text-white font-black text-sm">
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-sm"
+            style={{ background: avatarTone(restaurantName).bg, color: avatarTone(restaurantName).fg }}>
             {restaurantName.slice(0, 2)}
           </div>
           <div className="flex-1">
@@ -355,7 +356,7 @@ export const JobDetails: React.FC = () => {
             <button
               onClick={handleAccept}
               className={`flex-1 text-white rounded-2xl py-4 font-bold text-lg shadow-lg active:scale-98 transition-transform ${
-                isEmergency ? 'bg-red-500 shadow-red-200' : 'bg-amber-500 shadow-amber-200'
+                isEmergency ? 'bg-red-500' : 'bg-amber-500'
               }`}
             >
               {isEmergency ? 'הגש מועמדות לחירום' : 'הגש מועמדות'}

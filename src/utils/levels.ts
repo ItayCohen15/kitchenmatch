@@ -15,19 +15,19 @@ export interface LevelInfo {
 
 export const LEVELS: LevelInfo[] = [
   { key: 'bronze',   label: 'ברונזה',  min: 0,   commission: 0.065, exposure: 1, emoji: '🥉',
-    color: 'text-amber-700 bg-amber-50',  gradient: 'linear-gradient(135deg,#b45309,#92400e)',
+    color: 'text-amber-700 bg-amber-50',  gradient: '#b45309',
     perks: ['גישה לכל המשמרות הזמינות', 'עמלה 6.5%'] },
   { key: 'silver',   label: 'כסף',     min: 30,  commission: 0.065, exposure: 2, emoji: '🥈',
-    color: 'text-slate-600 bg-slate-100', gradient: 'linear-gradient(135deg,#94a3b8,#64748b)',
+    color: 'text-slate-600 bg-slate-100', gradient: '#94a3b8',
     perks: ['חשיפה מוגברת למסעדות', 'תג כסף בפרופיל'] },
   { key: 'gold',     label: 'זהב',     min: 60,  commission: 0.060, exposure: 3, emoji: '🥇',
-    color: 'text-yellow-600 bg-yellow-50', gradient: 'linear-gradient(135deg,#e8a020,#f5c842)',
+    color: 'text-yellow-600 bg-yellow-50', gradient: '#e8a020',
     perks: ['עמלה מופחתת 6%', 'עדיפות בתוצאות החיפוש', 'תג זהב בולט'] },
   { key: 'platinum', label: 'פלטינום', min: 90,  commission: 0.060, exposure: 4, emoji: '💠',
-    color: 'text-cyan-600 bg-cyan-50',    gradient: 'linear-gradient(135deg,#22d3ee,#0891b2)',
+    color: 'text-cyan-600 bg-cyan-50',    gradient: '#22d3ee',
     perks: ['חשיפה גבוהה מאוד למסעדות', 'תמיכה מועדפת', 'תג פלטינום'] },
   { key: 'diamond',  label: 'דיימונד', min: 120, commission: 0.055, exposure: 5, emoji: '💎',
-    color: 'text-indigo-600 bg-indigo-50', gradient: 'linear-gradient(135deg,#818cf8,#6366f1)',
+    color: 'text-indigo-600 bg-indigo-50', gradient: '#818cf8',
     perks: ['עמלה הנמוכה ביותר 5.5%', 'עדיפות עליונה בתוצאות', 'פרופיל מומלץ למסעדות', 'תג יוקרה 💎'] },
 ];
 

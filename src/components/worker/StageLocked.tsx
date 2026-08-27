@@ -41,13 +41,13 @@ export const StageLocked: React.FC = () => {
     <div className="screen-enter space-y-4">
       {/* כותרת */}
       <div className="rounded-3xl p-4 text-white flex items-center gap-3"
-        style={{ background: 'linear-gradient(135deg, #0d1420 0%, #1a2744 100%)' }}>
+        style={{ background: '#14233d' }}>
         <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
           style={{ background: 'rgba(232,160,32,0.18)', border: '1px solid rgba(232,160,32,0.3)' }}>
           <GraduationCap className="text-amber-400" size={22} />
         </div>
         <div>
-          <div className="font-black text-lg leading-tight">סטאז׳</div>
+          <div className="font-bold text-lg leading-tight">סטאז׳</div>
           <div className="text-xs" style={{ color: '#8899bb' }}>לסטודנטים ולבוגרי בתי ספר קולינריים</div>
         </div>
       </div>
@@ -58,7 +58,7 @@ export const StageLocked: React.FC = () => {
           <Lock size={24} className="text-gray-400" />
         </div>
         <div>
-          <h3 className="font-black text-gray-900">הסטאז׳ סגור בפניך כרגע</h3>
+          <h3 className="font-bold text-gray-900">הסטאז׳ סגור בפניך כרגע</h3>
           <p className="text-gray-500 text-sm mt-1.5 leading-relaxed">
             משמרות סטאז׳ פתוחות רק לסטודנטים ולבוגרים של בתי ספר לבישול, קונדיטוריה וברמנות.
             זו הזדמנות ראשונה שהמסעדות שומרות למי שלמד את המקצוע.
@@ -100,8 +100,8 @@ export const StageLocked: React.FC = () => {
             />
             {err && <div className="bg-red-50 text-red-600 text-xs rounded-xl px-3 py-2 text-center">{err}</div>}
             <button onClick={declareTrainee} disabled={saving || !courseType}
-              className="w-full text-white rounded-2xl py-3.5 font-bold disabled:opacity-40 flex items-center justify-center gap-2"
-              style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}>
+              className="w-full rounded-2xl py-3.5 font-bold disabled:opacity-40 flex items-center justify-center gap-2"
+              style={{ background: '#e8a020', color: '#241803' }}>
               <Check size={16} /> {saving ? 'שומר...' : 'פתח לי גישה לסטאז׳'}
             </button>
             <p className="text-gray-400 text-[11px] text-center leading-snug">

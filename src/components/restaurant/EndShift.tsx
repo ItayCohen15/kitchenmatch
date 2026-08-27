@@ -5,6 +5,7 @@ import { StarRating } from '../common/StarRating';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
 import { NEW_WORKER_SHIFTS, restaurantRate } from '../../utils/levels';
+import { avatarTone } from '../../utils/colors';
 
 export const RestaurantEndShift: React.FC = () => {
   const { navToRestaurant, getSelectedJob, shiftStartTime, userProfile } = useApp();
@@ -110,10 +111,10 @@ export const RestaurantEndShift: React.FC = () => {
         <div className="w-28 h-28 bg-green-100 rounded-full flex items-center justify-center">
           <CheckCircle size={56} className="text-green-500" />
         </div>
-        <h2 className="text-2xl font-black text-gray-900">המשמרת הסתיימה</h2>
+        <h2 className="text-2xl font-bold text-gray-900">המשמרת הסתיימה</h2>
         <p className="text-gray-500">הדירוג נשלח והתשלום הועבר לעובד</p>
         <div className="bg-amber-50 rounded-2xl px-8 py-4 w-full text-center">
-          <div className="text-3xl font-black text-amber-600">₪{totalCharged}</div>
+          <div className="text-3xl font-bold text-amber-600">₪{totalCharged}</div>
           <div className="text-gray-500 text-sm">חויב מהארנק שלך</div>
         </div>
         <div className="w-5 h-5 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
@@ -123,12 +124,13 @@ export const RestaurantEndShift: React.FC = () => {
 
   return (
     <div className="screen-enter space-y-4">
-      <h2 className="text-xl font-black text-gray-900">סיכום משמרת</h2>
+      <h2 className="text-xl font-bold text-gray-900">סיכום משמרת</h2>
 
       {/* כרטיס עובד + סיכום */}
-      <div className="bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-2xl p-5">
+      <div className="bg-[#14233d] text-white rounded-2xl p-5">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-14 h-14 bg-amber-500 rounded-2xl flex items-center justify-center text-white font-black text-xl">
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-xl"
+            style={{ background: avatarTone(workerName).bg, color: avatarTone(workerName).fg }}>
             {workerInit}
           </div>
           <div>
@@ -140,15 +142,15 @@ export const RestaurantEndShift: React.FC = () => {
         </div>
         <div className="grid grid-cols-3 gap-3 text-center">
           <div className="bg-white/10 rounded-xl p-3">
-            <div className="font-black text-xl">{shiftHours.toFixed(1)}</div>
+            <div className="font-bold text-xl">{shiftHours.toFixed(1)}</div>
             <div className="text-gray-400 text-xs">שעות</div>
           </div>
           <div className="bg-white/10 rounded-xl p-3">
-            <div className="font-black text-xl">₪{hourlyRate}</div>
+            <div className="font-bold text-xl">₪{hourlyRate}</div>
             <div className="text-gray-400 text-xs">לשעה</div>
           </div>
           <div className="bg-white/10 rounded-xl p-3">
-            <div className="font-black text-xl text-green-400">₪{baseAmount.toFixed(0)}</div>
+            <div className="font-bold text-xl text-green-400">₪{baseAmount.toFixed(0)}</div>
             <div className="text-gray-400 text-xs">לעובד</div>
           </div>
         </div>
@@ -169,7 +171,7 @@ export const RestaurantEndShift: React.FC = () => {
           ))}
           <div className="flex justify-between pt-3">
             <span className="font-bold text-gray-900">סה״כ חיוב</span>
-            <span className="font-black text-amber-500 text-lg">₪{totalCharged}</span>
+            <span className="font-bold text-amber-500 text-lg">₪{totalCharged}</span>
           </div>
         </div>
         <div className="mt-3 bg-amber-50 rounded-xl p-3 flex justify-between items-center">
@@ -289,7 +291,7 @@ export const RestaurantEndShift: React.FC = () => {
       <button
         onClick={handleSubmit}
         disabled={rating === 0 || submitting}
-        className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg disabled:opacity-40 active:scale-98 transition-transform shadow-lg shadow-amber-200"
+        className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg disabled:opacity-40 active:scale-98 transition-transform"
       >
         {submitting ? (
           <div className="flex items-center justify-center gap-2">

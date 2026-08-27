@@ -142,7 +142,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
   };
 
   return (
-    <div className="h-full overflow-y-auto" style={{ background: 'linear-gradient(160deg, #0d1420 0%, #1a2744 100%)' }}>
+    <div className="h-full overflow-y-auto" style={{ background: '#14233d' }}>
       {showDisclosure && (
         /* האישור המלא (גרסה + נוסח + סימון התיבה) נשמר בשרת ב-ConsentAcks
            ברגע הלחיצה; nonSelfAckAt נשאר רק לתאימות עם השדה הישן ב-Workers. */
@@ -159,10 +159,10 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
         {/* Header */}
         <div className="text-center mb-6 pt-4">
           <div className="w-16 h-16 rounded-2xl overflow-hidden mx-auto mb-3 shadow-lg"
-            style={{ boxShadow: '0 4px 20px rgba(232,160,32,0.3)' }}>
+            style={{ boxShadow: '0 4px 16px rgba(20,28,44,0.10)' }}>
             <img src="/logo.svg" alt="Staffly" className="w-full h-full object-cover" />
           </div>
-          <h1 className="text-2xl font-black text-white">ברוך הבא!</h1>
+          <h1 className="text-2xl font-bold text-white">ברוך הבא!</h1>
           <p className="text-sm mt-1" style={{ color: '#8899bb' }}>בוא נגדיר את הפרופיל שלך</p>
         </div>
 
@@ -179,7 +179,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
           {/* Step 1 — Name + City */}
           {step === 1 && (
             <div className="space-y-4 screen-enter">
-              <h2 className="text-xl font-black text-gray-900">
+              <h2 className="text-xl font-bold text-gray-900">
                 {role === 'worker' ? 'פרטים אישיים' : 'פרטי המסעדה'}
               </h2>
               <div>
@@ -248,8 +248,8 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
               <button
                 disabled={!name || !city}
                 onClick={() => role === 'restaurant' && totalSteps === 2 ? setStep(2) : setStep(2)}
-                className="w-full text-white rounded-2xl py-4 font-bold text-base disabled:opacity-40 mt-2"
-                style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}
+                className="w-full rounded-2xl py-4 font-bold text-base disabled:opacity-40 mt-2"
+                style={{ background: '#e8a020', color: '#241803' }}
               >
                 המשך
               </button>
@@ -261,7 +261,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
             <div className="space-y-4 screen-enter">
               {role === 'worker' ? (
                 <>
-                  <h2 className="text-xl font-black text-gray-900">ניסיון ותפקידים</h2>
+                  <h2 className="text-xl font-bold text-gray-900">ניסיון ותפקידים</h2>
 
                   {/* ── שאלת הניסיון — *לפני* בחירת התפקידים, כי היא קובעת מה מוצג ── */}
                   <div>
@@ -313,7 +313,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                               <div className="font-bold text-gray-900">{r.label}</div>
                               <div className="text-gray-500 text-xs">{r.desc}</div>
                             </div>
-                            {sel && <span className="text-amber-500 font-black text-lg">✓</span>}
+                            {sel && <span className="text-amber-500 font-bold text-lg">✓</span>}
                           </button>
                         );
                       })}
@@ -353,7 +353,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                               </div>
                               <div className="text-gray-500 text-xs">{r.desc}</div>
                             </div>
-                            {sel && <span className="text-green-600 font-black text-lg">✓</span>}
+                            {sel && <span className="text-green-600 font-bold text-lg">✓</span>}
                           </button>
                         );
                       })}
@@ -374,9 +374,9 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                             key={v}
                             onClick={() => setYearsExp(val)}
                             className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-colors ${
-                              sel ? 'text-white' : 'bg-gray-100 text-gray-700'
+                              sel ? '' : 'bg-gray-100 text-gray-700'
                             }`}
-                            style={sel ? { background: 'linear-gradient(135deg,#e8a020,#f0c050)' } : {}}
+                            style={sel ? { background: '#e8a020', color: '#241803' } : {}}
                           >
                             {v}
                           </button>
@@ -476,7 +476,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                 </>
               ) : (
                 <>
-                  <h2 className="text-xl font-black text-gray-900">סוג המטבח שלך</h2>
+                  <h2 className="text-xl font-bold text-gray-900">סוג המטבח שלך</h2>
                   <p className="text-gray-500 text-sm">בחר הכל שמתאים — אפשר לבחור כמה</p>
 
                   {[
@@ -537,8 +537,8 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                 <button
                   disabled={role === 'worker' ? (hasExperience === null || !workerRoles.length || taxStatus === null) : selectedCuisines.length === 0}
                   onClick={() => role === 'worker' ? setStep(3) : handleComplete()}
-                  className="flex-1 text-white rounded-2xl py-4 font-bold disabled:opacity-40"
-                  style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}
+                  className="flex-1 rounded-2xl py-4 font-bold disabled:opacity-40"
+                  style={{ background: '#e8a020', color: '#241803' }}
                 >
                   {role === 'restaurant' ? (saving ? 'שומר...' : 'סיים הגדרה') : 'המשך'}
                 </button>
@@ -549,7 +549,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
           {/* Step 3 — Worker: Skills (מותאם לפי תפקיד) */}
           {step === 3 && role === 'worker' && (
             <div className="space-y-3 screen-enter">
-              <h2 className="text-xl font-black text-gray-900">במה אתה מתמחה?</h2>
+              <h2 className="text-xl font-bold text-gray-900">במה אתה מתמחה?</h2>
               <p className="text-gray-500 text-sm">בחר הכל שרלוונטי — ככה המסעדות ידעו בדיוק מה אתה מביא</p>
 
               {skillSections.map(section => (
@@ -584,8 +584,8 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                 </button>
                 <button
                   onClick={() => setStep(4)}
-                  className="flex-1 text-white rounded-2xl py-4 font-bold"
-                  style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}
+                  className="flex-1 rounded-2xl py-4 font-bold"
+                  style={{ background: '#e8a020', color: '#241803' }}
                 >
                   המשך {selectedSpecialties.length === 0 ? '(דלג)' : ''}
                 </button>
@@ -596,7 +596,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
           {/* Step 4 — Worker: Bio */}
           {step === 4 && role === 'worker' && (
             <div className="space-y-4 screen-enter">
-              <h2 className="text-xl font-black text-gray-900">קצת עלייך</h2>
+              <h2 className="text-xl font-bold text-gray-900">קצת עלייך</h2>
               <p className="text-gray-500 text-sm">כתב 2-3 משפטים שיעזרו למסעדות להכיר אותך</p>
               <textarea
                 value={bio}
@@ -612,8 +612,8 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                 <button
                   onClick={handleComplete}
                   disabled={saving}
-                  className="flex-1 text-white rounded-2xl py-4 font-bold disabled:opacity-50"
-                  style={{ background: 'linear-gradient(135deg,#e8a020,#f0c050)' }}
+                  className="flex-1 rounded-2xl py-4 font-bold disabled:opacity-50"
+                  style={{ background: '#e8a020', color: '#241803' }}
                 >
                   {saving ? (
                     <div className="flex items-center justify-center gap-2">
