@@ -73,8 +73,8 @@ export const AdminUsers: React.FC = () => {
           <button key={id} onClick={() => setTab(id)}
             className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all"
             style={tab === id
-              ? { background: '#e8a020', color: '#0a0f1a' }
-              : { background: '#111a2b', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.06)' }}>
+              ? { background: '#5354d3', color: '#ffffff' }
+              : { background: '#1b1e38', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.06)' }}>
             {label}
           </button>
         ))}
@@ -86,25 +86,25 @@ export const AdminUsers: React.FC = () => {
           <Search size={15} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: 'rgba(255,255,255,0.3)' }} />
           <input value={q} onChange={e => setQ(e.target.value)} placeholder="חיפוש לפי שם, עיר, מייל..."
             className="w-full rounded-xl pr-9 pl-3 py-2.5 text-sm text-right text-white outline-none"
-            style={{ background: '#111a2b', border: '1px solid rgba(255,255,255,0.08)' }} />
+            style={{ background: '#1b1e38', border: '1px solid rgba(255,255,255,0.08)' }} />
         </div>
         <button onClick={exportCurrent} disabled={filtered.length === 0} title="ייצוא ל-CSV"
           className="px-3 rounded-xl flex items-center gap-1.5 text-xs font-bold disabled:opacity-40"
-          style={{ background: '#111a2b', border: '1px solid rgba(255,255,255,0.08)', color: '#34d399' }}>
+          style={{ background: '#1b1e38', border: '1px solid rgba(255,255,255,0.08)', color: '#34d399' }}>
           <Download size={15} /> CSV
         </button>
       </div>
 
       {loading ? (
         <div className="flex items-center justify-center py-16">
-          <div className="w-7 h-7 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+          <div className="w-7 h-7 border-2 border-[#5354d3] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : filtered.length === 0 ? (
         <p className="text-center text-sm py-12" style={{ color: 'rgba(255,255,255,0.3)' }}>לא נמצאו תוצאות</p>
       ) : (
         <div className="space-y-2.5">
           {tab === 'workers' ? filtered.map((w: any) => (
-            <div key={w.Id} className="rounded-2xl p-3.5" style={{ background: '#111a2b', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <div key={w.Id} className="rounded-2xl p-3.5" style={{ background: '#1b1e38', border: '1px solid rgba(255,255,255,0.06)' }}>
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">
@@ -158,7 +158,7 @@ export const AdminUsers: React.FC = () => {
               </div>
             </div>
           )) : filtered.map((r: any) => (
-            <div key={r.Id} className="rounded-2xl p-3.5" style={{ background: '#111a2b', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <div key={r.Id} className="rounded-2xl p-3.5" style={{ background: '#1b1e38', border: '1px solid rgba(255,255,255,0.06)' }}>
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">

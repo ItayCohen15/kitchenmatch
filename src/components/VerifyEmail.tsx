@@ -83,14 +83,14 @@ export const VerifyEmail: React.FC<Props> = ({ userId, email, onVerified }) => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6"
-      style={{ background: '#14233d', paddingTop: 'max(env(safe-area-inset-top), 24px)' }}>
+      style={{ background: '#1b1e38', paddingTop: 'max(env(safe-area-inset-top), 24px)' }}>
 
       <div className="w-full max-w-sm">
         {/* Icon */}
         <div className="text-center mb-8">
           <div className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-4"
-            style={{ background: 'rgba(232,160,32,0.15)', border: '2px solid rgba(232,160,32,0.3)' }}>
-            <Mail size={38} className="text-amber-400" />
+            style={{ background: 'rgba(83,84,211,0.15)', border: '2px solid rgba(83,84,211,0.3)' }}>
+            <Mail size={38} className="text-[#5354d3]" />
           </div>
           <h1 className="text-2xl font-bold text-white mb-2">אמת את האימייל שלך</h1>
           <p className="text-gray-400 text-sm">
@@ -116,9 +116,9 @@ export const VerifyEmail: React.FC<Props> = ({ userId, email, onVerified }) => {
                 onKeyDown={e => { if (e.key === 'Backspace' && !code[i] && i > 0) inputs.current[i-1]?.focus(); }}
                 className="w-12 h-14 text-center text-2xl font-bold rounded-xl border-2 outline-none transition-all"
                 style={{
-                  borderColor: digit ? '#e8a020' : '#e5e7eb',
-                  background: digit ? 'rgba(232,160,32,0.05)' : '#f9fafb',
-                  color: '#0d1420',
+                  borderColor: digit ? '#5354d3' : '#e5e7eb',
+                  background: digit ? 'rgba(83,84,211,0.05)' : '#f9fafb',
+                  color: '#131626',
                 }}
               />
             ))}
@@ -134,7 +134,7 @@ export const VerifyEmail: React.FC<Props> = ({ userId, email, onVerified }) => {
             onClick={() => handleVerify()}
             disabled={loading || code.join('').length !== 6}
             className="w-full font-bold text-base rounded-2xl py-4 disabled:opacity-40"
-            style={{ background: '#e8a020', color: '#241803' }}>
+            style={{ background: '#5354d3', color: '#ffffff' }}>
             {loading ? (
               <div className="flex items-center justify-center gap-2">
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -155,7 +155,7 @@ export const VerifyEmail: React.FC<Props> = ({ userId, email, onVerified }) => {
           ) : (
             <p className="text-gray-500 text-sm">
               לא קיבלת?{' '}
-              <button onClick={handleResend} className="font-bold" style={{ color: '#e8a020' }}>
+              <button onClick={handleResend} className="font-bold" style={{ color: '#5354d3' }}>
                 שלח שוב
               </button>
             </p>

@@ -49,7 +49,7 @@ export const WorkerGallery: React.FC<Props> = ({ workerId, editable = false }) =
   if (loading) {
     return (
       <div className="text-center py-6">
-        <div className="w-6 h-6 border-2 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto" />
+        <div className="w-6 h-6 border-2 border-[#5354d3] border-t-transparent rounded-full animate-spin mx-auto" />
       </div>
     );
   }
@@ -67,10 +67,10 @@ export const WorkerGallery: React.FC<Props> = ({ workerId, editable = false }) =
           <button
             onClick={() => fileRef.current?.click()}
             disabled={uploading}
-            className="aspect-square rounded-xl border-2 border-dashed border-amber-300 flex flex-col items-center justify-center gap-1 text-amber-500 bg-amber-50/50 active:bg-amber-50"
+            className="aspect-square rounded-xl border-2 border-dashed border-[#5354d3] flex flex-col items-center justify-center gap-1 text-[#5354d3] bg-[#ecebfd]/50 active:bg-[#ecebfd]"
           >
             {uploading
-              ? <div className="w-5 h-5 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+              ? <div className="w-5 h-5 border-2 border-[#5354d3] border-t-transparent rounded-full animate-spin" />
               : <><Plus size={20} /><span className="text-[10px] font-semibold">הוסף</span></>}
           </button>
         )}

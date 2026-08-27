@@ -115,7 +115,7 @@ export const WorkerMatching: React.FC = () => {
         </div>
         <h2 className="text-2xl font-bold text-gray-900">{wName} אושר</h2>
         <p className="text-gray-500">העובד בדרך אליך. אפשר לעקוב אחר מיקומו כאן.</p>
-        <div className="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-6 h-6 border-2 border-[#5354d3] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -152,14 +152,14 @@ export const WorkerMatching: React.FC = () => {
 
       {loading && (
         <div className="flex flex-col items-center py-12 gap-3">
-          <div className="w-10 h-10 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-10 h-10 border-2 border-[#5354d3] border-t-transparent rounded-full animate-spin" />
           <p className="text-gray-500 text-sm">טוען מועמדים...</p>
         </div>
       )}
 
       {!loading && applicants.length === 0 && (
         <div className="bg-white rounded-2xl p-8 text-center card-shadow">
-          <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-[#ecebfd] rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-3xl">⏳</span>
           </div>
           <h3 className="font-bold text-gray-800 mb-2">ממתין למועמדים</h3>
@@ -168,8 +168,8 @@ export const WorkerMatching: React.FC = () => {
             <br />הדף מתרענן אוטומטית כל 8 שניות.
           </p>
           <div className="mt-4 flex items-center justify-center gap-2">
-            <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
-            <span className="text-amber-500 text-sm font-semibold">מחפש בזמן אמת</span>
+            <div className="w-2 h-2 bg-[#5354d3] rounded-full animate-pulse" />
+            <span className="text-[#5354d3] text-sm font-semibold">מחפש בזמן אמת</span>
           </div>
         </div>
       )}
@@ -189,11 +189,11 @@ export const WorkerMatching: React.FC = () => {
 
           return (
             <div key={job.Id}
-              className={`bg-white rounded-2xl p-4 card-shadow border-2 ${isFirst ? 'border-amber-400' : 'border-transparent'}`}>
+              className={`bg-white rounded-2xl p-4 card-shadow border-2 ${isFirst ? 'border-[#5354d3]' : 'border-transparent'}`}>
 
               {isFirst && applicants.length > 1 && (
-                <div className="text-xs font-bold text-amber-500 mb-2 flex items-center gap-1">
-                  <Star size={11} className="fill-orange-400 text-amber-400" />
+                <div className="text-xs font-bold text-[#5354d3] mb-2 flex items-center gap-1">
+                  <Star size={11} className="fill-[#5354d3] text-[#5354d3]" />
                   הכי מתאים
                 </div>
               )}
@@ -234,7 +234,7 @@ export const WorkerMatching: React.FC = () => {
                   {skills.length > 0 && (
                     <div className="flex items-center gap-1 mt-1.5 flex-wrap">
                       {skills.slice(0, 3).map((s: string) => (
-                        <span key={s} className="text-xs bg-amber-50 text-amber-600 rounded-full px-2 py-0.5">{s}</span>
+                        <span key={s} className="text-xs bg-[#ecebfd] text-[#5354d3] rounded-full px-2 py-0.5">{s}</span>
                       ))}
                     </div>
                   )}
@@ -297,7 +297,7 @@ export const WorkerMatching: React.FC = () => {
                 <button
                   onClick={() => handleApprove(job)}
                   disabled={isActioning}
-                  className="flex-1 bg-amber-500 text-white rounded-xl py-2.5 font-bold text-sm flex items-center justify-center gap-2 disabled:opacity-50 active:scale-98 transition-all"
+                  className="flex-1 bg-[#5354d3] text-white rounded-xl py-2.5 font-bold text-sm flex items-center justify-center gap-2 disabled:opacity-50 active:scale-98 transition-all"
                 >
                   {isActioning ? (
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

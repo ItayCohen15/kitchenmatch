@@ -28,7 +28,7 @@ export class ErrorBoundary extends React.Component<
           <p className="text-gray-400 text-sm">אירעה תקלה לא צפויה. נסה לרענן את האפליקציה.</p>
           <button
             onClick={() => window.location.reload()}
-            className="mt-1 bg-amber-500 text-white rounded-2xl px-6 py-3 font-bold text-sm active:scale-95 transition-transform">
+            className="mt-1 bg-[#5354d3] text-white rounded-2xl px-6 py-3 font-bold text-sm active:scale-95 transition-transform">
             רענן עכשיו
           </button>
         </div>

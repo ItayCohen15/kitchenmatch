@@ -145,7 +145,7 @@ export const PayoutAccountCard: React.FC<{
         <div className="flex gap-2">
           <button onClick={handleRefresh} disabled={busy}
             className="flex-1 rounded-xl py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 disabled:opacity-50"
-            style={{ background: 'rgba(232,160,32,0.1)', color: '#c8840a', border: '1px solid rgba(232,160,32,0.25)' }}>
+            style={{ background: 'rgba(83,84,211,0.1)', color: '#4244b8', border: '1px solid rgba(83,84,211,0.25)' }}>
             <RefreshCw size={13} className={busy ? 'animate-spin' : ''} /> בדוק סטטוס
           </button>
           <button onClick={handleOnboard} disabled={busy}
@@ -181,9 +181,9 @@ export const PayoutAccountCard: React.FC<{
 
   /* ─── טרם הוגדר ─── */
   return (
-    <div className="rounded-2xl p-4 card-shadow text-white" style={{ background: '#14233d' }}>
+    <div className="rounded-2xl p-4 card-shadow text-white" style={{ background: '#1b1e38' }}>
       <div className="flex items-center gap-2 mb-1.5">
-        <Landmark size={17} style={{ color: '#e8a020' }} />
+        <Landmark size={17} style={{ color: '#5354d3' }} />
         <span className="font-bold text-sm">הגדר לאן יגיע הכסף</span>
       </div>
       <p className="text-xs text-gray-400 leading-relaxed mb-3">
@@ -194,10 +194,10 @@ export const PayoutAccountCard: React.FC<{
         </span>
       </p>
       <button onClick={handleOnboard} disabled={busy}
-        className="w-full rounded-xl py-3 text-sm font-bold text-gray-900 flex items-center justify-center gap-2 disabled:opacity-60"
-        style={{ background: '#e8a020' }}>
+        className="w-full rounded-xl py-3 text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-60"
+        style={{ background: '#5354d3' }}>
         {busy
-          ? <><div className="w-4 h-4 border-2 border-gray-900/30 border-t-gray-900 rounded-full animate-spin" /> פותח...</>
+          ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> פותח...</>
           : <><ExternalLink size={15} /> הגדרת קבלת תשלומים</>}
       </button>
       {err && <div className="text-red-300 text-[11px] text-center mt-2">{err}</div>}

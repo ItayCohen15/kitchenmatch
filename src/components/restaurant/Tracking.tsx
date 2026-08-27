@@ -107,7 +107,7 @@ export const LiveTracking: React.FC = () => {
         <h2 className="text-2xl font-bold text-gray-900">העובד ביטל</h2>
         <p className="text-gray-500">{workerName} ביטל את המשמרת. אם הביטול היה מאוחר, קיבלת ₪50 פיצוי לארנק.</p>
         <button onClick={() => navToRestaurant('home')}
-          className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg">
+          className="w-full bg-[#5354d3] text-white rounded-2xl py-4 font-bold text-lg">
           חזור לבית
         </button>
       </div>

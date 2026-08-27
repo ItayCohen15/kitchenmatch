@@ -15,7 +15,7 @@ export const ReferralScreen: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <div className="w-7 h-7 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+        <div className="w-7 h-7 border-2 border-[#5354d3] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -45,9 +45,9 @@ export const ReferralScreen: React.FC = () => {
   return (
     <div className="space-y-4 pb-4">
       {/* כותרת + הסבר קצר */}
-      <div className="rounded-2xl p-4 text-white" style={{ background: '#14233d' }}>
+      <div className="rounded-2xl p-4 text-white" style={{ background: '#1b1e38' }}>
         <div className="flex items-center gap-2">
-          <Gift size={20} className="text-amber-400" />
+          <Gift size={20} className="text-[#5354d3]" />
           <h2 className="font-bold text-lg">חבר מביא חבר</h2>
         </div>
         <p className="text-gray-300 text-sm mt-1 leading-relaxed">
@@ -72,10 +72,10 @@ export const ReferralScreen: React.FC = () => {
         </div>
       ) : (
         <div className="rounded-2xl p-4 card-shadow flex items-center gap-3"
-          style={{ background: '#fffbeb', border: '1px solid #fde68a' }}>
+          style={{ background: '#ecebfd', border: '1px solid #d7d7f6' }}>
           <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ background: '#e8a020' }}>
-            <Percent size={20} style={{ color: '#241803' }} />
+            style={{ background: '#5354d3' }}>
+            <Percent size={20} style={{ color: '#ffffff' }} />
           </div>
           <div className="flex-1">
             {data.reducedActive ? (
@@ -143,7 +143,7 @@ export const ReferralScreen: React.FC = () => {
       {/* סטטיסטיקות */}
       <div className="grid grid-cols-2 gap-3">
         <div className="bg-white rounded-2xl p-4 card-shadow text-center">
-          <Users size={18} className="text-amber-500 mx-auto mb-1" />
+          <Users size={18} className="text-[#5354d3] mx-auto mb-1" />
           <div className="text-2xl font-bold text-gray-900 leading-none">{data.invited || 0}</div>
           <div className="text-xs text-gray-500 mt-1">{isWorker ? 'עובדים שהזמנת' : 'מסעדות שהזמנת'}</div>
         </div>

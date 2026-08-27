@@ -73,7 +73,7 @@ export const RestaurantProfile: React.FC = () => {
       <div className="screen-enter space-y-4 pb-4">
 
         {/* כרטיס ראשי */}
-        <div className="rounded-2xl p-5 text-white" style={{ background:'#14233d' }}>
+        <div className="rounded-2xl p-5 text-white" style={{ background:'#1b1e38' }}>
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
               <div className="w-16 h-16 rounded-2xl flex items-center justify-center font-bold text-2xl shadow-inner"
@@ -124,7 +124,7 @@ export const RestaurantProfile: React.FC = () => {
             { icon: <Phone size={15} className="text-green-600"/>, bg: 'bg-green-100', label: 'טלפון',
               value: phone ? <a href={`tel:${phone}`} className="font-semibold text-gray-900">{phone}</a>
                            : <span className="text-gray-400 text-sm">לא הוזן</span> },
-            { icon: <MapPin size={15} className="text-amber-600"/>, bg: 'bg-amber-100', label: 'כתובת',
+            { icon: <MapPin size={15} className="text-[#5354d3]"/>, bg: 'bg-[#ecebfd]', label: 'כתובת',
               value: <span className="font-semibold text-gray-900">{address ? `${address}, ${city}` : city || 'לא הוזנה'}</span> },
             { icon: <ChefHat size={15} className="text-blue-600"/>, bg: 'bg-blue-100', label: 'סגנון מטבח',
               value: <span className="font-semibold text-gray-900">{cuisineType || 'לא הוגדר'}</span> },
@@ -144,7 +144,7 @@ export const RestaurantProfile: React.FC = () => {
         {/* ביקורות מעובדים */}
         <div className="bg-white rounded-2xl p-4 card-shadow">
           <div className="flex items-center gap-2 mb-3">
-            <TrendingUp size={16} className="text-amber-500" />
+            <TrendingUp size={16} className="text-[#5354d3]" />
             <h3 className="font-bold text-gray-800">ביקורות מעובדים</h3>
             {reviews.length > 0 && (
               <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{reviews.length}</span>
@@ -178,8 +178,8 @@ export const RestaurantProfile: React.FC = () => {
         {/* חבר מביא חבר */}
         <button onClick={() => navToRestaurant('referral')}
           className="w-full bg-white rounded-2xl p-4 card-shadow flex items-center gap-3 text-right active:bg-gray-50 transition-colors">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: '#e8a020' }}>
-            <Gift size={18} style={{ color:'#241803' }} />
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: '#5354d3' }}>
+            <Gift size={18} style={{ color:'#ffffff' }} />
           </div>
           <div className="flex-1">
             <div className="font-bold text-gray-800 text-sm">חבר מביא חבר</div>
@@ -231,7 +231,7 @@ export const RestaurantProfile: React.FC = () => {
             <label className="text-sm font-semibold text-gray-600 mb-1.5 block">{f.label}</label>
             <input type={f.type} inputMode={f.type === 'tel' ? 'tel' : 'text'}
               value={f.val} onChange={e => f.set(e.target.value)} placeholder={f.ph}
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-amber-400 outline-none" />
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-[#5354d3] outline-none" />
           </div>
         ))}
       </div>
@@ -239,7 +239,7 @@ export const RestaurantProfile: React.FC = () => {
       {error && <div className="bg-red-50 text-red-600 text-sm rounded-xl px-4 py-3 text-center">{error}</div>}
 
       <button onClick={handleSave} disabled={saving || !name}
-        className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-base disabled:opacity-50">
+        className="w-full bg-[#5354d3] text-white rounded-2xl py-4 font-bold text-base disabled:opacity-50">
         {saving
           ? <div className="flex items-center justify-center gap-2">
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

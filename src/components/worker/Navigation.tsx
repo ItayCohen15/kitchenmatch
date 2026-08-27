@@ -108,7 +108,7 @@ export const WorkerNavigation: React.FC = () => {
         <h2 className="text-2xl font-bold text-gray-900">המשמרת בוטלה</h2>
         <p className="text-gray-500">{restaurantName} ביטלה את המשמרת. אם הביטול היה מאוחר, קיבלת פיצוי לארנק.</p>
         <button onClick={() => navToWorker('home')}
-          className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg">
+          className="w-full bg-[#5354d3] text-white rounded-2xl py-4 font-bold text-lg">
           חזור למשמרות
         </button>
       </div>
@@ -215,7 +215,7 @@ export const WorkerNavigation: React.FC = () => {
       {/* כפתור צ'ק-אין */}
       {!waitingForRestaurant && !restaurantInitiated && (
         <button onClick={handleInitiate} disabled={initiating}
-          className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg shadow-lg active:scale-98 transition-transform">
+          className="w-full bg-[#5354d3] text-white rounded-2xl py-4 font-bold text-lg shadow-lg active:scale-98 transition-transform">
           {initiating
             ? <div className="flex items-center justify-center gap-2">
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />שולח...

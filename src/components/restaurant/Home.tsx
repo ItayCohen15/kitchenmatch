@@ -85,7 +85,7 @@ export const RestaurantHome: React.FC = () => {
     <div className="screen-enter space-y-4 pb-2">
       {/* Header */}
       <div className="rounded-3xl p-5 text-white relative overflow-hidden"
-        style={{ background: '#12203a', boxShadow: '0 4px 16px rgba(20,28,44,0.16)' }}>
+        style={{ background: '#1b1e38', boxShadow: '0 4px 16px rgba(20,28,44,0.16)' }}>
         <div className="flex items-center gap-3 mb-4">
           <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center font-bold text-lg">
             {initials}
@@ -155,11 +155,11 @@ export const RestaurantHome: React.FC = () => {
           <button
             onClick={() => { haptic('light'); setEmergencyMode(false); navToRestaurant('create_job'); }}
             className="rounded-2xl p-4 text-right active:scale-[0.98] transition-transform"
-            style={{ background: '#e8a020', color: '#241803' }}
+            style={{ background: '#5354d3', color: '#ffffff' }}
           >
             <ChefHat size={24} className="mb-2" />
             <div className="font-bold">פרסם משמרת</div>
-            <div className="text-xs mt-0.5" style={{ color:'#5a4410' }}>מצא עובד עכשיו</div>
+            <div className="text-xs mt-0.5" style={{ color:'#4a4bc4' }}>מצא עובד עכשיו</div>
           </button>
           <button
             onClick={() => { haptic('medium'); setEmergencyMode(true); navToRestaurant('create_job'); }}
@@ -179,13 +179,13 @@ export const RestaurantHome: React.FC = () => {
       {/* Talent program entry */}
       <button onClick={() => navToRestaurant('talent')}
         className="w-full rounded-2xl p-4 text-right active:scale-[0.99] transition-transform flex items-center gap-3"
-        style={{ background: '#fbf1db', border: '1px solid #f0e0b8' }}>
-        <GraduationCap size={26} className="flex-shrink-0" style={{ color: '#c8841a' }} />
+        style={{ background: '#ecebfd', border: '1px solid #d7d7f6' }}>
+        <GraduationCap size={26} className="flex-shrink-0" style={{ color: '#4244b8' }} />
         <div className="flex-1">
-          <div className="font-bold" style={{ color: '#3a2e12' }}>גלה טאלנט טרי</div>
-          <div className="text-xs mt-0.5" style={{ color: '#8a733e' }}>בוגרי בתי ספר לבישול/ברמנות — מוכנים להזדמנות הראשונה</div>
+          <div className="font-bold" style={{ color: '#35357e' }}>גלה טאלנט טרי</div>
+          <div className="text-xs mt-0.5" style={{ color: '#6d6db4' }}>בוגרי בתי ספר לבישול/ברמנות — מוכנים להזדמנות הראשונה</div>
         </div>
-        <span className="text-xl" style={{ color: '#c8841a' }}>‹</span>
+        <span className="text-xl" style={{ color: '#4244b8' }}>‹</span>
       </button>
 
       {/* Available workers nearby */}
@@ -239,7 +239,7 @@ export const RestaurantHome: React.FC = () => {
         {recentJobs.length === 0 ? (
           <div className="bg-white rounded-xl p-4 text-center card-shadow">
             <p className="text-gray-400 text-sm">טרם פרסמת משמרות</p>
-            <button onClick={() => navToRestaurant('create_job')} className="text-amber-500 text-sm font-semibold mt-2">
+            <button onClick={() => navToRestaurant('create_job')} className="text-[#5354d3] text-sm font-semibold mt-2">
               פרסם משמרת ראשונה
             </button>
           </div>

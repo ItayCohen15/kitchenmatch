@@ -108,7 +108,7 @@ export const RestaurantApp: React.FC = () => {
     <div className="flex flex-col h-full">
       {showTopBar && (
         <header className="px-4 flex items-center justify-between flex-shrink-0"
-          style={{ background:'#0d1420', borderBottom:'1px solid rgba(255,255,255,0.07)', paddingTop:'max(env(safe-area-inset-top), 12px)', paddingBottom:'12px' }}>
+          style={{ background:'#131626', borderBottom:'1px solid rgba(255,255,255,0.07)', paddingTop:'max(env(safe-area-inset-top), 12px)', paddingBottom:'12px' }}>
           <div className="flex items-center gap-2">
             {backTo ? (
               <button onClick={() => navToRestaurant(backTo)} className="font-bold text-xl leading-none" style={{color:'rgba(255,255,255,0.6)'}} title="חזרה">
@@ -123,7 +123,7 @@ export const RestaurantApp: React.FC = () => {
           <div className="flex items-center gap-2">
             <span className="font-bold text-base text-white">{SCREEN_TITLES[restaurantScreen]}</span>
             <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold"
-              style={{ background:'#e8a020', color:'#241803' }}>
+              style={{ background:'#5354d3', color:'#ffffff' }}>
               {initials}
             </div>
           </div>

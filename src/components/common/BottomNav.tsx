@@ -28,7 +28,7 @@ export const BottomNav: React.FC<Props> = ({ mode, active, onNav }) => {
       <div className="max-w-md mx-auto px-3" style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 8px)' }}>
         <div className="flex overflow-hidden rounded-2xl mb-2"
           style={{
-            background: '#0d1420',
+            background: '#131626',
             border: '1px solid rgba(255,255,255,0.08)',
             boxShadow: '0 6px 22px rgba(20,28,44,0.22)',
           }}>
@@ -40,14 +40,14 @@ export const BottomNav: React.FC<Props> = ({ mode, active, onNav }) => {
                 {/* Active background pill */}
                 {isActive && (
                   <div className="absolute inset-1.5 rounded-xl"
-                    style={{ background: 'rgba(232,160,32,0.14)' }} />
+                    style={{ background: 'rgba(83,84,211,0.14)' }} />
                 )}
                 <span className="relative z-10"
-                  style={{ color: isActive ? '#e8a020' : 'rgba(255,255,255,0.42)' }}>
+                  style={{ color: isActive ? '#5354d3' : 'rgba(255,255,255,0.42)' }}>
                   {tab.icon}
                 </span>
                 <span className="relative z-10 text-[10px] font-semibold mt-0.5 whitespace-nowrap"
-                  style={{ color: isActive ? '#e8a020' : 'rgba(255,255,255,0.42)' }}>
+                  style={{ color: isActive ? '#5354d3' : 'rgba(255,255,255,0.42)' }}>
                   {tab.label}
                 </span>
               </button>

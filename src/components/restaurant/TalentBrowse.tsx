@@ -34,9 +34,9 @@ export const TalentBrowse: React.FC = () => {
     <div className="screen-enter space-y-4 pb-2">
       {/* Hero */}
       <div className="rounded-2xl p-5 text-white relative overflow-hidden"
-        style={{ background: '#14233d' }}>
+        style={{ background: '#1b1e38' }}>
         <div className="flex items-center gap-2 mb-1 relative">
-          <GraduationCap size={22} style={{ color: '#e8a020' }} />
+          <GraduationCap size={22} style={{ color: '#5354d3' }} />
           <h2 className="font-bold text-lg">טאלנט טרי · תוכנית הכניסה</h2>
         </div>
         <p className="text-gray-300 text-sm leading-relaxed relative">
@@ -53,7 +53,7 @@ export const TalentBrowse: React.FC = () => {
           <button key={t.id} onClick={() => setMode(t.id as any)}
             className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all"
             style={{
-              background: mode === t.id ? '#14233d' : 'transparent',
+              background: mode === t.id ? '#1b1e38' : 'transparent',
               color: mode === t.id ? '#fff' : '#94a3b8',
             }}>
             {t.label}
@@ -65,12 +65,12 @@ export const TalentBrowse: React.FC = () => {
       {roles.length > 0 && (
         <div className="flex gap-2 overflow-x-auto pb-1">
           <button onClick={() => setRoleFilter('')}
-            className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap ${roleFilter === '' ? 'bg-amber-500 text-white' : 'bg-white text-gray-600 card-shadow'}`}>
+            className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap ${roleFilter === '' ? 'bg-[#5354d3] text-white' : 'bg-white text-gray-600 card-shadow'}`}>
             הכל
           </button>
           {roles.map(r => (
             <button key={r} onClick={() => setRoleFilter(r)}
-              className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap ${roleFilter === r ? 'bg-amber-500 text-white' : 'bg-white text-gray-600 card-shadow'}`}>
+              className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap ${roleFilter === r ? 'bg-[#5354d3] text-white' : 'bg-white text-gray-600 card-shadow'}`}>
               {ROLE_LABELS[r] || r}
             </button>
           ))}
@@ -80,7 +80,7 @@ export const TalentBrowse: React.FC = () => {
       {/* List */}
       {loading && (
         <div className="text-center py-6">
-          <div className="w-6 h-6 border-2 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto" />
+          <div className="w-6 h-6 border-2 border-[#5354d3] border-t-transparent rounded-full animate-spin mx-auto" />
         </div>
       )}
       {!loading && list.length === 0 && (
@@ -121,12 +121,12 @@ export const TalentBrowse: React.FC = () => {
                 {skills.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-1.5">
                     {skills.map((s: string) => (
-                      <span key={s} className="text-[10px] bg-amber-50 text-amber-600 rounded-full px-2 py-0.5">{s}</span>
+                      <span key={s} className="text-[10px] bg-[#ecebfd] text-[#5354d3] rounded-full px-2 py-0.5">{s}</span>
                     ))}
                   </div>
                 )}
               </div>
-              <span className="text-amber-400 text-lg flex-shrink-0">‹</span>
+              <span className="text-[#5354d3] text-lg flex-shrink-0">‹</span>
             </button>
           );
         })}

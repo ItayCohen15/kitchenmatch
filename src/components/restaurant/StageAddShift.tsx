@@ -5,7 +5,7 @@ import { api } from '../../api';
 import { STAGE_RESTAURANT_COMMISSION } from '../../utils/levels';
 
 const DEFAULTS_KEY = 'km_stage_shift_defaults';
-const inputCls = 'w-full border border-gray-200 bg-gray-50 rounded-xl px-4 py-3 text-right outline-none focus:border-amber-400 focus:bg-white text-gray-900';
+const inputCls = 'w-full border border-gray-200 bg-gray-50 rounded-xl px-4 py-3 text-right outline-none focus:border-[#5354d3] focus:bg-white text-gray-900';
 
 // דף קביעת/עריכת משמרת סטאז' — נכנסים אליו מדף הלוז
 export const StageAddShift: React.FC = () => {
@@ -82,10 +82,10 @@ export const StageAddShift: React.FC = () => {
 
       {/* כותרת */}
       <div className="rounded-3xl p-4 text-white flex items-center gap-3"
-        style={{ background: '#14233d' }}>
+        style={{ background: '#1b1e38' }}>
         <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
-          style={{ background: 'rgba(232,160,32,0.18)', border: '1px solid rgba(232,160,32,0.3)' }}>
-          <Calendar className="text-amber-400" size={20} />
+          style={{ background: 'rgba(83,84,211,0.18)', border: '1px solid rgba(83,84,211,0.3)' }}>
+          <Calendar className="text-[#5354d3]" size={20} />
         </div>
         <div>
           <div className="font-bold text-lg leading-tight">{editShift ? 'עריכת משמרת' : 'משמרת חדשה'}</div>
@@ -128,7 +128,7 @@ export const StageAddShift: React.FC = () => {
 
         <button onClick={save} disabled={saving}
           className="w-full rounded-2xl py-4 font-bold disabled:opacity-40"
-          style={{ background: editShift ? '#3b74d1' : '#e8a020', color: editShift ? '#ffffff' : '#241803' }}>
+          style={{ background: editShift ? '#3b74d1' : '#5354d3', color: editShift ? '#ffffff' : '#ffffff' }}>
           {saving ? 'שומר...' : editShift ? 'שמור שינויים' : 'הוסף משמרת ללוז'}
         </button>
         {editShift && (

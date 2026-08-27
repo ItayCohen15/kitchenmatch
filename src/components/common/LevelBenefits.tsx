@@ -15,7 +15,7 @@ export const LevelBenefits: React.FC<Props> = ({ completedShifts }) => {
   return (
     <div className="bg-white rounded-2xl p-4 card-shadow">
       <div className="flex items-center gap-2 mb-3">
-        <Gift size={18} className="text-amber-500" />
+        <Gift size={18} className="text-[#5354d3]" />
         <h3 className="font-bold text-gray-800">הטבות הרמות</h3>
       </div>
 
@@ -29,8 +29,8 @@ export const LevelBenefits: React.FC<Props> = ({ completedShifts }) => {
             <div key={l.key}
               className="rounded-xl overflow-hidden border transition-all"
               style={{
-                borderColor: isCurrent ? '#e8a020' : '#f1f5f9',
-                background: isCurrent ? 'rgba(232,160,32,0.06)' : 'white',
+                borderColor: isCurrent ? '#5354d3' : '#f1f5f9',
+                background: isCurrent ? 'rgba(83,84,211,0.06)' : 'white',
                 boxShadow: 'none',
               }}>
 

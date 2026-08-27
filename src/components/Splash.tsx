@@ -12,7 +12,7 @@ export const Splash: React.FC<{ onDone: () => void }> = ({ onDone }) => {
   return (
     <div
       className={`fixed inset-0 flex flex-col items-center justify-center z-50 transition-opacity duration-500 ${fade ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
-      style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)', background: '#0d1420' }}
+      style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)', background: '#131626' }}
     >
       <div className="flex flex-col items-center gap-5">
         <div
@@ -24,14 +24,14 @@ export const Splash: React.FC<{ onDone: () => void }> = ({ onDone }) => {
         <div className="text-center">
           <div className="font-extrabold text-3xl tracking-tight">
             <span className="text-white">Staff</span>
-            <span style={{ color: '#e8a020' }}>ly</span>
+            <span style={{ color: '#5354d3' }}>ly</span>
           </div>
           <div className="text-sm mt-1.5" dir="ltr" style={{ color: '#8a97ad' }}>Find your shift. Fill your team.</div>
         </div>
         <div className="flex gap-1.5 mt-1">
           {[0,1,2].map(i => (
             <div key={i} className="w-1.5 h-1.5 rounded-full"
-              style={{ background: '#e8a020', opacity: 0.4, animation: `dotPulse 1.2s ${i*0.2}s infinite` }} />
+              style={{ background: '#5354d3', opacity: 0.4, animation: `dotPulse 1.2s ${i*0.2}s infinite` }} />
           ))}
         </div>
       </div>

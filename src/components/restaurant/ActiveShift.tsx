@@ -127,18 +127,18 @@ export const ActiveShift: React.FC = () => {
         </div>
         <h2 className="text-xl font-bold text-gray-900">התשלום לא עבר</h2>
         <p className="text-gray-500 text-sm">{payError}</p>
-        <div className="bg-amber-50 rounded-2xl p-4 w-full text-center">
-          <div className="text-2xl font-bold text-amber-600">₪{totalWithFee}</div>
+        <div className="bg-[#ecebfd] rounded-2xl p-4 w-full text-center">
+          <div className="text-2xl font-bold text-[#5354d3]">₪{totalWithFee}</div>
           <div className="text-gray-400 text-xs mt-1">הסכום לחיוב (כולל {restCommPct}% עמלה)</div>
         </div>
         <p className="text-gray-400 text-xs">המשמרת לא נסגרה. {workerName} עדיין ממתין לתשלום.</p>
         <div className="w-full flex flex-col gap-2">
           <button onClick={() => navToRestaurant('wallet')}
-            className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg flex items-center justify-center gap-2">
+            className="w-full bg-[#5354d3] text-white rounded-2xl py-4 font-bold text-lg flex items-center justify-center gap-2">
             <Wallet size={18} /> טען את הארנק
           </button>
           <button onClick={() => { payBlocked.current = false; setPayError(null); setBothDone(true); }}
-            className="w-full bg-gray-900 text-white rounded-2xl py-3 font-bold">
+            className="w-full bg-[#1b1e38] text-white rounded-2xl py-3 font-bold">
             נסה לחייב שוב
           </button>
           <button onClick={() => navToRestaurant('home')}
@@ -158,13 +158,13 @@ export const ActiveShift: React.FC = () => {
         </div>
         <h2 className="text-2xl font-bold text-gray-900">שני הצדדים אישרו</h2>
         <p className="text-gray-500">התשלום בדרך. עוד רגע תעברו למסך הדירוג.</p>
-        <div className="bg-amber-50 rounded-2xl p-4 w-full text-center">
-          <div className="text-3xl font-bold text-amber-600">₪{totalWithFee}</div>
+        <div className="bg-[#ecebfd] rounded-2xl p-4 w-full text-center">
+          <div className="text-3xl font-bold text-[#5354d3]">₪{totalWithFee}</div>
           <div className="text-gray-400 text-sm mt-1">סה״כ חויב (כולל {restCommPct}% עמלה){isEmergency ? ' · משמרת חירום' : ''}</div>
         </div>
-        <div className="w-6 h-6 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+        <div className="w-6 h-6 border-2 border-[#5354d3] border-t-transparent rounded-full animate-spin" />
         <button onClick={() => navToRestaurant('end_shift')}
-          className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg">
+          className="w-full bg-[#5354d3] text-white rounded-2xl py-4 font-bold text-lg">
           דרג את {workerName}
         </button>
       </div>
@@ -246,14 +246,14 @@ export const ActiveShift: React.FC = () => {
       {!restaurantConfirmed ? (
         !showConfirmDialog ? (
           <button onClick={() => setShowConfirmDialog(true)}
-            className="w-full bg-gray-900 text-white rounded-2xl py-4 font-bold text-lg active:scale-98 transition-transform flex items-center justify-center gap-2">
+            className="w-full bg-[#1b1e38] text-white rounded-2xl py-4 font-bold text-lg active:scale-98 transition-transform flex items-center justify-center gap-2">
             <Flag size={18} /> סיים משמרת
           </button>
         ) : (
           <div className="bg-white rounded-2xl p-4 card-shadow space-y-3 screen-enter">
             <h3 className="font-bold text-gray-900 text-center">בטוח שתרצה לסיים?</h3>
-            <div className="bg-amber-50 rounded-xl p-3 text-center">
-              <div className="text-xl font-bold text-amber-600">₪{totalWithFee}</div>
+            <div className="bg-[#ecebfd] rounded-xl p-3 text-center">
+              <div className="text-xl font-bold text-[#5354d3]">₪{totalWithFee}</div>
               <div className="text-gray-400 text-xs">יחויב לאחר אישור שני הצדדים</div>
             </div>
             <div className="flex gap-3">
@@ -262,7 +262,7 @@ export const ActiveShift: React.FC = () => {
                 המשך משמרת
               </button>
               <button onClick={handleConfirmEnd} disabled={confirming}
-                className="flex-1 bg-amber-500 text-white rounded-xl py-3 font-bold flex items-center justify-center gap-2">
+                className="flex-1 bg-[#5354d3] text-white rounded-xl py-3 font-bold flex items-center justify-center gap-2">
                 {confirming
                   ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   : <><CheckCircle2 size={16} /> אשר סיום</>}

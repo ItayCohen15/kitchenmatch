@@ -11,7 +11,7 @@ import { ROLE_LABELS, roleLabels } from '../../utils/roles';
 import { ils, num, monthLabel, LEVEL_LABELS, LEVEL_COLORS } from './format';
 
 const Tip = ({ active, payload, label, money }: any) => active && payload?.length ? (
-  <div className="rounded-xl shadow-lg p-2.5 text-right text-xs" style={{ background: '#111a2b', border: '1px solid rgba(255,255,255,0.1)' }}>
+  <div className="rounded-xl shadow-lg p-2.5 text-right text-xs" style={{ background: '#1b1e38', border: '1px solid rgba(255,255,255,0.1)' }}>
     <p className="font-bold text-white mb-1">{label}</p>
     {payload.map((p: any, i: number) => (
       <p key={i} style={{ color: p.color || p.fill }}>
@@ -22,7 +22,7 @@ const Tip = ({ active, payload, label, money }: any) => active && payload?.lengt
 ) : null;
 
 const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
-  <div className={`rounded-2xl p-4 ${className}`} style={{ background: '#111a2b', border: '1px solid rgba(255,255,255,0.06)' }}>
+  <div className={`rounded-2xl p-4 ${className}`} style={{ background: '#1b1e38', border: '1px solid rgba(255,255,255,0.06)' }}>
     {children}
   </div>
 );
@@ -62,7 +62,7 @@ export const AdminDashboard: React.FC = () => {
 
   if (loading) return (
     <div className="flex items-center justify-center" style={{ height: '60vh' }}>
-      <div className="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+      <div className="w-8 h-8 border-2 border-[#5354d3] border-t-transparent rounded-full animate-spin" />
     </div>
   );
   if (error) return <div className="text-center text-red-400 text-sm mt-10">{error}</div>;
@@ -79,12 +79,12 @@ export const AdminDashboard: React.FC = () => {
     <div className="space-y-4 pb-4">
       {/* ===== הכנסת הפלטפורמה — גיבור ===== */}
       <div className="rounded-3xl p-5 relative overflow-hidden"
-        style={{ background: '#14233d', border: '1px solid rgba(232,160,32,0.25)' }}>
+        style={{ background: '#1b1e38', border: '1px solid rgba(83,84,211,0.25)' }}>
         <div className="flex items-center gap-2 mb-1">
-          <Wallet size={15} style={{ color: '#e8a020' }} />
+          <Wallet size={15} style={{ color: '#5354d3' }} />
           <span className="text-xs font-bold" style={{ color: 'rgba(255,255,255,0.6)' }}>סך הכנסות הפלטפורמה</span>
         </div>
-        <div className="text-4xl font-bold" style={{ color: '#f5c842' }}>{ils(revenue.platformRevenue)}</div>
+        <div className="text-4xl font-bold" style={{ color: '#7b7cee' }}>{ils(revenue.platformRevenue)}</div>
         <div className="flex gap-4 mt-3">
           <div>
             <div className="text-[11px]" style={{ color: 'rgba(255,255,255,0.4)' }}>עמלות משמרות</div>
@@ -110,7 +110,7 @@ export const AdminDashboard: React.FC = () => {
       {/* ===== משתמשים ===== */}
       <div className="grid grid-cols-2 gap-3">
         <Kpi icon={<Users size={18} />} label="עובדים" value={num(users.workers)} sub={`${num(users.verified)} מאומתים`} color="#a78bfa" />
-        <Kpi icon={<Store size={18} />} label="מסעדות" value={num(users.restaurants)} sub={`+${num(users.newUsers30d)} ב-30 ימים`} color="#e8a020" />
+        <Kpi icon={<Store size={18} />} label="מסעדות" value={num(users.restaurants)} sub={`+${num(users.newUsers30d)} ב-30 ימים`} color="#5354d3" />
       </div>
 
       {/* ===== שותפויות / סטאז' / דירוג / חירום ===== */}
@@ -129,14 +129,14 @@ export const AdminDashboard: React.FC = () => {
             <AreaChart data={revByMonth} margin={{ top: 5, right: 5, left: 5, bottom: 0 }}>
               <defs>
                 <linearGradient id="gRev" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#e8a020" stopOpacity={0.5} />
-                  <stop offset="100%" stopColor="#e8a020" stopOpacity={0} />
+                  <stop offset="0%" stopColor="#5354d3" stopOpacity={0.5} />
+                  <stop offset="100%" stopColor="#5354d3" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
               <XAxis dataKey="label" tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 11 }} axisLine={false} tickLine={false} />
               <Tooltip content={<Tip money />} />
-              <Area type="monotone" dataKey="commission" stroke="#e8a020" strokeWidth={2.5} fill="url(#gRev)" />
+              <Area type="monotone" dataKey="commission" stroke="#5354d3" strokeWidth={2.5} fill="url(#gRev)" />
             </AreaChart>
           </ResponsiveContainer>
         ) : <p className="text-xs text-center py-6" style={{ color: 'rgba(255,255,255,0.3)' }}>אין נתונים עדיין</p>}
@@ -174,7 +174,7 @@ export const AdminDashboard: React.FC = () => {
               <XAxis dataKey="label" tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 11 }} axisLine={false} tickLine={false} />
               <Tooltip content={<Tip />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
               <Bar dataKey="workers" stackId="a" fill="#a78bfa" radius={[0, 0, 0, 0]} />
-              <Bar dataKey="restaurants" stackId="a" fill="#e8a020" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="restaurants" stackId="a" fill="#5354d3" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         ) : <p className="text-xs text-center py-6" style={{ color: 'rgba(255,255,255,0.3)' }}>אין נתונים עדיין</p>}
@@ -183,7 +183,7 @@ export const AdminDashboard: React.FC = () => {
             <span className="w-2.5 h-2.5 rounded-sm" style={{ background: '#a78bfa' }} /> עובדים
           </span>
           <span className="flex items-center gap-1.5 text-[11px]" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            <span className="w-2.5 h-2.5 rounded-sm" style={{ background: '#e8a020' }} /> מסעדות
+            <span className="w-2.5 h-2.5 rounded-sm" style={{ background: '#5354d3' }} /> מסעדות
           </span>
         </div>
       </Card>
@@ -200,7 +200,7 @@ export const AdminDashboard: React.FC = () => {
                   <span style={{ color: 'rgba(255,255,255,0.5)' }}>{num(r.cnt)}</span>
                 </div>
                 <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
-                  <div className="h-full rounded-full" style={{ width: `${(r.cnt / maxRole) * 100}%`, background: '#e8a020' }} />
+                  <div className="h-full rounded-full" style={{ width: `${(r.cnt / maxRole) * 100}%`, background: '#5354d3' }} />
                 </div>
               </div>
             ))}
@@ -211,11 +211,11 @@ export const AdminDashboard: React.FC = () => {
       {/* ===== טופ עובדים ===== */}
       {(data.topWorkers || []).length > 0 && (
         <Card>
-          <SectionTitle><span className="inline-flex items-center gap-1.5"><Trophy size={14} style={{ color: '#f5c842' }} /> עובדים מובילים</span></SectionTitle>
+          <SectionTitle><span className="inline-flex items-center gap-1.5"><Trophy size={14} style={{ color: '#7b7cee' }} /> עובדים מובילים</span></SectionTitle>
           <div className="space-y-2">
             {data.topWorkers.map((w: any, i: number) => (
               <div key={w.Id} className="flex items-center gap-3 py-1.5">
-                <span className="font-bold text-sm w-5 text-center" style={{ color: i === 0 ? '#f5c842' : 'rgba(255,255,255,0.3)' }}>{i + 1}</span>
+                <span className="font-bold text-sm w-5 text-center" style={{ color: i === 0 ? '#7b7cee' : 'rgba(255,255,255,0.3)' }}>{i + 1}</span>
                 <div className="flex-1 min-w-0">
                   <div className="text-white font-bold text-sm truncate">{w.Name || '—'}</div>
                   <div className="text-[11px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
@@ -238,11 +238,11 @@ export const AdminDashboard: React.FC = () => {
       {/* ===== טופ מסעדות ===== */}
       {(data.topRestaurants || []).length > 0 && (
         <Card>
-          <SectionTitle><span className="inline-flex items-center gap-1.5"><Crown size={14} style={{ color: '#e8a020' }} /> מסעדות מובילות (לפי עמלות)</span></SectionTitle>
+          <SectionTitle><span className="inline-flex items-center gap-1.5"><Crown size={14} style={{ color: '#5354d3' }} /> מסעדות מובילות (לפי עמלות)</span></SectionTitle>
           <div className="space-y-2">
             {data.topRestaurants.map((r: any, i: number) => (
               <div key={r.Id} className="flex items-center gap-3 py-1.5">
-                <span className="font-bold text-sm w-5 text-center" style={{ color: i === 0 ? '#e8a020' : 'rgba(255,255,255,0.3)' }}>{i + 1}</span>
+                <span className="font-bold text-sm w-5 text-center" style={{ color: i === 0 ? '#5354d3' : 'rgba(255,255,255,0.3)' }}>{i + 1}</span>
                 <div className="flex-1 min-w-0">
                   <div className="text-white font-bold text-sm truncate">{r.Name || '—'}</div>
                   <div className="text-[11px]" style={{ color: 'rgba(255,255,255,0.4)' }}>{r.City || '—'} · {num(r.shifts)} משמרות</div>

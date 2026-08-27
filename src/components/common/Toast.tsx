@@ -29,7 +29,7 @@ export const toast = {
 const STYLE: Record<ToastType, { bg: string; icon: React.ReactNode }> = {
   success: { bg: '#059669', icon: <CheckCircle2 size={18} /> },
   error:   { bg: '#dc2626', icon: <AlertTriangle size={18} /> },
-  info:    { bg: '#1a2744', icon: <Info size={18} /> },
+  info:    { bg: '#1b1e38', icon: <Info size={18} /> },
 };
 
 export const ToastHost: React.FC = () => {

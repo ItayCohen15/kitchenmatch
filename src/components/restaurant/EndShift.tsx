@@ -113,11 +113,11 @@ export const RestaurantEndShift: React.FC = () => {
         </div>
         <h2 className="text-2xl font-bold text-gray-900">המשמרת הסתיימה</h2>
         <p className="text-gray-500">הדירוג נשלח והתשלום הועבר לעובד</p>
-        <div className="bg-amber-50 rounded-2xl px-8 py-4 w-full text-center">
-          <div className="text-3xl font-bold text-amber-600">₪{totalCharged}</div>
+        <div className="bg-[#ecebfd] rounded-2xl px-8 py-4 w-full text-center">
+          <div className="text-3xl font-bold text-[#5354d3]">₪{totalCharged}</div>
           <div className="text-gray-500 text-sm">חויב מהארנק שלך</div>
         </div>
-        <div className="w-5 h-5 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+        <div className="w-5 h-5 border-2 border-[#5354d3] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -127,7 +127,7 @@ export const RestaurantEndShift: React.FC = () => {
       <h2 className="text-xl font-bold text-gray-900">סיכום משמרת</h2>
 
       {/* כרטיס עובד + סיכום */}
-      <div className="bg-[#14233d] text-white rounded-2xl p-5">
+      <div className="bg-[#1b1e38] text-white rounded-2xl p-5">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-xl"
             style={{ background: avatarTone(workerName).bg, color: avatarTone(workerName).fg }}>
@@ -171,12 +171,12 @@ export const RestaurantEndShift: React.FC = () => {
           ))}
           <div className="flex justify-between pt-3">
             <span className="font-bold text-gray-900">סה״כ חיוב</span>
-            <span className="font-bold text-amber-500 text-lg">₪{totalCharged}</span>
+            <span className="font-bold text-[#5354d3] text-lg">₪{totalCharged}</span>
           </div>
         </div>
-        <div className="mt-3 bg-amber-50 rounded-xl p-3 flex justify-between items-center">
+        <div className="mt-3 bg-[#ecebfd] rounded-xl p-3 flex justify-between items-center">
           <span className="text-gray-500 text-sm">יתרה לאחר תשלום</span>
-          <span className="font-bold text-amber-500">
+          <span className="font-bold text-[#5354d3]">
             ₪{Math.max(walletBalance - parseFloat(totalCharged), 0).toLocaleString()}
           </span>
         </div>
@@ -196,7 +196,7 @@ export const RestaurantEndShift: React.FC = () => {
           {QUICK.map(c => (
             <button key={c} onClick={() => setComment(comment === c ? '' : c)}
               className={`text-xs rounded-full px-3 py-1.5 font-medium transition-colors ${
-                comment === c ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-600'
+                comment === c ? 'bg-[#5354d3] text-white' : 'bg-gray-100 text-gray-600'
               }`}>
               {c}
             </button>
@@ -207,7 +207,7 @@ export const RestaurantEndShift: React.FC = () => {
           onChange={e => setComment(e.target.value)}
           placeholder="הוסף תגובה (אופציונלי)..."
           rows={2}
-          className="w-full mt-3 border border-gray-200 rounded-xl p-3 text-sm text-right resize-none focus:border-amber-400 outline-none"
+          className="w-full mt-3 border border-gray-200 rounded-xl p-3 text-sm text-right resize-none focus:border-[#5354d3] outline-none"
         />
       </div>
 
@@ -270,20 +270,20 @@ export const RestaurantEndShift: React.FC = () => {
       {isStageShift && (
         <div className="bg-white rounded-2xl p-4 card-shadow space-y-3">
           <div className="flex items-center gap-1.5">
-            <GraduationCap size={18} className="text-amber-500" />
+            <GraduationCap size={18} className="text-[#5354d3]" />
             <h3 className="font-bold text-gray-800 text-sm">משוב סטאז' לעובד</h3>
           </div>
           <div>
             <label className="text-xs font-semibold text-gray-500 mb-1 block">במה הוא יכול להשתפר למשמרת הבאה?</label>
             <textarea value={improvementNote} onChange={e => setImprovementNote(e.target.value)} rows={2}
               placeholder="לדוגמה: לעבוד מהר יותר על מנות פתיחה, לשמור על סדר בתחנה..."
-              className="w-full border border-gray-200 rounded-xl p-3 text-sm text-right resize-none focus:border-amber-400 outline-none" />
+              className="w-full border border-gray-200 rounded-xl p-3 text-sm text-right resize-none focus:border-[#5354d3] outline-none" />
           </div>
           <div>
             <label className="text-xs font-semibold text-gray-500 mb-1 block">מה יהיה במשמרת הבאה? (שיתכונן)</label>
             <textarea value={nextShiftNote} onChange={e => setNextShiftNote(e.target.value)} rows={2}
               placeholder="לדוגמה: ערב עמוס, נתמקד בגריל ובמנות עיקריות..."
-              className="w-full border border-gray-200 rounded-xl p-3 text-sm text-right resize-none focus:border-amber-400 outline-none" />
+              className="w-full border border-gray-200 rounded-xl p-3 text-sm text-right resize-none focus:border-[#5354d3] outline-none" />
           </div>
         </div>
       )}
@@ -291,7 +291,7 @@ export const RestaurantEndShift: React.FC = () => {
       <button
         onClick={handleSubmit}
         disabled={rating === 0 || submitting}
-        className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg disabled:opacity-40 active:scale-98 transition-transform"
+        className="w-full bg-[#5354d3] text-white rounded-2xl py-4 font-bold text-lg disabled:opacity-40 active:scale-98 transition-transform"
       >
         {submitting ? (
           <div className="flex items-center justify-center gap-2">

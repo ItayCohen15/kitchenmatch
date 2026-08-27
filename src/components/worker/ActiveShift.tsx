@@ -125,7 +125,7 @@ export const WorkerActiveShift: React.FC = () => {
         </div>
         <div className="w-6 h-6 border-2 border-green-400 border-t-transparent rounded-full animate-spin" />
         <button onClick={() => navToWorker('end_shift')}
-          className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg">
+          className="w-full bg-[#5354d3] text-white rounded-2xl py-4 font-bold text-lg">
           דרג את המסעדה
         </button>
       </div>

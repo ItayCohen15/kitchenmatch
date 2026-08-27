@@ -70,7 +70,7 @@ export const WorkerProfileModal: React.FC<Props> = ({ workerId, initial, onClose
           style={{ maxHeight: '100%' }}>
 
           {/* Header */}
-          <div className="flex-shrink-0 p-4 text-white" style={{ background:'#14233d' }}>
+          <div className="flex-shrink-0 p-4 text-white" style={{ background:'#1b1e38' }}>
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-lg"
@@ -126,7 +126,7 @@ export const WorkerProfileModal: React.FC<Props> = ({ workerId, initial, onClose
                 <div className="text-xs font-bold text-gray-500 mb-1.5">כישורים</div>
                 <div className="flex flex-wrap gap-1.5">
                   {skills.map((s: string) => (
-                    <span key={s} className="text-xs bg-amber-50 text-amber-600 rounded-full px-2.5 py-1">{s}</span>
+                    <span key={s} className="text-xs bg-[#ecebfd] text-[#5354d3] rounded-full px-2.5 py-1">{s}</span>
                   ))}
                 </div>
               </div>
@@ -154,7 +154,7 @@ export const WorkerProfileModal: React.FC<Props> = ({ workerId, initial, onClose
               <WorkerGallery workerId={workerId} />
               {loading && (
                 <div className="text-center py-3">
-                  <div className="w-5 h-5 border-2 border-amber-400 border-t-transparent rounded-full animate-spin mx-auto" />
+                  <div className="w-5 h-5 border-2 border-[#5354d3] border-t-transparent rounded-full animate-spin mx-auto" />
                 </div>
               )}
             </div>

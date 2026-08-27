@@ -25,7 +25,7 @@ const isTrial = (s: any) => s.JobType === 'trial';
 const MIN_WAGE = 40;
 
 // שדה קלט אחיד
-const inputCls = 'w-full border border-gray-200 bg-gray-50 rounded-xl px-4 py-3 text-right outline-none focus:border-amber-400 focus:bg-white text-gray-900';
+const inputCls = 'w-full border border-gray-200 bg-gray-50 rounded-xl px-4 py-3 text-right outline-none focus:border-[#5354d3] focus:bg-white text-gray-900';
 
 export const RestaurantStages: React.FC = () => {
   const { navToRestaurant, selectWorkerJob, userProfile, refreshProfile } = useApp();
@@ -123,10 +123,10 @@ export const RestaurantStages: React.FC = () => {
     <div className="screen-enter space-y-4">
       {/* כותרת */}
       <div className="rounded-3xl p-4 text-white flex items-center gap-3"
-        style={{ background: '#14233d' }}>
+        style={{ background: '#1b1e38' }}>
         <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
-          style={{ background: 'rgba(232,160,32,0.18)', border: '1px solid rgba(232,160,32,0.3)' }}>
-          <GraduationCap className="text-amber-400" size={22} />
+          style={{ background: 'rgba(83,84,211,0.18)', border: '1px solid rgba(83,84,211,0.3)' }}>
+          <GraduationCap className="text-[#5354d3]" size={22} />
         </div>
         <div>
           <div className="font-bold text-lg leading-tight">סטאז׳ וגיוס</div>
@@ -167,7 +167,7 @@ export const RestaurantStages: React.FC = () => {
             <div className="grid grid-cols-2 gap-2">
               {TRIAL_ROLES.map(r => (
                 <button key={r.key} onClick={() => setRole(r.key)}
-                  className={`p-3 rounded-xl border-2 flex items-center gap-2 text-right transition-all ${role === r.key ? 'border-amber-400 bg-amber-50' : 'border-gray-100'}`}>
+                  className={`p-3 rounded-xl border-2 flex items-center gap-2 text-right transition-all ${role === r.key ? 'border-[#5354d3] bg-[#ecebfd]' : 'border-gray-100'}`}>
                   <span className="text-xl">{r.emoji}</span>
                   <span className="font-bold text-gray-800 text-sm">{r.label}</span>
                 </button>
@@ -205,7 +205,7 @@ export const RestaurantStages: React.FC = () => {
           </div>
           <button onClick={handlePost} disabled={posting}
             className="w-full rounded-2xl py-4 font-bold disabled:opacity-40"
-            style={{ background: '#e8a020', color: '#241803' }}>
+            style={{ background: '#5354d3', color: '#ffffff' }}>
             {posting ? 'מפרסם...' : 'פרסם משמרת סטאז׳'}
           </button>
         </div>
@@ -217,7 +217,7 @@ export const RestaurantStages: React.FC = () => {
         <div className="space-y-4">
           <button onClick={() => setTab('post')}
             className="w-full rounded-2xl py-4 font-bold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
-            style={{ background: '#e8a020', color: '#241803' }}>
+            style={{ background: '#5354d3', color: '#ffffff' }}>
             <Plus size={18} /> פרסם משמרת סטאז׳
           </button>
 
@@ -307,7 +307,7 @@ export const RestaurantStages: React.FC = () => {
                         </div>
                         <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
                           <div className="h-full rounded-full transition-all"
-                            style={{ width: `${stageProgress(s)}%`, background: '#e8a020' }} />
+                            style={{ width: `${stageProgress(s)}%`, background: '#5354d3' }} />
                         </div>
                       </div>
                     )}
@@ -319,7 +319,7 @@ export const RestaurantStages: React.FC = () => {
                         </button>
                       )}
                       <button onClick={() => setChatStage(s)}
-                        className="w-11 rounded-xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center" title="צ'אט">
+                        className="w-11 rounded-xl bg-[#ecebfd] border border-[#d7d7f6] text-[#5354d3] flex items-center justify-center" title="צ'אט">
                         <MessageCircle size={17} />
                       </button>
                       {s.WorkerPhone && (
@@ -332,7 +332,7 @@ export const RestaurantStages: React.FC = () => {
                     {left <= 0 && !partnerIds.has(Number(s.WorkerId)) && (
                       <button onClick={() => setKeepJob(s)}
                         className="w-full rounded-2xl py-3.5 font-bold"
-                        style={{ background: '#e8a020', color: '#241803' }}>
+                        style={{ background: '#5354d3', color: '#ffffff' }}>
                         גייס לצוות — דמי השמה ₪300
                       </button>
                     )}
@@ -397,7 +397,7 @@ export const RestaurantStages: React.FC = () => {
                         </p>
                         <button onClick={() => setKeepJob(s)}
                           className="w-full rounded-xl py-2.5 font-bold text-sm"
-                          style={{ background: '#e8a020', color: '#241803' }}>
+                          style={{ background: '#5354d3', color: '#ffffff' }}>
                           גייס לצוות — דמי השמה ₪300
                         </button>
                       </>
@@ -440,7 +440,7 @@ export const RestaurantStages: React.FC = () => {
               <div className="flex gap-2">
                 <button onClick={() => setDirectFor(p)}
                   className="flex-1 rounded-xl py-2.5 font-bold text-sm flex items-center justify-center gap-1.5"
-                  style={{ background: '#e8a020', color: '#241803' }}>
+                  style={{ background: '#5354d3', color: '#ffffff' }}>
                   <Send size={14} /> שלח משמרת
                 </button>
                 {p.Phone && (
@@ -457,7 +457,7 @@ export const RestaurantStages: React.FC = () => {
 
       {/* מודאל שמירת עובד (₪300) */}
       {keepJob && (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center p-6" style={{ background: 'rgba(13,20,32,0.65)' }}>
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-6" style={{ background: 'rgba(19,22,38,0.65)' }}>
           <div className="bg-white rounded-3xl p-6 w-full max-w-sm text-center space-y-3 shadow-2xl">
             <Star size={36} className="text-amber-400 fill-amber-400 mx-auto" />
             <h3 className="font-bold text-gray-900 text-lg">לגייס את {keepJob.WorkerName || 'העובד'} לצוות?</h3>
@@ -472,7 +472,7 @@ export const RestaurantStages: React.FC = () => {
               <button onClick={() => setKeepJob(null)} className="flex-1 bg-gray-100 text-gray-600 rounded-2xl py-3 font-bold">ביטול</button>
               <button onClick={doKeep} disabled={keeping}
                 className="flex-1 rounded-2xl py-3 font-bold disabled:opacity-40"
-                style={{ background: '#e8a020', color: '#241803' }}>
+                style={{ background: '#5354d3', color: '#ffffff' }}>
                 {keeping ? '...' : 'כן, גייס (₪300)'}
               </button>
             </div>
@@ -543,7 +543,7 @@ const DirectShiftModal: React.FC<{ partner: any; restaurantId: number; onClose: 
   };
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4" style={{ background: 'rgba(13,20,32,0.65)' }}>
+    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4" style={{ background: 'rgba(19,22,38,0.65)' }}>
       <div className="bg-white rounded-3xl p-5 w-full max-w-md max-h-[85vh] overflow-y-auto space-y-3 shadow-2xl">
         <div className="flex items-center justify-between pb-2 border-b border-gray-100">
           <h3 className="font-bold text-gray-900 text-lg">משמרת ל{partner.Name}</h3>
@@ -576,7 +576,7 @@ const DirectShiftModal: React.FC<{ partner: any; restaurantId: number; onClose: 
         {err && <div className="bg-red-50 text-red-600 text-sm rounded-xl px-4 py-2 text-center">{err}</div>}
         <button onClick={send} disabled={sending}
           className="w-full rounded-2xl py-4 font-bold disabled:opacity-40"
-          style={{ background: '#e8a020', color: '#241803' }}>
+          style={{ background: '#5354d3', color: '#ffffff' }}>
           {sending ? 'שולח...' : 'שלח הצעת משמרת'}
         </button>
       </div>

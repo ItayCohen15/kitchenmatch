@@ -35,7 +35,7 @@ export const NotificationPanel: React.FC<Props> = ({ onClose }) => {
   };
 
   const iconFor = (title: string) => {
-    const cls = 'text-amber-500';
+    const cls = 'text-[#5354d3]';
     if (title.includes('מועמדות')) return <Send size={18} className={cls} />;
     if (title.includes('אושר') || title.includes('אישור')) return <CheckCircle2 size={18} className="text-green-500" />;
     if (title.includes('הגיע') || title.includes('צ׳ק')) return <MapPin size={18} className={cls} />;
@@ -58,16 +58,16 @@ export const NotificationPanel: React.FC<Props> = ({ onClose }) => {
 
           {/* Header */}
           <div className="flex items-center justify-between px-5 pt-5 pb-4"
-            style={{ background: '#14233d' }}>
+            style={{ background: '#1b1e38' }}>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{ background: 'rgba(232,160,32,0.2)' }}>
-                <Bell size={18} style={{ color: '#e8a020' }} />
+                style={{ background: 'rgba(83,84,211,0.2)' }}>
+                <Bell size={18} style={{ color: '#5354d3' }} />
               </div>
               <div>
                 <div className="font-bold text-white text-lg">התראות</div>
                 {unread > 0 && (
-                  <div className="text-xs" style={{ color: '#e8a020' }}>{unread} לא נקראו</div>
+                  <div className="text-xs" style={{ color: '#5354d3' }}>{unread} לא נקראו</div>
                 )}
               </div>
             </div>
@@ -75,7 +75,7 @@ export const NotificationPanel: React.FC<Props> = ({ onClose }) => {
               {unread > 0 && (
                 <button onClick={handleReadAll}
                   className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-lg font-semibold"
-                  style={{ background: 'rgba(232,160,32,0.2)', color: '#e8a020' }}>
+                  style={{ background: 'rgba(83,84,211,0.2)', color: '#5354d3' }}>
                   <CheckCheck size={13} /> סמן הכל
                 </button>
               )}
@@ -112,11 +112,11 @@ export const NotificationPanel: React.FC<Props> = ({ onClose }) => {
                 {notifs.map(n => (
                   <div key={n.Id}
                     className={`flex items-start gap-3 px-5 py-4 transition-colors ${
-                      !n.IsRead ? 'bg-amber-50/50' : 'bg-white'
+                      !n.IsRead ? 'bg-[#ecebfd]/50' : 'bg-white'
                     }`}>
                     {/* אייקון */}
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                      style={{ background: !n.IsRead ? 'rgba(232,160,32,0.12)' : '#f8fafc' }}>
+                      style={{ background: !n.IsRead ? 'rgba(83,84,211,0.12)' : '#f8fafc' }}>
                       {iconFor(n.Title)}
                     </div>
 
@@ -134,7 +134,7 @@ export const NotificationPanel: React.FC<Props> = ({ onClose }) => {
                     {/* נקודה לא נקרא */}
                     {!n.IsRead && (
                       <div className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0"
-                        style={{ background: '#e8a020' }} />
+                        style={{ background: '#5354d3' }} />
                     )}
                   </div>
                 ))}

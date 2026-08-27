@@ -4,19 +4,21 @@
 
 /* ===== BRAND TOKENS ===== */
 :root {
-  --gold:       #e8a020;
-  --gold-deep:  #c8841a;   /* pressed / borders */
-  --gold-tint:  #fbf1db;   /* soft gold wash on light */
-  --on-gold:    #241803;   /* text that sits on gold */
+  /* מותג — אינדיגו ראשי, סגול משני, דיו כהה. (שמות המשתנים נשמרו כדי לא לשבור מחלקות קיימות) */
+  --gold:       #5354d3;   /* Indigo — הצבע הראשי */
+  --gold-deep:  #4244b8;   /* pressed / borders */
+  --gold-tint:  #ecebfd;   /* soft indigo wash on light */
+  --on-gold:    #ffffff;   /* text that sits on indigo */
+  --violet:     #8d3cb6;   /* משני */
 
-  --navy:       #14233d;   /* primary dark surface (flat) */
-  --navy-2:     #0d1420;   /* deeper dark surface / app chrome */
-  --ink:        #26221b;   /* primary text on light (warm) */
-  --muted:      #7c7568;   /* secondary text on light (warm) */
+  --navy:       #1b1e38;   /* primary dark surface (ink-lifted) */
+  --navy-2:     #131626;   /* deeper dark surface / app chrome (brand Ink) */
+  --ink:        #1b1e2e;   /* primary text on light (cool) */
+  --muted:      #6b7180;   /* secondary text on light (cool) */
 
-  --paper:      #f6f4ef;   /* app background (warm ivory) */
+  --paper:      #f4f5f9;   /* app background (cool) */
   --surface:    #ffffff;   /* card surface */
-  --line:       #ece7dd;   /* hairline on light (warm) */
+  --line:       #e6e7ef;   /* hairline on light (cool) */
   --line-dark:  rgba(255,255,255,0.08); /* hairline on dark */
 
   /* צבעי חיים — לאווטרים, קטגוריות ורגעים (שטוח בלבד) */

@@ -33,11 +33,11 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
   ];
 
   return (
-    <div className="h-full overflow-y-auto" style={{ background: '#f6f4ef' }}>
+    <div className="h-full overflow-y-auto" style={{ background: '#f4f5f9' }}>
 
       {/* Hero */}
       <div className="relative overflow-hidden px-5 pt-9 pb-9"
-        style={{ background: '#14233d' }}>
+        style={{ background: '#1b1e38' }}>
         {/* Logo */}
         <div className="flex items-center gap-3 mb-8 relative" style={{ marginTop: 'env(safe-area-inset-top)' }}>
           <div className="w-14 h-14 rounded-2xl overflow-hidden flex-shrink-0"
@@ -45,14 +45,14 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
             <img src="/logo.svg" alt="Staffly" className="w-full h-full object-cover" />
           </div>
           <div className="font-bold text-3xl tracking-tight leading-none">
-            <span className="text-white">Staff</span><span style={{ color: '#e8a020' }}>ly</span>
+            <span className="text-white">Staff</span><span style={{ color: '#5354d3' }}>ly</span>
           </div>
         </div>
 
         {/* Badge */}
         <div className="inline-flex items-center px-3 py-1.5 rounded-full mb-4 relative"
-          style={{ background: 'rgba(232,160,32,0.12)', border: '1px solid rgba(232,160,32,0.28)' }}>
-          <span className="text-xs font-bold inline-flex items-center gap-1" style={{ color: '#f0c050' }}><Zap size={12} /> משמרות אקסטרה — בזמן אמת</span>
+          style={{ background: 'rgba(83,84,211,0.12)', border: '1px solid rgba(83,84,211,0.28)' }}>
+          <span className="text-xs font-bold inline-flex items-center gap-1" style={{ color: '#7b7cee' }}><Zap size={12} /> משמרות אקסטרה — בזמן אמת</span>
         </div>
 
         {/* Headline */}
@@ -60,7 +60,7 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
           <h1 className="text-4xl font-bold text-white mb-3" dir="ltr" style={{ lineHeight: 1.08 }}>
             Find your shift.
             <br />
-            <span style={{ color: '#e8a020' }}>Fill your team.</span>
+            <span style={{ color: '#5354d3' }}>Fill your team.</span>
           </h1>
           <p className="text-gray-300 text-sm leading-relaxed">
             הפלטפורמה שמחברת מסעדות, ברים ובתי קפה עם עובדי הסעדה מקצועיים — בזמן אמת, בלחיצת כפתור.
@@ -72,7 +72,7 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
           {chips.map((c, i) => (
             <span key={i} className="text-[11px] font-semibold px-2.5 py-1 rounded-lg inline-flex items-center gap-1"
               style={{ background: 'rgba(255,255,255,0.07)', color: '#cdd7ea', border: '1px solid rgba(255,255,255,0.10)' }}>
-              <c.Icon size={12} style={{ color: '#f0c050' }} /> {c.text}
+              <c.Icon size={12} style={{ color: '#7b7cee' }} /> {c.text}
             </span>
           ))}
         </div>
@@ -80,7 +80,7 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
         {/* CTA */}
         <button onClick={onStart}
           className="w-full font-bold text-lg rounded-2xl py-4 flex items-center justify-center gap-2 relative transition-transform active:scale-[0.98]"
-          style={{ background: '#e8a020', color: '#241803' }}>
+          style={{ background: '#5354d3', color: '#ffffff' }}>
           התחל עכשיו — בחינם
           <ChevronLeft size={20} />
         </button>
@@ -101,13 +101,13 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
               <button key={r.id} onClick={() => setActiveRole(r.id as any)}
                 className="rounded-2xl p-4 text-center transition-all active:scale-[0.98]"
                 style={{
-                  background: sel ? '#14233d' : '#fff',
-                  border: sel ? '2px solid #e8a020' : '2px solid transparent',
-                  boxShadow: sel ? '0 4px 16px rgba(20,28,44,0.10)' : '0 2px 10px rgba(13,20,32,0.06)',
+                  background: sel ? '#1b1e38' : '#fff',
+                  border: sel ? '2px solid #5354d3' : '2px solid transparent',
+                  boxShadow: sel ? '0 4px 16px rgba(20,28,44,0.10)' : '0 2px 10px rgba(19,22,38,0.06)',
                 }}>
-                <div className="mb-1.5 flex justify-center"><r.Icon size={26} style={{ color: sel ? '#e8a020' : '#0d1420' }} /></div>
-                <div className="font-bold text-sm" style={{ color: sel ? '#fff' : '#0d1420' }}>{r.label}</div>
-                <div className="text-[11px] mt-0.5" style={{ color: sel ? '#e8a020' : '#94a3b8' }}>{r.sub}</div>
+                <div className="mb-1.5 flex justify-center"><r.Icon size={26} style={{ color: sel ? '#5354d3' : '#131626' }} /></div>
+                <div className="font-bold text-sm" style={{ color: sel ? '#fff' : '#131626' }}>{r.label}</div>
+                <div className="text-[11px] mt-0.5" style={{ color: sel ? '#5354d3' : '#94a3b8' }}>{r.sub}</div>
               </button>
             );
           })}
@@ -118,7 +118,7 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
           {features[activeRole].map((f, i) => (
             <div key={i} className="bg-white rounded-2xl p-4 card-shadow flex items-start gap-4">
               <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ background: '#e8a020', color: '#241803' }}>
+                style={{ background: '#5354d3', color: '#ffffff' }}>
                 {f.icon}
               </div>
               <div>
@@ -131,8 +131,8 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
 
         {/* How it works */}
         <div className="rounded-2xl p-5 mb-6 text-white relative overflow-hidden"
-          style={{ background: '#14233d' }}>
-          <h3 className="font-bold text-base mb-4 relative" style={{ color: '#e8a020' }}>איך זה עובד?</h3>
+          style={{ background: '#1b1e38' }}>
+          <h3 className="font-bold text-base mb-4 relative" style={{ color: '#5354d3' }}>איך זה עובד?</h3>
           <div className="space-y-3.5 relative">
             {(activeRole === 'restaurant' ? [
               { n:'1', t:'פרסם משמרת', d:'בחר תפקיד, שעות ושכר' },
@@ -147,7 +147,7 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
             ]).map(s => (
               <div key={s.n} className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0"
-                  style={{ background: 'rgba(232,160,32,0.18)', color: '#e8a020', border: '1px solid rgba(232,160,32,0.30)' }}>
+                  style={{ background: 'rgba(83,84,211,0.18)', color: '#5354d3', border: '1px solid rgba(83,84,211,0.30)' }}>
                   {s.n}
                 </div>
                 <div>
@@ -162,13 +162,13 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
         {/* Final CTA */}
         <button onClick={onStart}
           className="w-full font-bold text-base rounded-2xl py-4 mb-3 transition-transform active:scale-[0.98]"
-          style={{ background: '#e8a020', color: '#241803' }}>
+          style={{ background: '#5354d3', color: '#ffffff' }}>
           {activeRole === 'restaurant' ? 'פרסם משמרת ראשונה — בחינם' : 'מצא משמרת ראשונה — בחינם'}
         </button>
 
         <p className="text-center text-gray-400 text-xs pb-8">
           כבר יש לך חשבון?{' '}
-          <button onClick={onStart} className="font-bold" style={{ color: '#e8a020' }}>
+          <button onClick={onStart} className="font-bold" style={{ color: '#5354d3' }}>
             כנס כאן
           </button>
         </p>

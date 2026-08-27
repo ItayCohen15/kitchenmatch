@@ -40,8 +40,8 @@ export const AdminRatings: React.FC = () => {
           <button key={id} onClick={() => setFilter(id)}
             className="flex-1 py-2 rounded-xl text-xs font-bold transition-all"
             style={filter === id
-              ? { background: '#e8a020', color: '#0a0f1a' }
-              : { background: '#111a2b', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.06)' }}>
+              ? { background: '#5354d3', color: '#ffffff' }
+              : { background: '#1b1e38', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.06)' }}>
             {label}
           </button>
         ))}
@@ -49,7 +49,7 @@ export const AdminRatings: React.FC = () => {
 
       {/* Summary */}
       {!loading && filtered.length > 0 && (
-        <div className="rounded-2xl p-3 mb-3 flex items-center justify-between" style={{ background: '#111a2b', border: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="rounded-2xl p-3 mb-3 flex items-center justify-between" style={{ background: '#1b1e38', border: '1px solid rgba(255,255,255,0.06)' }}>
           <span className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>{filtered.length} דירוגים</span>
           <div className="flex items-center gap-1.5">
             <span className="text-lg font-bold" style={{ color: '#f5c842' }}>{avg.toFixed(2)}</span>
@@ -60,7 +60,7 @@ export const AdminRatings: React.FC = () => {
 
       {loading ? (
         <div className="flex items-center justify-center py-16">
-          <div className="w-7 h-7 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+          <div className="w-7 h-7 border-2 border-[#5354d3] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : filtered.length === 0 ? (
         <p className="text-center text-sm py-12" style={{ color: 'rgba(255,255,255,0.3)' }}>אין דירוגים עדיין</p>
@@ -69,13 +69,13 @@ export const AdminRatings: React.FC = () => {
           {filtered.map(r => {
             const toWorker = r.ToRole === 'worker';
             return (
-              <div key={r.Id} className="rounded-2xl p-3.5" style={{ background: '#111a2b', border: '1px solid rgba(255,255,255,0.06)' }}>
+              <div key={r.Id} className="rounded-2xl p-3.5" style={{ background: '#1b1e38', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <div className="flex items-center justify-between gap-2 mb-2">
                   <div className="flex items-center gap-1.5 text-xs min-w-0">
-                    {toWorker ? <Store size={13} style={{ color: '#e8a020' }} /> : <ChefHat size={13} style={{ color: '#a78bfa' }} />}
+                    {toWorker ? <Store size={13} style={{ color: '#5354d3' }} /> : <ChefHat size={13} style={{ color: '#a78bfa' }} />}
                     <span className="text-white font-bold truncate">{r.FromName || r.FromEmail || 'אנונימי'}</span>
                     <ArrowLeft size={11} style={{ color: 'rgba(255,255,255,0.3)' }} />
-                    <span className="font-bold truncate" style={{ color: toWorker ? '#a78bfa' : '#e8a020' }}>{r.ToName || '—'}</span>
+                    <span className="font-bold truncate" style={{ color: toWorker ? '#a78bfa' : '#5354d3' }}>{r.ToName || '—'}</span>
                   </div>
                   <Stars score={Number(r.Score) || 0} />
                 </div>

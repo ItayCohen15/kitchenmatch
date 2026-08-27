@@ -7,7 +7,7 @@ import { api } from '../../api';
 import { ils, num } from './format';
 
 const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
-  <div className={`rounded-2xl p-4 ${className}`} style={{ background: '#111a2b', border: '1px solid rgba(255,255,255,0.06)' }}>
+  <div className={`rounded-2xl p-4 ${className}`} style={{ background: '#1b1e38', border: '1px solid rgba(255,255,255,0.06)' }}>
     {children}
   </div>
 );
@@ -155,7 +155,7 @@ export const AdminInsights: React.FC = () => {
 
   if (loading) return (
     <div className="flex items-center justify-center" style={{ height: '60vh' }}>
-      <div className="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+      <div className="w-8 h-8 border-2 border-[#5354d3] border-t-transparent rounded-full animate-spin" />
     </div>
   );
   if (!m) return <div className="text-center text-sm mt-10" style={{ color: 'rgba(255,255,255,0.4)' }}>אין נתונים</div>;
@@ -176,10 +176,10 @@ export const AdminInsights: React.FC = () => {
     <div className="space-y-4 pb-4">
       {/* ===== יועץ חכם ===== */}
       <div className="rounded-3xl p-5 relative overflow-hidden"
-        style={{ background: '#14233d', border: `1px solid ${statusColor}40` }}>
+        style={{ background: '#1b1e38', border: `1px solid ${statusColor}40` }}>
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            <Sparkles size={16} style={{ color: '#f5c842' }} />
+            <Sparkles size={16} style={{ color: '#7b7cee' }} />
             <span className="font-bold text-white text-sm">היועץ החכם</span>
           </div>
           <span className="text-[11px] font-bold px-2.5 py-1 rounded-lg" style={{ background: statusColor + '22', color: statusColor }}>{adv.status.label}</span>
@@ -217,10 +217,10 @@ export const AdminInsights: React.FC = () => {
           </div>
         )}
         {adv.focus && (
-          <div className="rounded-xl p-3 flex items-start gap-2" style={{ background: 'rgba(245,200,66,0.1)', border: '1px solid rgba(245,200,66,0.2)' }}>
-            <Target size={14} className="flex-shrink-0 mt-0.5" style={{ color: '#f5c842' }} />
+          <div className="rounded-xl p-3 flex items-start gap-2" style={{ background: 'rgba(123,124,238,0.1)', border: '1px solid rgba(123,124,238,0.2)' }}>
+            <Target size={14} className="flex-shrink-0 mt-0.5" style={{ color: '#7b7cee' }} />
             <div>
-              <span className="text-xs font-bold" style={{ color: '#f5c842' }}>המטריקה של החודש: {adv.focus.metric}</span>
+              <span className="text-xs font-bold" style={{ color: '#7b7cee' }}>המטריקה של החודש: {adv.focus.metric}</span>
               <p className="text-[11px] mt-0.5 leading-relaxed" style={{ color: 'rgba(255,255,255,0.65)' }}>{adv.focus.why}</p>
             </div>
           </div>
@@ -249,8 +249,8 @@ export const AdminInsights: React.FC = () => {
                   return (
                     <div key={u.Id} className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2.5 min-w-0">
-                        <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isRest ? 'rgba(232,160,32,0.15)' : 'rgba(167,139,250,0.15)' }}>
-                          {isRest ? <Store size={15} style={{ color: '#e8a020' }} /> : <ChefHat size={15} style={{ color: '#a78bfa' }} />}
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isRest ? 'rgba(83,84,211,0.15)' : 'rgba(167,139,250,0.15)' }}>
+                          {isRest ? <Store size={15} style={{ color: '#5354d3' }} /> : <ChefHat size={15} style={{ color: '#a78bfa' }} />}
                         </div>
                         <div className="min-w-0">
                           <div className="text-white text-sm font-bold truncate">{u.Name || '—'}</div>
@@ -318,7 +318,7 @@ export const AdminInsights: React.FC = () => {
       {/* ===== ערים מובילות ===== */}
       {(m.topCities || []).length > 0 && (
         <Card>
-          <SectionTitle><span className="inline-flex items-center gap-1.5"><MapPin size={14} style={{ color: '#e8a020' }} /> ערים מובילות</span></SectionTitle>
+          <SectionTitle><span className="inline-flex items-center gap-1.5"><MapPin size={14} style={{ color: '#5354d3' }} /> ערים מובילות</span></SectionTitle>
           <div className="space-y-2.5">
             {m.topCities.map((c: any, i: number) => (
               <div key={i}>
@@ -327,7 +327,7 @@ export const AdminInsights: React.FC = () => {
                   <span style={{ color: 'rgba(255,255,255,0.5)' }}>{num(c.shifts)} משמרות · {ils(c.commission)}</span>
                 </div>
                 <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
-                  <div className="h-full rounded-full" style={{ width: `${(c.shifts / maxCity) * 100}%`, background: '#e8a020' }} />
+                  <div className="h-full rounded-full" style={{ width: `${(c.shifts / maxCity) * 100}%`, background: '#5354d3' }} />
                 </div>
               </div>
             ))}

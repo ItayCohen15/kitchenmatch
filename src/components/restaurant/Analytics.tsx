@@ -12,7 +12,7 @@ const MONTH_NAMES = ['ינו׳','פבר׳','מרץ','אפר׳','מאי','יונ�
 const DAY_NAMES   = ['','ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
 // תוויות ברבים (ייחודי למסך הזה — בשאר האפליקציה משתמשים ב-ROLE_LABELS מ-utils/roles)
 const ROLE_LABELS: Record<string,string> = { chef:'שפים', line_cook:'טבחים', prep_cook:'טבחי הכנות', dishwasher:'מדיחים', cleaner:'ניקיון', bartender:'ברמנים', barista:'בריסטות', waiter:'מלצרים' };
-const ROLE_COLORS: Record<string,string> = { chef:'#e8a020', line_cook:'#3b82f6', prep_cook:'#6366f1', dishwasher:'#10b981', cleaner:'#10b981', bartender:'#8b5cf6', barista:'#a16207', waiter:'#f43f5e' };
+const ROLE_COLORS: Record<string,string> = { chef:'#ef5f3c', line_cook:'#3b74d1', prep_cook:'#12a594', dishwasher:'#3f7d86', cleaner:'#1f9d6b', bartender:'#9a5ba6', barista:'#b5701f', waiter:'#3b74d1' };
 
 // אחוז עמלת המסעדה לפי סוג המשמרת: שותפות/סטאז' 4.5%, חירום 12%, רגיל 6.5%
 const restRate = (j: any) =>
@@ -64,7 +64,7 @@ export const RestaurantAnalytics: React.FC = () => {
 
   if (loading) return (
     <div className="flex items-center justify-center min-h-[50vh]">
-      <div className="w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+      <div className="w-8 h-8 border-2 border-[#5354d3] border-t-transparent rounded-full animate-spin" />
     </div>
   );
 
@@ -72,7 +72,7 @@ export const RestaurantAnalytics: React.FC = () => {
     <div className="screen-enter space-y-4">
       <h2 className="text-xl font-bold text-gray-900">המרכז הפיננסי</h2>
       <div className="rounded-3xl p-8 text-center text-white"
-        style={{ background: '#14233d' }}>
+        style={{ background: '#1b1e38' }}>
         <BarChart3 size={40} className="text-gray-500 mx-auto mb-3" />
         <p className="font-bold text-lg">אין עדיין נתונים</p>
         <p className="text-gray-400 text-sm mt-1">התובנות הפיננסיות יופיעו לאחר השלמת משמרות</p>
@@ -165,7 +165,7 @@ export const RestaurantAnalytics: React.FC = () => {
     regular:   { label: 'משמרות רגילות', Icon: ChefHat,       color: '#3b82f6' },
     emergency: { label: 'משמרות חירום',  Icon: Zap,           color: '#ef4444' },
     partner:   { label: 'עובדים קבועים', Icon: Handshake,     color: '#10b981' },
-    stage:     { label: "סטאז'רים",      Icon: GraduationCap, color: '#e8a020' },
+    stage:     { label: "סטאז'רים",      Icon: GraduationCap, color: '#8d3cb6' },
   };
   const typeMap: Record<string, { count: number; rateSum: number; cost: number; hours: number }> = {};
   jobs.forEach(j => {
@@ -228,7 +228,7 @@ export const RestaurantAnalytics: React.FC = () => {
     <div className="screen-enter space-y-5 pb-4">
 
       {/* ── HERO: החודש שלך ── */}
-      <div className="rounded-3xl p-5 text-white" style={{ background: '#14233d' }}>
+      <div className="rounded-3xl p-5 text-white" style={{ background: '#1b1e38' }}>
         <div className="flex items-center justify-between mb-1">
           <span className="text-gray-400 text-sm">הוצאות {MONTH_NAMES[now.getMonth()]} (כולל עמלות)</span>
           {changePct !== null && (
@@ -237,7 +237,7 @@ export const RestaurantAnalytics: React.FC = () => {
             </span>
           )}
         </div>
-        <div className="text-4xl font-bold mb-3" style={{ color: '#e8a020' }}>
+        <div className="text-4xl font-bold mb-3" style={{ color: '#5354d3' }}>
           ₪{Math.round(thisSpend).toLocaleString()}
         </div>
         <div className="grid grid-cols-3 gap-2.5">
@@ -257,7 +257,7 @@ export const RestaurantAnalytics: React.FC = () => {
       {/* KPI כלליים */}
       <div className="grid grid-cols-2 gap-3">
         <KPI icon={<TrendingUp size={18}/>} label={'סה"כ הוצאות (מאז ומעולם)'} value={`₪${Math.round(totalSpend).toLocaleString()}`}
-          sub={`${jobs.length} משמרות`} color="#e8a020" />
+          sub={`${jobs.length} משמרות`} color="#5354d3" />
         <KPI icon={<Clock size={18}/>} label={'סה"כ שעות עבודה'} value={`${Math.round(totalHours).toLocaleString()}`}
           sub={`₪${Math.round(avgHourly)}/שעה בממוצע`} color="#3b82f6" />
       </div>
@@ -292,14 +292,14 @@ export const RestaurantAnalytics: React.FC = () => {
             <AreaChart data={monthlyData} margin={{top:5,right:-20,left:5,bottom:0}}>
               <defs>
                 <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%"  stopColor="#e8a020" stopOpacity={0.35}/>
-                  <stop offset="95%" stopColor="#e8a020" stopOpacity={0}/>
+                  <stop offset="5%"  stopColor="#5354d3" stopOpacity={0.35}/>
+                  <stop offset="95%" stopColor="#5354d3" stopOpacity={0}/>
                 </linearGradient>
               </defs>
               <XAxis dataKey="month" reversed tick={{fontSize:10,fill:'#9ca3af'}} axisLine={false} tickLine={false}/>
               <YAxis orientation="right" tick={{fontSize:10,fill:'#9ca3af'}} axisLine={false} tickLine={false}/>
               <Tooltip content={<Tip/>}/>
-              <Area type="monotone" dataKey="spend" name="הוצאות" stroke="#e8a020" strokeWidth={2.5} fill="url(#g1)"/>
+              <Area type="monotone" dataKey="spend" name="הוצאות" stroke="#5354d3" strokeWidth={2.5} fill="url(#g1)"/>
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -376,10 +376,10 @@ export const RestaurantAnalytics: React.FC = () => {
                 <div className="flex-1 h-5 bg-gray-50 rounded-lg overflow-hidden">
                   <div className="h-full rounded-lg" style={{
                     width: `${Math.max(Math.round(h.cost / maxHourCost * 100), 8)}%`,
-                    background: i === 0 ? '#e8a020' : '#e2e8f0',
+                    background: i === 0 ? '#5354d3' : '#e2e8f0',
                   }} />
                 </div>
-                <span className={`text-xs font-bold w-16 text-left flex-shrink-0 ${i === 0 ? 'text-amber-600' : 'text-gray-400'}`}>
+                <span className={`text-xs font-bold w-16 text-left flex-shrink-0 ${i === 0 ? 'text-[#5354d3]' : 'text-gray-400'}`}>
                   ₪{Math.round(h.cost).toLocaleString()}
                 </span>
               </div>
@@ -399,7 +399,7 @@ export const RestaurantAnalytics: React.FC = () => {
             <Tooltip content={<Tip/>}/>
             <Bar dataKey="shifts" name="shifts" radius={[6,6,0,0]} maxBarSize={28}>
               {dayData.slice(0,7).map((_,i) => (
-                <Cell key={i} fill={i===0 ? '#e8a020' : '#e2e8f0'}/>
+                <Cell key={i} fill={i===0 ? '#5354d3' : '#e2e8f0'}/>
               ))}
             </Bar>
           </BarChart>
@@ -473,24 +473,24 @@ export const RestaurantAnalytics: React.FC = () => {
 
       {/* 💡 תובנות חכמות */}
       {insights.length > 0 && (
-        <div className="rounded-2xl p-4 text-white" style={{background:'#14233d'}}>
+        <div className="rounded-2xl p-4 text-white" style={{background:'#1b1e38'}}>
           <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{background:'rgba(232,160,32,0.2)'}}>
-              <Zap size={16} style={{color:'#e8a020'}}/>
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{background:'rgba(83,84,211,0.2)'}}>
+              <Zap size={16} style={{color:'#5354d3'}}/>
             </div>
-            <span className="font-bold text-sm" style={{color:'#e8a020'}}>התובנות הפיננסיות שלך</span>
+            <span className="font-bold text-sm" style={{color:'#5354d3'}}>התובנות הפיננסיות שלך</span>
           </div>
           <div className="space-y-2.5">
             {insights.slice(0, 4).map((t, i) => (
               <div key={i} className="text-gray-300 text-sm leading-relaxed flex items-start gap-2">
-                <span className="text-amber-400 font-bold flex-shrink-0 mt-0.5">·</span>
+                <span className="text-[#5354d3] font-bold flex-shrink-0 mt-0.5">·</span>
                 <span>{t}</span>
               </div>
             ))}
           </div>
           <button onClick={() => navToRestaurant('create_job')}
             className="mt-3.5 text-xs font-bold rounded-lg px-3 py-1.5 active:scale-95 transition-transform"
-            style={{ background:'#e8a020', color:'#0d1420' }}>
+            style={{ background:'#5354d3', color:'#131626' }}>
             פרסם משמרת מתוכננת ›
           </button>
         </div>

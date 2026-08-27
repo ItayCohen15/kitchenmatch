@@ -34,29 +34,29 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
       <style>
         *{box-sizing:border-box}
         body{font-family:Arial,sans-serif;max-width:480px;margin:30px auto;padding:24px;color:#111;
-             border:2px solid #e8a020;border-radius:12px}
+             border:2px solid #5354d3;border-radius:12px}
         .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}
-        .logo{font-size:20px;font-weight:900}.gold{color:#c8840a}
+        .logo{font-size:20px;font-weight:900}.gold{color:#4244b8}
         .logo-sub{font-size:10px;color:#9ca3af}
         .rec-title{font-size:15px;font-weight:700;text-align:left}
         .rec-num{font-size:11px;color:#9ca3af;text-align:left}
-        .section{margin:12px 0;padding:12px 14px;background:#f9fafb;border-radius:8px;border-right:3px solid #e8a020}
+        .section{margin:12px 0;padding:12px 14px;background:#f9fafb;border-radius:8px;border-right:3px solid #5354d3}
         .sec-label{font-weight:700;font-size:12px;color:#374151;margin-bottom:7px}
         .field{font-size:13px;margin:3px 0;color:#374151}
         .field b{font-weight:700}
         .calc-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
         .calc-table td{padding:7px 4px;border-bottom:1px solid #f5f5f5}
-        .calc-table .total-row td{font-weight:900;font-size:15px;color:#d97706;
-                                   border-top:2px solid #e8a020;border-bottom:none;padding-top:10px}
-        .total-box{background:#14233d;color:white;
+        .calc-table .total-row td{font-weight:900;font-size:15px;color:#4244b8;
+                                   border-top:2px solid #5354d3;border-bottom:none;padding-top:10px}
+        .total-box{background:#1b1e38;color:white;
                    padding:14px;border-radius:10px;margin:14px 0}
         .total-label{font-size:11px;color:#9ca3af;margin-bottom:3px}
-        .total-amount{font-size:26px;font-weight:900;color:#e8a020}
+        .total-amount{font-size:26px;font-weight:900;color:#5354d3}
         .legal{font-size:11px;color:#374151;background:#fef9ec;border:1px solid #fcd34d;
                border-radius:8px;padding:10px 12px;margin:10px 0;line-height:1.7}
         .footer{margin-top:16px;font-size:10px;color:#9ca3af;text-align:center;
                 border-top:1px solid #e5e7eb;padding-top:10px;line-height:1.7}
-        @media print{body{margin:0;border:2px solid #e8a020}}
+        @media print{body{margin:0;border:2px solid #5354d3}}
       </style></head><body>
       <div class="top">
         <div>
@@ -134,7 +134,7 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
         style={{ maxHeight: '100%' }}>
 
         {/* Header – דביק */}
-        <div className="flex-shrink-0 p-4 text-white" style={{ background:'#14233d' }}>
+        <div className="flex-shrink-0 p-4 text-white" style={{ background:'#1b1e38' }}>
           <div className="flex items-center justify-between mb-2">
             <div>
               <div className="font-bold text-sm">קבלת עמלת תיווך</div>
@@ -146,7 +146,7 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
           </div>
           <div className="flex items-center justify-between">
             <div className="text-gray-400 text-xs">עמלת תיווך ({commPct}%){job.IsEmergency ? ' · חירום' : ''}</div>
-            <div className="text-2xl font-bold" style={{ color:'#e8a020' }}>₪{commStr}</div>
+            <div className="text-2xl font-bold" style={{ color:'#5354d3' }}>₪{commStr}</div>
           </div>
         </div>
 
@@ -198,7 +198,7 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
         <div className="flex-shrink-0 px-4 py-3 border-t border-gray-100">
           <button onClick={handlePrint}
             className="w-full rounded-2xl py-3 font-bold flex items-center justify-center gap-2 text-sm"
-            style={{ background:'#e8a020', color:'#241803' }}>
+            style={{ background:'#5354d3', color:'#ffffff' }}>
             <Printer size={16} /> הדפס קבלת עמלה
           </button>
         </div>
@@ -281,9 +281,9 @@ export const RestaurantWallet: React.FC = () => {
     <div className="screen-enter space-y-4">
 
       {/* Balance card */}
-      <div className="rounded-3xl p-5 text-white" style={{ background:'#14233d' }}>
+      <div className="rounded-3xl p-5 text-white" style={{ background:'#1b1e38' }}>
         <div className="text-gray-400 text-sm mb-1">יתרה בארנק</div>
-        <div className="text-4xl font-bold mb-1" style={{ color:'#e8a020' }}>
+        <div className="text-4xl font-bold mb-1" style={{ color:'#5354d3' }}>
           ₪{walletBalance.toLocaleString()}
         </div>
         {name && <div className="text-gray-400 text-sm mb-3">{name}</div>}
@@ -294,7 +294,7 @@ export const RestaurantWallet: React.FC = () => {
             <Plus size={16} /> טען כסף
           </button>
           <button className="rounded-xl py-3 flex items-center justify-center gap-2 font-semibold text-sm"
-            style={{ background:'#e8a020', color:'#241803' }}>
+            style={{ background:'#5354d3', color:'#ffffff' }}>
             <CreditCard size={16} /> כרטיס אשראי
           </button>
         </div>
@@ -308,7 +308,7 @@ export const RestaurantWallet: React.FC = () => {
             {[500, 1000, 2000, 5000].map(a => (
               <button key={a} onClick={() => setTopUpAmount(String(a))}
                 className={`flex-1 py-2 rounded-lg text-sm font-semibold ${
-                  topUpAmount === String(a) ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-700'
+                  topUpAmount === String(a) ? 'bg-[#5354d3] text-white' : 'bg-gray-100 text-gray-700'
                 }`}>
                 ₪{a}
               </button>
@@ -321,7 +321,7 @@ export const RestaurantWallet: React.FC = () => {
               className="w-full border border-gray-200 rounded-xl py-3 pr-8 pl-3 text-right font-semibold" />
           </div>
           <button onClick={handleTopUp} disabled={!topUpAmount || topping}
-            className="w-full bg-amber-500 text-white rounded-xl py-3 font-bold disabled:opacity-50 flex items-center justify-center gap-2">
+            className="w-full bg-[#5354d3] text-white rounded-xl py-3 font-bold disabled:opacity-50 flex items-center justify-center gap-2">
             {topping ? (
               <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"/>מעבד...</>
             ) : `טען ₪${topUpAmount}`}
@@ -342,7 +342,7 @@ export const RestaurantWallet: React.FC = () => {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label:'סה״כ הוצאות',  value:`₪${Math.round(totalSpend).toLocaleString()}`, color:'text-amber-500' },
+          { label:'סה״כ הוצאות',  value:`₪${Math.round(totalSpend).toLocaleString()}`, color:'text-[#5354d3]' },
           { label:'ממוצע למשמרת', value:`₪${avgPerShift}`,                             color:'text-blue-500' },
           { label:'משמרות',       value: jobs.length,                                  color:'text-green-500' },
         ].map(s => (
@@ -357,8 +357,8 @@ export const RestaurantWallet: React.FC = () => {
       <div className="bg-white rounded-2xl p-4 card-shadow">
         <div className="flex items-center gap-2 mb-2">
           <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-            style={{ background:'rgba(232,160,32,0.15)' }}>
-            <Lightbulb size={15} className="text-amber-500" />
+            style={{ background:'rgba(83,84,211,0.15)' }}>
+            <Lightbulb size={15} className="text-[#5354d3]" />
           </div>
           <span className="font-bold text-gray-800 text-sm">מבנה עמלות</span>
         </div>
@@ -369,7 +369,7 @@ export const RestaurantWallet: React.FC = () => {
           </div>
           <div className="flex justify-between">
             <span>עמלת Staffly (ממסעדה)</span>
-            <span className="font-semibold text-amber-600">+ 6.5%</span>
+            <span className="font-semibold text-[#5354d3]">+ 6.5%</span>
           </div>
           <div className="flex justify-between">
             <span>עמלת Staffly (מעובד)</span>
@@ -378,7 +378,7 @@ export const RestaurantWallet: React.FC = () => {
           <div className="h-px bg-gray-100 my-1"/>
           <div className="flex justify-between font-bold text-gray-700">
             <span>סה"כ עלות ממסעדה</span>
-            <span style={{ color:'#e8a020' }}>× 1.065</span>
+            <span style={{ color:'#5354d3' }}>× 1.065</span>
           </div>
           <div className="flex justify-between text-red-500 mt-1">
             <span>משמרת חירום</span>
@@ -405,7 +405,7 @@ export const RestaurantWallet: React.FC = () => {
 
         {loading && (
           <div className="text-center py-4">
-            <div className="w-6 h-6 border-2 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto"/>
+            <div className="w-6 h-6 border-2 border-[#5354d3] border-t-transparent rounded-full animate-spin mx-auto"/>
           </div>
         )}
 
@@ -438,8 +438,8 @@ export const RestaurantWallet: React.FC = () => {
             return (
               <div key={i} className="bg-white rounded-xl p-3 card-shadow">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center flex-shrink-0">
-                    <ArrowUpRight size={18} className="text-amber-500" />
+                  <div className="w-10 h-10 rounded-full bg-[#ecebfd] flex items-center justify-center flex-shrink-0">
+                    <ArrowUpRight size={18} className="text-[#5354d3]" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="font-semibold text-gray-900 text-sm">
@@ -472,7 +472,7 @@ export const RestaurantWallet: React.FC = () => {
                     {isCompleted && (
                       <button onClick={() => setReceiptJob(j)}
                         className="flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-lg"
-                        style={{ background:'rgba(232,160,32,0.1)', color:'#c8840a' }}>
+                        style={{ background:'rgba(83,84,211,0.1)', color:'#4244b8' }}>
                         <FileText size={11} /> עמלה
                       </button>
                     )}

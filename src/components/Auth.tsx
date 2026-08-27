@@ -88,7 +88,7 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6" style={{ background: '#0d1420', paddingTop: 'max(env(safe-area-inset-top), 24px)' }}>
+    <div className="min-h-screen flex flex-col items-center justify-center p-6" style={{ background: '#131626', paddingTop: 'max(env(safe-area-inset-top), 24px)' }}>
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-8">
@@ -96,7 +96,7 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
             <img src="/logo.svg" alt="Staffly" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-3xl font-extrabold">
-            <span className="text-white">Staff</span><span style={{ color: '#e8a020' }}>ly</span>
+            <span className="text-white">Staff</span><span style={{ color: '#5354d3' }}>ly</span>
           </h1>
           <p className="text-sm mt-1.5" dir="ltr" style={{ color: '#8a97ad' }}>Find your shift. Fill your team.</p>
         </div>
@@ -124,19 +124,19 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
               <button
                 onClick={() => setRole('restaurant')}
                 className={`p-3 rounded-xl border-2 text-center transition-all ${
-                  role === 'restaurant' ? 'border-orange-500 bg-amber-50' : 'border-gray-100'
+                  role === 'restaurant' ? 'border-[#5354d3] bg-[#ecebfd]' : 'border-gray-100'
                 }`}
               >
-                <Store size={20} className={`mx-auto mb-1 ${role === 'restaurant' ? 'text-amber-500' : 'text-gray-400'}`} />
+                <Store size={20} className={`mx-auto mb-1 ${role === 'restaurant' ? 'text-[#5354d3]' : 'text-gray-400'}`} />
                 <div className="text-xs font-bold text-gray-700">מסעדה</div>
               </button>
               <button
                 onClick={() => setRole('worker')}
                 className={`p-3 rounded-xl border-2 text-center transition-all ${
-                  role === 'worker' ? 'border-orange-500 bg-amber-50' : 'border-gray-100'
+                  role === 'worker' ? 'border-[#5354d3] bg-[#ecebfd]' : 'border-gray-100'
                 }`}
               >
-                <ChefHat size={20} className={`mx-auto mb-1 ${role === 'worker' ? 'text-amber-500' : 'text-gray-400'}`} />
+                <ChefHat size={20} className={`mx-auto mb-1 ${role === 'worker' ? 'text-[#5354d3]' : 'text-gray-400'}`} />
                 <div className="text-xs font-bold text-gray-700">עובד</div>
               </button>
             </div>
@@ -158,7 +158,7 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
               placeholder="אימייל"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right text-sm focus:border-amber-400 focus:ring-2 focus:ring-amber-200 outline-none"
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right text-sm focus:border-[#5354d3] focus:ring-2 focus:ring-[#c7c7f5] outline-none"
             />
             <div className="relative">
               <input
@@ -169,7 +169,7 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
                 autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
                 enterKeyHint="go"
                 onKeyDown={e => { if (e.key === 'Enter') handleSubmit(); }}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 pr-4 pl-12 text-right text-sm focus:border-amber-400 focus:ring-2 focus:ring-amber-200 outline-none"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 pr-4 pl-12 text-right text-sm focus:border-[#5354d3] focus:ring-2 focus:ring-[#c7c7f5] outline-none"
               />
               <button
                 type="button"
@@ -207,7 +207,7 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
             onClick={handleSubmit}
             disabled={loading}
             className="w-full rounded-xl py-4 font-bold text-base mt-5 disabled:opacity-50 active:scale-[0.98] transition-transform"
-            style={{ background: '#e8a020', color: '#241803' }}
+            style={{ background: '#5354d3', color: '#ffffff' }}
           >
             {loading ? (
               <div className="flex items-center justify-center gap-2">

@@ -164,10 +164,10 @@ export const WorkerStages: React.FC = () => {
     <div className="screen-enter space-y-4">
       {/* כותרת */}
       <div className="rounded-3xl p-4 text-white flex items-center gap-3"
-        style={{ background: '#14233d' }}>
+        style={{ background: '#1b1e38' }}>
         <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
-          style={{ background: 'rgba(232,160,32,0.18)', border: '1px solid rgba(232,160,32,0.3)' }}>
-          <GraduationCap className="text-amber-400" size={22} />
+          style={{ background: 'rgba(83,84,211,0.18)', border: '1px solid rgba(83,84,211,0.3)' }}>
+          <GraduationCap className="text-[#5354d3]" size={22} />
         </div>
         <div>
           <div className="font-bold text-lg leading-tight">סטאז׳ והצעות</div>
@@ -200,7 +200,7 @@ export const WorkerStages: React.FC = () => {
                 ) : today ? (
                   <button onClick={() => openTrialShift(t)}
                     className="w-full rounded-2xl py-3 font-bold"
-                    style={{ background: '#e8a020', color: '#241803' }}>
+                    style={{ background: '#5354d3', color: '#ffffff' }}>
                     כנס למשמרת הסטאז׳ ›
                   </button>
                 ) : (
@@ -245,7 +245,7 @@ export const WorkerStages: React.FC = () => {
               </div>
               <button onClick={() => applyTrial(Number(t.Id))} disabled={busy === Number(t.Id)}
                 className="w-full rounded-2xl py-3 font-bold disabled:opacity-40"
-                style={{ background: '#e8a020', color: '#241803' }}>
+                style={{ background: '#5354d3', color: '#ffffff' }}>
                 {busy === Number(t.Id) ? 'שולח...' : 'הגש מועמדות לסטאז׳'}
               </button>
             </div>
@@ -272,12 +272,12 @@ export const WorkerStages: React.FC = () => {
       {/* הצעות ישירות */}
       {offers.length > 0 && (
         <div className="space-y-2">
-          <h3 className="font-bold text-gray-800 text-sm flex items-center gap-1.5"><Send size={15} className="text-amber-500" /> הצעות ישירות בשבילך</h3>
+          <h3 className="font-bold text-gray-800 text-sm flex items-center gap-1.5"><Send size={15} className="text-[#5354d3]" /> הצעות ישירות בשבילך</h3>
           {offers.map(o => (
-            <div key={o.Id} className="bg-white rounded-2xl p-4 card-shadow border-2 border-amber-200">
+            <div key={o.Id} className="bg-white rounded-2xl p-4 card-shadow border-2 border-[#c7c7f5]">
               <div className="flex items-center justify-between mb-1">
                 <span className="font-bold text-gray-900">{o.RestaurantName}</span>
-                <span className="text-amber-600 font-bold">₪{o.HourlyRate}/ש'</span>
+                <span className="text-[#5354d3] font-bold">₪{o.HourlyRate}/ש'</span>
               </div>
               <div className="text-gray-500 text-xs flex items-center gap-3 mb-2">
                 <span>{ROLE_LABELS[o.Role] || o.Role}</span>
@@ -286,7 +286,7 @@ export const WorkerStages: React.FC = () => {
               {o.Duties && <p className="text-gray-500 text-xs mb-2">{o.Duties}</p>}
               <button onClick={() => acceptOffer(o)} disabled={busy === Number(o.Id)}
                 className="w-full rounded-2xl py-3 font-bold flex items-center justify-center gap-2 disabled:opacity-40"
-                style={{ background: '#e8a020', color: '#241803' }}>
+                style={{ background: '#5354d3', color: '#ffffff' }}>
                 <Check size={16} /> {busy === Number(o.Id) ? 'מאשר...' : 'אשר וקבל משמרת'}
               </button>
             </div>
@@ -311,7 +311,7 @@ export const WorkerStages: React.FC = () => {
             </div>
             <div className="flex gap-1.5">
               <button onClick={() => setShowChat(true)}
-                className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center" title="צ'אט עם המסעדה">
+                className="w-10 h-10 rounded-xl bg-[#ecebfd] border border-[#c7c7f5] text-[#5354d3] flex items-center justify-center" title="צ'אט עם המסעדה">
                 <MessageCircle size={17} />
               </button>
               {activeStage.RestaurantPhone && (
@@ -330,7 +330,7 @@ export const WorkerStages: React.FC = () => {
               <span>{left > 0 ? `עוד ${left} ימים` : 'הסתיימה התקופה'}</span>
             </div>
             <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-              <div className="h-full rounded-full" style={{ width: `${stageProgress(activeStage)}%`, background: '#e8a020' }} />
+              <div className="h-full rounded-full" style={{ width: `${stageProgress(activeStage)}%`, background: '#5354d3' }} />
             </div>
           </div>
 
@@ -354,24 +354,24 @@ export const WorkerStages: React.FC = () => {
 
           {/* לוז משמרות */}
           <div className="space-y-2">
-            <div className="text-sm font-bold text-gray-800 flex items-center gap-1.5"><Calendar size={14} className="text-amber-500" /> לוז המשמרות</div>
+            <div className="text-sm font-bold text-gray-800 flex items-center gap-1.5"><Calendar size={14} className="text-[#5354d3]" /> לוז המשמרות</div>
             {shifts.length === 0 && <div className="text-gray-400 text-xs bg-gray-50 rounded-xl p-3 text-center">המסעדה עוד לא קבעה משמרות — תקבל התראה כשתיקבע</div>}
             {shifts.map(sh => {
               const today = isToday(sh.StartTime);
               const done = sh.Status === 'completed';
               return (
-                <div key={sh.Id} className={`rounded-xl p-3 border ${today && !done ? 'border-amber-300 bg-amber-50' : 'border-gray-100 bg-gray-50'}`}>
+                <div key={sh.Id} className={`rounded-xl p-3 border ${today && !done ? 'border-[#7b7cee] bg-[#ecebfd]' : 'border-gray-100 bg-gray-50'}`}>
                   <div className="flex items-center justify-between">
                     <div className="text-sm font-bold text-gray-800 flex items-center gap-2">
                       <Clock size={13} className="text-gray-400" />{fmtDate(sh.StartTime)} · {fmtTime(sh.StartTime)}–{fmtTime(sh.EndTime)}
                     </div>
-                    <span className="text-amber-600 font-bold text-sm">₪{sh.HourlyRate}/ש'</span>
+                    <span className="text-[#5354d3] font-bold text-sm">₪{sh.HourlyRate}/ש'</span>
                   </div>
                   {sh.Instructions && <div className="text-gray-500 text-xs mt-1">{sh.Instructions}</div>}
                   {done
                     ? <div className="text-green-600 text-xs mt-1">הושלמה{sh.TotalPay ? ` · ₪${sh.TotalPay}` : ''}</div>
                     : today
-                      ? <button onClick={() => checkInShift(sh)} className="mt-2 w-full rounded-lg py-2 text-sm font-bold" style={{ background: '#e8a020', color: '#241803' }}>כנס למשמרת היום ›</button>
+                      ? <button onClick={() => checkInShift(sh)} className="mt-2 w-full rounded-lg py-2 text-sm font-bold" style={{ background: '#5354d3', color: '#ffffff' }}>כנס למשמרת היום ›</button>
                       : <div className="text-gray-400 text-xs mt-1">מתוכננת</div>}
                 </div>
               );
@@ -410,7 +410,7 @@ export const WorkerStages: React.FC = () => {
             {s.Duties && <p className="text-gray-500 text-xs mb-2">{s.Duties}</p>}
             <button onClick={() => applyStage(Number(s.Id))} disabled={busy === Number(s.Id)}
               className="w-full rounded-2xl py-3 font-bold disabled:opacity-40"
-              style={{ background: '#e8a020', color: '#241803' }}>
+              style={{ background: '#5354d3', color: '#ffffff' }}>
               {busy === Number(s.Id) ? 'שולח...' : "הגש מועמדות לסטאז'"}
             </button>
           </div>

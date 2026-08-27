@@ -77,7 +77,7 @@ export const StageSchedule: React.FC = () => {
       </button>
 
       {/* כרטיס הסטאז' */}
-      <div className="rounded-3xl p-4 text-white space-y-3" style={{ background: '#14233d' }}>
+      <div className="rounded-3xl p-4 text-white space-y-3" style={{ background: '#1b1e38' }}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-lg"
@@ -94,8 +94,8 @@ export const StageSchedule: React.FC = () => {
           <div className="flex gap-1.5">
             <button onClick={() => setShowChat(true)}
               className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ background: 'rgba(232,160,32,0.18)', border: '1px solid rgba(232,160,32,0.35)' }} title="צ'אט">
-              <MessageCircle size={17} className="text-amber-400" />
+              style={{ background: 'rgba(83,84,211,0.18)', border: '1px solid rgba(83,84,211,0.35)' }} title="צ'אט">
+              <MessageCircle size={17} className="text-[#5354d3]" />
             </button>
             {stage.WorkerPhone && (
               <a href={`tel:${stage.WorkerPhone}`}
@@ -112,7 +112,7 @@ export const StageSchedule: React.FC = () => {
             <span>{left > 0 ? `עוד ${left} ימים` : 'הסתיימה התקופה'}</span>
           </div>
           <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
-            <div className="h-full rounded-full" style={{ width: `${stageProgress(stage)}%`, background: '#e8a020' }} />
+            <div className="h-full rounded-full" style={{ width: `${stageProgress(stage)}%`, background: '#5354d3' }} />
           </div>
         </div>
       </div>
@@ -120,13 +120,13 @@ export const StageSchedule: React.FC = () => {
       {/* קביעת משמרת חדשה */}
       <button onClick={addShift}
         className="w-full rounded-2xl py-4 font-bold flex items-center justify-center gap-2"
-        style={{ background: '#e8a020', color: '#241803' }}>
+        style={{ background: '#5354d3', color: '#ffffff' }}>
         <Plus size={18} /> קבע משמרת חדשה
       </button>
 
       {loading && (
         <div className="text-center py-6">
-          <div className="w-7 h-7 border-2 border-amber-400 border-t-transparent rounded-full animate-spin mx-auto" />
+          <div className="w-7 h-7 border-2 border-[#5354d3] border-t-transparent rounded-full animate-spin mx-auto" />
         </div>
       )}
 
@@ -156,14 +156,14 @@ export const StageSchedule: React.FC = () => {
         {upcoming.map(sh => {
           const today = isToday(sh.StartTime);
           return (
-            <div key={sh.Id} className={`bg-white rounded-2xl p-4 card-shadow ${today ? 'border-2 border-amber-300' : ''}`}>
+            <div key={sh.Id} className={`bg-white rounded-2xl p-4 card-shadow ${today ? 'border-2 border-[#5354d3]' : ''}`}>
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
-                  {today && <span className="text-[10px] font-bold text-amber-600 bg-amber-50 rounded-full px-2 py-0.5">היום!</span>}
+                  {today && <span className="text-[10px] font-bold text-[#5354d3] bg-[#ecebfd] rounded-full px-2 py-0.5">היום!</span>}
                   <span className="font-bold text-gray-900 text-sm">{fmtDayDate(sh.StartTime)}</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-amber-600 font-bold text-sm">₪{sh.HourlyRate}/ש'</span>
+                  <span className="text-[#5354d3] font-bold text-sm">₪{sh.HourlyRate}/ש'</span>
                   <button onClick={() => editShift(sh)} title="ערוך משמרת"
                     className="w-8 h-8 rounded-lg bg-gray-50 border border-gray-200 text-gray-500 flex items-center justify-center">
                     <Pencil size={14} />
@@ -177,7 +177,7 @@ export const StageSchedule: React.FC = () => {
               {today && (
                 <button onClick={() => enterShift(sh)}
                   className="mt-2.5 w-full rounded-xl py-2.5 text-sm font-bold"
-                  style={{ background: '#e8a020', color: '#241803' }}>
+                  style={{ background: '#5354d3', color: '#ffffff' }}>
                   כנס למשמרת היום ›
                 </button>
               )}

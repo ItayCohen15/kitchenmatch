@@ -111,8 +111,8 @@ export const CreateJob: React.FC = () => {
       <div className="flex gap-2 mb-6">
         {stepTitles.map((t, i) => (
           <div key={i} className="flex-1">
-            <div className={`h-1.5 rounded-full mb-1 transition-colors ${i + 1 <= step ? 'bg-amber-500' : 'bg-gray-200'}`} />
-            <div className={`text-xs text-center font-medium ${i + 1 === step ? 'text-amber-500' : 'text-gray-400'}`}>{t}</div>
+            <div className={`h-1.5 rounded-full mb-1 transition-colors ${i + 1 <= step ? 'bg-[#5354d3]' : 'bg-gray-200'}`} />
+            <div className={`text-xs text-center font-medium ${i + 1 === step ? 'text-[#5354d3]' : 'text-gray-400'}`}>{t}</div>
           </div>
         ))}
       </div>
@@ -129,7 +129,7 @@ export const CreateJob: React.FC = () => {
                 onClick={() => { setRole(r.id); if (isEntryRole(r.id)) setExperience('entry'); }}
                 className={`w-full p-4 rounded-2xl border-2 flex items-center gap-4 transition-all ${
                   role === r.id
-                    ? 'border-orange-500 bg-amber-50'
+                    ? 'border-[#5354d3] bg-[#ecebfd]'
                     : 'border-gray-100 bg-white'
                 }`}
               >
@@ -142,7 +142,7 @@ export const CreateJob: React.FC = () => {
                   <div className="text-gray-500 text-sm">{r.desc}</div>
                 </div>
                 <div className={`mr-auto w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                  role === r.id ? 'border-orange-500 bg-amber-500' : 'border-gray-300'
+                  role === r.id ? 'border-[#5354d3] bg-[#5354d3]' : 'border-gray-300'
                 }`}>
                   {role === r.id && <div className="w-2 h-2 bg-white rounded-full" />}
                 </div>
@@ -152,7 +152,7 @@ export const CreateJob: React.FC = () => {
           <button
             disabled={!role}
             onClick={() => setStep(2)}
-            className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg mt-4 disabled:opacity-40 disabled:cursor-not-allowed active:scale-98 transition-transform"
+            className="w-full bg-[#5354d3] text-white rounded-2xl py-4 font-bold text-lg mt-4 disabled:opacity-40 disabled:cursor-not-allowed active:scale-98 transition-transform"
           >
             המשך
           </button>
@@ -201,8 +201,8 @@ export const CreateJob: React.FC = () => {
                 />
               </div>
             </div>
-            <div className="bg-amber-50 rounded-xl p-3 text-center">
-              <span className="text-amber-600 font-bold text-lg">{totalHours} שעות</span>
+            <div className="bg-[#ecebfd] rounded-xl p-3 text-center">
+              <span className="text-[#5354d3] font-bold text-lg">{totalHours} שעות</span>
               <span className="text-gray-500 text-sm"> · סה״כ משמרת</span>
             </div>
           </div>
@@ -211,7 +211,7 @@ export const CreateJob: React.FC = () => {
             <button onClick={() => setStep(1)} className="flex-shrink-0 bg-gray-100 rounded-2xl py-4 px-5 font-bold text-gray-600">
               <ChevronRight size={20} />
             </button>
-            <button onClick={() => setStep(3)} className="flex-1 bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg active:scale-98 transition-transform">
+            <button onClick={() => setStep(3)} className="flex-1 bg-[#5354d3] text-white rounded-2xl py-4 font-bold text-lg active:scale-98 transition-transform">
               המשך
             </button>
           </div>
@@ -249,7 +249,7 @@ export const CreateJob: React.FC = () => {
                   key={v}
                   onClick={() => setWage(String(v))}
                   className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-colors ${
-                    wage === String(v) ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-600'
+                    wage === String(v) ? 'bg-[#5354d3] text-white' : 'bg-gray-100 text-gray-600'
                   }`}
                 >
                   ₪{v}
@@ -272,7 +272,7 @@ export const CreateJob: React.FC = () => {
                   key={e.id}
                   onClick={() => setExperience(e.id)}
                   className={`w-full p-3 rounded-xl border-2 flex items-center justify-between transition-all ${
-                    experience === e.id ? 'border-orange-500 bg-amber-50' : 'border-gray-100'
+                    experience === e.id ? 'border-[#5354d3] bg-[#ecebfd]' : 'border-gray-100'
                   }`}
                 >
                   <span className="font-semibold text-gray-800">{e.label}</span>
@@ -289,7 +289,7 @@ export const CreateJob: React.FC = () => {
             <button
               disabled={!experience || !wageValid}
               onClick={() => setStep(4)}
-              className="flex-1 bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg disabled:opacity-40 active:scale-98 transition-transform"
+              className="flex-1 bg-[#5354d3] text-white rounded-2xl py-4 font-bold text-lg disabled:opacity-40 active:scale-98 transition-transform"
             >
               המשך
             </button>
@@ -317,19 +317,19 @@ export const CreateJob: React.FC = () => {
               </div>
             ))}
 
-            <div className="bg-amber-50 rounded-xl p-3 space-y-1.5">
+            <div className="bg-[#ecebfd] rounded-xl p-3 space-y-1.5">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-500">עמלה שלך ({restCommPct}%){emergency ? ' · חירום' : ''}</span>
-                <span className="font-bold text-amber-600">+₪{(parseFloat(totalPay) * restCommRate).toFixed(0)}</span>
+                <span className="font-bold text-[#5354d3]">+₪{(parseFloat(totalPay) * restCommRate).toFixed(0)}</span>
               </div>
-              <div className="flex justify-between text-sm font-bold border-t border-orange-100 pt-1.5">
+              <div className="flex justify-between text-sm font-bold border-t border-[#d7d7f6] pt-1.5">
                 <span className="text-gray-700">סה״כ תשלם</span>
-                <span className="text-amber-600">₪{(parseFloat(totalPay) * (1 + restCommRate)).toFixed(0)}</span>
+                <span className="text-[#5354d3]">₪{(parseFloat(totalPay) * (1 + restCommRate)).toFixed(0)}</span>
               </div>
               {/* מע"מ: הסכומים לפני מע"מ. שיעורו על שכר העובד תלוי במעמד
                   שלו (עוסק מורשה מחייב, עוסק פטור לא) — ולכן הסכום המדויק
                   ידוע רק אחרי שהעובד מאושר. העמלה תמיד חייבת במע"מ. */}
-              <p className="text-gray-500 text-xs text-center pt-1 border-t border-orange-100">
+              <p className="text-gray-500 text-xs text-center pt-1 border-t border-[#d7d7f6]">
                 הסכומים <b>אינם כוללים מע"מ</b> — יתווסף כדין
               </p>
               <p className="text-gray-400 text-xs text-center">
@@ -349,7 +349,7 @@ export const CreateJob: React.FC = () => {
               placeholder={'לדוגמה: עמדת גריל — בעיקר המבורגרים וכבדי עוף. צפי לעומס בינוני. כולל ניקיון העמדה בסוף.'}
               rows={3}
               maxLength={500}
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right text-sm focus:border-amber-400 outline-none resize-none text-gray-900"
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right text-sm focus:border-[#5354d3] outline-none resize-none text-gray-900"
             />
             {duties && (
               <div className="text-xs text-gray-400 text-left mt-1">{duties.length}/500</div>
@@ -367,7 +367,7 @@ export const CreateJob: React.FC = () => {
               placeholder={'לדוגמה: כניסה מאחורי הבניין, קומה 2, לבקש את דני במטבח'}
               rows={3}
               maxLength={300}
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right text-sm focus:border-amber-400 outline-none resize-none text-gray-900"
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right text-sm focus:border-[#5354d3] outline-none resize-none text-gray-900"
             />
             {instructions && (
               <div className="text-xs text-gray-400 text-left mt-1">{instructions.length}/300</div>
@@ -409,7 +409,7 @@ export const CreateJob: React.FC = () => {
                   {[{ v:0, l:'הכל' }, { v:3, l:'3' }, { v:3.5, l:'3.5' }, { v:4, l:'4' }, { v:4.5, l:'4.5' }].map(o => (
                     <button key={o.v} type="button" onClick={() => setMinRating(o.v)}
                       className={`flex-1 py-2 rounded-xl text-xs font-bold border flex items-center justify-center gap-0.5 transition-colors ${
-                        minRating === o.v ? 'bg-amber-500 text-white border-amber-500' : 'bg-white text-gray-600 border-gray-200'
+                        minRating === o.v ? 'bg-[#5354d3] text-white border-[#5354d3]' : 'bg-white text-gray-600 border-gray-200'
                       }`}>
                       {o.v > 0 && <Star size={10} className={minRating === o.v ? 'fill-white' : 'fill-amber-400 text-amber-400'} />}{o.l}
                     </button>
@@ -439,7 +439,7 @@ export const CreateJob: React.FC = () => {
           )}
 
           {publishing ? (
-            <div className="bg-amber-500 rounded-2xl py-5 flex items-center justify-center gap-3">
+            <div className="bg-[#5354d3] rounded-2xl py-5 flex items-center justify-center gap-3">
               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               <span className="text-white font-bold text-lg">מחפש עובדים...</span>
             </div>
@@ -450,7 +450,7 @@ export const CreateJob: React.FC = () => {
               </button>
               <button
                 onClick={handlePublish}
-                className="flex-1 bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg active:scale-98 transition-transform"
+                className="flex-1 bg-[#5354d3] text-white rounded-2xl py-4 font-bold text-lg active:scale-98 transition-transform"
               >
                 {emergency ? 'פרסם משמרת חירום' : 'פרסם משמרת'}
               </button>

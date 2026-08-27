@@ -62,7 +62,7 @@ export const NonSelfEmployedDisclosure: React.FC<Props> = ({ onAccept, onCancel 
   );
 
   const header = (title: string) => (
-    <div className="flex-shrink-0 p-4" style={{ background: '#e8a020', color: '#241803' }}>
+    <div className="flex-shrink-0 p-4" style={{ background: '#5354d3', color: '#ffffff' }}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 min-w-0">
           <Info size={18} className="flex-shrink-0" />
@@ -87,7 +87,7 @@ export const NonSelfEmployedDisclosure: React.FC<Props> = ({ onAccept, onCancel 
             <button onClick={onCancel} className="px-4 py-2 rounded-xl bg-gray-100 text-gray-600 font-bold text-sm">חזור</button>
           </>
         ) : (
-          <div className="w-7 h-7 border-2 border-amber-400 border-t-transparent rounded-full animate-spin mx-auto" />
+          <div className="w-7 h-7 border-2 border-[#5354d3] border-t-transparent rounded-full animate-spin mx-auto" />
         )}
       </div>
     </>
@@ -111,7 +111,7 @@ export const NonSelfEmployedDisclosure: React.FC<Props> = ({ onAccept, onCancel 
         <a href={doc.partnerUrl} target="_blank" rel="noopener noreferrer"
           onClick={() => setTimeout(() => onAccept(doc.version), 300)}
           className="w-full py-3.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-2"
-          style={{ background: '#e8a020', color: '#241803' }}>
+          style={{ background: '#5354d3', color: '#ffffff' }}>
           <ExternalLink size={16} /> להרשמה ב{doc.partnerName}
         </a>
         <button onClick={() => onAccept(doc.version)} className="w-full py-2.5 text-sm font-semibold text-gray-500">
@@ -173,7 +173,7 @@ export const NonSelfEmployedDisclosure: React.FC<Props> = ({ onAccept, onCancel 
         </button>
         <button onClick={confirm} disabled={!ack || saving}
           className="flex-1 py-3 rounded-2xl font-bold text-sm disabled:opacity-40 transition-opacity"
-          style={{ background: '#e8a020', color: '#241803' }}>
+          style={{ background: '#5354d3', color: '#ffffff' }}>
           {saving ? 'שומר...' : 'הבנתי, המשך'}
         </button>
       </div>

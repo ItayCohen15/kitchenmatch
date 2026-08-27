@@ -40,18 +40,18 @@ export const AdminApp: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full" style={{ background: '#0a0f1a' }}>
+    <div className="flex flex-col h-full" style={{ background: '#131626' }}>
       {/* Header */}
       <header className="px-4 flex items-center justify-between flex-shrink-0"
-        style={{ background: '#0d1420', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingTop: 'max(env(safe-area-inset-top), 12px)', paddingBottom: '12px' }}>
+        style={{ background: '#131626', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingTop: 'max(env(safe-area-inset-top), 12px)', paddingBottom: '12px' }}>
         <button onClick={resetToLanding} style={{ color: 'rgba(255,255,255,0.4)' }} title="יציאה">
           <LogOut size={18} />
         </button>
         <div className="flex items-center gap-2">
           <span className="font-bold text-base text-white">{TITLES[screen]}</span>
           <div className="w-8 h-8 rounded-xl flex items-center justify-center"
-            style={{ background: '#e8a020' }}>
-            <ShieldCheck size={16} style={{ color: '#241803' }} />
+            style={{ background: '#5354d3' }}>
+            <ShieldCheck size={16} style={{ color: '#ffffff' }} />
           </div>
         </div>
         <div style={{ width: 18 }} />
@@ -67,7 +67,7 @@ export const AdminApp: React.FC = () => {
         style={{ background: 'transparent' }}>
         <div className="max-w-md mx-auto px-3" style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 8px)' }}>
           <div className="flex overflow-hidden rounded-2xl mb-2"
-            style={{ background: '#0d1420', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 16px rgba(20,28,44,0.10)' }}>
+            style={{ background: '#131626', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 16px rgba(20,28,44,0.10)' }}>
             {TABS.map(tab => {
               const isActive = screen === tab.id;
               return (
@@ -75,14 +75,14 @@ export const AdminApp: React.FC = () => {
                   className="flex-1 flex flex-col items-center py-3 relative transition-all duration-200">
                   {isActive && (
                     <div className="absolute inset-1 rounded-xl"
-                      style={{ background: 'rgba(232,160,32,0.12)', boxShadow: 'inset 0 0 0 1px rgba(232,160,32,0.15)' }} />
+                      style={{ background: 'rgba(83,84,211,0.12)', boxShadow: 'inset 0 0 0 1px rgba(83,84,211,0.15)' }} />
                   )}
                   <span className={`relative z-10 transition-all duration-200 ${isActive ? 'scale-110' : 'scale-100'}`}
-                    style={{ color: isActive ? '#e8a020' : 'rgba(255,255,255,0.3)' }}>
+                    style={{ color: isActive ? '#5354d3' : 'rgba(255,255,255,0.3)' }}>
                     {tab.icon}
                   </span>
                   <span className="relative z-10 text-[10px] font-semibold mt-0.5 whitespace-nowrap"
-                    style={{ color: isActive ? '#e8a020' : 'rgba(255,255,255,0.3)' }}>
+                    style={{ color: isActive ? '#5354d3' : 'rgba(255,255,255,0.3)' }}>
                     {tab.label}
                   </span>
                 </button>

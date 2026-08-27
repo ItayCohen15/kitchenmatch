@@ -47,10 +47,10 @@ export const ChatsScreen: React.FC<{ role: 'restaurant' | 'worker' }> = ({ role 
     <div className="screen-enter space-y-4">
       {/* כותרת */}
       <div className="rounded-3xl p-4 text-white flex items-center gap-3"
-        style={{ background: '#14233d' }}>
+        style={{ background: '#1b1e38' }}>
         <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
-          style={{ background: 'rgba(232,160,32,0.18)', border: '1px solid rgba(232,160,32,0.3)' }}>
-          <MessageCircle className="text-amber-400" size={22} />
+          style={{ background: 'rgba(83,84,211,0.18)', border: '1px solid rgba(83,84,211,0.3)' }}>
+          <MessageCircle className="text-[#5354d3]" size={22} />
         </div>
         <div>
           <div className="font-bold text-lg leading-tight">הצ'אטים שלי</div>
@@ -62,7 +62,7 @@ export const ChatsScreen: React.FC<{ role: 'restaurant' | 'worker' }> = ({ role 
 
       {loading && (
         <div className="text-center py-8">
-          <div className="w-7 h-7 border-2 border-amber-400 border-t-transparent rounded-full animate-spin mx-auto" />
+          <div className="w-7 h-7 border-2 border-[#5354d3] border-t-transparent rounded-full animate-spin mx-auto" />
         </div>
       )}
 
@@ -96,7 +96,7 @@ export const ChatsScreen: React.FC<{ role: 'restaurant' | 'worker' }> = ({ role 
                 <div className="flex items-center gap-1.5">
                   <span className={`text-sm truncate ${unread ? 'font-bold text-gray-900' : 'font-bold text-gray-800'}`}>{t.Name}</span>
                   {t.JobType === 'stage' && (
-                    <span className="flex items-center gap-0.5 text-[10px] font-bold text-amber-600 bg-amber-50 rounded-full px-1.5 py-0.5 flex-shrink-0">
+                    <span className="flex items-center gap-0.5 text-[10px] font-bold text-[#5354d3] bg-[#ecebfd] rounded-full px-1.5 py-0.5 flex-shrink-0">
                       <GraduationCap size={10} /> סטאז'
                     </span>
                   )}
@@ -108,7 +108,7 @@ export const ChatsScreen: React.FC<{ role: 'restaurant' | 'worker' }> = ({ role 
               </div>
               {/* זמן */}
               <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                <span className={`text-[11px] ${unread ? 'text-amber-600 font-bold' : 'text-gray-400'}`}>{fmtWhen(t.LastAt)}</span>
+                <span className={`text-[11px] ${unread ? 'text-[#5354d3] font-bold' : 'text-gray-400'}`}>{fmtWhen(t.LastAt)}</span>
               </div>
             </button>
           );
@@ -158,9 +158,9 @@ export const UnreadChatBanner: React.FC<{ role: 'restaurant' | 'worker'; onOpen:
   return (
     <button onClick={() => onOpen(Number(unreadThread.JobId))}
       className="w-full rounded-2xl p-3.5 flex items-center gap-3 text-right active:scale-[0.98] transition-transform"
-      style={{ background: '#14233d', border: '1px solid rgba(232,160,32,0.35)' }}>
+      style={{ background: '#1b1e38', border: '1px solid rgba(83,84,211,0.35)' }}>
       <div className="relative flex-shrink-0">
-        <MessageCircle size={22} className="text-amber-400" />
+        <MessageCircle size={22} className="text-[#5354d3]" />
         <div className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-red-500" />
       </div>
       <div className="flex-1">

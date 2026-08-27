@@ -48,12 +48,12 @@ const ShiftSummaryDoc = ({ shift, rate, onClose }: { shift: any; rate: number; o
       <style>
         *{box-sizing:border-box}
         body{font-family:Arial,sans-serif;max-width:420px;margin:30px auto;padding:24px;color:#111}
-        .logo{font-size:22px;font-weight:900;margin-bottom:2px}.gold{color:#c8840a}
+        .logo{font-size:22px;font-weight:900;margin-bottom:2px}.gold{color:#4244b8}
         .doc-title{font-size:17px;font-weight:700;margin:2px 0}
         .doc-meta{font-size:11px;color:#9ca3af;margin-bottom:10px}
         .warning{background:#fff8e1;border:1px solid #f59e0b;border-radius:8px;padding:10px 14px;
                  font-size:12px;color:#92400e;margin:10px 0;line-height:1.5}
-        h2{font-size:13px;font-weight:700;color:#374151;border-bottom:2px solid #e8a020;
+        h2{font-size:13px;font-weight:700;color:#374151;border-bottom:2px solid #5354d3;
            padding-bottom:5px;margin:16px 0 6px}
         .row{display:flex;justify-content:space-between;padding:5px 0;
              font-size:13px;border-bottom:1px solid #f5f5f5}
@@ -110,10 +110,10 @@ const ShiftSummaryDoc = ({ shift, rate, onClose }: { shift: any; rate: number; o
         style={{ maxHeight: '100%' }}>
 
         {/* Header – דביק */}
-        <div className="flex-shrink-0 p-4 text-white" style={{ background:'#14233d' }}>
+        <div className="flex-shrink-0 p-4 text-white" style={{ background:'#1b1e38' }}>
           <div className="flex items-center justify-between mb-2">
             <div>
-              <div className="font-bold text-sm">Staff<span style={{ color:'#e8a020' }}>ly</span> · סיכום משמרת</div>
+              <div className="font-bold text-sm">Staff<span style={{ color:'#5354d3' }}>ly</span> · סיכום משמרת</div>
               <div className="text-gray-400 text-xs mt-0.5">{docId}</div>
             </div>
             <button onClick={onClose} className="w-8 h-8 rounded-xl flex items-center justify-center bg-white/10">
@@ -122,7 +122,7 @@ const ShiftSummaryDoc = ({ shift, rate, onClose }: { shift: any; rate: number; o
           </div>
           <div className="flex items-center justify-between">
             <div className="text-gray-400 text-xs">נטו לקבלה</div>
-            <div className="text-2xl font-bold" style={{ color:'#e8a020' }}>₪{net}</div>
+            <div className="text-2xl font-bold" style={{ color:'#5354d3' }}>₪{net}</div>
           </div>
         </div>
 
@@ -165,7 +165,7 @@ const ShiftSummaryDoc = ({ shift, rate, onClose }: { shift: any; rate: number; o
         <div className="flex-shrink-0 px-4 py-3 border-t border-gray-100">
           <button onClick={handlePrint}
             className="w-full rounded-2xl py-3 font-bold flex items-center justify-center gap-2 text-sm"
-            style={{ background:'#e8a020', color:'#241803' }}>
+            style={{ background:'#5354d3', color:'#ffffff' }}>
             <Printer size={16} /> הדפס סיכום
           </button>
         </div>
@@ -189,28 +189,28 @@ const WorkerInvoiceDoc = ({ shift, worker, onClose }: { shift: any; worker: any;
       <style>
         *{box-sizing:border-box}
         body{font-family:Arial,sans-serif;max-width:480px;margin:30px auto;padding:24px;color:#111;
-             border:2px solid #e8a020;border-radius:12px}
+             border:2px solid #5354d3;border-radius:12px}
         .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}
-        .logo{font-size:20px;font-weight:900}.gold{color:#c8840a}
+        .logo{font-size:20px;font-weight:900}.gold{color:#4244b8}
         .logo-sub{font-size:10px;color:#9ca3af}
         .inv-title{font-size:15px;font-weight:700;color:#111;text-align:left}
         .inv-num{font-size:11px;color:#9ca3af;text-align:left}
-        .section{margin:12px 0;padding:12px 14px;background:#f9fafb;border-radius:8px;border-right:3px solid #e8a020}
+        .section{margin:12px 0;padding:12px 14px;background:#f9fafb;border-radius:8px;border-right:3px solid #5354d3}
         .sec-label{font-weight:700;font-size:12px;color:#374151;margin-bottom:7px;text-transform:uppercase;letter-spacing:0.5px}
         .field{font-size:13px;margin:3px 0;color:#374151}
         .field b{font-weight:700}
         .field-note{font-size:11px;color:#9ca3af;margin-top:3px}
         .desc-section{margin:12px 0;padding:12px 14px;background:#f0f9ff;border-radius:8px;border-right:3px solid #3b82f6}
-        .total-box{background:#14233d;color:white;
+        .total-box{background:#1b1e38;color:white;
                    padding:16px;border-radius:10px;margin:14px 0;text-align:center}
         .total-label{font-size:12px;color:#9ca3af;margin-bottom:4px}
-        .total-amount{font-size:30px;font-weight:900;color:#e8a020}
+        .total-amount{font-size:30px;font-weight:900;color:#5354d3}
         .total-note{font-size:10px;color:#6b7280;margin-top:5px}
         .platform-note{font-size:11px;color:#374151;background:#f0fdf4;border:1px solid #86efac;
                        border-radius:8px;padding:10px;margin:10px 0;line-height:1.6}
         .footer{margin-top:16px;font-size:10px;color:#9ca3af;text-align:center;
                 border-top:1px solid #e5e7eb;padding-top:10px;line-height:1.7}
-        @media print{body{margin:0;border:2px solid #e8a020}}
+        @media print{body{margin:0;border:2px solid #5354d3}}
       </style></head><body>
       <div class="top">
         <div>
@@ -279,7 +279,7 @@ const WorkerInvoiceDoc = ({ shift, worker, onClose }: { shift: any; worker: any;
         style={{ maxHeight: '100%' }}>
 
         {/* Header – דביק */}
-        <div className="flex-shrink-0 p-4 text-white" style={{ background:'#14233d' }}>
+        <div className="flex-shrink-0 p-4 text-white" style={{ background:'#1b1e38' }}>
           <div className="flex items-center justify-between mb-2">
             <div>
               <div className="font-bold text-sm">חשבונית שירות</div>
@@ -290,7 +290,7 @@ const WorkerInvoiceDoc = ({ shift, worker, onClose }: { shift: any; worker: any;
             </button>
           </div>
           <div className="flex items-center justify-between">
-            <div className="text-xs" style={{ color:'#e8a020' }}>סכום מלא למסעדה</div>
+            <div className="text-xs" style={{ color:'#5354d3' }}>סכום מלא למסעדה</div>
             <div className="text-2xl font-bold text-white">₪{gross}</div>
           </div>
         </div>
@@ -511,15 +511,15 @@ export const WorkerWallet: React.FC = () => {
     <div className="screen-enter space-y-4 pb-4">
 
       {/* Header card */}
-      <div className="rounded-3xl p-5 text-white" style={{ background:'#14233d' }}>
+      <div className="rounded-3xl p-5 text-white" style={{ background:'#1b1e38' }}>
         <div className="text-gray-400 text-sm mb-1">סה״כ הכנסות (נטו)</div>
-        <div className="text-4xl font-bold mb-3" style={{ color:'#e8a020' }}>
+        <div className="text-4xl font-bold mb-3" style={{ color:'#5354d3' }}>
           ₪{totalEarnings.toLocaleString()}
         </div>
         <div className="grid grid-cols-3 gap-3">
           {[
             { l:'משמרות',     v: completedShifts,                         c:'text-white' },
-            { l:'ממוצע/משמרת',v:`₪${avgPerShift}`,                        c:'text-amber-400' },
+            { l:'ממוצע/משמרת',v:`₪${avgPerShift}`,                        c:'text-[#5354d3]' },
             { l:'דירוג',      v: rating > 0 ? `★${rating.toFixed(1)}` : '—', c:'text-blue-300' },
           ].map(s => (
             <div key={s.l} className="bg-white/10 rounded-xl p-2.5 text-center">
@@ -557,7 +557,7 @@ export const WorkerWallet: React.FC = () => {
           {wallet && (
             <div className="bg-white rounded-2xl p-4 card-shadow">
               <div className="flex items-center gap-2 mb-3">
-                <Wallet size={16} className="text-amber-500" />
+                <Wallet size={16} className="text-[#5354d3]" />
                 <span className="font-bold text-gray-800 text-sm">הארנק שלי</span>
                 <span className="text-[10px] text-gray-400 mr-auto">תשלום מאובטח · escrow</span>
               </div>
@@ -623,10 +623,10 @@ export const WorkerWallet: React.FC = () => {
           )}
 
           {/* 🎯 יעד חודשי */}
-          <div className="rounded-2xl p-4 card-shadow text-white" style={{ background: '#14233d' }}>
+          <div className="rounded-2xl p-4 card-shadow text-white" style={{ background: '#1b1e38' }}>
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-1.5">
-                <Target size={16} className="text-amber-400" />
+                <Target size={16} className="text-[#5354d3]" />
                 <span className="font-bold text-sm">היעד החודשי שלי</span>
               </div>
               {goal > 0 && !editGoal && (
@@ -639,19 +639,19 @@ export const WorkerWallet: React.FC = () => {
                   placeholder="לדוגמה: 5000"
                   className="flex-1 rounded-xl px-3 py-2.5 text-right text-sm outline-none text-gray-900 bg-white" />
                 <button onClick={saveGoal} className="rounded-xl px-4 py-2.5 text-sm font-bold text-gray-900"
-                  style={{ background: '#e8a020' }}>
+                  style={{ background: '#5354d3' }}>
                   שמור
                 </button>
               </div>
             ) : (
               <>
                 <div className="flex justify-between items-end mb-1.5">
-                  <span className="font-bold text-xl" style={{ color: '#e8a020' }}>₪{Math.round(thisNet).toLocaleString()}</span>
+                  <span className="font-bold text-xl" style={{ color: '#5354d3' }}>₪{Math.round(thisNet).toLocaleString()}</span>
                   <span className="text-gray-400 text-xs">מתוך ₪{goal.toLocaleString()}</span>
                 </div>
                 <div className="h-2.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
                   <div className="h-full rounded-full transition-all"
-                    style={{ width: `${Math.min(Math.round(thisNet / goal * 100), 100)}%`, background: '#e8a020' }} />
+                    style={{ width: `${Math.min(Math.round(thisNet / goal * 100), 100)}%`, background: '#5354d3' }} />
                 </div>
                 <div className="text-[11px] text-gray-400 mt-1.5">
                   {thisNet >= goal
@@ -714,10 +714,10 @@ export const WorkerWallet: React.FC = () => {
                     <div className="flex-1 h-5 bg-gray-50 rounded-lg overflow-hidden">
                       <div className="h-full rounded-lg" style={{
                         width: `${Math.max(Math.round(d.earn / maxDayEarn * 100), 8)}%`,
-                        background: i === 0 ? '#e8a020' : '#e2e8f0',
+                        background: i === 0 ? '#5354d3' : '#e2e8f0',
                       }} />
                     </div>
-                    <span className={`text-xs font-bold w-16 text-left flex-shrink-0 ${i === 0 ? 'text-amber-600' : 'text-gray-400'}`}>₪{Math.round(d.earn).toLocaleString()}</span>
+                    <span className={`text-xs font-bold w-16 text-left flex-shrink-0 ${i === 0 ? 'text-[#5354d3]' : 'text-gray-400'}`}>₪{Math.round(d.earn).toLocaleString()}</span>
                   </div>
                 ))}
               </div>
@@ -813,7 +813,7 @@ export const WorkerWallet: React.FC = () => {
           <div className="bg-white rounded-2xl p-4 card-shadow text-xs text-gray-500 leading-relaxed space-y-1.5">
             <div className="font-bold text-gray-800 text-sm mb-2">המסמכים שלך</div>
             <div className="flex items-start gap-2">
-              <span className="text-amber-500 font-bold flex-shrink-0">סיכום</span>
+              <span className="text-[#5354d3] font-bold flex-shrink-0">סיכום</span>
               <span>– פירוט תשלום מהפלטפורמה (לא רשמי)</span>
             </div>
             <div className="flex items-start gap-2">
@@ -824,7 +824,7 @@ export const WorkerWallet: React.FC = () => {
 
           {loading && (
             <div className="text-center py-8">
-              <div className="w-7 h-7 border-2 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto"/>
+              <div className="w-7 h-7 border-2 border-[#5354d3] border-t-transparent rounded-full animate-spin mx-auto"/>
             </div>
           )}
 
@@ -889,7 +889,7 @@ export const WorkerWallet: React.FC = () => {
 
                 <div className="flex items-center gap-1.5 mb-3">
                   <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full"
-                    style={{ background:'#f4f2ec', color:'#5a5348' }}>
+                    style={{ background:'#eef0f5', color:'#5b6070' }}>
                     <span className="w-2 h-2 rounded-full inline-block" style={{ background: roleDot(shift.Role) }} />
                     {ROLE_LABELS[shift.Role] ?? shift.Role}
                   </span>
@@ -902,7 +902,7 @@ export const WorkerWallet: React.FC = () => {
                 <div className="flex gap-2">
                   <button onClick={() => setSummary(shift)}
                     className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold"
-                    style={{ background:'rgba(232,160,32,0.1)', color:'#c8840a', border:'1px solid rgba(232,160,32,0.25)' }}>
+                    style={{ background:'rgba(83,84,211,0.1)', color:'#4244b8', border:'1px solid rgba(83,84,211,0.25)' }}>
                     <FileText size={12} /> סיכום משמרת
                   </button>
                   <button onClick={() => setInvoice(shift)}

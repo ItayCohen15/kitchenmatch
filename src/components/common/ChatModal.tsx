@@ -45,7 +45,7 @@ export const ChatModal: React.FC<Props> = ({ jobId, title, myRole, myName, readO
   };
 
   return (
-    <div onClick={onClose} className="fixed inset-0 z-[70] flex items-center justify-center p-4" style={{ background: 'rgba(13,20,32,0.65)', paddingTop: 'max(env(safe-area-inset-top), 16px)', paddingBottom: 'max(env(safe-area-inset-bottom), 16px)' }}>
+    <div onClick={onClose} className="fixed inset-0 z-[70] flex items-center justify-center p-4" style={{ background: 'rgba(19,22,38,0.65)', paddingTop: 'max(env(safe-area-inset-top), 16px)', paddingBottom: 'max(env(safe-area-inset-bottom), 16px)' }}>
       <div onClick={e => e.stopPropagation()} className="bg-white rounded-3xl w-full max-w-md shadow-2xl flex flex-col overflow-hidden" style={{ height: 'min(560px, 85dvh)' }}>
         {/* כותרת */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 flex-shrink-0">
@@ -75,7 +75,7 @@ export const ChatModal: React.FC<Props> = ({ jobId, title, myRole, myName, readO
             return (
               <div key={m.Id} className={`flex ${own ? 'justify-start' : 'justify-end'}`}>
                 <div className={`max-w-[78%] rounded-2xl px-3.5 py-2 text-sm leading-snug ${
-                  own ? 'bg-amber-500 text-white rounded-bl-md' : 'bg-white text-gray-800 border border-gray-100 rounded-br-md'
+                  own ? 'bg-[#5354d3] text-white rounded-bl-md' : 'bg-white text-gray-800 border border-gray-100 rounded-br-md'
                 }`}>
                   <div>{m.Text}</div>
                   <div className={`text-[10px] mt-0.5 ${own ? 'text-white/70' : 'text-gray-400'}`}>{m.DisplayTime}</div>
@@ -102,11 +102,11 @@ export const ChatModal: React.FC<Props> = ({ jobId, title, myRole, myName, readO
                 onChange={e => setText(e.target.value)}
                 onKeyDown={e => { if (e.key === 'Enter') send(); }}
                 placeholder="כתוב הודעה..."
-                className="flex-1 border border-gray-200 bg-gray-50 rounded-2xl px-4 py-2.5 text-sm text-right outline-none focus:border-amber-400 focus:bg-white"
+                className="flex-1 border border-gray-200 bg-gray-50 rounded-2xl px-4 py-2.5 text-sm text-right outline-none focus:border-[#5354d3] focus:bg-white"
               />
               <button onClick={send} disabled={sending || !text.trim()}
                 className="w-10 h-10 rounded-2xl flex items-center justify-center disabled:opacity-40 flex-shrink-0"
-                style={{ background: '#e8a020', color: '#241803' }}>
+                style={{ background: '#5354d3', color: '#ffffff' }}>
                 <Send size={17} style={{ transform: 'scaleX(-1)' }} />
               </button>
             </div>

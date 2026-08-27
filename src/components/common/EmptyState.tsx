@@ -16,7 +16,7 @@ export const EmptyState: React.FC<Props> = ({ emoji, icon, title, subtitle, acti
   <div className={`text-center py-12 px-6 ${className}`}>
     {emoji && <div className="text-5xl mb-3">{emoji}</div>}
     {icon && (
-      <div className="mx-auto mb-3 w-14 h-14 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-500">
+      <div className="mx-auto mb-3 w-14 h-14 rounded-2xl bg-[#ecebfd] flex items-center justify-center text-[#5354d3]">
         {icon}
       </div>
     )}
@@ -26,7 +26,7 @@ export const EmptyState: React.FC<Props> = ({ emoji, icon, title, subtitle, acti
       <button
         onClick={action.onClick}
         className="mt-4 inline-flex items-center justify-center gap-1.5 rounded-2xl px-5 py-2.5 text-sm font-bold active:scale-95 transition-transform"
-        style={{ background: '#e8a020', color: '#241803' }}>
+        style={{ background: '#5354d3', color: '#ffffff' }}>
         {action.label}
       </button>
     )}

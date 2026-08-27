@@ -29,10 +29,10 @@ class ReloadOnChunkError extends React.Component<{ children: React.ReactNode }, 
     if (this.state.failed) {
       return (
         <div className="flex flex-col items-center justify-center gap-3 p-8 text-center" style={{ height: '100dvh' }}>
-          <RefreshCw size={28} className="text-amber-500 animate-spin" />
+          <RefreshCw size={28} className="text-[#5354d3] animate-spin" />
           <p className="text-gray-600 font-semibold text-sm">יש גרסה חדשה — טוען מחדש...</p>
           <button onClick={() => { try { sessionStorage.removeItem('km_chunk_reload'); } catch {} window.location.reload(); }}
-            className="bg-amber-500 text-white rounded-2xl px-6 py-3 font-bold text-sm">רענן עכשיו</button>
+            className="bg-[#5354d3] text-white rounded-2xl px-6 py-3 font-bold text-sm">רענן עכשיו</button>
         </div>
       );
     }
@@ -275,9 +275,9 @@ const AppContent: React.FC = () => {
   const showApp = token && userRole && !needsOnboarding;
 
   return (
-    <div className="flex items-start justify-center" style={{ height: '100dvh', overflow: 'hidden', background: '#e8e4db' }}>
+    <div className="flex items-start justify-center" style={{ height: '100dvh', overflow: 'hidden', background: '#e6e7ef' }}>
       {showSplash && <Splash onDone={() => setShowSplash(false)} />}
-      <div className="w-full max-w-sm relative flex flex-col" style={{ height:'100dvh', background:'#f6f4ef', boxShadow:'0 0 0 1px rgba(38,34,27,0.06), 0 18px 50px rgba(38,34,27,0.14)' }}>
+      <div className="w-full max-w-sm relative flex flex-col" style={{ height:'100dvh', background:'#f4f5f9', boxShadow:'0 0 0 1px rgba(38,34,27,0.06), 0 18px 50px rgba(38,34,27,0.14)' }}>
         {/* מסך הפתיחה = כניסה/הרשמה ישירות (דף הנחיתה השיווקי מושהה עד שנעדכן אותו) */}
         {!token && <Auth onLogin={handleLogin} />}
         {showOnboarding && (() => {
@@ -297,7 +297,7 @@ const AppContent: React.FC = () => {
           <ReloadOnChunkError>
             <Suspense fallback={
               <div className="flex items-center justify-center" style={{ height: '100dvh' }}>
-                <div className="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+                <div className="w-8 h-8 border-2 border-[#5354d3] border-t-transparent rounded-full animate-spin" />
               </div>
             }>
               {userRole === 'restaurant' && <RestaurantApp />}

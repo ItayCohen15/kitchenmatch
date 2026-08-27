@@ -26,7 +26,7 @@ export const JobDetails: React.FC = () => {
           <p className="text-gray-500 font-medium">משמרת לא נמצאה</p>
           <button
             onClick={() => navToWorker('home')}
-            className="mt-4 bg-amber-500 text-white rounded-xl px-6 py-3 font-bold"
+            className="mt-4 bg-[#5354d3] text-white rounded-xl px-6 py-3 font-bold"
           >
             חזור למשמרות
           </button>
@@ -106,7 +106,7 @@ export const JobDetails: React.FC = () => {
         <h2 className="text-2xl font-bold text-gray-900">המשמרת בוטלה</h2>
         <p className="text-gray-500">המסעדה ביטלה את המשמרת. אם הביטול היה מאוחר, קיבלת פיצוי לארנק.</p>
         <button onClick={() => navToWorker('home')}
-          className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg">
+          className="w-full bg-[#5354d3] text-white rounded-2xl py-4 font-bold text-lg">
           חזור למשמרות
         </button>
       </div>
@@ -145,10 +145,10 @@ export const JobDetails: React.FC = () => {
         ) : (
           <>
             <div className="relative w-28 h-28">
-              <div className="w-28 h-28 bg-amber-50 rounded-full flex items-center justify-center">
-                <Send size={40} className="text-amber-500" />
+              <div className="w-28 h-28 bg-[#ecebfd] rounded-full flex items-center justify-center">
+                <Send size={40} className="text-[#5354d3]" />
               </div>
-              <div className="absolute inset-0 rounded-full border-4 border-amber-200 border-t-orange-500 animate-spin" />
+              <div className="absolute inset-0 rounded-full border-4 border-[#c7c7f5] border-t-[#5354d3] animate-spin" />
             </div>
             <div className="text-center">
               <h2 className="text-2xl font-bold text-gray-900">מועמדות נשלחה!</h2>
@@ -161,7 +161,7 @@ export const JobDetails: React.FC = () => {
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-500">שכר</span>
-                <span className="font-semibold text-amber-500">₪{hourlyRate}/ש׳</span>
+                <span className="font-semibold text-[#5354d3]">₪{hourlyRate}/ש׳</span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-500">שעות</span>
@@ -202,7 +202,7 @@ export const JobDetails: React.FC = () => {
         )}
         <button
           onClick={() => navToWorker('home')}
-          className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-lg"
+          className="w-full bg-[#5354d3] text-white rounded-2xl py-4 font-bold text-lg"
         >
           חזור למשמרות
         </button>
@@ -213,7 +213,7 @@ export const JobDetails: React.FC = () => {
   if (accepting) {
     return (
       <div className="screen-enter flex flex-col items-center justify-center min-h-[70vh] text-center gap-4">
-        <div className="w-16 h-16 border-4 border-amber-200 border-t-orange-500 rounded-full animate-spin" />
+        <div className="w-16 h-16 border-4 border-[#c7c7f5] border-t-[#5354d3] rounded-full animate-spin" />
         <h2 className="text-xl font-bold text-gray-900">שולח מועמדות...</h2>
         <p className="text-gray-500">רגע אחד</p>
       </div>
@@ -224,7 +224,7 @@ export const JobDetails: React.FC = () => {
     <div className="screen-enter space-y-4">
       {/* Header */}
       <div className="rounded-2xl p-5 text-white"
-        style={{ background: isEmergency ? '#e5484d' : '#14233d' }}>
+        style={{ background: isEmergency ? '#e5484d' : '#1b1e38' }}>
         {isEmergency && (
           <div className="flex items-center gap-2 mb-3 bg-white/20 rounded-lg px-3 py-1.5 w-fit">
             <Zap size={14} className="fill-white" />
@@ -233,7 +233,7 @@ export const JobDetails: React.FC = () => {
         )}
         <h2 className="text-2xl font-bold mb-1">{restaurantName}</h2>
         {restaurantCity && (
-          <div className="flex items-center gap-2 text-amber-100 text-sm mb-4">
+          <div className="flex items-center gap-2 text-[#c7c7f5] text-sm mb-4">
             <MapPin size={14} />
             {restaurantCity}
           </div>
@@ -241,15 +241,15 @@ export const JobDetails: React.FC = () => {
         <div className="grid grid-cols-3 gap-3">
           <div className="bg-white/15 rounded-xl p-3 text-center">
             <div className="font-bold text-xl">₪{hourlyRate}</div>
-            <div className="text-amber-100 text-xs">/שעה</div>
+            <div className="text-[#c7c7f5] text-xs">/שעה</div>
           </div>
           <div className="bg-white/15 rounded-xl p-3 text-center">
             <div className="font-bold text-xl">{hours}</div>
-            <div className="text-amber-100 text-xs">שעות</div>
+            <div className="text-[#c7c7f5] text-xs">שעות</div>
           </div>
           <div className="bg-white/15 rounded-xl p-3 text-center">
             <div className="font-bold text-xl text-green-300">₪{netPay}</div>
-            <div className="text-amber-100 text-xs">לכיסך</div>
+            <div className="text-[#c7c7f5] text-xs">לכיסך</div>
           </div>
         </div>
       </div>
@@ -356,7 +356,7 @@ export const JobDetails: React.FC = () => {
             <button
               onClick={handleAccept}
               className={`flex-1 text-white rounded-2xl py-4 font-bold text-lg shadow-lg active:scale-98 transition-transform ${
-                isEmergency ? 'bg-red-500' : 'bg-amber-500'
+                isEmergency ? 'bg-red-500' : 'bg-[#5354d3]'
               }`}
             >
               {isEmergency ? 'הגש מועמדות לחירום' : 'הגש מועמדות'}

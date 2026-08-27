@@ -41,10 +41,10 @@ export const StageLocked: React.FC = () => {
     <div className="screen-enter space-y-4">
       {/* כותרת */}
       <div className="rounded-3xl p-4 text-white flex items-center gap-3"
-        style={{ background: '#14233d' }}>
+        style={{ background: '#1b1e38' }}>
         <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
-          style={{ background: 'rgba(232,160,32,0.18)', border: '1px solid rgba(232,160,32,0.3)' }}>
-          <GraduationCap className="text-amber-400" size={22} />
+          style={{ background: 'rgba(83,84,211,0.18)', border: '1px solid rgba(83,84,211,0.3)' }}>
+          <GraduationCap className="text-[#5354d3]" size={22} />
         </div>
         <div>
           <div className="font-bold text-lg leading-tight">סטאז׳</div>
@@ -96,12 +96,12 @@ export const StageLocked: React.FC = () => {
             <input
               type="text" value={schoolName} onChange={e => setSchoolName(e.target.value)}
               placeholder="שם בית הספר / הקורס (אופציונלי)"
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right text-sm outline-none focus:border-amber-400"
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right text-sm outline-none focus:border-[#5354d3]"
             />
             {err && <div className="bg-red-50 text-red-600 text-xs rounded-xl px-3 py-2 text-center">{err}</div>}
             <button onClick={declareTrainee} disabled={saving || !courseType}
               className="w-full rounded-2xl py-3.5 font-bold disabled:opacity-40 flex items-center justify-center gap-2"
-              style={{ background: '#e8a020', color: '#241803' }}>
+              style={{ background: '#5354d3', color: '#ffffff' }}>
               <Check size={16} /> {saving ? 'שומר...' : 'פתח לי גישה לסטאז׳'}
             </button>
             <p className="text-gray-400 text-[11px] text-center leading-snug">

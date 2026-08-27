@@ -106,8 +106,8 @@ export const AssistantBot: React.FC<{ role: BotRole }> = ({ role }) => {
               aria-label="עוזר חכם"
               className="relative w-14 h-14 rounded-full flex items-center justify-center shadow-2xl active:scale-95"
               style={{
-                background: '#e8a020',
-                color: '#241803',
+                background: '#5354d3',
+                color: '#ffffff',
                 transition: 'transform .25s cubic-bezier(0.16,1,0.3,1), opacity .25s ease',
                 transform: hidden ? 'scale(0.55) translateY(14px)' : 'scale(1)',
                 opacity: hidden ? 0 : 1,
@@ -116,8 +116,8 @@ export const AssistantBot: React.FC<{ role: BotRole }> = ({ role }) => {
               <Bot size={26} />
               {/* ניצוץ קטן — מסמן שזה עוזר חכם */}
               <span className="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full flex items-center justify-center"
-                style={{ background: '#0d1420', border: '2px solid #f0c050' }}>
-                <Sparkles size={9} style={{ color: '#f0c050' }} />
+                style={{ background: '#131626', border: '2px solid #7b7cee' }}>
+                <Sparkles size={9} style={{ color: '#7b7cee' }} />
               </span>
             </button>
           </div>
@@ -129,7 +129,7 @@ export const AssistantBot: React.FC<{ role: BotRole }> = ({ role }) => {
         <div onClick={() => setOpen(false)}
           className="fixed inset-0 z-[80] flex items-center justify-center p-4"
           style={{
-            background: 'rgba(13,20,32,0.65)',
+            background: 'rgba(19,22,38,0.65)',
             paddingTop: 'max(env(safe-area-inset-top), 16px)',
             paddingBottom: 'max(env(safe-area-inset-bottom), 16px)',
           }}>
@@ -139,14 +139,14 @@ export const AssistantBot: React.FC<{ role: BotRole }> = ({ role }) => {
 
             {/* כותרת */}
             <div className="flex items-center justify-between px-4 py-3 flex-shrink-0 text-white"
-              style={{ background: '#14233d' }}>
+              style={{ background: '#1b1e38' }}>
               <div className="flex items-center gap-2.5">
                 <div className="relative w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ background: '#e8a020' }}>
-                  <Bot size={19} style={{ color: '#241803' }} />
+                  style={{ background: '#5354d3' }}>
+                  <Bot size={19} style={{ color: '#ffffff' }} />
                   <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center"
-                    style={{ background: '#0d1420' }}>
-                    <Sparkles size={8} style={{ color: '#f0c050' }} />
+                    style={{ background: '#131626' }}>
+                    <Sparkles size={8} style={{ color: '#7b7cee' }} />
                   </span>
                 </div>
                 <div>
@@ -174,7 +174,7 @@ export const AssistantBot: React.FC<{ role: BotRole }> = ({ role }) => {
                 <div key={i} className={`flex ${m.role === 'user' ? 'justify-start' : 'justify-end'}`}>
                   <div className={`max-w-[88%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
                     m.role === 'user'
-                      ? 'bg-amber-500 text-white rounded-bl-md'
+                      ? 'bg-[#5354d3] text-white rounded-bl-md'
                       : 'bg-white text-gray-800 border border-gray-100 rounded-br-md'
                   }`}>
                     <RichText text={m.content} />
@@ -199,7 +199,7 @@ export const AssistantBot: React.FC<{ role: BotRole }> = ({ role }) => {
                   {suggestions.map(s => (
                     <button key={s} onClick={() => ask(s)}
                       className="text-xs font-semibold rounded-full px-3 py-1.5 border transition-transform active:scale-95"
-                      style={{ background: 'rgba(232,160,32,0.08)', borderColor: 'rgba(232,160,32,0.3)', color: '#b8791a' }}>
+                      style={{ background: 'rgba(83,84,211,0.08)', borderColor: 'rgba(83,84,211,0.3)', color: '#4a4bc4' }}>
                       {s}
                     </button>
                   ))}
@@ -218,11 +218,11 @@ export const AssistantBot: React.FC<{ role: BotRole }> = ({ role }) => {
                   onKeyDown={e => { if (e.key === 'Enter') ask(input); }}
                   enterKeyHint="send"
                   placeholder="שאל אותי כל דבר..."
-                  className="flex-1 border border-gray-200 bg-gray-50 rounded-2xl px-4 py-2.5 text-sm text-right outline-none focus:border-amber-400 focus:bg-white"
+                  className="flex-1 border border-gray-200 bg-gray-50 rounded-2xl px-4 py-2.5 text-sm text-right outline-none focus:border-[#5354d3] focus:bg-white"
                 />
                 <button onClick={() => ask(input)} disabled={thinking || !input.trim()}
                   className="w-10 h-10 rounded-2xl flex items-center justify-center disabled:opacity-40 flex-shrink-0 active:scale-95 transition-transform"
-                  style={{ background: '#e8a020', color: '#241803' }}>
+                  style={{ background: '#5354d3', color: '#ffffff' }}>
                   <Send size={17} style={{ transform: 'scaleX(-1)' }} />
                 </button>
               </div>

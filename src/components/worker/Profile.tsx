@@ -154,7 +154,7 @@ export const WorkerProfile: React.FC = () => {
           <div key={f.label}>
             <label className="text-sm font-semibold text-gray-600 mb-1.5 block">{f.label}</label>
             <input type={f.type} value={f.val} onChange={e => f.set(e.target.value)} placeholder={f.ph}
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-amber-400 outline-none" />
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-[#5354d3] outline-none" />
           </div>
         ))}
         <div>
@@ -165,7 +165,7 @@ export const WorkerProfile: React.FC = () => {
               return (
                 <button key={r.key} type="button"
                   onClick={() => setEditRoles(prev => prev.includes(r.key) ? prev.filter(x => x !== r.key) : [...prev, r.key])}
-                  className={`px-3 py-2 rounded-xl border-2 text-sm font-semibold transition-all ${sel ? 'border-amber-400 bg-amber-50 text-amber-600' : 'border-gray-200 bg-white text-gray-600'}`}>
+                  className={`px-3 py-2 rounded-xl border-2 text-sm font-semibold transition-all ${sel ? 'border-[#5354d3] bg-[#ecebfd] text-[#5354d3]' : 'border-gray-200 bg-white text-gray-600'}`}>
                   {sel ? '✓ ' : ''}{r.label}
                 </button>
               );
@@ -176,11 +176,11 @@ export const WorkerProfile: React.FC = () => {
           <label className="text-sm font-semibold text-gray-600 mb-1.5 block">קצת עליי</label>
           <textarea value={editBio} onChange={e => setEditBio(e.target.value)} rows={3}
             placeholder="ניסיון, התמחויות, מה אני מביא למטבח..."
-            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-amber-400 outline-none resize-none" />
+            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-[#5354d3] outline-none resize-none" />
         </div>
       </div>
       <button onClick={handleSaveProfile} disabled={savingProfile || !editName}
-        className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold disabled:opacity-50">
+        className="w-full bg-[#5354d3] text-white rounded-2xl py-4 font-bold disabled:opacity-50">
         {savingProfile
           ? <div className="flex items-center justify-center gap-2"><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />שומר...</div>
           : 'שמור שינויים'}
@@ -191,9 +191,9 @@ export const WorkerProfile: React.FC = () => {
   return (
     <div className="screen-enter space-y-4">
       {/* Profile header */}
-      <div className="rounded-2xl p-5 text-white" style={{ background: '#14233d' }}>
+      <div className="rounded-2xl p-5 text-white" style={{ background: '#1b1e38' }}>
         <div className="flex items-center gap-4 mb-4">
-          <div className="w-20 h-20 bg-amber-500 rounded-2xl flex items-center justify-center font-bold text-2xl">
+          <div className="w-20 h-20 bg-[#5354d3] rounded-2xl flex items-center justify-center font-bold text-2xl">
             {initials}
           </div>
           <div className="flex-1">
@@ -249,7 +249,7 @@ export const WorkerProfile: React.FC = () => {
         {[
           { label: 'משמרות', value: completedShifts, icon: <CheckCircle2 size={18} className="text-green-500" /> },
           { label: 'אמינות', value: `${reliabilityScore}%`, icon: <Shield size={18} className="text-blue-500" /> },
-          { label: 'ניסיון', value: yearsExp > 0 ? `${yearsExp} שנ׳` : 'ללא', icon: <Star size={18} className="text-amber-500" /> },
+          { label: 'ניסיון', value: yearsExp > 0 ? `${yearsExp} שנ׳` : 'ללא', icon: <Star size={18} className="text-[#5354d3]" /> },
           { label: 'ביטולים', value: noShows, icon: <XCircle size={18} className="text-gray-400" /> },
         ].map(s => (
           <div key={s.label} className="bg-white rounded-xl p-3 card-shadow text-center">
@@ -265,16 +265,16 @@ export const WorkerProfile: React.FC = () => {
         <div className="flex items-center justify-between mb-1">
           <h3 className="font-bold text-gray-800 text-sm flex items-center gap-1.5"><Phone size={14} className="text-gray-400" /> מספר טלפון</h3>
           {!editingPhone && (
-            <button onClick={() => setEditingPhone(true)} className="text-amber-500 text-sm font-semibold">ערוך</button>
+            <button onClick={() => setEditingPhone(true)} className="text-[#5354d3] text-sm font-semibold">ערוך</button>
           )}
         </div>
         {editingPhone ? (
           <div className="flex gap-2 mt-2">
             <input type="tel" inputMode="tel" value={phone} onChange={e => setPhone(e.target.value)}
               placeholder="05X-XXXXXXX"
-              className="flex-1 border border-gray-200 rounded-xl px-3 py-2.5 text-right text-sm focus:border-amber-400 outline-none" />
+              className="flex-1 border border-gray-200 rounded-xl px-3 py-2.5 text-right text-sm focus:border-[#5354d3] outline-none" />
             <button onClick={handleSavePhone} disabled={savingPhone}
-              className="bg-amber-500 text-white rounded-xl px-3 py-2.5">
+              className="bg-[#5354d3] text-white rounded-xl px-3 py-2.5">
               {savingPhone ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Check size={16} />}
             </button>
             <button onClick={() => setEditingPhone(false)} className="bg-gray-100 text-gray-500 rounded-xl px-3 py-2.5">
@@ -382,8 +382,8 @@ export const WorkerProfile: React.FC = () => {
       {/* חבר מביא חבר */}
       <button onClick={() => navToWorker('referral')}
         className="w-full bg-white rounded-2xl p-4 card-shadow flex items-center gap-3 text-right active:bg-gray-50 transition-colors">
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: '#e8a020' }}>
-          <Gift size={18} style={{ color: '#241803' }} />
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: '#5354d3' }}>
+          <Gift size={18} style={{ color: '#ffffff' }} />
         </div>
         <div className="flex-1">
           <div className="font-bold text-gray-800 text-sm">חבר מביא חבר</div>
@@ -400,7 +400,7 @@ export const WorkerProfile: React.FC = () => {
         <div className="bg-white rounded-2xl p-4 card-shadow">
           <div className="flex items-center justify-between mb-2">
             <h3 className="font-bold text-gray-800">אודותי</h3>
-            <button onClick={() => setEditingProfile(true)} className="text-amber-500 text-sm font-semibold">ערוך</button>
+            <button onClick={() => setEditingProfile(true)} className="text-[#5354d3] text-sm font-semibold">ערוך</button>
           </div>
           <p className="text-gray-600 text-sm leading-relaxed">{bio}</p>
         </div>

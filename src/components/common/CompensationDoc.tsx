@@ -43,9 +43,9 @@ export const CompensationDoc: React.FC<Props> = ({ job, viewer, workerName, rest
       <style>
         *{box-sizing:border-box}
         body{font-family:Arial,sans-serif;max-width:460px;margin:30px auto;padding:24px;color:#111;
-             border:2px solid #e8a020;border-radius:12px}
+             border:2px solid #5354d3;border-radius:12px}
         .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}
-        .logo{font-size:20px;font-weight:900}.gold{color:#c8840a}
+        .logo{font-size:20px;font-weight:900}.gold{color:#4244b8}
         .logo-sub{font-size:10px;color:#9ca3af}
         .doc-title{font-size:15px;font-weight:700;text-align:left}
         .doc-num{font-size:11px;color:#9ca3af;text-align:left}
@@ -54,8 +54,8 @@ export const CompensationDoc: React.FC<Props> = ({ job, viewer, workerName, rest
         .party{flex:1;text-align:center}
         .party .label{font-size:10px;color:#9ca3af;margin-bottom:3px}
         .party .name{font-size:13px;font-weight:700}
-        .arrow{font-size:18px;color:#e8a020}
-        .amount-box{background:#14233d;color:white;
+        .arrow{font-size:18px;color:#5354d3}
+        .amount-box{background:#1b1e38;color:white;
                     padding:16px;border-radius:10px;margin:14px 0;text-align:center}
         .amount-label{font-size:12px;color:#9ca3af;margin-bottom:4px}
         .amount{font-size:30px;font-weight:900;color:${amountColor}}
@@ -66,7 +66,7 @@ export const CompensationDoc: React.FC<Props> = ({ job, viewer, workerName, rest
                border-radius:8px;padding:10px;margin:10px 0;line-height:1.6}
         .footer{margin-top:16px;font-size:10px;color:#9ca3af;text-align:center;
                 border-top:1px solid #e5e7eb;padding-top:10px;line-height:1.7}
-        @media print{body{margin:0;border:2px solid #e8a020}}
+        @media print{body{margin:0;border:2px solid #5354d3}}
       </style></head><body>
       <div class="top">
         <div>
@@ -124,7 +124,7 @@ export const CompensationDoc: React.FC<Props> = ({ job, viewer, workerName, rest
           style={{ maxHeight: '100%' }}>
 
           {/* Header */}
-          <div className="flex-shrink-0 p-4 text-white" style={{ background:'#14233d' }}>
+          <div className="flex-shrink-0 p-4 text-white" style={{ background:'#1b1e38' }}>
             <div className="flex items-center justify-between mb-2">
               <div>
                 <div className="font-bold text-sm">{title}</div>
@@ -148,7 +148,7 @@ export const CompensationDoc: React.FC<Props> = ({ job, viewer, workerName, rest
                 <div className="text-[10px] text-gray-400">משלם</div>
                 <div className="text-sm font-bold text-gray-900">{payerName}</div>
               </div>
-              <ArrowLeftRight size={16} style={{ color:'#e8a020' }} />
+              <ArrowLeftRight size={16} style={{ color:'#5354d3' }} />
               <div className="flex-1 text-center">
                 <div className="text-[10px] text-gray-400">מקבל</div>
                 <div className="text-sm font-bold text-gray-900">{receiverName}</div>
@@ -182,7 +182,7 @@ export const CompensationDoc: React.FC<Props> = ({ job, viewer, workerName, rest
           <div className="flex-shrink-0 px-4 py-3 border-t border-gray-100">
             <button onClick={handlePrint}
               className="w-full rounded-2xl py-3 font-bold flex items-center justify-center gap-2 text-sm"
-              style={{ background:'#e8a020', color:'#241803' }}>
+              style={{ background:'#5354d3', color:'#ffffff' }}>
               <Printer size={16} /> הדפס אסמכתא
             </button>
           </div>

@@ -51,8 +51,8 @@ export const AdminJobs: React.FC = () => {
           <button key={id} onClick={() => setFilter(id)}
             className="flex-1 py-2 rounded-xl text-xs font-bold transition-all"
             style={filter === id
-              ? { background: '#e8a020', color: '#0a0f1a' }
-              : { background: '#111a2b', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.06)' }}>
+              ? { background: '#5354d3', color: '#ffffff' }
+              : { background: '#1b1e38', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.06)' }}>
             {label}
           </button>
         ))}
@@ -63,7 +63,7 @@ export const AdminJobs: React.FC = () => {
           <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.4)' }}>{filtered.length} משמרות</span>
           <button onClick={exportJobs} disabled={filtered.length === 0} title="ייצוא ל-CSV"
             className="px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-xs font-bold disabled:opacity-40"
-            style={{ background: '#111a2b', border: '1px solid rgba(255,255,255,0.08)', color: '#34d399' }}>
+            style={{ background: '#1b1e38', border: '1px solid rgba(255,255,255,0.08)', color: '#34d399' }}>
             <Download size={14} /> CSV
           </button>
         </div>
@@ -71,7 +71,7 @@ export const AdminJobs: React.FC = () => {
 
       {loading ? (
         <div className="flex items-center justify-center py-16">
-          <div className="w-7 h-7 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+          <div className="w-7 h-7 border-2 border-[#5354d3] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : filtered.length === 0 ? (
         <p className="text-center text-sm py-12" style={{ color: 'rgba(255,255,255,0.3)' }}>אין משמרות</p>
@@ -80,7 +80,7 @@ export const AdminJobs: React.FC = () => {
           {filtered.map(j => {
             const isStage = j.JobType === 'stage' || j.JobType === 'stage_shift';
             return (
-              <div key={j.Id} className="rounded-2xl p-3.5" style={{ background: '#111a2b', border: '1px solid rgba(255,255,255,0.06)' }}>
+              <div key={j.Id} className="rounded-2xl p-3.5" style={{ background: '#1b1e38', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1.5 flex-wrap">

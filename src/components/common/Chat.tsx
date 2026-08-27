@@ -72,14 +72,14 @@ export const Chat: React.FC<Props> = ({ jobId, myRole, myName }) => {
           <div key={msg.Id || i} className={`flex ${isMe(msg) ? 'justify-start' : 'justify-end'}`}>
             <div className={`max-w-[78%] rounded-2xl px-3 py-2 text-sm ${
               isMe(msg)
-                ? 'bg-amber-500 text-white rounded-br-sm'
+                ? 'bg-[#5354d3] text-white rounded-br-sm'
                 : 'bg-gray-100 text-gray-800 rounded-bl-sm'
             }`}>
               {!isMe(msg) && (
                 <div className="text-xs font-bold mb-0.5 opacity-60">{msg.SenderName}</div>
               )}
               <div>{msg.Text}</div>
-              <div className={`text-xs mt-0.5 ${isMe(msg) ? 'text-orange-200' : 'text-gray-400'}`}>
+              <div className={`text-xs mt-0.5 ${isMe(msg) ? 'text-[#c7c7f5]' : 'text-gray-400'}`}>
                 {msg.DisplayTime || msg.CreatedAt?.slice(11, 16) || ''}
               </div>
             </div>
@@ -93,7 +93,7 @@ export const Chat: React.FC<Props> = ({ jobId, myRole, myName }) => {
         <button
           onClick={handleSend}
           disabled={!input.trim() || sending}
-          className="w-9 h-9 bg-amber-500 rounded-xl flex items-center justify-center flex-shrink-0 disabled:opacity-40 active:scale-95 transition-transform"
+          className="w-9 h-9 bg-[#5354d3] rounded-xl flex items-center justify-center flex-shrink-0 disabled:opacity-40 active:scale-95 transition-transform"
         >
           {sending
             ? <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
@@ -105,7 +105,7 @@ export const Chat: React.FC<Props> = ({ jobId, myRole, myName }) => {
           onChange={e => setInput(e.target.value)}
           onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
           placeholder="כתוב הודעה..."
-          className="flex-1 bg-gray-50 rounded-xl px-3 py-2.5 text-sm text-right outline-none border border-gray-100 focus:border-orange-300"
+          className="flex-1 bg-gray-50 rounded-xl px-3 py-2.5 text-sm text-right outline-none border border-gray-100 focus:border-[#5354d3]"
           style={{ fontSize: '16px' }}
         />
       </div>

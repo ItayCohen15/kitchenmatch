@@ -89,12 +89,12 @@ export const WorkerHome: React.FC = () => {
     <div className="screen-enter space-y-4 pb-2">
       {/* Worker header */}
       <div className="rounded-3xl p-5 text-white relative overflow-hidden"
-        style={{ background: '#12203a',
+        style={{ background: '#1b1e38',
                  border: '1px solid rgba(255,255,255,0.06)',
                  boxShadow: '0 4px 16px rgba(20,28,44,0.16)' }}>
         <div className="flex items-center gap-3 mb-4">
           <div className="w-14 h-14 rounded-xl flex items-center justify-center font-bold text-xl"
-            style={{ background:'#e8a020', color:'#241803' }}>
+            style={{ background:'#5354d3', color:'#ffffff' }}>
             {initials}
           </div>
           <div className="flex-1">
@@ -207,7 +207,7 @@ export const WorkerHome: React.FC = () => {
                 key={f.id}
                 onClick={() => setFilterRole(f.id)}
                 className={`flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-semibold transition-colors ${
-                  filterRole === f.id ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-600'
+                  filterRole === f.id ? 'bg-[#5354d3] text-white' : 'bg-gray-100 text-gray-600'
                 }`}
               >
                 {f.label}
@@ -232,7 +232,7 @@ export const WorkerHome: React.FC = () => {
             <p className="text-gray-600 font-medium">לא הצלחנו לטעון משמרות</p>
             <p className="text-gray-400 text-sm mt-1 mb-3">כדאי לבדוק את החיבור לאינטרנט</p>
             <button onClick={() => { setLoading(true); loadJobs(); }}
-              className="bg-amber-500 text-white rounded-xl px-5 py-2 font-bold text-sm active:scale-95 transition-transform">
+              className="bg-[#5354d3] text-white rounded-xl px-5 py-2 font-bold text-sm active:scale-95 transition-transform">
               נסה שוב
             </button>
           </div>
@@ -289,7 +289,7 @@ export const WorkerHome: React.FC = () => {
                       </div>
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <div className="font-bold text-xl" style={{ color: '#b9791a' }}>₪{job.HourlyRate}</div>
+                      <div className="font-bold text-xl" style={{ color: '#4a4bc4' }}>₪{job.HourlyRate}</div>
                       <div className="text-xs text-gray-400">/שעה</div>
                     </div>
                   </div>
@@ -307,7 +307,7 @@ export const WorkerHome: React.FC = () => {
                     </div>
                     <button onClick={() => handleJobPress(String(job.Id), job)}
                       className="rounded-lg px-4 py-2 font-bold text-sm flex items-center gap-1"
-                      style={{ background: job.IsEmergency ? '#e5484d' : '#e8a020', color: job.IsEmergency ? '#fff' : '#241803' }}>
+                      style={{ background: job.IsEmergency ? '#e5484d' : '#5354d3', color: job.IsEmergency ? '#fff' : '#ffffff' }}>
                       צפה בפרטים <ChevronLeft size={14} />
                     </button>
                   </div>

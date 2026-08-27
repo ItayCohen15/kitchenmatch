@@ -51,7 +51,7 @@ export const WorkerHistory: React.FC = () => {
   return (
     <div className="screen-enter space-y-4">
       {/* Summary */}
-      <div className="rounded-2xl p-4 text-white" style={{ background: '#14233d' }}>
+      <div className="rounded-2xl p-4 text-white" style={{ background: '#1b1e38' }}>
         <div className="grid grid-cols-3 gap-3 text-center">
           <div>
             <div className="text-xl font-bold text-green-400">₪{totalEarned.toFixed(0)}</div>
@@ -62,7 +62,7 @@ export const WorkerHistory: React.FC = () => {
             <div className="text-gray-400 text-xs">משמרות הושלמו</div>
           </div>
           <div>
-            <div className="text-xl font-bold text-amber-400">
+            <div className="text-xl font-bold text-[#5354d3]">
               {shifts.filter(s => ['confirmed','active'].includes(s.Status)).length}
             </div>
             <div className="text-gray-400 text-xs">משמרות קרובות</div>
@@ -81,7 +81,7 @@ export const WorkerHistory: React.FC = () => {
             key={f.id}
             onClick={() => setFilter(f.id as any)}
             className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-colors ${
-              filter === f.id ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-600'
+              filter === f.id ? 'bg-[#5354d3] text-white' : 'bg-gray-100 text-gray-600'
             }`}
           >
             {f.label}
@@ -121,7 +121,7 @@ export const WorkerHistory: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-                <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold" style={{ background: '#f4f2ec', color: '#5a5348' }}>
+                <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold" style={{ background: '#eef0f5', color: '#5b6070' }}>
                   <span className="w-2 h-2 rounded-full inline-block" style={{ background: roleDot(shift.Role) }} />
                   {ROLE_LABELS[shift.Role] || shift.Role}
                 </span>

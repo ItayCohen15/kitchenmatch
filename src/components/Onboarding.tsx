@@ -142,7 +142,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
   };
 
   return (
-    <div className="h-full overflow-y-auto" style={{ background: '#14233d' }}>
+    <div className="h-full overflow-y-auto" style={{ background: '#1b1e38' }}>
       {showDisclosure && (
         /* האישור המלא (גרסה + נוסח + סימון התיבה) נשמר בשרת ב-ConsentAcks
            ברגע הלחיצה; nonSelfAckAt נשאר רק לתאימות עם השדה הישן ב-Workers. */
@@ -170,7 +170,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
         <div className="flex gap-2 mb-6">
           {Array.from({ length: totalSteps }).map((_, i) => (
             <div key={i} className="flex-1 h-1.5 rounded-full transition-all"
-              style={{ background: i + 1 <= step ? '#e8a020' : 'rgba(255,255,255,0.15)' }} />
+              style={{ background: i + 1 <= step ? '#5354d3' : 'rgba(255,255,255,0.15)' }} />
           ))}
         </div>
 
@@ -191,7 +191,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                   value={name}
                   onChange={e => setName(e.target.value)}
                   placeholder={role === 'worker' ? 'ישראל ישראלי' : 'מסעדת הגן'}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-amber-400 outline-none text-gray-900 font-medium"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-[#5354d3] outline-none text-gray-900 font-medium"
                 />
               </div>
               <div>
@@ -207,7 +207,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                   onChange={e => { setPhone(e.target.value); if (phoneErr) setPhoneErr(''); }}
                   placeholder="05X-XXXXXXX"
                   className={`w-full border rounded-xl px-4 py-3 text-right outline-none ${
-                    phoneErr ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-amber-400'
+                    phoneErr ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-[#5354d3]'
                   }`}
                 />
                 {phoneErr && (
@@ -235,7 +235,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                       value={streetNumber}
                       onChange={e => setStreetNumber(e.target.value)}
                       placeholder="מס׳"
-                      className="w-20 border border-gray-200 rounded-xl px-3 py-3 text-right focus:border-amber-400 outline-none"
+                      className="w-20 border border-gray-200 rounded-xl px-3 py-3 text-right focus:border-[#5354d3] outline-none"
                     />
                   </div>
                   {street && streetNumber && (
@@ -249,7 +249,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                 disabled={!name || !city}
                 onClick={() => role === 'restaurant' && totalSteps === 2 ? setStep(2) : setStep(2)}
                 className="w-full rounded-2xl py-4 font-bold text-base disabled:opacity-40 mt-2"
-                style={{ background: '#e8a020', color: '#241803' }}
+                style={{ background: '#5354d3', color: '#ffffff' }}
               >
                 המשך
               </button>
@@ -270,7 +270,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                       <button
                         type="button"
                         onClick={() => chooseExperience(true)}
-                        className={`p-3 rounded-xl border-2 text-center transition-all ${hasExperience === true ? 'border-amber-400 bg-amber-50' : 'border-gray-100'}`}
+                        className={`p-3 rounded-xl border-2 text-center transition-all ${hasExperience === true ? 'border-[#5354d3] bg-[#ecebfd]' : 'border-gray-100'}`}
                       >
                         <div className="text-2xl mb-0.5">👨‍🍳</div>
                         <div className="font-bold text-gray-900 text-sm">יש לי ניסיון</div>
@@ -305,7 +305,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                             key={r.key}
                             onClick={() => toggleRole(r.key)}
                             className={`w-full p-3 rounded-xl border-2 flex items-center gap-3 text-right transition-all ${
-                              sel ? 'border-amber-400 bg-amber-50' : 'border-gray-100'
+                              sel ? 'border-[#5354d3] bg-[#ecebfd]' : 'border-gray-100'
                             }`}
                           >
                             <span className="text-2xl">{r.emoji}</span>
@@ -313,7 +313,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                               <div className="font-bold text-gray-900">{r.label}</div>
                               <div className="text-gray-500 text-xs">{r.desc}</div>
                             </div>
-                            {sel && <span className="text-amber-500 font-bold text-lg">✓</span>}
+                            {sel && <span className="text-[#5354d3] font-bold text-lg">✓</span>}
                           </button>
                         );
                       })}
@@ -376,7 +376,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                             className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-colors ${
                               sel ? '' : 'bg-gray-100 text-gray-700'
                             }`}
-                            style={sel ? { background: '#e8a020', color: '#241803' } : {}}
+                            style={sel ? { background: '#5354d3', color: '#ffffff' } : {}}
                           >
                             {v}
                           </button>
@@ -391,13 +391,13 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                     <button
                       type="button"
                       onClick={() => setIsTrainee(v => !v)}
-                      className={`w-full p-3 rounded-xl border-2 flex items-center justify-between text-right transition-all ${isTrainee ? 'border-amber-400 bg-amber-50' : 'border-gray-100'}`}
+                      className={`w-full p-3 rounded-xl border-2 flex items-center justify-between text-right transition-all ${isTrainee ? 'border-[#5354d3] bg-[#ecebfd]' : 'border-gray-100'}`}
                     >
                       <div>
-                        <div className="font-bold text-gray-900 text-sm flex items-center gap-1.5"><GraduationCap size={15} className="text-amber-500" /> אני סטודנט/מתלמד</div>
+                        <div className="font-bold text-gray-900 text-sm flex items-center gap-1.5"><GraduationCap size={15} className="text-[#5354d3]" /> אני סטודנט/מתלמד</div>
                         <div className="text-gray-500 text-xs">לומד בקורס בישול/ברמנים — אחפש גם סטאז'</div>
                       </div>
-                      <div className={`w-11 h-6 rounded-full transition-colors relative flex-shrink-0 ${isTrainee ? 'bg-amber-500' : 'bg-gray-300'}`}>
+                      <div className={`w-11 h-6 rounded-full transition-colors relative flex-shrink-0 ${isTrainee ? 'bg-[#5354d3]' : 'bg-gray-300'}`}>
                         <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-all ${isTrainee ? 'right-0.5' : 'left-0.5'}`} />
                       </div>
                     </button>
@@ -420,7 +420,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                           value={schoolName}
                           onChange={e => setSchoolName(e.target.value)}
                           placeholder="שם בית הספר / המכללה (לתוכנית הכניסה למקצוע)"
-                          className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-right focus:border-amber-400 outline-none text-sm mt-2"
+                          className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-right focus:border-[#5354d3] outline-none text-sm mt-2"
                         />
                       </>
                     )}
@@ -433,12 +433,12 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                     <label className="text-sm font-semibold text-gray-600 mb-2 block">מעמד תעסוקתי (לתשלום)</label>
                     <div className="grid grid-cols-2 gap-2">
                       <button type="button" onClick={() => { setSelfEmployedChoice(true); setTaxStatus(null); }}
-                        className={`p-3 rounded-xl border-2 text-right transition-all ${selfEmployedChoice === true ? 'border-amber-400 bg-amber-50' : 'border-gray-100'}`}>
+                        className={`p-3 rounded-xl border-2 text-right transition-all ${selfEmployedChoice === true ? 'border-[#5354d3] bg-[#ecebfd]' : 'border-gray-100'}`}>
                         <div className="font-bold text-gray-900 text-sm flex items-center gap-1.5"><Check size={15} className="text-green-500" /> אני עצמאי</div>
                         <div className="text-gray-500 text-xs mt-0.5">תשלום ישיר, אני מוציא חשבונית</div>
                       </button>
                       <button type="button" onClick={() => setShowDisclosure(true)}
-                        className={`p-3 rounded-xl border-2 text-right transition-all ${selfEmployedChoice === false ? 'border-amber-400 bg-amber-50' : 'border-gray-100'}`}>
+                        className={`p-3 rounded-xl border-2 text-right transition-all ${selfEmployedChoice === false ? 'border-[#5354d3] bg-[#ecebfd]' : 'border-gray-100'}`}>
                         <div className="font-bold text-gray-900 text-sm flex items-center gap-1.5"><FileText size={15} className="text-gray-500" /> אני לא עצמאי</div>
                         <div className="text-gray-500 text-xs mt-0.5">תשלום דרך "חשבונית לשכיר"</div>
                       </button>
@@ -450,12 +450,12 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                         <label className="text-sm font-semibold text-gray-600 mb-2 block">איזה סוג עוסק?</label>
                         <div className="grid grid-cols-2 gap-2">
                           <button type="button" onClick={() => setTaxStatus('exempt')}
-                            className={`p-3 rounded-xl border-2 text-right transition-all ${taxStatus === 'exempt' ? 'border-amber-400 bg-amber-50' : 'border-gray-100'}`}>
+                            className={`p-3 rounded-xl border-2 text-right transition-all ${taxStatus === 'exempt' ? 'border-[#5354d3] bg-[#ecebfd]' : 'border-gray-100'}`}>
                             <div className="font-bold text-gray-900 text-sm">עוסק פטור</div>
                             <div className="text-gray-500 text-xs mt-0.5">לא מחייב מע"מ</div>
                           </button>
                           <button type="button" onClick={() => setTaxStatus('licensed')}
-                            className={`p-3 rounded-xl border-2 text-right transition-all ${taxStatus === 'licensed' ? 'border-amber-400 bg-amber-50' : 'border-gray-100'}`}>
+                            className={`p-3 rounded-xl border-2 text-right transition-all ${taxStatus === 'licensed' ? 'border-[#5354d3] bg-[#ecebfd]' : 'border-gray-100'}`}>
                             <div className="font-bold text-gray-900 text-sm">עוסק מורשה</div>
                             <div className="text-gray-500 text-xs mt-0.5">מחייב מע"מ</div>
                           </button>
@@ -506,13 +506,13 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                           const sel = selectedCuisines.includes(item.id);
                           return (
                             <button key={item.id} onClick={() => toggleCuisine(item.id)}
-                              className={`w-full p-3 rounded-xl border-2 flex items-center gap-3 text-right transition-all ${sel ? 'bg-amber-50' : 'border-gray-100 bg-white'}`}>
+                              className={`w-full p-3 rounded-xl border-2 flex items-center gap-3 text-right transition-all ${sel ? 'bg-[#ecebfd]' : 'border-gray-100 bg-white'}`}>
                               <span className="text-2xl flex-shrink-0">{item.icon}</span>
                               <div className="flex-1">
-                                <div className={`font-bold text-sm ${sel ? 'text-orange-700' : 'text-gray-900'}`}>{item.id}</div>
+                                <div className={`font-bold text-sm ${sel ? 'text-[#5354d3]' : 'text-gray-900'}`}>{item.id}</div>
                                 <div className="text-gray-400 text-xs">{item.desc}</div>
                               </div>
-                              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${sel ? 'bg-amber-500' : 'border-gray-300'}`}>
+                              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${sel ? 'bg-[#5354d3]' : 'border-gray-300'}`}>
                                 {sel && <span className="text-white text-xs">✓</span>}
                               </div>
                             </button>
@@ -523,8 +523,8 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                   ))}
 
                   {selectedCuisines.length > 0 && (
-                    <div className="bg-amber-50 rounded-xl p-3 text-center">
-                      <span className="text-amber-600 font-semibold text-sm">✓ בחרת {selectedCuisines.length} סגנונות</span>
+                    <div className="bg-[#ecebfd] rounded-xl p-3 text-center">
+                      <span className="text-[#5354d3] font-semibold text-sm">✓ בחרת {selectedCuisines.length} סגנונות</span>
                     </div>
                   )}
                 </>
@@ -538,7 +538,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                   disabled={role === 'worker' ? (hasExperience === null || !workerRoles.length || taxStatus === null) : selectedCuisines.length === 0}
                   onClick={() => role === 'worker' ? setStep(3) : handleComplete()}
                   className="flex-1 rounded-2xl py-4 font-bold disabled:opacity-40"
-                  style={{ background: '#e8a020', color: '#241803' }}
+                  style={{ background: '#5354d3', color: '#ffffff' }}
                 >
                   {role === 'restaurant' ? (saving ? 'שומר...' : 'סיים הגדרה') : 'המשך'}
                 </button>
@@ -560,8 +560,8 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                       const selected = selectedSpecialties.includes(item);
                       return (
                         <button key={item} onClick={() => toggleSpecialty(item)}
-                          className={`p-2.5 rounded-xl border-2 text-right transition-all ${selected ? 'border-amber-400 bg-amber-50' : 'border-gray-100 bg-white'}`}>
-                          <span className={`text-xs font-semibold leading-tight ${selected ? 'text-amber-600' : 'text-gray-700'}`}>
+                          className={`p-2.5 rounded-xl border-2 text-right transition-all ${selected ? 'border-[#5354d3] bg-[#ecebfd]' : 'border-gray-100 bg-white'}`}>
+                          <span className={`text-xs font-semibold leading-tight ${selected ? 'text-[#5354d3]' : 'text-gray-700'}`}>
                             {selected ? '✓ ' : ''}{item}
                           </span>
                         </button>
@@ -572,8 +572,8 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
               ))}
 
               {selectedSpecialties.length > 0 && (
-                <div className="bg-amber-50 rounded-xl p-3 text-center">
-                  <span className="text-amber-600 font-semibold text-sm">
+                <div className="bg-[#ecebfd] rounded-xl p-3 text-center">
+                  <span className="text-[#5354d3] font-semibold text-sm">
                     ✓ בחרת {selectedSpecialties.length} כישורים
                   </span>
                 </div>
@@ -585,7 +585,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                 <button
                   onClick={() => setStep(4)}
                   className="flex-1 rounded-2xl py-4 font-bold"
-                  style={{ background: '#e8a020', color: '#241803' }}
+                  style={{ background: '#5354d3', color: '#ffffff' }}
                 >
                   המשך {selectedSpecialties.length === 0 ? '(דלג)' : ''}
                 </button>
@@ -603,7 +603,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                 onChange={e => setBio(e.target.value)}
                 placeholder="לדוגמה: שף עם 3 שנות ניסיון, מתמחה במטבח ים תיכוני. גמיש לשעות ומסור לעבודה."
                 rows={4}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-amber-400 outline-none text-gray-900 text-sm resize-none"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-[#5354d3] outline-none text-gray-900 text-sm resize-none"
               />
               <div className="flex gap-3">
                 <button onClick={() => setStep(3)} className="bg-gray-100 rounded-2xl py-4 px-5 text-gray-600">
@@ -613,7 +613,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                   onClick={handleComplete}
                   disabled={saving}
                   className="flex-1 rounded-2xl py-4 font-bold disabled:opacity-50"
-                  style={{ background: '#e8a020', color: '#241803' }}
+                  style={{ background: '#5354d3', color: '#ffffff' }}
                 >
                   {saving ? (
                     <div className="flex items-center justify-center gap-2">
