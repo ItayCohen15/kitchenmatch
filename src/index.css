@@ -36,9 +36,9 @@
   --shadow-card: 0 1px 2px rgba(20,28,44,0.05), 0 4px 12px rgba(20,28,44,0.06);
   --shadow-pop:  0 2px 8px rgba(20,28,44,0.08), 0 16px 34px rgba(20,28,44,0.14);
 
-  --r-card: 16px;
-  --r-ctrl: 12px;
-  --r-tile: 14px;
+  --r-card: 10px;
+  --r-ctrl: 6px;
+  --r-tile: 8px;
 }
 
 /* ===== BASE ===== */
@@ -198,21 +198,8 @@ nav.fixed { padding-bottom: env(safe-area-inset-bottom); }
   --txt:#edeefb; --muted:#8a90b0;
   --line:rgba(255,255,255,0.09); --fieldbg:rgba(255,255,255,0.045);
   position:relative; width:100%; min-height:100%; height:100%; overflow-y:auto;
-  background:linear-gradient(180deg,#161b33 0%,#0d1020 52%,#0a0c18 100%);
+  background:#14162b;   /* flat ink — no gradient, no glow (kept human/restrained) */
   color:var(--txt); direction:rtl;
-}
-.ami-glow {
-  position:absolute; top:-90px; left:50%; transform:translateX(-50%);
-  width:340px; height:340px; border-radius:50%; pointer-events:none; z-index:0;
-  background:radial-gradient(circle at 50% 40%, rgba(120,90,220,0.5), rgba(83,84,211,0.25) 38%, transparent 68%);
-  filter:blur(16px); animation:amiPulse 9s ease-in-out infinite;
-}
-@keyframes amiPulse { 0%,100%{opacity:.8;transform:translateX(-50%) scale(1)} 50%{opacity:1;transform:translateX(-50%) scale(1.08)} }
-.ami-weave {
-  position:absolute; inset:0; opacity:.5; pointer-events:none; z-index:0;
-  background-image:
-    linear-gradient(115deg,transparent 46%,rgba(255,255,255,0.028) 47%,rgba(255,255,255,0.028) 48%,transparent 49%),
-    linear-gradient(115deg,transparent 62%,rgba(255,255,255,0.02) 63%,rgba(255,255,255,0.02) 64%,transparent 65%);
 }
 .ami-wrap {
   position:relative; z-index:2; max-width:24rem; margin:0 auto;
@@ -220,36 +207,50 @@ nav.fixed { padding-bottom: env(safe-area-inset-bottom); }
   display:flex; flex-direction:column; min-height:100%; box-sizing:border-box;
 }
 .ami-brand { display:flex; align-items:center; gap:9px; }
-.ami-logo { width:34px; height:34px; border-radius:10px; box-shadow:0 6px 16px -4px rgba(83,84,211,0.7); }
+.ami-logo { width:34px; height:34px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.4); }
 .ami-word { font-size:20px; font-weight:800; letter-spacing:-.02em; color:#fff; }
 .ami-hero { margin-top:16px; }
 .ami-hero h1 { margin:0; font-size:24px; line-height:1.24; font-weight:800; letter-spacing:-.01em; color:#f6f7ff; }
 .ami-hero h1 b { color:var(--indigo-lite); }
 .ami-motto { margin:9px 0 0; font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); direction:ltr; text-align:right; }
-.ami-seg { margin-top:18px; display:flex; padding:3px; gap:3px; background:rgba(255,255,255,0.05); border:1px solid var(--line); border-radius:13px; }
-.ami-seg button { flex:1; border:0; background:transparent; color:var(--muted); font-family:inherit; font-size:13px; font-weight:700; padding:9px 0; border-radius:10px; transition:.18s; }
+.ami-seg { margin-top:18px; display:flex; padding:3px; gap:3px; background:rgba(255,255,255,0.05); border:1px solid var(--line); border-radius:7px; }
+.ami-seg button { flex:1; border:0; background:transparent; color:var(--muted); font-family:inherit; font-size:13px; font-weight:700; padding:9px 0; border-radius:4px; transition:.18s; }
 .ami-seg button.on { background:#fff; color:#171a2c; box-shadow:0 2px 6px -1px rgba(0,0,0,0.35); }
 .ami-form { margin-top:14px; display:flex; flex-direction:column; gap:10px; }
 .ami-rolelab { font-size:10.5px; font-weight:700; color:var(--muted); margin:0 2px -4px; }
 .ami-roles { display:flex; gap:8px; }
-.ami-role { flex:1; display:flex; align-items:center; justify-content:center; gap:6px; padding:11px 0; border-radius:12px; border:1px solid var(--line); background:var(--fieldbg); color:var(--muted); font-family:inherit; font-size:13px; font-weight:700; transition:.18s; }
+.ami-role { flex:1; display:flex; align-items:center; justify-content:center; gap:6px; padding:11px 0; border-radius:6px; border:1px solid var(--line); background:var(--fieldbg); color:var(--muted); font-family:inherit; font-size:13px; font-weight:700; transition:.18s; }
 .ami-role.on { border-color:var(--indigo); background:rgba(83,84,211,0.16); color:#fff; }
 .ami-field { position:relative; }
-.ami-field input { width:100%; box-sizing:border-box; height:54px; padding:22px 14px 6px; border-radius:12px; border:1px solid var(--line); background:var(--fieldbg); color:var(--txt); font-family:inherit; font-weight:500; outline:0; transition:border-color .18s, box-shadow .18s, background .18s; }
+.ami-field input { width:100%; box-sizing:border-box; height:54px; padding:22px 14px 6px; border-radius:6px; border:1px solid var(--line); background:var(--fieldbg); color:var(--txt); font-family:inherit; font-weight:500; outline:0; transition:border-color .18s, box-shadow .18s, background .18s; }
 .ami-field.pw input { padding-inline-end:46px; }
 .ami-field input::placeholder { color:transparent; }
 .ami-field label { position:absolute; inset-inline-start:14px; top:50%; transform:translateY(-50%); font-size:14px; font-weight:500; color:var(--muted); pointer-events:none; transition:.16s; }
 .ami-field input:focus { border-color:var(--indigo); background:rgba(83,84,211,0.08); box-shadow:0 0 0 3px rgba(83,84,211,0.22); }
 .ami-field input:focus + label,
 .ami-field input:not(:placeholder-shown) + label { top:13px; transform:none; font-size:10px; font-weight:700; letter-spacing:.03em; color:var(--indigo-lite); }
+/* Chrome autofill — keep the field dark instead of the light autofill wash */
+.ami-field input:-webkit-autofill,
+.ami-field input:-webkit-autofill:hover,
+.ami-field input:-webkit-autofill:focus {
+  -webkit-text-fill-color:var(--txt);
+  -webkit-box-shadow:0 0 0 1000px #191d34 inset;
+  caret-color:var(--txt);
+  transition:background-color 9999s ease-out 0s;
+}
+.ami-field input:-webkit-autofill:focus {
+  -webkit-box-shadow:0 0 0 1000px #191d34 inset, 0 0 0 3px rgba(83,84,211,0.22);
+}
 .ami-eye { position:absolute; inset-inline-end:8px; top:50%; transform:translateY(-50%); width:34px; height:34px; display:grid; place-items:center; border:0; background:transparent; color:var(--muted); border-radius:8px; }
 .ami-hints { display:flex; flex-wrap:wrap; gap:6px; margin:1px 2px 0; }
-.ami-hint { display:flex; align-items:center; gap:4px; font-size:10px; font-weight:600; color:var(--muted); padding:4px 8px; border-radius:20px; background:rgba(255,255,255,0.04); border:1px solid var(--line); transition:.18s; }
+.ami-hint { display:flex; align-items:center; gap:4px; font-size:10px; font-weight:600; color:var(--muted); padding:4px 8px; border-radius:5px; background:rgba(255,255,255,0.04); border:1px solid var(--line); transition:.18s; }
 .ami-hint.ok { color:#6ee7b7; border-color:rgba(110,231,183,0.35); background:rgba(110,231,183,0.08); }
-.ami-err { font-size:12.5px; color:#ffb4b4; background:rgba(229,72,77,0.12); border:1px solid rgba(229,72,77,0.3); border-radius:11px; padding:9px 12px; text-align:center; }
-.ami-submit { margin-top:4px; height:52px; border:0; border-radius:13px; background:var(--indigo); color:#fff; font-family:inherit; font-size:15px; font-weight:800; letter-spacing:.01em; display:flex; align-items:center; justify-content:center; gap:7px; transition:background .18s, transform .1s; }
-.ami-submit:active { transform:translateY(1px); }
-.ami-submit:disabled { opacity:.6; }
+.ami-err { font-size:12.5px; color:#ffb4b4; background:rgba(229,72,77,0.12); border:1px solid rgba(229,72,77,0.3); border-radius:6px; padding:9px 12px; text-align:center; }
+.ami-submit { margin-top:8px; height:54px; border:0; border-radius:6px; background:var(--indigo); color:#fff; font-family:inherit; font-size:15px; font-weight:800; letter-spacing:.01em; display:flex; align-items:center; justify-content:center; gap:10px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.1), 0 8px 18px -12px rgba(83,84,211,0.45); transition:background .18s, transform .1s, box-shadow .18s; }
+.ami-submit:hover { background:#5b5cda; }
+.ami-submit:active { transform:translateY(1px); box-shadow:inset 0 1px 0 rgba(255,255,255,0.08), 0 5px 12px -10px rgba(83,84,211,0.4); }
+.ami-submit:disabled { opacity:.6; box-shadow:none; }
+.ami-submit .go { width:26px; height:26px; border-radius:50%; background:rgba(255,255,255,0.18); display:grid; place-items:center; flex:none; }
 .ami-foot { margin-top:auto; padding-top:14px; display:flex; flex-direction:column; gap:9px; align-items:center; }
 .ami-trust { display:flex; align-items:center; gap:6px; font-size:10px; font-weight:600; color:var(--muted); }
 .ami-trust .sep { width:3px; height:3px; border-radius:50%; background:var(--muted); opacity:.6; }

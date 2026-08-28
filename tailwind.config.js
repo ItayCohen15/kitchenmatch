@@ -27,10 +27,15 @@ export default {
           violet: '#8d3cb6',
         },
       },
+      // חדות גלובלית — פחות עיגול-פינות "בועתי" (מיפוי מחדש של סולם ה-rounded)
       borderRadius: {
-        card: '16px',
-        ctrl: '12px',
-        tile: '14px',
+        lg: '5px',
+        xl: '6px',
+        '2xl': '9px',
+        '3xl': '12px',
+        card: '10px',
+        ctrl: '6px',
+        tile: '8px',
       },
       boxShadow: {
         // Neutral, believable elevation — no colored glow

@@ -258,7 +258,7 @@ export const WorkerHome: React.FC = () => {
             return (
               <div key={job.Id} className="overflow-hidden stagger-item"
                 style={{
-                  borderRadius: 16,
+                  borderRadius: 10,
                   background: '#ffffff',
                   border: job.IsEmergency ? '1px solid rgba(229,72,77,0.35)' : '1px solid #e7e9ef',
                   boxShadow: '0 1px 2px rgba(20,28,44,0.05), 0 4px 12px rgba(20,28,44,0.06)',

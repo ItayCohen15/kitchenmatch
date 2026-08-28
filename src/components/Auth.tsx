@@ -89,8 +89,6 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
 
   return (
     <div className="auth-mi">
-      <div className="ami-glow" />
-      <div className="ami-weave" />
       <div className="ami-wrap">
         {/* Brand */}
         <div className="ami-brand">
@@ -167,7 +165,7 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
                 טוען...
               </>
             ) : (
-              <>{mode === 'login' ? 'כניסה' : 'הרשמה'} <ArrowLeft size={17} /></>
+              <>{mode === 'login' ? 'כניסה' : 'הרשמה'} <span className="go"><ArrowLeft size={15} /></span></>
             )}
           </button>
         </div>
