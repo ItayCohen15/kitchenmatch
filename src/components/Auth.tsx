@@ -35,7 +35,6 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
   const passLenOk = password.length >= 8;
   const passUpperOk = /[A-Z]/.test(password);
   const passDigitOk = /[0-9]/.test(password);
-  const passMatch = password.length > 0 && password === confirmPass;
 
   const handleSubmit = async () => {
     if (!email || !password) return setError('נא למלא אימייל וסיסמא');
@@ -174,9 +173,6 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
               <span className={`ami-hint ${passLenOk ? 'ok' : ''}`}>{passLenOk ? '✓' : '•'} 8+ תווים</span>
               <span className={`ami-hint ${passUpperOk ? 'ok' : ''}`}>{passUpperOk ? '✓' : '•'} אות גדולה A-Z</span>
               <span className={`ami-hint ${passDigitOk ? 'ok' : ''}`}>{passDigitOk ? '✓' : '•'} ספרה</span>
-              {confirmPass.length > 0 && (
-                <span className={`ami-hint ${passMatch ? 'ok' : 'bad'}`}>{passMatch ? '✓' : '✕'} סיסמאות תואמות</span>
-              )}
             </div>
           )}
 
