@@ -105,8 +105,10 @@ async function resolveScreen(role: string, profile: any,
           localStorage.setItem('km_screen', 'active_shift');
           navToRestaurant('active_shift');
         } else if (active.Status === 'pending_completion') {
-          localStorage.setItem('km_screen', 'active_shift');
-          navToRestaurant('active_shift');
+          // אל תיזרוק ישר למסך התשלום בכניסה — נחת על הבית; הבאנר של המשמרת
+          // הממתינה יופיע שם, והמסעדה תבחר מתי לטעון ארנק ולסגור (במקום שגיאת תשלום מיד).
+          localStorage.setItem('km_screen', 'home');
+          navToRestaurant('home');
         }
         return;
       }

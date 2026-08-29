@@ -18,6 +18,21 @@ export const AdminJobs: React.FC = () => {
   const [list, setList] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<Filter>('all');
+  const [busyId, setBusyId] = useState<number | null>(null);
+
+  // ביטול משמרת תקועה (למשל משמרת שנתקעה ב"ממתין לתשלום" ולא נסגרת)
+  const cancelJob = async (id: number) => {
+    if (!window.confirm('לבטל את המשמרת התקועה? היא תסומן כבוטלה ותיעלם מהמסכים.')) return;
+    setBusyId(id);
+    try {
+      await api.adminCancelJob(id);
+      setList(prev => prev.map(j => (j.Id === id ? { ...j, Status: 'cancelled' } : j)));
+    } catch (e: any) {
+      window.alert(e?.message || 'הביטול נכשל');
+    } finally {
+      setBusyId(null);
+    }
+  };
 
   useEffect(() => {
     api.adminJobs()
@@ -114,6 +129,13 @@ export const AdminJobs: React.FC = () => {
                     <Mini label="תעריף/שעה" value={j.HourlyRate ? ils(j.HourlyRate) : '—'} />
                     <Mini label="עמלה" value={ils(j.Commission)} highlight />
                   </div>
+                )}
+                {!['completed', 'cancelled'].includes(j.Status) && (
+                  <button onClick={() => cancelJob(j.Id)} disabled={busyId === j.Id}
+                    className="mt-2.5 w-full py-2 rounded-lg text-xs font-bold disabled:opacity-50"
+                    style={{ background: 'rgba(229,72,77,0.12)', color: '#ff8a8a', border: '1px solid rgba(229,72,77,0.3)' }}>
+                    {busyId === j.Id ? 'מבטל...' : 'בטל משמרת תקועה'}
+                  </button>
                 )}
               </div>
             );

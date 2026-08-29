@@ -399,6 +399,10 @@ export const api = {
     fetch(`${BASE}/admin/ratings`, { headers: headers(), cache: 'no-store' }).then(handleResponse),
   adminJobs: () =>
     fetch(`${BASE}/admin/jobs`, { headers: headers(), cache: 'no-store' }).then(handleResponse),
+  adminCancelJob: (jobId: number) =>
+    fetch(`${BASE}/admin/jobs/${jobId}/cancel`, {
+      method: 'PUT', headers: headers(),
+    }).then(handleResponse),
   adminInsights: () =>
     fetch(`${BASE}/admin/insights`, { headers: headers(), cache: 'no-store' }).then(handleResponse),
   adminPresence: () =>
