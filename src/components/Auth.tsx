@@ -15,6 +15,8 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
   const [name, setName] = useState('');
   const [city, setCity] = useState('');
   const [showPass, setShowPass] = useState(false);
+  const [confirmPass, setConfirmPass] = useState('');
+  const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [pendingVerify, setPendingVerify] = useState<{userId:number,email:string,data:any}|null>(null);
@@ -33,11 +35,15 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
   const passLenOk = password.length >= 8;
   const passUpperOk = /[A-Z]/.test(password);
   const passDigitOk = /[0-9]/.test(password);
+  const passMatch = password.length > 0 && password === confirmPass;
 
   const handleSubmit = async () => {
     if (!email || !password) return setError('נא למלא אימייל וסיסמא');
     if (mode === 'register' && (!passLenOk || !passUpperOk || !passDigitOk)) {
       return setError('הסיסמה חייבת להכיל לפחות 8 תווים, אות גדולה באנגלית (A-Z) וספרה');
+    }
+    if (mode === 'register' && password !== confirmPass) {
+      return setError('הסיסמאות אינן תואמות');
     }
     setLoading(true);
     setError('');
@@ -147,12 +153,30 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
             </button>
           </div>
 
+          {/* אימות סיסמה — הרשמה בלבד */}
+          {mode === 'register' && (
+            <div className="ami-field pw">
+              <input id="ami-pass2" type={showConfirm ? 'text' : 'password'} placeholder=" "
+                value={confirmPass} onChange={e => setConfirmPass(e.target.value)}
+                autoComplete="new-password" enterKeyHint="go"
+                onKeyDown={e => { if (e.key === 'Enter') handleSubmit(); }} />
+              <label htmlFor="ami-pass2">אימות סיסמה</label>
+              <button type="button" className="ami-eye" onClick={() => setShowConfirm(s => !s)}
+                aria-label={showConfirm ? 'הסתר סיסמה' : 'הצג סיסמה'}>
+                {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          )}
+
           {/* דרישות סיסמה — חיווי חי בהרשמה */}
           {mode === 'register' && (
             <div className="ami-hints">
               <span className={`ami-hint ${passLenOk ? 'ok' : ''}`}>{passLenOk ? '✓' : '•'} 8+ תווים</span>
               <span className={`ami-hint ${passUpperOk ? 'ok' : ''}`}>{passUpperOk ? '✓' : '•'} אות גדולה A-Z</span>
               <span className={`ami-hint ${passDigitOk ? 'ok' : ''}`}>{passDigitOk ? '✓' : '•'} ספרה</span>
+              {confirmPass.length > 0 && (
+                <span className={`ami-hint ${passMatch ? 'ok' : 'bad'}`}>{passMatch ? '✓' : '✕'} סיסמאות תואמות</span>
+              )}
             </div>
           )}
 
