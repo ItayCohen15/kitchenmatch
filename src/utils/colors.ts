@@ -32,6 +32,8 @@ const ROLE_DOT: Record<string, string> = {
   prep_cook:  '#12a594', // טורקיז
   cleaner:    '#1f9d6b', // ירוק
   dishwasher: '#3f7d86', // צפחה-טורקיז
+  pastry_chef:'#d1568f', // ורוד (קונדיטוריה)
+  host:       '#c99a2e', // זהב (אירוח)
 };
 
 /** נקודת-צבע לתפקיד (למשמרת רב-תפקיד — לפי התפקיד הראשון) */

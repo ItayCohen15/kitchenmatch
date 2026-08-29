@@ -11,8 +11,8 @@ import { blendedMarket } from '../../utils/marketRates';
 const MONTH_NAMES = ['ינו׳','פבר׳','מרץ','אפר׳','מאי','יוני','יולי','אוג׳','ספט׳','אוק׳','נוב׳','דצמ׳'];
 const DAY_NAMES   = ['','ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
 // תוויות ברבים (ייחודי למסך הזה — בשאר האפליקציה משתמשים ב-ROLE_LABELS מ-utils/roles)
-const ROLE_LABELS: Record<string,string> = { chef:'שפים', line_cook:'טבחים', prep_cook:'טבחי הכנות', dishwasher:'מדיחים', cleaner:'ניקיון', bartender:'ברמנים', barista:'בריסטות', waiter:'מלצרים' };
-const ROLE_COLORS: Record<string,string> = { chef:'#ef5f3c', line_cook:'#3b74d1', prep_cook:'#12a594', dishwasher:'#3f7d86', cleaner:'#1f9d6b', bartender:'#9a5ba6', barista:'#b5701f', waiter:'#3b74d1' };
+const ROLE_LABELS: Record<string,string> = { chef:'שפים', line_cook:'טבחים', prep_cook:'טבחי הכנות', dishwasher:'מדיחים', cleaner:'ניקיון', bartender:'ברמנים', barista:'בריסטות', waiter:'מלצרים', pastry_chef:'קונדיטורים', host:'מארחים' };
+const ROLE_COLORS: Record<string,string> = { chef:'#ef5f3c', line_cook:'#3b74d1', prep_cook:'#12a594', dishwasher:'#3f7d86', cleaner:'#1f9d6b', bartender:'#9a5ba6', barista:'#b5701f', waiter:'#3b74d1', pastry_chef:'#d1568f', host:'#c99a2e' };
 
 // אחוז עמלת המסעדה לפי סוג המשמרת: שותפות/סטאז' 4.5%, חירום 12%, רגיל 6.5%
 const restRate = (j: any) =>

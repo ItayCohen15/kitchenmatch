@@ -1,7 +1,7 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { Zap, MapPin, Clock, ChevronLeft, Filter, ChefHat, WifiOff, Sparkles } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { ROLE_LABELS, LEVEL_LABELS, LEVEL_COLORS } from '../../data/mockData';
+import { ROLE_LABELS, LEVEL_LABELS, LEVEL_COLORS, BUSINESS_TYPE_LABELS } from '../../data/mockData';
 import { api } from '../../api';
 import { visibleShiftRoles, isCookRole } from '../../utils/roles';
 import { isNewWorker, shiftsUntilEstablished, meetsShiftRequirements } from '../../utils/levels';
@@ -284,7 +284,10 @@ export const WorkerHome: React.FC = () => {
                       <div className="min-w-0">
                         <div className="font-bold text-gray-900 truncate">{job.RestaurantName}</div>
                         <div className="flex items-center gap-1 text-xs mt-0.5 text-gray-400">
-                          <MapPin size={10} />{job.RestaurantCity}
+                          <MapPin size={10} />
+                          {job.RestaurantBusinessType && job.RestaurantBusinessType !== 'restaurant'
+                            ? `${BUSINESS_TYPE_LABELS[job.RestaurantBusinessType] || ''} · ${job.RestaurantCity}`
+                            : job.RestaurantCity}
                         </div>
                       </div>
                     </div>

@@ -253,6 +253,18 @@ export const INITIAL_CHAT: Message[] = [
 // (לפני האיחוד היו כאן שתי רשימות נפרדות שנטו להתפצל.)
 export { ROLE_LABELS } from '../utils/roles';
 
+// ── סוגי עסק (צד-המעסיק) — מסעדה / בר / בית קפה / אולם אירועים / קייטרינג ──
+// key יציב באנגלית; label בעברית לתצוגה. ברירת מחדל: 'restaurant'.
+export const BUSINESS_TYPES: { key: string; label: string; emoji: string; desc: string }[] = [
+  { key: 'restaurant', label: 'מסעדה',       emoji: '🍽️', desc: 'מסעדה / ביסטרו' },
+  { key: 'bar',        label: 'בר / פאב',     emoji: '🍸', desc: 'בר · פאב · מועדון' },
+  { key: 'cafe',       label: 'בית קפה',      emoji: '☕', desc: 'קפה · מאפייה' },
+  { key: 'event_hall', label: 'אולם אירועים', emoji: '🎉', desc: 'חתונות · אירועים' },
+  { key: 'catering',   label: 'קייטרינג',     emoji: '🍾', desc: 'הסעדת אירועים' },
+];
+export const BUSINESS_TYPE_LABELS: Record<string, string> =
+  Object.fromEntries(BUSINESS_TYPES.map(b => [b.key, b.label]));
+
 export const EXPERIENCE_LABELS: Record<string, string> = {
   entry: 'מתחיל',
   mid: 'בינוני',

@@ -4,6 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { DeleteAccountModal } from '../common/DeleteAccountModal';
 import { avatarTone } from '../../utils/colors';
+import { BUSINESS_TYPE_LABELS } from '../../data/mockData';
 
 export const RestaurantProfile: React.FC = () => {
   const { userProfile, setUserProfile, resetToLanding, navToRestaurant } = useApp();
@@ -46,6 +47,7 @@ export const RestaurantProfile: React.FC = () => {
       const res = await api.updateRestaurant(userProfile.Id, {
         name, city, address, phone,
         cuisineType: userProfile?.CuisineType || '',
+        businessType: userProfile?.BusinessType || 'restaurant', // שמור — אחרת ידרס ל'restaurant'
       });
       const updated = res?.profile || { ...userProfile, Name: name, Phone: phone, City: city, Address: address };
       setUserProfile(updated);
@@ -119,8 +121,10 @@ export const RestaurantProfile: React.FC = () => {
 
         {/* פרטי קשר */}
         <div className="bg-white rounded-2xl p-4 card-shadow space-y-0">
-          <h3 className="font-bold text-gray-800 mb-3">פרטי המסעדה</h3>
+          <h3 className="font-bold text-gray-800 mb-3">פרטי העסק</h3>
           {[
+            { icon: <span className="text-[15px]">🏢</span>, bg: 'bg-[#ecebfd]', label: 'סוג העסק',
+              value: <span className="font-semibold text-gray-900">{BUSINESS_TYPE_LABELS[userProfile?.BusinessType] || 'מסעדה'}</span> },
             { icon: <Phone size={15} className="text-green-600"/>, bg: 'bg-green-100', label: 'טלפון',
               value: phone ? <a href={`tel:${phone}`} className="font-semibold text-gray-900">{phone}</a>
                            : <span className="text-gray-400 text-sm">לא הוזן</span> },

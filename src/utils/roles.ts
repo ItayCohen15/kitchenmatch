@@ -17,6 +17,8 @@ export const WORKER_ROLES: RoleDef[] = [
   { key: 'bartender', label: 'ברמן',         emoji: '🍸', desc: 'בר, קוקטיילים ומשקאות' },
   { key: 'barista',   label: 'בריסטה',       emoji: '☕', desc: 'קפה, אספרסו ובתי קפה' },
   { key: 'waiter',    label: 'מלצר',         emoji: '🍽️', desc: 'שירות שולחנות ומלצרות' },
+  { key: 'pastry_chef', label: 'קונדיטור',   emoji: '🍰', desc: 'קינוחים · מאפים · עוגות אירועים' },
+  { key: 'host',      label: 'מארח/ת',       emoji: '🤵', desc: 'קבלת אורחים · כיווני ישיבה · מלתחה' },
   // ── תפקידי כניסה — ללא צורך בניסיון ──
   { key: 'runner',     label: 'ראנר',        emoji: '🏃', desc: 'העברת מנות · סידור שולחנות · לא צריך ניסיון', entry: true },
   { key: 'dishwasher', label: 'שוטף כלים',   emoji: '🧼', desc: 'שטיפת כלים · תפעול מדיח · לא צריך ניסיון',   entry: true },
@@ -30,6 +32,8 @@ export const SHIFT_ROLES: RoleDef[] = [
   { key: 'bartender', label: 'ברמן',        emoji: '🍸', desc: 'בר · קוקטיילים · משקאות' },
   { key: 'barista',   label: 'בריסטה',      emoji: '☕', desc: 'קפה · אספרסו · בית קפה' },
   { key: 'waiter',    label: 'מלצר',        emoji: '🍽️', desc: 'שירות · מלצרות' },
+  { key: 'pastry_chef', label: 'קונדיטור',  emoji: '🍰', desc: 'קינוחים · מאפים · עוגות' },
+  { key: 'host',      label: 'מארח/ת',      emoji: '🤵', desc: 'קבלת אורחים · אירוח' },
   // ── תפקידי כניסה — מתאימים גם לעובד ללא ניסיון ──
   { key: 'prep_cook', label: 'טבח הכנות',   emoji: '🔪', desc: 'הכנות מוקדמות · חיתוך · מיזנפלס', entry: true },
   { key: 'runner',    label: 'ראנר',        emoji: '🏃', desc: 'העברת מנות · סידור וניקוי שולחנות', entry: true },
@@ -44,6 +48,8 @@ export const ROLE_LABELS: Record<string, string> = {
   bartender:  'ברמן',
   barista:    'בריסטה',
   waiter:     'מלצר',
+  pastry_chef:'קונדיטור',
+  host:       'מארח/ת',
   runner:     'ראנר',
   dishwasher: 'שוטף כלים',
   // legacy
@@ -106,6 +112,10 @@ function visibleForSingleRole(workerRole?: string): string[] {
     case 'runner':
       // ראנר (כניסה) — רק משמרות ראנר, לא מלצרות המקצועית
       return ['runner'];
+    case 'pastry_chef':
+      return ['pastry_chef'];
+    case 'host':
+      return ['host'];
     default:
       return workerRole ? [workerRole] : [];
   }
@@ -146,6 +156,13 @@ export const SKILLS_BY_ROLE: Record<string, { group: string; items: string[] }[]
   waiter: [
     { group: 'סוג מסעדה', items: ['פיין דיינינג / שף', 'מסעדה קז׳ואל', 'בית קפה', 'אירועים / קייטרינג', 'בר / פאב'] },
     { group: 'מיומנויות', items: ['ידע ביין', 'הגשה רב-שולחנית', 'קופה / סליקה', 'אנגלית שוטפת', 'מכירה / אפסייל', 'מגשים / הגשת אירועים'] },
+  ],
+  pastry_chef: [
+    { group: 'התמחות', items: ['עוגות אירועים', 'קינוחים במנה (Plated)', 'מאפים ובצקים', 'שוקולד ופרלינים', 'טארטים ועוגות גבינה', 'קישוט וסוכר'] },
+    { group: 'התאמות מיוחדות', items: ['ללא גלוטן', 'טבעוני', 'ללא סוכר', 'כשרות'] },
+  ],
+  host: [
+    { group: 'מיומנויות', items: ['קבלת אורחים', 'ניהול רשימת הזמנות', 'כיווני ישיבה', 'מלתחה', 'אנגלית שוטפת', 'ייצוגיות ולבוש הולם'] },
   ],
   cleaner: [
     { group: 'תחומי ניקיון', items: ['שטיפת כלים', 'ניקיון מטבח', 'ניקיון אולם', 'תפעול מדיח תעשייתי', 'פינוי וסידור', 'ניקיון סוף יום'] },

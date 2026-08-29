@@ -2,6 +2,7 @@
 import { ChevronRight, Phone, MapPin, GraduationCap, Check, FileText } from 'lucide-react';
 import { api } from '../api';
 import { WORKER_ROLES, SKILLS_BY_ROLE, ENTRY_ROLE_KEYS } from '../utils/roles';
+import { BUSINESS_TYPES } from '../data/mockData';
 import { CityAutocomplete } from './common/CityAutocomplete';
 import { StreetAutocomplete } from './common/StreetAutocomplete';
 import { NonSelfEmployedDisclosure } from './common/NonSelfEmployedDisclosure';
@@ -17,6 +18,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
   const [step, setStep] = useState(1);
   const [name, setName] = useState('');
   const [city, setCity] = useState('');
+  const [businessType, setBusinessType] = useState('restaurant'); // סוג העסק (מסעדה/בר/אולם/...)
   const [workerRoles, setWorkerRoles] = useState<string[]>([]);
   const toggleRole = (key: string) =>
     setWorkerRoles(prev => prev.includes(key) ? prev.filter(r => r !== key) : [...prev, key]);
@@ -119,8 +121,8 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
       } else {
         const cuisinesStr = selectedCuisines.join(',');
         const fullAddress = `${street} ${streetNumber}`.trim();
-        const res = await api.updateRestaurant(profileId, { name, city, cuisineType: cuisinesStr, address: fullAddress, phone });
-        updatedProfile = res?.profile || { ...updatedProfile, CuisineType: cuisinesStr, Address: fullAddress, Phone: phone, WalletBalance: 0 };
+        const res = await api.updateRestaurant(profileId, { name, city, cuisineType: cuisinesStr, address: fullAddress, phone, businessType });
+        updatedProfile = res?.profile || { ...updatedProfile, CuisineType: cuisinesStr, Address: fullAddress, Phone: phone, BusinessType: businessType, WalletBalance: 0 };
       }
 
       onComplete(updatedProfile);
@@ -180,11 +182,28 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
           {step === 1 && (
             <div className="space-y-4 screen-enter">
               <h2 className="text-xl font-bold text-gray-900">
-                {role === 'worker' ? 'פרטים אישיים' : 'פרטי המסעדה'}
+                {role === 'worker' ? 'פרטים אישיים' : 'פרטי העסק'}
               </h2>
+              {role === 'restaurant' && (
+                <div>
+                  <label className="text-sm font-semibold text-gray-600 mb-1.5 block">סוג העסק</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {BUSINESS_TYPES.map(b => {
+                      const sel = businessType === b.key;
+                      return (
+                        <button key={b.key} type="button" onClick={() => setBusinessType(b.key)}
+                          className={`p-2.5 rounded-xl border-2 text-center transition-all ${sel ? 'border-[#5354d3] bg-[#ecebfd]' : 'border-gray-100'}`}>
+                          <div className="text-xl mb-0.5">{b.emoji}</div>
+                          <div className={`text-[11px] font-bold leading-tight ${sel ? 'text-[#5354d3]' : 'text-gray-700'}`}>{b.label}</div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
               <div>
                 <label className="text-sm font-semibold text-gray-600 mb-1.5 block">
-                  {role === 'worker' ? 'שם מלא' : 'שם המסעדה'}
+                  {role === 'worker' ? 'שם מלא' : 'שם העסק'}
                 </label>
                 <input
                   type="text"
@@ -226,7 +245,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
 
               {role === 'restaurant' && (
                 <div>
-                  <label className="text-sm font-semibold text-gray-600 mb-1.5 block">כתובת המסעדה</label>
+                  <label className="text-sm font-semibold text-gray-600 mb-1.5 block">כתובת העסק</label>
                   <div className="flex gap-2">
                     <StreetAutocomplete city={city} value={street} onChange={setStreet} />
                     <input
