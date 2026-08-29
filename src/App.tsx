@@ -129,6 +129,14 @@ async function resolveScreen(role: string, profile: any,
   }
 }
 
+// פרופיל "שלם" = עבר onboarding (השם והעיר נשמרים יחד בסיום ה-onboarding;
+// ברישום הם ריקים). זהו מקור-האמת לשער ה-onboarding — לא דגל צד-לקוח שאפשר לעקוף.
+function profileComplete(profile: any): boolean {
+  if (!profile) return false;
+  const has = (v: any) => !!(v && String(v).trim());
+  return has(profile.Name) && has(profile.City);
+}
+
 const AppContent: React.FC = () => {
   const { userRole, setUserRole, setUserProfile, userProfile,
           navToWorker, navToRestaurant, selectWorkerJob, startShift } = useApp();
@@ -170,7 +178,8 @@ const AppContent: React.FC = () => {
       }
       if (savedRole === 'admin') {
         // מנהל-על — אין onboarding ואין ניווט חכם של משמרות
-      } else if (!onboardingDone) {
+      } else if (!onboardingDone && !profileComplete(profile)) {
+        // חשבון שטרם השלים פרטים — תמיד למסך ה-onboarding (לא נכנס לאפליקציה)
         setNeedsOnboarding(true);
       } else {
         const params = new URLSearchParams(window.location.search);
@@ -239,7 +248,11 @@ const AppContent: React.FC = () => {
     localStorage.setItem('km_token', newToken);
     localStorage.setItem('km_role', role);
     if (profile) localStorage.setItem('km_profile', JSON.stringify(profile));
-    if (isNew) {
+    // שער onboarding: רק פרופיל שהושלם נכנס לאפליקציה. חשבון חדש (isNew) או
+    // חשבון שטרם השלים פרטים — נשלח *תמיד* להשלמת הפרופיל, גם בכניסה רגילה.
+    // (קודם כל login סימן 'done' — כך חשבון חצי-מוגדר נכנס עם פרופיל ריק.)
+    const needsOb = role !== 'admin' && (isNew || !profileComplete(profile));
+    if (needsOb) {
       setNeedsOnboarding(true);
     } else {
       if (profile) {
