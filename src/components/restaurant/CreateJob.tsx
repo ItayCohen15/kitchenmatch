@@ -3,10 +3,8 @@ import { ChevronRight, Zap, Clock, Filter, Star, Calendar, ClipboardList, MapPin
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import type { JobRole, ExperienceLevel } from '../../types';
-import { SHIFT_ROLES, isEntryRole } from '../../utils/roles';
+import { shiftRolesForBusinessType, isEntryRole } from '../../utils/roles';
 import { restaurantRate, EMERGENCY_WORKER_COMMISSION } from '../../utils/levels';
-
-const ROLES = SHIFT_ROLES.map(r => ({ id: r.key as JobRole, label: r.label, icon: r.emoji, desc: r.desc, entry: !!r.entry }));
 
 const EXPERIENCE: { id: ExperienceLevel; label: string; desc: string }[] = [
   { id: 'any',    label: 'כל הרמות', desc: 'לא משנה — כל ניסיון מתקבל' },
@@ -17,6 +15,9 @@ const EXPERIENCE: { id: ExperienceLevel; label: string; desc: string }[] = [
 
 export const CreateJob: React.FC = () => {
   const { navToRestaurant, setEmergencyMode, isEmergencyMode, userProfile } = useApp();
+  // התפקידים שאפשר לפרסם — מסוננים לפי סוג העסק (אולם אירועים בלי בריסטה/ניקיון וכו')
+  const ROLES = shiftRolesForBusinessType(userProfile?.BusinessType)
+    .map(r => ({ id: r.key as JobRole, label: r.label, desc: r.desc, entry: !!r.entry }));
   const [step, setStep] = useState(1);
   const [role, setRole] = useState<JobRole | null>(null);
   const [shiftDate, setShiftDate] = useState(() => new Date().toISOString().slice(0, 10));
@@ -133,8 +134,7 @@ export const CreateJob: React.FC = () => {
                     : 'border-gray-100 bg-white'
                 }`}
               >
-                <span className="text-3xl">{r.icon}</span>
-                <div className="text-right">
+                <div className="text-right flex-1">
                   <div className="font-bold text-gray-900 flex items-center gap-1.5">
                     {r.label}
                     {r.entry && <span className="text-[10px] font-bold text-green-700 bg-green-100 rounded-full px-1.5 py-0.5">מתאים ללא ניסיון</span>}

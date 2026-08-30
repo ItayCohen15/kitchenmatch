@@ -74,7 +74,8 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
     location.reload();
   };
 
-  const totalSteps = role === 'worker' ? 4 : 2;
+  // מסעדה: 2 שלבים (פרטים → סוג מטבח). שאר סוגי העסק: שלב 1 בלבד (סוג מטבח לא רלוונטי).
+  const totalSteps = role === 'worker' ? 4 : (businessType === 'restaurant' ? 2 : 1);
 
   const toggleSpecialty = (id: string) => {
     setSelectedSpecialties(prev =>
@@ -192,9 +193,8 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                       const sel = businessType === b.key;
                       return (
                         <button key={b.key} type="button" onClick={() => setBusinessType(b.key)}
-                          className={`p-2.5 rounded-xl border-2 text-center transition-all ${sel ? 'border-[#5354d3] bg-[#ecebfd]' : 'border-gray-100'}`}>
-                          <div className="text-xl mb-0.5">{b.emoji}</div>
-                          <div className={`text-[11px] font-bold leading-tight ${sel ? 'text-[#5354d3]' : 'text-gray-700'}`}>{b.label}</div>
+                          className={`px-2 py-3.5 rounded-xl border-2 flex items-center justify-center text-center transition-all ${sel ? 'border-[#5354d3] bg-[#ecebfd]' : 'border-gray-100'}`}>
+                          <span className={`text-[12px] font-bold leading-tight ${sel ? 'text-[#5354d3]' : 'text-gray-700'}`}>{b.label}</span>
                         </button>
                       );
                     })}
@@ -265,12 +265,16 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                 </div>
               )}
               <button
-                disabled={!name || !city}
-                onClick={() => role === 'restaurant' && totalSteps === 2 ? setStep(2) : setStep(2)}
+                disabled={!name || !city || saving}
+                onClick={() => {
+                  if (role === 'worker') return setStep(2);
+                  if (businessType === 'restaurant') return setStep(2); // מסעדה → שלב סוג מטבח
+                  handleComplete();                                     // שאר סוגי עסק → סיום מיידי
+                }}
                 className="w-full rounded-2xl py-4 font-bold text-base disabled:opacity-40 mt-2"
                 style={{ background: '#5354d3', color: '#ffffff' }}
               >
-                המשך
+                {role === 'restaurant' && businessType !== 'restaurant' ? (saving ? 'שומר...' : 'סיים הגדרה') : 'המשך'}
               </button>
             </div>
           )}
@@ -291,7 +295,6 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                         onClick={() => chooseExperience(true)}
                         className={`p-3 rounded-xl border-2 text-center transition-all ${hasExperience === true ? 'border-[#5354d3] bg-[#ecebfd]' : 'border-gray-100'}`}
                       >
-                        <div className="text-2xl mb-0.5">👨‍🍳</div>
                         <div className="font-bold text-gray-900 text-sm">יש לי ניסיון</div>
                         <div className="text-gray-500 text-[11px] leading-tight">עבדתי בתחום</div>
                       </button>
@@ -300,7 +303,6 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                         onClick={() => chooseExperience(false)}
                         className={`p-3 rounded-xl border-2 text-center transition-all ${hasExperience === false ? 'border-green-400 bg-green-50' : 'border-gray-100'}`}
                       >
-                        <div className="text-2xl mb-0.5">🌱</div>
                         <div className="font-bold text-gray-900 text-sm">אין לי ניסיון</div>
                         <div className="text-gray-500 text-[11px] leading-tight">חדש/ה בתחום</div>
                       </button>
@@ -327,7 +329,6 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                               sel ? 'border-[#5354d3] bg-[#ecebfd]' : 'border-gray-100'
                             }`}
                           >
-                            <span className="text-2xl">{r.emoji}</span>
                             <div className="flex-1">
                               <div className="font-bold text-gray-900">{r.label}</div>
                               <div className="text-gray-500 text-xs">{r.desc}</div>
@@ -341,7 +342,6 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
 
                     {/* ── תפקידי כניסה — פתוחים לשני המצבים (גם למנוסים, כתוספת) ── */}
                     <div className={`${hasExperience ? 'mt-4' : ''} mb-2 flex items-center gap-2 rounded-xl bg-green-50 border border-green-100 px-3 py-2`}>
-                      <span className="text-xl flex-shrink-0">🌱</span>
                       <div>
                         <div className="text-sm font-bold text-green-700">
                           {hasExperience ? 'תפקידי כניסה — גם בשבילך' : 'התפקידים שפתוחים בפניך'}
@@ -364,7 +364,6 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                               sel ? 'border-green-400 bg-green-50' : 'border-gray-100'
                             }`}
                           >
-                            <span className="text-2xl">{r.emoji}</span>
                             <div className="flex-1">
                               <div className="font-bold text-gray-900 flex items-center gap-1.5">
                                 {r.label}
@@ -525,8 +524,7 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                           const sel = selectedCuisines.includes(item.id);
                           return (
                             <button key={item.id} onClick={() => toggleCuisine(item.id)}
-                              className={`w-full p-3 rounded-xl border-2 flex items-center gap-3 text-right transition-all ${sel ? 'bg-[#ecebfd]' : 'border-gray-100 bg-white'}`}>
-                              <span className="text-2xl flex-shrink-0">{item.icon}</span>
+                              className={`w-full p-3 rounded-xl border-2 flex items-center gap-3 text-right transition-all ${sel ? 'border-[#5354d3] bg-[#ecebfd]' : 'border-gray-100 bg-white'}`}>
                               <div className="flex-1">
                                 <div className={`font-bold text-sm ${sel ? 'text-[#5354d3]' : 'text-gray-900'}`}>{item.id}</div>
                                 <div className="text-gray-400 text-xs">{item.desc}</div>

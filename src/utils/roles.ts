@@ -40,6 +40,19 @@ export const SHIFT_ROLES: RoleDef[] = [
   { key: 'dishwasher',label: 'שוטף כלים',   emoji: '🧼', desc: 'שטיפת כלים · תפעול מדיח · פינוי', entry: true },
 ];
 
+/* אילו תפקידים כל סוג עסק יכול לפרסם.
+   מסעדה / בר / בית קפה / קייטרינג — כל התפקידים.
+   אולם אירועים — תת-קבוצה הגיונית בלבד (בלי בריסטה / עובד ניקיון). */
+export const EVENT_HALL_ROLE_KEYS = new Set(
+  ['waiter', 'bartender', 'line_cook', 'prep_cook', 'host', 'pastry_chef', 'dishwasher', 'runner']
+);
+
+/** תפקידי המשמרת שעסק יכול לפרסם, מסוננים לפי סוג העסק */
+export function shiftRolesForBusinessType(businessType?: string): RoleDef[] {
+  if (businessType === 'event_hall') return SHIFT_ROLES.filter(r => EVENT_HALL_ROLE_KEYS.has(r.key));
+  return SHIFT_ROLES;
+}
+
 /* תוויות לכל המפתחות (כולל legacy) */
 export const ROLE_LABELS: Record<string, string> = {
   line_cook:  'טבח',

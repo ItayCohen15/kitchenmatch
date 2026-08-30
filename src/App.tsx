@@ -40,7 +40,6 @@ class ReloadOnChunkError extends React.Component<{ children: React.ReactNode }, 
   }
 }
 import { Splash } from './components/Splash';
-import { Landing } from './components/Landing';
 import { VerifyEmail } from './components/VerifyEmail';
 import { PrivacyPolicy } from './components/legal/PrivacyPolicy';
 import { Terms } from './components/legal/Terms';
@@ -146,7 +145,6 @@ const AppContent: React.FC = () => {
           navToWorker, navToRestaurant, selectWorkerJob, startShift } = useApp();
   usePush(userProfile?.UserId || userProfile?.userId);
   const [showSplash, setShowSplash] = useState(true);
-  const [showLanding, setShowLanding] = useState(false);
   // דפים משפטיים (תקנון / מדיניות פרטיות) — שכבת-על מעל מסך הכניסה, נגישה מכל מצב
   const [legalView, setLegalView] = useState<'privacy' | 'terms' | null>(null);
   const [verifyData, setVerifyData] = useState<{userId:number,email:string}|null>(null);
@@ -172,9 +170,6 @@ const AppContent: React.FC = () => {
     const savedProfile = localStorage.getItem('km_profile');
     const onboardingDone = localStorage.getItem('km_onboarding');
 
-    if (!savedToken) {
-      setShowLanding(true);
-    }
     if (savedToken && savedRole) {
       setToken(savedToken);
       setUserRole(savedRole as UserRole);
@@ -198,11 +193,10 @@ const AppContent: React.FC = () => {
     setAuthChecked(true);
   }, []);
 
-  // כשuserRole מתאפס (logout) — חזור ל-Landing
+  // כשuserRole מתאפס (logout) — חזור למסך הכניסה
   useEffect(() => {
     if (authChecked && !userRole) {
       setToken(null);
-      setShowLanding(true);
       setNeedsOnboarding(false);
       setPendingProfile(null);
     }
@@ -275,7 +269,6 @@ const AppContent: React.FC = () => {
 
   const handleLogout = () => {
     setToken(null);
-    setShowLanding(true);
     setVerifyData(null);
     setNeedsOnboarding(false);
     setPendingProfile(null);
@@ -297,11 +290,8 @@ const AppContent: React.FC = () => {
     <div className="flex items-start justify-center" style={{ height: '100dvh', overflow: 'hidden', background: '#e6e7ef' }}>
       {showSplash && <Splash onDone={() => setShowSplash(false)} />}
       <div className="w-full max-w-sm relative flex flex-col" style={{ height:'100dvh', background:'#f4f5f9', boxShadow:'0 0 0 1px rgba(38,34,27,0.06), 0 18px 50px rgba(38,34,27,0.14)' }}>
-        {/* מסך הפתיחה: דף נחיתה שיווקי → כניסה/הרשמה בלחיצת CTA (חוזר ל-Landing גם ביציאה) */}
-        {!token && (showLanding
-          ? <Landing onStart={() => setShowLanding(false)} />
-          : <Auth onLogin={handleLogin} onShowLegal={setLegalView} />
-        )}
+        {/* מסך הפתיחה: כניסה/הרשמה ישירות (בלי דף נחיתה) */}
+        {!token && <Auth onLogin={handleLogin} onShowLegal={setLegalView} />}
         {showOnboarding && (() => {
           // קרא profileId מ-pendingProfile או מ-localStorage
           const savedProf = (() => { try { return JSON.parse(localStorage.getItem('km_profile') || 'null'); } catch { return null; } })();
