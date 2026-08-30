@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://stafflyil.com/sitemap.xml

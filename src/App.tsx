@@ -42,6 +42,8 @@ class ReloadOnChunkError extends React.Component<{ children: React.ReactNode }, 
 import { Splash } from './components/Splash';
 import { Landing } from './components/Landing';
 import { VerifyEmail } from './components/VerifyEmail';
+import { PrivacyPolicy } from './components/legal/PrivacyPolicy';
+import { Terms } from './components/legal/Terms';
 // ── רובד גימור UX: גבול-שגיאה גלובלי, toasts, באנר אופליין ──
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { ToastHost } from './components/common/Toast';
@@ -145,6 +147,8 @@ const AppContent: React.FC = () => {
   usePush(userProfile?.UserId || userProfile?.userId);
   const [showSplash, setShowSplash] = useState(true);
   const [showLanding, setShowLanding] = useState(false);
+  // דפים משפטיים (תקנון / מדיניות פרטיות) — שכבת-על מעל מסך הכניסה, נגישה מכל מצב
+  const [legalView, setLegalView] = useState<'privacy' | 'terms' | null>(null);
   const [verifyData, setVerifyData] = useState<{userId:number,email:string}|null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
@@ -293,8 +297,11 @@ const AppContent: React.FC = () => {
     <div className="flex items-start justify-center" style={{ height: '100dvh', overflow: 'hidden', background: '#e6e7ef' }}>
       {showSplash && <Splash onDone={() => setShowSplash(false)} />}
       <div className="w-full max-w-sm relative flex flex-col" style={{ height:'100dvh', background:'#f4f5f9', boxShadow:'0 0 0 1px rgba(38,34,27,0.06), 0 18px 50px rgba(38,34,27,0.14)' }}>
-        {/* מסך הפתיחה = כניסה/הרשמה ישירות (דף הנחיתה השיווקי מושהה עד שנעדכן אותו) */}
-        {!token && <Auth onLogin={handleLogin} />}
+        {/* מסך הפתיחה: דף נחיתה שיווקי → כניסה/הרשמה בלחיצת CTA (חוזר ל-Landing גם ביציאה) */}
+        {!token && (showLanding
+          ? <Landing onStart={() => setShowLanding(false)} />
+          : <Auth onLogin={handleLogin} onShowLegal={setLegalView} />
+        )}
         {showOnboarding && (() => {
           // קרא profileId מ-pendingProfile או מ-localStorage
           const savedProf = (() => { try { return JSON.parse(localStorage.getItem('km_profile') || 'null'); } catch { return null; } })();
@@ -321,6 +328,10 @@ const AppContent: React.FC = () => {
             </Suspense>
           </ReloadOnChunkError>
         )}
+
+        {/* דפים משפטיים — שכבת-על (Auth נשאר טעון מתחת כדי לא לאבד את הטופס) */}
+        {legalView === 'privacy' && <PrivacyPolicy onBack={() => setLegalView(null)} />}
+        {legalView === 'terms'   && <Terms onBack={() => setLegalView(null)} />}
       </div>
     </div>
   );

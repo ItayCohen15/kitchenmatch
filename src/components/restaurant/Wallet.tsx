@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, ArrowUpRight, CreditCard, CheckCircle2, FileText, X, Printer, Lightbulb } from 'lucide-react';
+import { ArrowUpRight, CreditCard, FileText, X, Printer, Lightbulb } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
@@ -7,7 +7,6 @@ import { printHTML } from '../../utils/print';
 import { esc } from '../../utils/escapeHtml';
 import { CompensationDoc } from '../common/CompensationDoc';
 import { restaurantRate } from '../../utils/levels';
-import { haptic } from '../../utils/haptics';
 
 /* ═══════════════════════════════════════════════════════════
    מסמך 3 – קבלת עמלת תיווך (Staffly → מסעדה)
@@ -212,12 +211,7 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
    ראשי – ארנק מסעדה
 ═══════════════════════════════════════════════════════════ */
 export const RestaurantWallet: React.FC = () => {
-  const { userProfile, refreshProfile } = useApp();
-  const [topUpAmount, setTopUpAmount] = useState('');
-  const [showTopUp, setShowTopUp]     = useState(false);
-  const [topping, setTopping]         = useState(false);
-  const [topped, setTopped]           = useState(false);
-  const [topUpErr, setTopUpErr]       = useState('');
+  const { userProfile } = useApp();
   const [jobs, setJobs]               = useState<any[]>([]);
   const [loading, setLoading]         = useState(true);
   const [receiptJob, setReceiptJob]   = useState<any>(null);
@@ -247,35 +241,10 @@ export const RestaurantWallet: React.FC = () => {
   }, 0);
   const avgPerShift = completedJobs.length > 0 ? (totalSpend / completedJobs.length).toFixed(0) : 0;
 
-  // ── טעינת ארנק אמיתית דרך הספק (PayMe escrow funding) ──
-  // קודם (טעינה מדומה — UI בלבד, ללא שרת):
-  // const handleTopUp = () => {
-  //   setTopping(true);
-  //   setTimeout(() => {
-  //     setTopping(false);
-  //     setTopped(true);
-  //     setShowTopUp(false);
-  //     setTimeout(() => setTopped(false), 3000);
-  //   }, 1800);
-  // };
-  const handleTopUp = async () => {
-    const amount = Number(topUpAmount);
-    if (!userProfile?.Id || !(amount > 0) || topping) return;
-    setTopping(true); setTopUpErr('');
-    try {
-      await api.restaurantTopUp(userProfile.Id, amount);
-      await refreshProfile();          // עדכון יתרת הארנק מהשרת
-      setTopping(false);
-      setTopped(true);
-      setShowTopUp(false);
-      haptic('success');
-      setTimeout(() => setTopped(false), 3000);
-    } catch (e: any) {
-      setTopping(false);
-      setTopUpErr(e.message || 'הטעינה נכשלה');
-      haptic('error');
-    }
-  };
+  // ── טעינת ארנק (סליקה) ──
+  // מנוטרל בכוונה: חיבור הסליקה המאובטח (PayMe escrow funding) עדיין לא חובר,
+  // ולכן אין דרך אמיתית לגבות כרטיס. עד אז לא מציגים כפתור טעינה כדי שלא ייטען
+  // כסף פיקטיבי לארנק. כשהסליקה תחובר — מחזירים כאן handleTopUp שקורא ל-api.restaurantTopUp.
 
   return (
     <div className="screen-enter space-y-4">
@@ -288,56 +257,12 @@ export const RestaurantWallet: React.FC = () => {
         </div>
         {name && <div className="text-gray-400 text-sm mb-3">{name}</div>}
 
-        <div className="grid grid-cols-2 gap-3 mt-2">
-          <button onClick={() => setShowTopUp(s => !s)}
-            className="rounded-xl py-3 flex items-center justify-center gap-2 font-semibold text-sm bg-white/15">
-            <Plus size={16} /> טען כסף
-          </button>
-          <button className="rounded-xl py-3 flex items-center justify-center gap-2 font-semibold text-sm"
-            style={{ background:'#5354d3', color:'#ffffff' }}>
-            <CreditCard size={16} /> כרטיס אשראי
-          </button>
+        {/* טעינת ארנק — חיבור סליקה מאובטח בתהליך. מנוטרל בכוונה כדי שלא ייטען כסף עד שהסליקה תחובר. */}
+        <div className="rounded-xl py-3 px-4 mt-2 flex items-center justify-center gap-2 font-semibold text-sm"
+          style={{ background:'rgba(255,255,255,0.06)', color:'#8899bb', cursor:'not-allowed' }}>
+          <CreditCard size={16} /> בקרוב — חיבור סליקה מאובטח
         </div>
       </div>
-
-      {/* Top-up panel */}
-      {showTopUp && (
-        <div className="bg-white rounded-2xl p-4 card-shadow screen-enter">
-          <h3 className="font-bold text-gray-800 mb-3">טעינת ארנק</h3>
-          <div className="flex gap-2 mb-3">
-            {[500, 1000, 2000, 5000].map(a => (
-              <button key={a} onClick={() => setTopUpAmount(String(a))}
-                className={`flex-1 py-2 rounded-lg text-sm font-semibold ${
-                  topUpAmount === String(a) ? 'bg-[#5354d3] text-white' : 'bg-gray-100 text-gray-700'
-                }`}>
-                ₪{a}
-              </button>
-            ))}
-          </div>
-          <div className="relative mb-3">
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 font-bold">₪</span>
-            <input type="number" value={topUpAmount} onChange={e => setTopUpAmount(e.target.value)}
-              placeholder="סכום אחר"
-              className="w-full border border-gray-200 rounded-xl py-3 pr-8 pl-3 text-right font-semibold" />
-          </div>
-          <button onClick={handleTopUp} disabled={!topUpAmount || topping}
-            className="w-full bg-[#5354d3] text-white rounded-xl py-3 font-bold disabled:opacity-50 flex items-center justify-center gap-2">
-            {topping ? (
-              <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"/>מעבד...</>
-            ) : `טען ₪${topUpAmount}`}
-          </button>
-          {topUpErr && (
-            <div className="mt-2 text-xs text-center rounded-xl px-3 py-2 bg-red-50 text-red-600">{topUpErr}</div>
-          )}
-        </div>
-      )}
-
-      {topped && (
-        <div className="bg-green-500 rounded-2xl p-3 text-white flex items-center gap-3 screen-enter">
-          <CheckCircle2 size={20} />
-          <span className="font-semibold">הארנק נטען בהצלחה! ₪{topUpAmount}</span>
-        </div>
-      )}
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">

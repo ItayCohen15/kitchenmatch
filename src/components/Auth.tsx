@@ -5,9 +5,10 @@ import { VerifyEmail } from './VerifyEmail';
 
 interface Props {
   onLogin: (token: string, role: string, profile: any, isNew?: boolean) => void;
+  onShowLegal?: (page: 'privacy' | 'terms') => void;
 }
 
-export const Auth: React.FC<Props> = ({ onLogin }) => {
+export const Auth: React.FC<Props> = ({ onLogin, onShowLegal }) => {
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [role, setRole] = useState<'restaurant' | 'worker'>('restaurant');
   const [email, setEmail] = useState('');
@@ -21,6 +22,7 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
   const [error, setError] = useState('');
   const [pendingVerify, setPendingVerify] = useState<{userId:number,email:string,data:any}|null>(null);
   const [refCode, setRefCode] = useState('');
+  const [consent, setConsent] = useState(false); // אישור תנאי שימוש + מדיניות פרטיות (חובה בהרשמה)
 
   // "חבר מביא חבר" — לכידת קוד ההפניה מה-URL (?ref=CODE) ושמירתו עד ההרשמה
   useEffect(() => {
@@ -44,6 +46,10 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
     if (mode === 'register' && password !== confirmPass) {
       return setError('הסיסמאות אינן תואמות');
     }
+    // אישור תנאי שימוש + מדיניות פרטיות — חובה בהרשמה. חוסם את השליחה עד לסימון.
+    if (mode === 'register' && !consent) {
+      return setError('יש לאשר את תנאי השימוש ומדיניות הפרטיות כדי להירשם');
+    }
     setLoading(true);
     setError('');
     try {
@@ -51,7 +57,10 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
       if (mode === 'login') {
         data = await api.login(email, password);
       } else {
-        data = await api.register(email, password, role, '', '', refCode || undefined);
+        // חותמת אישור ההסכמה — נשלחת לשרת ונשמרת גם מקומית
+        const consentAcceptedAt = new Date().toISOString();
+        try { localStorage.setItem('km_consent_at', consentAcceptedAt); } catch { /* ignore */ }
+        data = await api.register(email, password, role, '', '', refCode || undefined, consentAcceptedAt);
         localStorage.removeItem('km_ref'); // ההפניה שויכה בשרת — חד-פעמי
       }
       const isNew = mode === 'register';
@@ -173,6 +182,27 @@ export const Auth: React.FC<Props> = ({ onLogin }) => {
               <span className={`ami-hint ${passLenOk ? 'ok' : ''}`}>{passLenOk ? '✓' : '•'} 8+ תווים</span>
               <span className={`ami-hint ${passUpperOk ? 'ok' : ''}`}>{passUpperOk ? '✓' : '•'} אות גדולה A-Z</span>
               <span className={`ami-hint ${passDigitOk ? 'ok' : ''}`}>{passDigitOk ? '✓' : '•'} ספרה</span>
+            </div>
+          )}
+
+          {/* אישור תנאי שימוש + מדיניות פרטיות — חובה בהרשמה */}
+          {mode === 'register' && (
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, margin: '2px 2px 0' }}>
+              <input id="ami-consent" type="checkbox" checked={consent}
+                onChange={e => setConsent(e.target.checked)}
+                style={{ marginTop: 2, width: 16, height: 16, accentColor: '#5354d3', flex: 'none' }} />
+              <label htmlFor="ami-consent" style={{ fontSize: 12, lineHeight: 1.55, color: '#8a90b0', fontWeight: 500, cursor: 'pointer' }}>
+                אני מאשר/ת את{' '}
+                <button type="button" onClick={e => { e.preventDefault(); onShowLegal?.('terms'); }}
+                  style={{ color: '#9a9bf0', fontWeight: 700, background: 'none', border: 0, padding: 0, font: 'inherit', textDecoration: 'underline', cursor: 'pointer' }}>
+                  תנאי השימוש
+                </button>
+                {' '}ואת{' '}
+                <button type="button" onClick={e => { e.preventDefault(); onShowLegal?.('privacy'); }}
+                  style={{ color: '#9a9bf0', fontWeight: 700, background: 'none', border: 0, padding: 0, font: 'inherit', textDecoration: 'underline', cursor: 'pointer' }}>
+                  מדיניות הפרטיות
+                </button>
+              </label>
             </div>
           )}
 

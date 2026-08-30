@@ -151,7 +151,7 @@ export const AssistantBot: React.FC<{ role: BotRole }> = ({ role }) => {
                 </div>
                 <div>
                   <div className="font-bold text-sm">סטאף · עוזר</div>
-                  <div className="text-[11px]" style={{ color: '#8899bb' }}>כאן לענות על כל שאלה</div>
+                  <div className="text-[11px]" style={{ color: '#8899bb' }}>שאלות על השימוש באפליקציה</div>
                 </div>
               </div>
               <button onClick={() => setOpen(false)}
@@ -217,7 +217,7 @@ export const AssistantBot: React.FC<{ role: BotRole }> = ({ role }) => {
                   onChange={e => setInput(e.target.value)}
                   onKeyDown={e => { if (e.key === 'Enter') ask(input); }}
                   enterKeyHint="send"
-                  placeholder="שאל אותי כל דבר..."
+                  placeholder="שאלו אותי על השימוש באפליקציה"
                   className="flex-1 border border-gray-200 bg-gray-50 rounded-2xl px-4 py-2.5 text-sm text-right outline-none focus:border-[#5354d3] focus:bg-white"
                 />
                 <button onClick={() => ask(input)} disabled={thinking || !input.trim()}

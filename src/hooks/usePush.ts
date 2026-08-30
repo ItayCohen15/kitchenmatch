@@ -46,8 +46,8 @@ export function usePush(userId?: number) {
           },
           body: JSON.stringify({ subscription: sub }),
         });
-      } catch (e) {
-        console.log('Push registration failed:', e);
+      } catch {
+        // רישום Push נכשל — מתעלמים בשקט (לא חוסם את האפליקציה)
       }
     };
 

@@ -52,11 +52,13 @@ const handleResponse = async (res: Response) => {
 export const api = {
 
   // ========== AUTH ==========
-  register: (email: string, password: string, role: string, name: string, city: string, refCode?: string) =>
+  // consentAcceptedAt — חותמת ISO של אישור תנאי השימוש ומדיניות הפרטיות בעת ההרשמה
+  // (שדה נוסף; אם השרת מתעלם ממנו — אין נזק)
+  register: (email: string, password: string, role: string, name: string, city: string, refCode?: string, consentAcceptedAt?: string) =>
     fetch(`${BASE}/auth/register`, {
       method: 'POST',
       headers: headers(),
-      body: JSON.stringify({ email, password, role, name, city, refCode: refCode || undefined })
+      body: JSON.stringify({ email, password, role, name, city, refCode: refCode || undefined, consentAcceptedAt: consentAcceptedAt || undefined })
     }).then(handleResponse),
 
   // "חבר מביא חבר" — הקוד, הקישור, הסטטיסטיקות ומצב הפרס של המשתמש
