@@ -289,7 +289,7 @@ const AppContent: React.FC = () => {
   return (
     <div className="flex items-start justify-center" style={{ height: '100dvh', overflow: 'hidden', background: '#e6e7ef' }}>
       {showSplash && <Splash onDone={() => setShowSplash(false)} />}
-      <div className="w-full max-w-sm relative flex flex-col" style={{ height:'100dvh', background:'#f4f5f9', boxShadow:'0 0 0 1px rgba(38,34,27,0.06), 0 18px 50px rgba(38,34,27,0.14)' }}>
+      <div className="w-full max-w-none sm:max-w-sm relative flex flex-col" style={{ height:'100dvh', background:'#f4f5f9', boxShadow:'0 0 0 1px rgba(38,34,27,0.06), 0 18px 50px rgba(38,34,27,0.14)' }}>
         {/* מסך הפתיחה: כניסה/הרשמה ישירות (בלי דף נחיתה) */}
         {!token && <Auth onLogin={handleLogin} onShowLegal={setLegalView} />}
         {showOnboarding && (() => {

@@ -38,8 +38,7 @@ const loadScript = (src: string) => new Promise<void>((resolve, reject) => {
 });
 
 export const Auth: React.FC<Props> = ({ onLogin, onShowLegal }) => {
-  const [view, setView] = useState<'entry' | 'email'>('entry');
-  const [mode, setMode] = useState<'login' | 'register'>('login');
+  const [view, setView] = useState<'entry' | 'email'>('entry'); // entry = כניסה inline, email = טופס הרשמה
   const [role, setRole] = useState<'restaurant' | 'worker'>('restaurant');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -76,23 +75,23 @@ export const Auth: React.FC<Props> = ({ onLogin, onShowLegal }) => {
     onLogin(data.token, data.role, data.profile, isNew);
   };
 
-  const handleSubmit = async () => {
+  const doAuth = async (authMode: 'login' | 'register') => {
     if (!email || !password) return setError('נא למלא אימייל וסיסמא');
-    if (mode === 'register' && (!passLenOk || !passUpperOk || !passDigitOk)) {
+    if (authMode === 'register' && (!passLenOk || !passUpperOk || !passDigitOk)) {
       return setError('הסיסמה חייבת להכיל לפחות 8 תווים, אות גדולה באנגלית (A-Z) וספרה');
     }
-    if (mode === 'register' && password !== confirmPass) {
+    if (authMode === 'register' && password !== confirmPass) {
       return setError('הסיסמאות אינן תואמות');
     }
     // אישור תנאי שימוש + מדיניות פרטיות — חובה בהרשמה. חוסם את השליחה עד לסימון.
-    if (mode === 'register' && !consent) {
+    if (authMode === 'register' && !consent) {
       return setError('יש לאשר את תנאי השימוש ומדיניות הפרטיות כדי להירשם');
     }
     setLoading(true);
     setError('');
     try {
       let data;
-      if (mode === 'login') {
+      if (authMode === 'login') {
         data = await api.login(email, password);
       } else {
         // חותמת אישור ההסכמה — נשלחת לשרת ונשמרת גם מקומית
@@ -101,7 +100,7 @@ export const Auth: React.FC<Props> = ({ onLogin, onShowLegal }) => {
         data = await api.register(email, password, role, '', '', refCode || undefined, consentAcceptedAt);
         localStorage.removeItem('km_ref'); // ההפניה שויכה בשרת — חד-פעמי
       }
-      const isNew = mode === 'register';
+      const isNew = authMode === 'register';
       // חשבון שטרם אומת — ברישום *וגם* בכניסה. אין טוקן עד שהמייל אומת,
       // ולכן חייבים לעבור דרך מסך האימות (ראה routes/auth.js).
       if (data.needsVerification) {
@@ -153,16 +152,8 @@ export const Auth: React.FC<Props> = ({ onLogin, onShowLegal }) => {
     setNotice('התחברות עם Apple תופעל בקרוב');
   };
 
-  const openEmail = (m: 'login' | 'register') => {
-    setMode(m); setView('email'); setError(''); setNotice('');
-  };
-
-  // כניסה ראשית במייל (אין שירות SMS) — ממשיך לשלב הסיסמה עם המייל שהוקלד
-  const handleEmailContinue = () => {
-    setError(''); setNotice('');
-    if (!email.trim()) { setNotice('נא להזין כתובת אימייל'); return; }
-    openEmail('login');
-  };
+  const openRegister = () => { setView('email'); setError(''); setNotice(''); };
+  const backToEntry  = () => { setView('entry'); setError(''); setNotice(''); };
 
   if (pendingVerify) {
     return (
@@ -191,17 +182,37 @@ export const Auth: React.FC<Props> = ({ onLogin, onShowLegal }) => {
       <div className="ami-card">
         {view === 'entry' ? (
           <>
-            {/* אימייל — הכניסה הראשית (אין שירות SMS) */}
+            {/* אימייל + סיסמה — כניסה ישירה (אין שירות SMS) */}
             <div className="ami-field">
               <input id="ami-entry-email" type="email" inputMode="email" autoComplete="email"
                 autoCapitalize="none" enterKeyHint="next" placeholder=" "
-                value={email} onChange={e => setEmail(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter') handleEmailContinue(); }} />
+                value={email} onChange={e => setEmail(e.target.value)} />
               <label htmlFor="ami-entry-email">אימייל</label>
             </div>
 
-            <button className="ami-primary" onClick={handleEmailContinue}>
-              המשך <ArrowLeft size={17} />
+            <div className="ami-field pw">
+              <input id="ami-entry-pass" type={showPass ? 'text' : 'password'} placeholder=" "
+                value={password} onChange={e => setPassword(e.target.value)}
+                autoComplete="current-password" enterKeyHint="go"
+                onKeyDown={e => { if (e.key === 'Enter') doAuth('login'); }} />
+              <label htmlFor="ami-entry-pass">סיסמה</label>
+              <button type="button" className="ami-eye" onClick={() => setShowPass(s => !s)}
+                aria-label={showPass ? 'הסתר סיסמה' : 'הצג סיסמה'}>
+                {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+
+            {error && <div className="ami-err">{error}</div>}
+
+            <button className="ami-primary" onClick={() => doAuth('login')} disabled={loading}>
+              {loading ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  טוען...
+                </>
+              ) : (
+                <>המשך <ArrowLeft size={17} /></>
+              )}
             </button>
 
             <div className="ami-divider" />
@@ -217,7 +228,7 @@ export const Auth: React.FC<Props> = ({ onLogin, onShowLegal }) => {
 
             <div className="ami-divider" />
 
-            <button className="ami-reg" onClick={() => openEmail('register')}>
+            <button className="ami-reg" onClick={openRegister}>
               הירשם <ArrowLeft size={17} />
             </button>
 
@@ -233,27 +244,23 @@ export const Auth: React.FC<Props> = ({ onLogin, onShowLegal }) => {
         ) : (
           /* ---------- EMAIL FORM ---------- */
           <div className="ami-form">
-            <button className="ami-back" onClick={() => { setView('entry'); setError(''); }}>
+            <button className="ami-back" onClick={backToEntry}>
               <ChevronRight size={17} /> חזרה
             </button>
 
-            <div className="ami-formtitle">{mode === 'login' ? 'כניסה עם אימייל' : 'הרשמה ל-Staffly'}</div>
+            <div className="ami-formtitle">הרשמה ל-Staffly</div>
 
-            {mode === 'register' && (
-              <>
-                <div className="ami-rolelab">אני מצטרף/ת בתור</div>
-                <div className="ami-roles">
-                  <button type="button" className={`ami-role ${role === 'restaurant' ? 'on' : ''}`}
-                    onClick={() => setRole('restaurant')}>
-                    מסעדה / עסק
-                  </button>
-                  <button type="button" className={`ami-role ${role === 'worker' ? 'on' : ''}`}
-                    onClick={() => setRole('worker')}>
-                    עובד
-                  </button>
-                </div>
-              </>
-            )}
+            <div className="ami-rolelab">אני מצטרף/ת בתור</div>
+            <div className="ami-roles">
+              <button type="button" className={`ami-role ${role === 'restaurant' ? 'on' : ''}`}
+                onClick={() => setRole('restaurant')}>
+                מסעדה / עסק
+              </button>
+              <button type="button" className={`ami-role ${role === 'worker' ? 'on' : ''}`}
+                onClick={() => setRole('worker')}>
+                עובד
+              </button>
+            </div>
 
             <div className="ami-field">
               <input id="ami-email" type="email" inputMode="email" autoComplete="email"
@@ -265,8 +272,7 @@ export const Auth: React.FC<Props> = ({ onLogin, onShowLegal }) => {
             <div className="ami-field pw">
               <input id="ami-pass" type={showPass ? 'text' : 'password'} placeholder=" "
                 value={password} onChange={e => setPassword(e.target.value)}
-                autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
-                enterKeyHint="go" onKeyDown={e => { if (e.key === 'Enter') handleSubmit(); }} />
+                autoComplete="new-password" enterKeyHint="next" />
               <label htmlFor="ami-pass">סיסמה</label>
               <button type="button" className="ami-eye" onClick={() => setShowPass(s => !s)}
                 aria-label={showPass ? 'הסתר סיסמה' : 'הצג סיסמה'}>
@@ -274,62 +280,53 @@ export const Auth: React.FC<Props> = ({ onLogin, onShowLegal }) => {
               </button>
             </div>
 
-            {/* אימות סיסמה — הרשמה בלבד */}
-            {mode === 'register' && (
-              <div className="ami-field pw">
-                <input id="ami-pass2" type={showConfirm ? 'text' : 'password'} placeholder=" "
-                  value={confirmPass} onChange={e => setConfirmPass(e.target.value)}
-                  autoComplete="new-password" enterKeyHint="go"
-                  onKeyDown={e => { if (e.key === 'Enter') handleSubmit(); }} />
-                <label htmlFor="ami-pass2">אימות סיסמה</label>
-                <button type="button" className="ami-eye" onClick={() => setShowConfirm(s => !s)}
-                  aria-label={showConfirm ? 'הסתר סיסמה' : 'הצג סיסמה'}>
-                  {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-            )}
+            <div className="ami-field pw">
+              <input id="ami-pass2" type={showConfirm ? 'text' : 'password'} placeholder=" "
+                value={confirmPass} onChange={e => setConfirmPass(e.target.value)}
+                autoComplete="new-password" enterKeyHint="go"
+                onKeyDown={e => { if (e.key === 'Enter') doAuth('register'); }} />
+              <label htmlFor="ami-pass2">אימות סיסמה</label>
+              <button type="button" className="ami-eye" onClick={() => setShowConfirm(s => !s)}
+                aria-label={showConfirm ? 'הסתר סיסמה' : 'הצג סיסמה'}>
+                {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
 
-            {/* דרישות סיסמה — חיווי חי בהרשמה */}
-            {mode === 'register' && (
-              <div className="ami-hints">
-                <span className={`ami-hint ${passLenOk ? 'ok' : ''}`}>{passLenOk ? '✓' : '•'} 8+ תווים</span>
-                <span className={`ami-hint ${passUpperOk ? 'ok' : ''}`}>{passUpperOk ? '✓' : '•'} אות גדולה A-Z</span>
-                <span className={`ami-hint ${passDigitOk ? 'ok' : ''}`}>{passDigitOk ? '✓' : '•'} ספרה</span>
-              </div>
-            )}
+            {/* דרישות סיסמה — חיווי חי */}
+            <div className="ami-hints">
+              <span className={`ami-hint ${passLenOk ? 'ok' : ''}`}>{passLenOk ? '✓' : '•'} 8+ תווים</span>
+              <span className={`ami-hint ${passUpperOk ? 'ok' : ''}`}>{passUpperOk ? '✓' : '•'} אות גדולה A-Z</span>
+              <span className={`ami-hint ${passDigitOk ? 'ok' : ''}`}>{passDigitOk ? '✓' : '•'} ספרה</span>
+            </div>
 
             {/* אישור תנאי שימוש + מדיניות פרטיות — חובה בהרשמה */}
-            {mode === 'register' && (
-              <div className="ami-consent">
-                <input id="ami-consent" type="checkbox" checked={consent}
-                  onChange={e => setConsent(e.target.checked)} />
-                <label htmlFor="ami-consent">
-                  אני מאשר/ת את{' '}
-                  <button type="button" onClick={e => { e.preventDefault(); onShowLegal?.('terms'); }}>תנאי השימוש</button>
-                  {' '}ואת{' '}
-                  <button type="button" onClick={e => { e.preventDefault(); onShowLegal?.('privacy'); }}>מדיניות הפרטיות</button>
-                </label>
-              </div>
-            )}
+            <div className="ami-consent">
+              <input id="ami-consent" type="checkbox" checked={consent}
+                onChange={e => setConsent(e.target.checked)} />
+              <label htmlFor="ami-consent">
+                אני מאשר/ת את{' '}
+                <button type="button" onClick={e => { e.preventDefault(); onShowLegal?.('terms'); }}>תנאי השימוש</button>
+                {' '}ואת{' '}
+                <button type="button" onClick={e => { e.preventDefault(); onShowLegal?.('privacy'); }}>מדיניות הפרטיות</button>
+              </label>
+            </div>
 
             {error && <div className="ami-err">{error}</div>}
 
-            <button className="ami-submit" onClick={handleSubmit} disabled={loading}>
+            <button className="ami-submit" onClick={() => doAuth('register')} disabled={loading}>
               {loading ? (
                 <>
                   <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   טוען...
                 </>
               ) : (
-                <>{mode === 'login' ? 'כניסה' : 'הרשמה'} <span className="go"><ArrowLeft size={15} /></span></>
+                <>הרשמה <span className="go"><ArrowLeft size={15} /></span></>
               )}
             </button>
 
             <div className="ami-switch">
-              {mode === 'login' ? 'אין לך חשבון? ' : 'כבר יש לך חשבון? '}
-              <button type="button" onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError(''); }}>
-                {mode === 'login' ? 'הרשמה' : 'כניסה'}
-              </button>
+              כבר יש לך חשבון?{' '}
+              <button type="button" onClick={backToEntry}>כניסה</button>
             </div>
           </div>
         )}
