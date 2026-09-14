@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff, ArrowLeft, ChevronRight } from 'lucide-react';
 import { api } from '../api';
 import { VerifyEmail } from './VerifyEmail';
@@ -37,7 +37,7 @@ const loadScript = (src: string) => new Promise<void>((resolve, reject) => {
 });
 
 export const Auth: React.FC<Props> = ({ onLogin, onShowLegal }) => {
-  const [view, setView] = useState<'entry' | 'email'>('entry'); // entry = כניסה, email = טופס הרשמה
+  const [view, setView] = useState<'entry' | 'email'>('entry'); // entry = כניסה (קבוע), email = טופס הרשמה (נגלל)
   const [role, setRole] = useState<'restaurant' | 'worker'>('restaurant');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -50,75 +50,6 @@ export const Auth: React.FC<Props> = ({ onLogin, onShowLegal }) => {
   const [pendingVerify, setPendingVerify] = useState<{userId:number,email:string,data:any}|null>(null);
   const [refCode, setRefCode] = useState('');
   const [consent, setConsent] = useState(false);
-
-  // ── Bottom sheet — הכרטיס נגרר בין "מכווץ" (רואים את התמונה) ל"מורחב" (מסך מלא כמעט) ──
-  const [expanded, setExpanded] = useState(false);
-  const cardRef = useRef<HTMLDivElement>(null);
-  const snapsRef = useRef<{ collapsed: number; expanded: number }>({ collapsed: 0, expanded: 0 });
-  const expandedRef = useRef(false);
-  const dragRef = useRef<{ startY: number; startTop: number; active: boolean }>({ startY: 0, startTop: 0, active: false });
-  const movedRef = useRef(0);
-
-  const applyTop = (top: number) => { if (cardRef.current) cardRef.current.style.top = top + 'px'; };
-
-  const computeSnaps = () => {
-    const card = cardRef.current; const root = card?.parentElement;
-    if (!card || !root) return;
-    const hero = root.querySelector('.ami-hero2') as HTMLElement | null;
-    const safe = root.querySelector('.ami-safe') as HTMLElement | null;
-    const H = root.clientHeight;
-    const heroH = hero && hero.offsetHeight ? hero.offsetHeight : Math.round(H * 0.42);
-    const safeH = safe ? safe.offsetHeight : 0;
-    // מכווץ: קצה הכרטיס בדיוק מתחת לתמונה (חופף 26px לפינה המעוגלת)
-    const collapsed = Math.min(H - 110, Math.max(200, heroH - 26));
-    // מורחב: משאיר רצועת תמונה קטנה עם הלוגו למעלה
-    const expandedTop = Math.max(84, safeH + 62);
-    snapsRef.current = { collapsed, expanded: expandedTop };
-    applyTop(expandedRef.current ? expandedTop : collapsed);
-  };
-
-  useEffect(() => {
-    computeSnaps();
-    const onR = () => computeSnaps();
-    window.addEventListener('resize', onR);
-    window.addEventListener('orientationchange', onR);
-    return () => { window.removeEventListener('resize', onR); window.removeEventListener('orientationchange', onR); };
-  }, []);
-
-  useEffect(() => {
-    expandedRef.current = expanded;
-    const s = snapsRef.current;
-    if (s.collapsed || s.expanded) applyTop(expanded ? s.expanded : s.collapsed);
-  }, [expanded]);
-
-  const onHandleDown = (e: React.PointerEvent) => {
-    const card = cardRef.current; if (!card) return;
-    dragRef.current = { startY: e.clientY, startTop: card.offsetTop, active: true };
-    movedRef.current = 0;
-    card.classList.add('dragging');
-    try { (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); } catch { /* ignore */ }
-  };
-  const onHandleMove = (e: React.PointerEvent) => {
-    const d = dragRef.current; if (!d.active) return;
-    const card = cardRef.current; if (!card) return;
-    const { collapsed, expanded: exp } = snapsRef.current;
-    const dy = e.clientY - d.startY;
-    movedRef.current = Math.max(movedRef.current, Math.abs(dy));
-    const top = Math.max(exp, Math.min(collapsed, d.startTop + dy));
-    card.style.top = top + 'px';
-  };
-  const onHandleUp = () => {
-    const d = dragRef.current; if (!d.active) return;
-    d.active = false;
-    const card = cardRef.current; if (!card) return;
-    card.classList.remove('dragging');
-    const { collapsed, expanded: exp } = snapsRef.current;
-    let goExp: boolean;
-    if (movedRef.current < 6) goExp = !expandedRef.current;             // הקשה קלה = החלפה
-    else goExp = card.offsetTop < (collapsed + exp) / 2;                // גרירה = הצמדה לקרוב
-    applyTop(goExp ? exp : collapsed);
-    setExpanded(goExp);
-  };
 
   useEffect(() => {
     try {
@@ -210,8 +141,8 @@ export const Auth: React.FC<Props> = ({ onLogin, onShowLegal }) => {
     setNotice('התחברות עם Apple תופעל בקרוב');
   };
 
-  const openRegister = () => { setView('email'); setExpanded(true); setError(''); setNotice(''); };
-  const backToEntry  = () => { setView('entry'); setExpanded(false); setError(''); setNotice(''); };
+  const openRegister = () => { setView('email'); setError(''); setNotice(''); try { window.scrollTo(0, 0); } catch {} };
+  const backToEntry  = () => { setView('entry'); setError(''); setNotice(''); };
 
   if (pendingVerify) {
     return (
@@ -227,161 +158,154 @@ export const Auth: React.FC<Props> = ({ onLogin, onShowLegal }) => {
   }
 
   return (
-    <div className={`auth-mi ${expanded ? 'sheet-open' : ''}`}>
-      {/* ---------- HERO (full illustration, always behind) ---------- */}
+    <div className={`auth-mi ${view === 'email' ? 'compact' : ''}`}>
+      {/* ---------- HERO (full illustration) ---------- */}
       <div className="ami-hero2">
         <div className="ami-safe" />
-        <img className="ami-heroimg" src="/hero-login.jpg" onLoad={computeSnaps}
+        <img className="ami-heroimg" src="/hero-login.jpg"
           alt="Staffly — Find your shift. Fill your team." />
       </div>
 
-      {/* ---------- CARD (draggable bottom sheet) ---------- */}
-      <div className="ami-card" ref={cardRef}>
-        <div className="ami-handle" onPointerDown={onHandleDown} onPointerMove={onHandleMove}
-          onPointerUp={onHandleUp} onPointerCancel={onHandleUp} aria-hidden="true">
-          <span />
-        </div>
+      {/* ---------- CARD ---------- */}
+      <div className="ami-card">
+        {view === 'entry' ? (
+          <>
+            {/* אימייל + סיסמה — כניסה ישירה (מסך קבוע, בלי גרירה) */}
+            <div className="ami-field">
+              <input id="ami-entry-email" type="email" inputMode="email" autoComplete="email"
+                autoCapitalize="none" enterKeyHint="next" placeholder=" "
+                value={email} onChange={e => setEmail(e.target.value)} />
+              <label htmlFor="ami-entry-email">אימייל</label>
+            </div>
 
-        <div className="ami-sheetscroll">
-          {view === 'entry' ? (
-            <>
-              {/* אימייל + סיסמה — כניסה ישירה (אין שירות SMS) */}
-              <div className="ami-field">
-                <input id="ami-entry-email" type="email" inputMode="email" autoComplete="email"
-                  autoCapitalize="none" enterKeyHint="next" placeholder=" "
-                  value={email} onChange={e => setEmail(e.target.value)} />
-                <label htmlFor="ami-entry-email">אימייל</label>
-              </div>
-
-              <div className="ami-field pw">
-                <input id="ami-entry-pass" type={showPass ? 'text' : 'password'} placeholder=" "
-                  value={password} onChange={e => setPassword(e.target.value)}
-                  autoComplete="current-password" enterKeyHint="go"
-                  onKeyDown={e => { if (e.key === 'Enter') doAuth('login'); }} />
-                <label htmlFor="ami-entry-pass">סיסמה</label>
-                <button type="button" className="ami-eye" onClick={() => setShowPass(s => !s)}
-                  aria-label={showPass ? 'הסתר סיסמה' : 'הצג סיסמה'}>
-                  {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-
-              {error && <div className="ami-err">{error}</div>}
-
-              <button className="ami-primary" onClick={() => doAuth('login')} disabled={loading}>
-                {loading ? (
-                  <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> טוען...</>
-                ) : (
-                  <>המשך <ArrowLeft size={17} /></>
-                )}
+            <div className="ami-field pw">
+              <input id="ami-entry-pass" type={showPass ? 'text' : 'password'} placeholder=" "
+                value={password} onChange={e => setPassword(e.target.value)}
+                autoComplete="current-password" enterKeyHint="go"
+                onKeyDown={e => { if (e.key === 'Enter') doAuth('login'); }} />
+              <label htmlFor="ami-entry-pass">סיסמה</label>
+              <button type="button" className="ami-eye" onClick={() => setShowPass(s => !s)}
+                aria-label={showPass ? 'הסתר סיסמה' : 'הצג סיסמה'}>
+                {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
+            </div>
 
-              <div className="ami-divider" />
+            {error && <div className="ami-err">{error}</div>}
 
-              <button className="ami-oauth apple" onClick={handleApple} disabled={loading}>
-                <span className="ic"><AppleIcon /></span>
-                המשך עם Apple
+            <button className="ami-primary" onClick={() => doAuth('login')} disabled={loading}>
+              {loading ? (
+                <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> טוען...</>
+              ) : (
+                <>המשך <ArrowLeft size={17} /></>
+              )}
+            </button>
+
+            <div className="ami-divider" />
+
+            <button className="ami-oauth apple" onClick={handleApple} disabled={loading}>
+              <span className="ic"><AppleIcon /></span>
+              המשך עם Apple
+            </button>
+            <button className="ami-oauth" onClick={handleGoogle} disabled={loading}>
+              <span className="ic"><GoogleIcon /></span>
+              המשך עם Google
+            </button>
+
+            <div className="ami-divider" />
+
+            <button className="ami-reg" onClick={openRegister}>
+              הירשם <ArrowLeft size={17} />
+            </button>
+
+            {notice && <div className="ami-notice">{notice}</div>}
+
+            <div className="ami-legal">
+              בהמשך אתה מאשר את{' '}
+              <button type="button" onClick={() => onShowLegal?.('terms')}>תנאי השימוש</button>
+              {' '}ואת{' '}
+              <button type="button" onClick={() => onShowLegal?.('privacy')}>מדיניות הפרטיות</button>
+            </div>
+          </>
+        ) : (
+          /* ---------- REGISTER FORM (נגלל) ---------- */
+          <>
+            <button className="ami-back" onClick={backToEntry}>
+              <ChevronRight size={17} /> חזרה
+            </button>
+
+            <div className="ami-formtitle">הרשמה ל-Staffly</div>
+
+            <div className="ami-rolelab">אני מצטרף/ת בתור</div>
+            <div className="ami-roles">
+              <button type="button" className={`ami-role ${role === 'restaurant' ? 'on' : ''}`}
+                onClick={() => setRole('restaurant')}>מסעדה / עסק</button>
+              <button type="button" className={`ami-role ${role === 'worker' ? 'on' : ''}`}
+                onClick={() => setRole('worker')}>עובד</button>
+            </div>
+
+            <div className="ami-field">
+              <input id="ami-email" type="email" inputMode="email" autoComplete="email"
+                autoCapitalize="none" enterKeyHint="next" placeholder=" "
+                value={email} onChange={e => setEmail(e.target.value)} />
+              <label htmlFor="ami-email">אימייל</label>
+            </div>
+
+            <div className="ami-field pw">
+              <input id="ami-pass" type={showPass ? 'text' : 'password'} placeholder=" "
+                value={password} onChange={e => setPassword(e.target.value)}
+                autoComplete="new-password" enterKeyHint="next" />
+              <label htmlFor="ami-pass">סיסמה</label>
+              <button type="button" className="ami-eye" onClick={() => setShowPass(s => !s)}
+                aria-label={showPass ? 'הסתר סיסמה' : 'הצג סיסמה'}>
+                {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
-              <button className="ami-oauth" onClick={handleGoogle} disabled={loading}>
-                <span className="ic"><GoogleIcon /></span>
-                המשך עם Google
+            </div>
+
+            <div className="ami-field pw">
+              <input id="ami-pass2" type={showConfirm ? 'text' : 'password'} placeholder=" "
+                value={confirmPass} onChange={e => setConfirmPass(e.target.value)}
+                autoComplete="new-password" enterKeyHint="go"
+                onKeyDown={e => { if (e.key === 'Enter') doAuth('register'); }} />
+              <label htmlFor="ami-pass2">אימות סיסמה</label>
+              <button type="button" className="ami-eye" onClick={() => setShowConfirm(s => !s)}
+                aria-label={showConfirm ? 'הסתר סיסמה' : 'הצג סיסמה'}>
+                {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
+            </div>
 
-              <div className="ami-divider" />
+            <div className="ami-hints">
+              <span className={`ami-hint ${passLenOk ? 'ok' : ''}`}>{passLenOk ? '✓' : '•'} 8+ תווים</span>
+              <span className={`ami-hint ${passUpperOk ? 'ok' : ''}`}>{passUpperOk ? '✓' : '•'} אות גדולה A-Z</span>
+              <span className={`ami-hint ${passDigitOk ? 'ok' : ''}`}>{passDigitOk ? '✓' : '•'} ספרה</span>
+            </div>
 
-              <button className="ami-reg" onClick={openRegister}>
-                הירשם <ArrowLeft size={17} />
-              </button>
-
-              {notice && <div className="ami-notice">{notice}</div>}
-
-              <div className="ami-legal">
-                בהמשך אתה מאשר את{' '}
-                <button type="button" onClick={() => onShowLegal?.('terms')}>תנאי השימוש</button>
+            <div className="ami-consent">
+              <input id="ami-consent" type="checkbox" checked={consent}
+                onChange={e => setConsent(e.target.checked)} />
+              <label htmlFor="ami-consent">
+                אני מאשר/ת את{' '}
+                <button type="button" onClick={e => { e.preventDefault(); onShowLegal?.('terms'); }}>תנאי השימוש</button>
                 {' '}ואת{' '}
-                <button type="button" onClick={() => onShowLegal?.('privacy')}>מדיניות הפרטיות</button>
-              </div>
-            </>
-          ) : (
-            /* ---------- REGISTER FORM ---------- */
-            <>
-              <button className="ami-back" onClick={backToEntry}>
-                <ChevronRight size={17} /> חזרה
-              </button>
+                <button type="button" onClick={e => { e.preventDefault(); onShowLegal?.('privacy'); }}>מדיניות הפרטיות</button>
+              </label>
+            </div>
 
-              <div className="ami-formtitle">הרשמה ל-Staffly</div>
+            {error && <div className="ami-err">{error}</div>}
 
-              <div className="ami-rolelab">אני מצטרף/ת בתור</div>
-              <div className="ami-roles">
-                <button type="button" className={`ami-role ${role === 'restaurant' ? 'on' : ''}`}
-                  onClick={() => setRole('restaurant')}>מסעדה / עסק</button>
-                <button type="button" className={`ami-role ${role === 'worker' ? 'on' : ''}`}
-                  onClick={() => setRole('worker')}>עובד</button>
-              </div>
+            <button className="ami-submit" onClick={() => doAuth('register')} disabled={loading}>
+              {loading ? (
+                <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> טוען...</>
+              ) : (
+                <>הרשמה <span className="go"><ArrowLeft size={15} /></span></>
+              )}
+            </button>
 
-              <div className="ami-field">
-                <input id="ami-email" type="email" inputMode="email" autoComplete="email"
-                  autoCapitalize="none" enterKeyHint="next" placeholder=" "
-                  value={email} onChange={e => setEmail(e.target.value)} />
-                <label htmlFor="ami-email">אימייל</label>
-              </div>
-
-              <div className="ami-field pw">
-                <input id="ami-pass" type={showPass ? 'text' : 'password'} placeholder=" "
-                  value={password} onChange={e => setPassword(e.target.value)}
-                  autoComplete="new-password" enterKeyHint="next" />
-                <label htmlFor="ami-pass">סיסמה</label>
-                <button type="button" className="ami-eye" onClick={() => setShowPass(s => !s)}
-                  aria-label={showPass ? 'הסתר סיסמה' : 'הצג סיסמה'}>
-                  {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-
-              <div className="ami-field pw">
-                <input id="ami-pass2" type={showConfirm ? 'text' : 'password'} placeholder=" "
-                  value={confirmPass} onChange={e => setConfirmPass(e.target.value)}
-                  autoComplete="new-password" enterKeyHint="go"
-                  onKeyDown={e => { if (e.key === 'Enter') doAuth('register'); }} />
-                <label htmlFor="ami-pass2">אימות סיסמה</label>
-                <button type="button" className="ami-eye" onClick={() => setShowConfirm(s => !s)}
-                  aria-label={showConfirm ? 'הסתר סיסמה' : 'הצג סיסמה'}>
-                  {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-
-              <div className="ami-hints">
-                <span className={`ami-hint ${passLenOk ? 'ok' : ''}`}>{passLenOk ? '✓' : '•'} 8+ תווים</span>
-                <span className={`ami-hint ${passUpperOk ? 'ok' : ''}`}>{passUpperOk ? '✓' : '•'} אות גדולה A-Z</span>
-                <span className={`ami-hint ${passDigitOk ? 'ok' : ''}`}>{passDigitOk ? '✓' : '•'} ספרה</span>
-              </div>
-
-              <div className="ami-consent">
-                <input id="ami-consent" type="checkbox" checked={consent}
-                  onChange={e => setConsent(e.target.checked)} />
-                <label htmlFor="ami-consent">
-                  אני מאשר/ת את{' '}
-                  <button type="button" onClick={e => { e.preventDefault(); onShowLegal?.('terms'); }}>תנאי השימוש</button>
-                  {' '}ואת{' '}
-                  <button type="button" onClick={e => { e.preventDefault(); onShowLegal?.('privacy'); }}>מדיניות הפרטיות</button>
-                </label>
-              </div>
-
-              {error && <div className="ami-err">{error}</div>}
-
-              <button className="ami-submit" onClick={() => doAuth('register')} disabled={loading}>
-                {loading ? (
-                  <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> טוען...</>
-                ) : (
-                  <>הרשמה <span className="go"><ArrowLeft size={15} /></span></>
-                )}
-              </button>
-
-              <div className="ami-switch">
-                כבר יש לך חשבון?{' '}
-                <button type="button" onClick={backToEntry}>כניסה</button>
-              </div>
-            </>
-          )}
-        </div>
+            <div className="ami-switch">
+              כבר יש לך חשבון?{' '}
+              <button type="button" onClick={backToEntry}>כניסה</button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
