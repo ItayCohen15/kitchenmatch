@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Bot, Sparkles, X, Send } from 'lucide-react';
+import { Sparkles, X, Send } from 'lucide-react';
 import { api } from '../../api';
 import { useApp } from '../../context/AppContext';
 import { haptic } from '../../utils/haptics';
@@ -113,7 +113,9 @@ export const AssistantBot: React.FC<{ role: BotRole }> = ({ role }) => {
                 opacity: hidden ? 0 : 1,
                 pointerEvents: hidden ? 'none' : 'auto',
               }}>
-              <Bot size={26} />
+              <span className="absolute inset-0 rounded-full overflow-hidden">
+                <img src="/staff-bot.png" alt="סטאף" className="w-full h-full object-cover" style={{ transform: 'scale(1.06)' }} />
+              </span>
               {/* ניצוץ קטן — מסמן שזה עוזר חכם */}
               <span className="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full flex items-center justify-center"
                 style={{ background: '#131626', border: '2px solid #7b7cee' }}>
@@ -141,9 +143,10 @@ export const AssistantBot: React.FC<{ role: BotRole }> = ({ role }) => {
             <div className="flex items-center justify-between px-4 py-3 flex-shrink-0 text-white"
               style={{ background: '#1b1e38' }}>
               <div className="flex items-center gap-2.5">
-                <div className="relative w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ background: '#5354d3' }}>
-                  <Bot size={19} style={{ color: '#ffffff' }} />
+                <div className="relative w-9 h-9 flex-shrink-0">
+                  <span className="block w-full h-full rounded-full overflow-hidden" style={{ background: '#5354d3' }}>
+                    <img src="/staff-bot.png" alt="סטאף" className="w-full h-full object-cover" style={{ transform: 'scale(1.06)' }} />
+                  </span>
                   <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center"
                     style={{ background: '#131626' }}>
                     <Sparkles size={8} style={{ color: '#7b7cee' }} />
