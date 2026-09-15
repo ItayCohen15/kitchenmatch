@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { LogOut, MessageCircle } from 'lucide-react';
+import { Bell, ChevronLeft } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { BottomNav } from '../common/BottomNav';
 import { api, chatSeen } from '../../api';
@@ -34,7 +34,7 @@ const SCREEN_TITLES: Record<WorkerScreen, string> = {
 const NAV_TABS: WorkerScreen[] = ['home', 'stages', 'chats', 'wallet', 'history', 'profile'];
 
 export const WorkerApp: React.FC = () => {
-  const { workerScreen, navToWorker, resetToLanding, userProfile } = useApp();
+  const { workerScreen, navToWorker, userProfile } = useApp();
   const name = userProfile?.Name || 'עובד';
   const initials = name.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
   const [chatUnread, setChatUnread] = useState(0);
@@ -89,33 +89,36 @@ export const WorkerApp: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full">
-      <header className="px-4 flex items-center justify-between flex-shrink-0"
-        style={{ background:'#131626', borderBottom:'1px solid rgba(255,255,255,0.07)', paddingTop:'max(env(safe-area-inset-top), 12px)', paddingBottom:'12px' }}>
-        <div className="flex items-center gap-2">
-          {showBack ? (
-            <button onClick={handleBack} className="font-bold text-xl" style={{color:'rgba(255,255,255,0.6)'}}>‹</button>
-          ) : (
-            <button onClick={resetToLanding} style={{color:'rgba(255,255,255,0.4)'}}>
-              <LogOut size={18} />
+      <header className="relative px-4 flex items-center justify-between flex-shrink-0"
+        style={{ background:'#131a2e', borderBottom:'1px solid rgba(255,255,255,0.06)', paddingTop:'max(env(safe-area-inset-top), 12px)', paddingBottom:'12px' }}>
+        {showBack ? (
+          <>
+            <button onClick={handleBack} className="w-10 h-10 grid place-items-center text-2xl -mr-2" style={{color:'rgba(255,255,255,0.7)'}}>‹</button>
+            <span className="absolute left-1/2 -translate-x-1/2 font-bold text-base text-white">{SCREEN_TITLES[workerScreen]}</span>
+            <div className="w-10" />
+          </>
+        ) : (
+          <>
+            {/* אווטאר פרופיל — ימין */}
+            <button onClick={() => navToWorker('profile')} className="flex items-center gap-1" style={{ color:'rgba(255,255,255,0.5)' }}>
+              <div className="w-9 h-9 rounded-full grid place-items-center text-xs font-bold" style={{ background:'#5354d3', color:'#fff' }}>{initials}</div>
+              <ChevronLeft size={16} />
             </button>
-          )}
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="font-bold text-base text-white">{SCREEN_TITLES[workerScreen]}</span>
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold"
-            style={{ background:'#5354d3', color:'#ffffff' }}>
-            {initials}
-          </div>
-        </div>
-        <button className="relative" style={{color:'rgba(255,255,255,0.5)'}} onClick={() => navToWorker('chats')} title="הצ'אטים שלי">
-          <MessageCircle size={20} />
-          {chatUnread > 0 && (
-            <div className="absolute -top-1 -left-1 min-w-[16px] h-4 px-1 rounded-full flex items-center justify-center text-white font-bold"
-              style={{ fontSize: 9, background: '#ef4444' }}>
-              {chatUnread > 9 ? '9+' : chatUnread}
+            {/* לוגו — מרכז */}
+            <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
+              <img src="/logo.svg" alt="Staffly" className="w-8 h-8 rounded-lg" />
+              <span className="text-white font-extrabold text-lg tracking-tight">Staffly</span>
             </div>
-          )}
-        </button>
+            {/* פעמון (צ'אטים/התראות) — שמאל */}
+            <button onClick={() => navToWorker('chats')} className="relative w-10 h-10 rounded-xl grid place-items-center"
+              style={{ background:'rgba(255,255,255,0.06)', color:'#c8cce0' }} title="הצ'אטים שלי">
+              <Bell size={20} />
+              {chatUnread > 0 && (
+                <span className="absolute rounded-full" style={{ top: 9, right: 11, width: 9, height: 9, background:'#ef4444', border:'2px solid #131a2e' }} />
+              )}
+            </button>
+          </>
+        )}
       </header>
 
       <main className="flex-1 overflow-y-auto px-4 pt-4" style={{ paddingBottom: 'calc(90px + env(safe-area-inset-bottom))' }}>

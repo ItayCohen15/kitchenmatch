@@ -53,6 +53,13 @@ export const AssistantBot: React.FC<{ role: BotRole }> = ({ role }) => {
     if (open) bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages.length, thinking, open]);
 
+  // פתיחת הבוט מבחוץ (כרטיס הברכה / התראה חכמה במסך הבית)
+  useEffect(() => {
+    const onOpen = () => setOpen(true);
+    window.addEventListener('open-staff-bot', onOpen);
+    return () => window.removeEventListener('open-staff-bot', onOpen);
+  }, []);
+
   // ── הסתרה בגלילה למטה ──
   // מבטיח שהכפתור לא יכסה תוכן/כפתורים בתחתית המסך: נעלם כשגוללים למטה,
   // חוזר כשגוללים למעלה או בראש העמוד. (scroll לא עולה בבועות → מאזינים ב-capture.)
