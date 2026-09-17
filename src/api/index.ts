@@ -409,6 +409,8 @@ export const api = {
     fetch(`${BASE}/admin/workers`, { headers: headers(), cache: 'no-store' }).then(handleResponse),
   adminRestaurants: () =>
     fetch(`${BASE}/admin/restaurants`, { headers: headers(), cache: 'no-store' }).then(handleResponse),
+  adminDeleteUser: (userId: number) =>
+    fetch(`${BASE}/admin/users/${userId}`, { method: 'DELETE', headers: headers() }).then(handleResponse),
   adminVerifyWorker: (workerId: number, verified: boolean) =>
     fetch(`${BASE}/admin/workers/${workerId}/verify`, {
       method: 'POST', headers: headers(), body: JSON.stringify({ verified }),

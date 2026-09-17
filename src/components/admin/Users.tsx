@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Search, Star, CheckCircle2, XCircle, Phone, Briefcase, GraduationCap, Download, BadgeCheck } from 'lucide-react';
+import { Search, Star, CheckCircle2, XCircle, Phone, Briefcase, GraduationCap, Download, BadgeCheck, Trash2 } from 'lucide-react';
 import { api } from '../../api';
 import { roleLabels } from '../../utils/roles';
 import { ils, num, dateShort, LEVEL_LABELS, LEVEL_COLORS } from './format';
@@ -14,6 +14,7 @@ export const AdminUsers: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState('');
   const [verifying, setVerifying] = useState<number | null>(null);
+  const [deleting, setDeleting] = useState<number | null>(null);
 
   // אימות ידני של עובד ("תג מאומת"). משפיע רק על המקור הידני —
   // עובד שעבר KYC אצל הסליקה נשאר מאומת גם אחרי ביטול ידני.
@@ -27,6 +28,22 @@ export const AdminUsers: React.FC = () => {
         : x));
     } catch { /* שקט — נשאר במצב הקודם */ }
     finally { setVerifying(null); }
+  };
+
+  // מחיקת משתמש (אנונימיזציה) — מנהל בלבד. מסמן מחוק ומשחרר את המייל לשימוש חוזר.
+  const removeUser = async (u: any) => {
+    const uid = u.UserId;
+    if (!uid) return;
+    const nm = u.Name || u.Email || 'המשתמש';
+    if (!window.confirm(`למחוק את "${nm}"?\nהחשבון יסומן כמחוק והמייל ישוחרר. לא ניתן לשחזר.`)) return;
+    setDeleting(uid);
+    try {
+      await api.adminDeleteUser(uid);
+      setWorkers(prev => prev.filter(x => x.UserId !== uid));
+      setRestaurants(prev => prev.filter(x => x.UserId !== uid));
+    } catch (e: any) {
+      window.alert(e?.message || 'מחיקה נכשלה');
+    } finally { setDeleting(null); }
   };
 
   const load = () => {
@@ -148,13 +165,20 @@ export const AdminUsers: React.FC = () => {
                       ? 'אומת ידנית על ידך'
                       : 'לא מאומת'}
                 </span>
-                <button onClick={() => toggleVerify(w)} disabled={verifying === w.Id}
-                  className="text-[11px] font-bold px-2.5 py-1 rounded-lg disabled:opacity-40 flex-shrink-0"
-                  style={w.AdminVerifiedAt
-                    ? { background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.55)', border: '1px solid rgba(255,255,255,0.1)' }
-                    : { background: '#1f9d6b', color: '#fff' }}>
-                  {verifying === w.Id ? '...' : w.AdminVerifiedAt ? 'בטל אימות ידני' : 'אמת עובד'}
-                </button>
+                <div className="flex items-center gap-1.5 flex-shrink-0">
+                  <button onClick={() => toggleVerify(w)} disabled={verifying === w.Id}
+                    className="text-[11px] font-bold px-2.5 py-1 rounded-lg disabled:opacity-40"
+                    style={w.AdminVerifiedAt
+                      ? { background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.55)', border: '1px solid rgba(255,255,255,0.1)' }
+                      : { background: '#1f9d6b', color: '#fff' }}>
+                    {verifying === w.Id ? '...' : w.AdminVerifiedAt ? 'בטל אימות ידני' : 'אמת עובד'}
+                  </button>
+                  <button onClick={() => removeUser(w)} disabled={deleting === w.UserId} title="מחק משתמש"
+                    className="p-1.5 rounded-lg disabled:opacity-40"
+                    style={{ background: 'rgba(244,63,94,0.12)', color: '#fb7185', border: '1px solid rgba(244,63,94,0.22)' }}>
+                    {deleting === w.UserId ? '…' : <Trash2 size={13} />}
+                  </button>
+                </div>
               </div>
             </div>
           )) : filtered.map((r: any) => (
@@ -189,6 +213,13 @@ export const AdminUsers: React.FC = () => {
                   <Phone size={10} /> {r.Phone}
                 </div>
               )}
+              <div className="flex items-center justify-end mt-2.5 pt-2.5" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                <button onClick={() => removeUser(r)} disabled={deleting === r.UserId} title="מחק מסעדה"
+                  className="text-[11px] font-bold px-2.5 py-1 rounded-lg disabled:opacity-40 flex items-center gap-1"
+                  style={{ background: 'rgba(244,63,94,0.12)', color: '#fb7185', border: '1px solid rgba(244,63,94,0.22)' }}>
+                  {deleting === r.UserId ? '…' : <><Trash2 size={12} /> מחק</>}
+                </button>
+              </div>
             </div>
           ))}
         </div>
