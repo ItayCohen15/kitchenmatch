@@ -327,15 +327,37 @@ const AppContent: React.FC = () => {
   );
 };
 
-const App: React.FC = () => (
-  <ErrorBoundary>
-    <AppProvider>
-      <AppContent />
-      {/* שכבות-על גלובליות (fixed) — ממקמות את עצמן, מעל כל המסכים */}
-      <ToastHost />
-      <OfflineBanner />
-    </AppProvider>
-  </ErrorBoundary>
-);
+// נתיבים משפטיים עצמאיים (URL ציבורי) — /privacy ו-/terms מוגשים כדף מלא,
+// כדי שיהיה קישור אמיתי לשיתוף (למשל במסך ההסכמה של Google OAuth ובחנויות).
+const legalRoute = (): 'privacy' | 'terms' | null => {
+  try {
+    const path = window.location.pathname.replace(/\/+$/, '');
+    if (path === '/privacy') return 'privacy';
+    if (path === '/terms')   return 'terms';
+    return null;
+  } catch { return null; }
+};
+
+const App: React.FC = () => {
+  const legal = legalRoute();
+  if (legal) {
+    const goHome = () => { try { window.location.assign('/'); } catch {} };
+    return (
+      <div style={{ position: 'fixed', inset: 0, background: '#f4f5f9' }}>
+        {legal === 'privacy' ? <PrivacyPolicy onBack={goHome} /> : <Terms onBack={goHome} />}
+      </div>
+    );
+  }
+  return (
+    <ErrorBoundary>
+      <AppProvider>
+        <AppContent />
+        {/* שכבות-על גלובליות (fixed) — ממקמות את עצמן, מעל כל המסכים */}
+        <ToastHost />
+        <OfflineBanner />
+      </AppProvider>
+    </ErrorBoundary>
+  );
+};
 
 export default App;

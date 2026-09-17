@@ -28,11 +28,6 @@ export const Terms: React.FC<Props> = ({ onBack }) => {
 
       {/* Body */}
       <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', padding: 16 }}>
-        {/* Draft notice */}
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 11, fontWeight: 700, color: '#8a5a00', background: '#fdf3d8', border: '1px solid #f0dfa6', borderRadius: 8, padding: '6px 10px', marginBottom: 12 }}>
-          ⚠ טיוטה — לאישור עו״ד לפני השקה
-        </div>
-
         <div style={{ background: '#fff', border: '1px solid #e6e7ef', borderRadius: 10, padding: 16 }}>
           <div style={{ fontSize: 11.5, color: '#6b7180', marginBottom: 4 }}>עדכון אחרון: {UPDATED}</div>
 
