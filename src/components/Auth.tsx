@@ -217,6 +217,18 @@ export const Auth: React.FC<Props> = ({ onLogin, onShowLegal }) => {
 
             <div className="ami-divider" />
 
+            {/* בורר סוג חשבון — רלוונטי להרשמה חדשה דרך ספק (Google/Apple).
+                בכניסה של משתמש קיים התפקיד נשמר בשרת והבחירה כאן לא משנה. */}
+            <div style={{ marginBottom: 4 }}>
+              <div style={{ fontSize: 12, color: '#6b7180', textAlign: 'center', marginBottom: 8 }}>נרשמים לראשונה? בחרו סוג חשבון</div>
+              <div className="ami-roles">
+                <button type="button" className={`ami-role ${role === 'worker' ? 'on' : ''}`}
+                  onClick={() => setRole('worker')}>עובד</button>
+                <button type="button" className={`ami-role ${role === 'restaurant' ? 'on' : ''}`}
+                  onClick={() => setRole('restaurant')}>מסעדה / עסק</button>
+              </div>
+            </div>
+
             <button className="ami-oauth apple" onClick={handleApple} disabled={loading}>
               <span className="ic"><AppleIcon /></span>
               המשך עם Apple
