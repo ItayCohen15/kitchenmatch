@@ -71,21 +71,27 @@ export const Auth: React.FC<Props> = ({ onLogin, onShowLegal }) => {
     onLogin(data.token, data.role, data.profile, isNew);
   };
 
-  // Google Sign-In — כפתור מרונדר של Google (renderButton) במקום One Tap:
-  // אמין, נפתח כחלון בחירת חשבון, ועובד גם בגלישה פרטית וגם כשלא מחוברים ל-Google.
-  const googleBtnRef = useRef<HTMLDivElement>(null);
+  // Google Sign-In — כפתור מרונדר (renderButton), אמין וגם בגלישה פרטית.
+  // מסך כניסה = mode 'login' (רק התחברות; אין יצירת חשבון). מסך הרשמה = mode 'register'.
+  const googleBtnRef = useRef<HTMLDivElement>(null);      // כפתור במסך הכניסה (login)
+  const googleBtnRegRef = useRef<HTMLDivElement>(null);   // כפתור במסך ההרשמה (register)
   const gisInited = useRef(false);
   const roleRef = useRef(role);       roleRef.current = role;
   const refCodeRef = useRef(refCode); refCodeRef.current = refCode;
+  const oauthModeRef = useRef<'login' | 'register'>('login');
+  oauthModeRef.current = view === 'email' ? 'register' : 'login';
 
   useEffect(() => {
-    if (view !== 'entry' || !GOOGLE_CLIENT_ID) return;
+    if (!GOOGLE_CLIENT_ID) return;
+    const isReg = view === 'email';
+    const target = isReg ? googleBtnRegRef.current : googleBtnRef.current;
+    if (!target) return;
     let cancelled = false;
     (async () => {
       try {
         await loadScript('https://accounts.google.com/gsi/client');
         const g = (window as any).google;
-        if (cancelled || !g?.accounts?.id || !googleBtnRef.current) return;
+        if (cancelled || !g?.accounts?.id) return;
         if (!gisInited.current) {
           g.accounts.id.initialize({
             client_id: GOOGLE_CLIENT_ID,
@@ -93,7 +99,7 @@ export const Auth: React.FC<Props> = ({ onLogin, onShowLegal }) => {
               try {
                 setLoading(true);
                 const consentAcceptedAt = new Date().toISOString();
-                const data = await api.oauthGoogle(resp.credential, roleRef.current, refCodeRef.current || undefined, consentAcceptedAt);
+                const data = await api.oauthGoogle(resp.credential, roleRef.current, refCodeRef.current || undefined, consentAcceptedAt, oauthModeRef.current);
                 localStorage.removeItem('km_ref');
                 finishSession(data, !!data.isNew);
               } catch (e: any) {
@@ -103,10 +109,10 @@ export const Auth: React.FC<Props> = ({ onLogin, onShowLegal }) => {
           });
           gisInited.current = true;
         }
-        googleBtnRef.current.innerHTML = '';
-        g.accounts.id.renderButton(googleBtnRef.current, {
+        target.innerHTML = '';
+        g.accounts.id.renderButton(target, {
           type: 'standard', theme: 'outline', size: 'large',
-          text: 'continue_with', shape: 'pill', logo_alignment: 'center', locale: 'he',
+          text: isReg ? 'signup_with' : 'continue_with', shape: 'pill', logo_alignment: 'center', locale: 'he',
         });
       } catch { /* טעינת GIS נכשלה — נשאר fallback שקט */ }
     })();
@@ -217,18 +223,6 @@ export const Auth: React.FC<Props> = ({ onLogin, onShowLegal }) => {
 
             <div className="ami-divider" />
 
-            {/* בורר סוג חשבון — רלוונטי להרשמה חדשה דרך ספק (Google/Apple).
-                בכניסה של משתמש קיים התפקיד נשמר בשרת והבחירה כאן לא משנה. */}
-            <div style={{ marginBottom: 4 }}>
-              <div style={{ fontSize: 12, color: '#6b7180', textAlign: 'center', marginBottom: 8 }}>נרשמים לראשונה? בחרו סוג חשבון</div>
-              <div className="ami-roles">
-                <button type="button" className={`ami-role ${role === 'worker' ? 'on' : ''}`}
-                  onClick={() => setRole('worker')}>עובד</button>
-                <button type="button" className={`ami-role ${role === 'restaurant' ? 'on' : ''}`}
-                  onClick={() => setRole('restaurant')}>מסעדה / עסק</button>
-              </div>
-            </div>
-
             <button className="ami-oauth apple" onClick={handleApple} disabled={loading}>
               <span className="ic"><AppleIcon /></span>
               המשך עם Apple
@@ -273,6 +267,26 @@ export const Auth: React.FC<Props> = ({ onLogin, onShowLegal }) => {
               <button type="button" className={`ami-role ${role === 'worker' ? 'on' : ''}`}
                 onClick={() => setRole('worker')}>עובד</button>
             </div>
+
+            <div className="ami-divider" />
+
+            <button className="ami-oauth apple" onClick={handleApple} disabled={loading}>
+              <span className="ic"><AppleIcon /></span>
+              הרשמה עם Apple
+            </button>
+            {GOOGLE_CLIENT_ID ? (
+              <div ref={googleBtnRegRef} className="ami-oauth-g" style={{ display: 'flex', justifyContent: 'center' }} />
+            ) : (
+              <button className="ami-oauth" onClick={() => setNotice('הרשמה עם Google תופעל בקרוב')} disabled={loading}>
+                <span className="ic"><GoogleIcon /></span>
+                הרשמה עם Google
+              </button>
+            )}
+            <div style={{ fontSize: 11, color: '#8a8f9e', textAlign: 'center', margin: '2px 0' }}>
+              בהרשמה דרך ספק אתה מאשר את תנאי השימוש ומדיניות הפרטיות
+            </div>
+
+            <div className="ami-divider" />
 
             <div className="ami-field">
               <input id="ami-email" type="email" inputMode="email" autoComplete="email"

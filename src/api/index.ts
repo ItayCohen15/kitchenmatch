@@ -74,18 +74,18 @@ export const api = {
 
   // ── OAuth (Google / Apple) — התחברות/הרשמה בעזרת אסימון זהות מהספק.
   //    מופעל בשרת רק כשמוגדר GOOGLE_CLIENT_ID / Apple; אחרת מחזיר 501.
-  oauthGoogle: (credential: string, role?: string, refCode?: string, consentAcceptedAt?: string) =>
+  oauthGoogle: (credential: string, role?: string, refCode?: string, consentAcceptedAt?: string, mode?: string) =>
     fetch(`${BASE}/auth/google`, {
       method: 'POST',
       headers: headers(),
-      body: JSON.stringify({ credential, role, refCode: refCode || undefined, consentAcceptedAt: consentAcceptedAt || undefined })
+      body: JSON.stringify({ credential, role, refCode: refCode || undefined, consentAcceptedAt: consentAcceptedAt || undefined, mode: mode || undefined })
     }).then(handleResponse),
 
-  oauthApple: (identityToken: string, role?: string, refCode?: string, consentAcceptedAt?: string) =>
+  oauthApple: (identityToken: string, role?: string, refCode?: string, consentAcceptedAt?: string, mode?: string) =>
     fetch(`${BASE}/auth/apple`, {
       method: 'POST',
       headers: headers(),
-      body: JSON.stringify({ identityToken, role, refCode: refCode || undefined, consentAcceptedAt: consentAcceptedAt || undefined })
+      body: JSON.stringify({ identityToken, role, refCode: refCode || undefined, consentAcceptedAt: consentAcceptedAt || undefined, mode: mode || undefined })
     }).then(handleResponse),
 
   // מחיקת חשבון — בלתי-הפיך. דורש אישור סיסמה.
