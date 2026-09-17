@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Eye, EyeOff, ArrowLeft, ChevronRight } from 'lucide-react';
 import { api } from '../api';
 import { VerifyEmail } from './VerifyEmail';
@@ -71,6 +71,48 @@ export const Auth: React.FC<Props> = ({ onLogin, onShowLegal }) => {
     onLogin(data.token, data.role, data.profile, isNew);
   };
 
+  // Google Sign-In — כפתור מרונדר של Google (renderButton) במקום One Tap:
+  // אמין, נפתח כחלון בחירת חשבון, ועובד גם בגלישה פרטית וגם כשלא מחוברים ל-Google.
+  const googleBtnRef = useRef<HTMLDivElement>(null);
+  const gisInited = useRef(false);
+  const roleRef = useRef(role);       roleRef.current = role;
+  const refCodeRef = useRef(refCode); refCodeRef.current = refCode;
+
+  useEffect(() => {
+    if (view !== 'entry' || !GOOGLE_CLIENT_ID) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        await loadScript('https://accounts.google.com/gsi/client');
+        const g = (window as any).google;
+        if (cancelled || !g?.accounts?.id || !googleBtnRef.current) return;
+        if (!gisInited.current) {
+          g.accounts.id.initialize({
+            client_id: GOOGLE_CLIENT_ID,
+            callback: async (resp: any) => {
+              try {
+                setLoading(true);
+                const consentAcceptedAt = new Date().toISOString();
+                const data = await api.oauthGoogle(resp.credential, roleRef.current, refCodeRef.current || undefined, consentAcceptedAt);
+                localStorage.removeItem('km_ref');
+                finishSession(data, !!data.isNew);
+              } catch (e: any) {
+                setNotice(e.message || 'שגיאת התחברות עם Google');
+              } finally { setLoading(false); }
+            },
+          });
+          gisInited.current = true;
+        }
+        googleBtnRef.current.innerHTML = '';
+        g.accounts.id.renderButton(googleBtnRef.current, {
+          type: 'standard', theme: 'outline', size: 'large',
+          text: 'continue_with', shape: 'pill', logo_alignment: 'center', locale: 'he',
+        });
+      } catch { /* טעינת GIS נכשלה — נשאר fallback שקט */ }
+    })();
+    return () => { cancelled = true; };
+  }, [view]);
+
   const doAuth = async (authMode: 'login' | 'register') => {
     if (!email || !password) return setError('נא למלא אימייל וסיסמא');
     if (authMode === 'register' && (!passLenOk || !passUpperOk || !passDigitOk)) {
@@ -105,33 +147,6 @@ export const Auth: React.FC<Props> = ({ onLogin, onShowLegal }) => {
       setError(err.message);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleGoogle = async () => {
-    setNotice(''); setError('');
-    if (!GOOGLE_CLIENT_ID) { setNotice('התחברות עם Google תופעל בקרוב'); return; }
-    try {
-      await loadScript('https://accounts.google.com/gsi/client');
-      const g = (window as any).google;
-      if (!g?.accounts?.id) { setNotice('לא ניתן לטעון את Google כרגע'); return; }
-      g.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: async (resp: any) => {
-          try {
-            setLoading(true);
-            const consentAcceptedAt = new Date().toISOString();
-            const data = await api.oauthGoogle(resp.credential, role, refCode || undefined, consentAcceptedAt);
-            localStorage.removeItem('km_ref');
-            finishSession(data, !!data.isNew);
-          } catch (e: any) {
-            setNotice(e.message || 'שגיאת התחברות עם Google');
-          } finally { setLoading(false); }
-        },
-      });
-      g.accounts.id.prompt();
-    } catch {
-      setNotice('לא ניתן לטעון את Google כרגע');
     }
   };
 
@@ -206,10 +221,14 @@ export const Auth: React.FC<Props> = ({ onLogin, onShowLegal }) => {
               <span className="ic"><AppleIcon /></span>
               המשך עם Apple
             </button>
-            <button className="ami-oauth" onClick={handleGoogle} disabled={loading}>
-              <span className="ic"><GoogleIcon /></span>
-              המשך עם Google
-            </button>
+            {GOOGLE_CLIENT_ID ? (
+              <div ref={googleBtnRef} className="ami-oauth-g" style={{ display: 'flex', justifyContent: 'center' }} />
+            ) : (
+              <button className="ami-oauth" onClick={() => setNotice('התחברות עם Google תופעל בקרוב')} disabled={loading}>
+                <span className="ic"><GoogleIcon /></span>
+                המשך עם Google
+              </button>
+            )}
 
             <div className="ami-divider" />
 
