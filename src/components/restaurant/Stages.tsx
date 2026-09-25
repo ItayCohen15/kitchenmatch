@@ -1,4 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
+import { setVisibleInterval } from '../../utils/visibleInterval';
 import { GraduationCap, Check, Star, Send, Users, Plus, X, Calendar, Phone, MessageCircle, Trash2, ChevronRight, Search } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
@@ -83,7 +84,7 @@ export const RestaurantStages: React.FC = () => {
     setPartners(Array.isArray(prt) ? prt : []);
   };
   useEffect(() => { load(); }, [rid]);
-  useEffect(() => { if (!rid) return; const iv = setInterval(load, 8000); return () => clearInterval(iv); }, [rid]);
+  useEffect(() => { if (!rid) return; const iv = setVisibleInterval(load, 8000); return () => clearInterval(iv); }, [rid]);
 
   const handlePost = async () => {
     if (!role || !startDate || !startTime || !endTime || !wage) { setMsg('מלא תפקיד, תאריך, שעות ושכר'); return; }

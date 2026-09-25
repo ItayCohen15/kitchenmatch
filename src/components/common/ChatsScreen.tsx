@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { setVisibleInterval } from '../../utils/visibleInterval';
 import { MessageCircle, GraduationCap, Lock } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api, chatSeen } from '../../api';
@@ -29,7 +30,7 @@ export const ChatsScreen: React.FC<{ role: 'restaurant' | 'worker' }> = ({ role 
       .finally(() => setLoading(false));
   };
   useEffect(() => { load(); }, [pid]);
-  useEffect(() => { if (!pid) return; const iv = setInterval(load, 6000); return () => clearInterval(iv); }, [pid]);
+  useEffect(() => { if (!pid) return; const iv = setVisibleInterval(load, 6000); return () => clearInterval(iv); }, [pid]);
 
   // נפתח מהתראת push / באנר בבית — פתח את השיחה המבוקשת.
   // תלוי ב-threads (מתעדכן בכל פולינג) כדי שייפתח גם אם מספר השרשורים לא השתנה.
@@ -145,7 +146,7 @@ export const UnreadChatBanner: React.FC<{ role: 'restaurant' | 'worker'; onOpen:
       })
       .catch(() => {});
     check();
-    const iv = setInterval(check, 10000);
+    const iv = setVisibleInterval(check, 10000);
     return () => clearInterval(iv);
   }, [pid, role]);
 

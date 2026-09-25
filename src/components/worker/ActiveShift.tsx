@@ -1,4 +1,5 @@
 ﻿import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { setVisibleInterval } from '../../utils/visibleInterval';
 import { Clock, CheckCircle2, Phone, PartyPopper, Flag } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
@@ -65,7 +66,7 @@ export const WorkerActiveShift: React.FC = () => {
       } catch {}
     };
     check();
-    const iv = setInterval(check, 5000); // כל 5 שניות (יותר מהיר)
+    const iv = setVisibleInterval(check, 5000); // כל 5 שניות (יותר מהיר)
     return () => clearInterval(iv);
   }, [jobId]);
 

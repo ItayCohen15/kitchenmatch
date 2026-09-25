@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { setVisibleInterval } from '../../utils/visibleInterval';
 import { Phone, MessageCircle, CheckCircle2, X, Clock, XCircle, Bell } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
@@ -45,7 +46,7 @@ export const LiveTracking: React.FC = () => {
         }
       }).catch(() => {});
     load();
-    const iv = setInterval(load, 5000);
+    const iv = setVisibleInterval(load, 5000);
     return () => clearInterval(iv);
   }, [userProfile?.Id]);
 
@@ -67,7 +68,7 @@ export const LiveTracking: React.FC = () => {
       } catch {}
     };
     check();
-    const iv = setInterval(check, 2500);
+    const iv = setVisibleInterval(check, 2500);
     return () => clearInterval(iv);
   }, [jobId]); // ← רק jobId!
 

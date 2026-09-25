@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { setVisibleInterval } from '../../utils/visibleInterval';
 import {
   Zap, MapPin, Clock, Calendar, Star, Wallet, CalendarCheck, Search,
   ChevronLeft, ChefHat, Wine, Coffee, UtensilsCrossed, PartyPopper,
@@ -49,7 +50,7 @@ export const WorkerHome: React.FC = () => {
 
   useEffect(() => {
     loadJobs();
-    const iv = setInterval(loadJobs, 6000);
+    const iv = setVisibleInterval(loadJobs, 6000);
     return () => clearInterval(iv);
   }, []);
 
@@ -68,7 +69,7 @@ export const WorkerHome: React.FC = () => {
         .catch(() => {});
     };
     checkActive();
-    const iv = setInterval(checkActive, 5000);
+    const iv = setVisibleInterval(checkActive, 5000);
     return () => clearInterval(iv);
   }, [userProfile?.Id]);
 

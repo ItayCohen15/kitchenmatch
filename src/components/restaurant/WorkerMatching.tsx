@@ -1,4 +1,5 @@
 ﻿import React, { useEffect, useState, useCallback } from 'react';
+import { setVisibleInterval } from '../../utils/visibleInterval';
 import { Shield, MapPin, Star, Check, X, Clock, RefreshCw, Phone, Trash2, Eye, CheckCircle2 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { LEVEL_LABELS, LEVEL_COLORS } from '../../data/mockData';
@@ -62,7 +63,7 @@ export const WorkerMatching: React.FC = () => {
 
   useEffect(() => {
     loadApplicants();
-    const interval = setInterval(loadApplicants, 8000);
+    const interval = setVisibleInterval(loadApplicants, 8000);
     return () => clearInterval(interval);
   }, [loadApplicants]);
 

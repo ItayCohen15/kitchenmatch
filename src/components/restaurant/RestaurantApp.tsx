@@ -1,4 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
+import { setVisibleInterval } from '../../utils/visibleInterval';
 import { LogOut, MessageCircle } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { BottomNav } from '../common/BottomNav';
@@ -56,7 +57,7 @@ export const RestaurantApp: React.FC = () => {
       })
       .catch(() => {});
     load();
-    const iv = setInterval(load, 12000);
+    const iv = setVisibleInterval(load, 12000);
     return () => clearInterval(iv);
   }, [userProfile?.Id]);
 

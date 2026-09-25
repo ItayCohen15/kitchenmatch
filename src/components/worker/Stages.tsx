@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { setVisibleInterval } from '../../utils/visibleInterval';
 import { GraduationCap, Send, MapPin, Clock, Check, Calendar, Lightbulb, Phone, MessageCircle, ChevronDown, Archive, Search } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
@@ -82,7 +83,7 @@ export const WorkerStages: React.FC = () => {
     } else setShifts([]);
   };
   useEffect(() => { load(); }, [wid]);
-  useEffect(() => { if (!wid) return; const iv = setInterval(load, 8000); return () => clearInterval(iv); }, [wid]);
+  useEffect(() => { if (!wid) return; const iv = setVisibleInterval(load, 8000); return () => clearInterval(iv); }, [wid]);
 
   const applyStage = async (stageId: number) => {
     setBusy(stageId); setMsg('');

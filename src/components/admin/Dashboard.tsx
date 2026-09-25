@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { setVisibleInterval } from '../../utils/visibleInterval';
 import {
   AreaChart, Area, BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, CartesianGrid,
 } from 'recharts';
@@ -56,7 +57,7 @@ export const AdminDashboard: React.FC = () => {
 
   useEffect(() => {
     load();
-    const iv = setInterval(load, 30000); // רענון אוטומטי כל 30 שניות
+    const iv = setVisibleInterval(load, 30000); // רענון אוטומטי כל 30 שניות
     return () => clearInterval(iv);
   }, []);
 

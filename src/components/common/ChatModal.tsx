@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { setVisibleInterval } from '../../utils/visibleInterval';
 import { X, Send, MessageCircle, Lock } from 'lucide-react';
 import { api, chatSeen } from '../../api';
 import { avatarTone } from '../../utils/colors';
@@ -32,7 +33,7 @@ export const ChatModal: React.FC<Props> = ({ jobId, title, myRole, myName, readO
       }
     })
     .catch(() => {});
-  useEffect(() => { load(); const iv = setInterval(load, 4000); return () => clearInterval(iv); }, [jobId]);
+  useEffect(() => { load(); const iv = setVisibleInterval(load, 4000); return () => clearInterval(iv); }, [jobId]);
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages.length]);
 
   const send = async () => {

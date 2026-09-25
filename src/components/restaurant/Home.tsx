@@ -1,4 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
+import { setVisibleInterval } from '../../utils/visibleInterval';
 import { Zap, ChefHat, CheckCircle, Star, LogOut, X, GraduationCap, CreditCard, ClipboardList, Users } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
@@ -63,7 +64,7 @@ export const RestaurantHome: React.FC = () => {
         .catch(() => {});
     };
     load();
-    const iv = setInterval(load, 5000);
+    const iv = setVisibleInterval(load, 5000);
     return () => clearInterval(iv);
   }, [userProfile?.Id]);
 

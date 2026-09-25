@@ -1,4 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
+import { setVisibleInterval } from '../../utils/visibleInterval';
 import { MapPin, Star, Shield, Zap, X, Search, XCircle, CheckCircle2, Send, ClipboardList } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { ROLE_LABELS } from '../../data/mockData';
@@ -92,7 +93,7 @@ export const JobDetails: React.FC = () => {
       } catch {}
     };
     check();
-    const iv = setInterval(check, 3000);
+    const iv = setVisibleInterval(check, 3000);
     return () => clearInterval(iv);
   }, [accepted, job?.Id, userProfile?.Id]);
 

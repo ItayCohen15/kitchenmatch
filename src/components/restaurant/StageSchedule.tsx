@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { setVisibleInterval } from '../../utils/visibleInterval';
 import { Calendar, Clock, Phone, MessageCircle, Pencil, Plus, ChevronRight, Star, Lightbulb, Check } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
@@ -44,7 +45,7 @@ export const StageSchedule: React.FC = () => {
       .finally(() => setLoading(false));
   };
   useEffect(() => { load(); }, [stageId]);
-  useEffect(() => { if (!stageId) return; const iv = setInterval(load, 8000); return () => clearInterval(iv); }, [stageId]);
+  useEffect(() => { if (!stageId) return; const iv = setVisibleInterval(load, 8000); return () => clearInterval(iv); }, [stageId]);
 
   const upcoming = shifts.filter(s => s.Status === 'confirmed')
     .sort((a, b) => new Date(a.StartTime).getTime() - new Date(b.StartTime).getTime());

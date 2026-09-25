@@ -1,4 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
+import { setVisibleInterval } from '../../utils/visibleInterval';
 import { Bell, ChevronLeft } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { BottomNav } from '../common/BottomNav';
@@ -49,7 +50,7 @@ export const WorkerApp: React.FC = () => {
       })
       .catch(() => {});
     load();
-    const iv = setInterval(load, 12000);
+    const iv = setVisibleInterval(load, 12000);
     return () => clearInterval(iv);
   }, [userProfile?.Id]);
 

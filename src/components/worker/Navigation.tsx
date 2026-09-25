@@ -1,4 +1,5 @@
 ﻿import React, { useEffect, useState } from 'react';
+import { setVisibleInterval } from '../../utils/visibleInterval';
 import { Navigation2, CheckCircle2, X, Phone, XCircle, MapPin, Bell, Clock } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
@@ -39,7 +40,7 @@ export const WorkerNavigation: React.FC = () => {
         if (found?.RestaurantPhone) setRestPhone(found.RestaurantPhone);
       }).catch(() => {});
     load();
-    const iv = setInterval(load, 5000);
+    const iv = setVisibleInterval(load, 5000);
     return () => clearInterval(iv);
   }, [jobId, userProfile?.Id]);
 
@@ -61,7 +62,7 @@ export const WorkerNavigation: React.FC = () => {
       } catch {}
     };
     check();
-    const iv = setInterval(check, 2500);
+    const iv = setVisibleInterval(check, 2500);
     return () => clearInterval(iv);
   }, [jobId]); // ← רק jobId, לא waitingForRestaurant
 

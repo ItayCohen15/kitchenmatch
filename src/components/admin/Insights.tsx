@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { setVisibleInterval } from '../../utils/visibleInterval';
 import {
   Sparkles, TrendingUp, TrendingDown, Percent, Target, Repeat, Activity,
   GraduationCap, MapPin, Filter, Wallet, CheckCircle2, AlertTriangle, Rocket, Store, ChefHat,
@@ -149,7 +150,7 @@ export const AdminInsights: React.FC = () => {
   useEffect(() => {
     const load = () => api.adminPresence().then((d: any) => setPresence(d)).catch(() => {});
     load();
-    const iv = setInterval(load, 25000);
+    const iv = setVisibleInterval(load, 25000);
     return () => clearInterval(iv);
   }, []);
 

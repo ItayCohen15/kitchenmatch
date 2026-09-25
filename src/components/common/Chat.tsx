@@ -1,4 +1,5 @@
 ﻿import React, { useState, useEffect, useRef } from 'react';
+import { setVisibleInterval } from '../../utils/visibleInterval';
 import { Send, MessageCircle } from 'lucide-react';
 import { api } from '../../api';
 
@@ -23,7 +24,7 @@ export const Chat: React.FC<Props> = ({ jobId, myRole, myName }) => {
         .catch(() => {});
     };
     load();
-    const iv = setInterval(load, 2000);
+    const iv = setVisibleInterval(load, 2000);
     return () => clearInterval(iv);
   }, [jobId]);
 

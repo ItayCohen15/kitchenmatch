@@ -1,4 +1,5 @@
 ﻿import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { setVisibleInterval } from '../../utils/visibleInterval';
 import { Clock, CheckCircle2, AlertTriangle, PartyPopper, Flag, Wallet } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
@@ -61,7 +62,7 @@ export const ActiveShift: React.FC = () => {
       } catch {}
     };
     check();
-    const iv = setInterval(check, 5000);
+    const iv = setVisibleInterval(check, 5000);
     return () => clearInterval(iv);
   }, [jobId]);
 
