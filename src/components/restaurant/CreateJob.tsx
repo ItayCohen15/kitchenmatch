@@ -98,12 +98,19 @@ export const CreateJob: React.FC = () => {
 
   const stepTitles = ['תפקיד', 'שעות', 'תגמול', 'פרסום'];
 
+  const CARD: React.CSSProperties = {
+    background: '#fff',
+    border: '1px solid #eceef4',
+    borderRadius: 20,
+    boxShadow: '0 1px 2px rgba(20,26,46,.04), 0 6px 20px -8px rgba(20,26,46,.10)',
+  };
+
   return (
     <div className="screen-enter">
       {/* באנר מצב חירום — כשנכנסים דרך כפתור החירום */}
       {emergency && (
-        <div className="mb-4 rounded-2xl p-3 flex items-center gap-2 text-white"
-          style={{ background: '#e5484d' }}>
+        <div className="mb-4 p-3 flex items-center gap-2 text-white"
+          style={{ background: '#e5484d', borderRadius: 16 }}>
           <Zap size={18} className="fill-white" />
           <span className="font-bold text-sm">מצב חירום פעיל — עובד דרוש תוך 30 דקות</span>
         </div>
@@ -112,8 +119,8 @@ export const CreateJob: React.FC = () => {
       <div className="flex gap-2 mb-6">
         {stepTitles.map((t, i) => (
           <div key={i} className="flex-1">
-            <div className={`h-1.5 rounded-full mb-1 transition-colors ${i + 1 <= step ? 'bg-[#5354d3]' : 'bg-gray-200'}`} />
-            <div className={`text-xs text-center font-medium ${i + 1 === step ? 'text-[#5354d3]' : 'text-gray-400'}`}>{t}</div>
+            <div className="h-1.5 rounded-full mb-1 transition-colors" style={{ background: i + 1 <= step ? '#5354d3' : '#eceef4' }} />
+            <div className="text-xs text-center font-bold" style={{ color: i + 1 === step ? '#5354d3' : '#7a8199' }}>{t}</div>
           </div>
         ))}
       </div>
@@ -121,29 +128,29 @@ export const CreateJob: React.FC = () => {
       {/* Step 1 – Role */}
       {step === 1 && (
         <div className="space-y-3 screen-enter">
-          <h2 className="text-xl font-bold text-gray-900">איזה תפקיד צריך?</h2>
-          <p className="text-gray-500 text-sm">בחר את התפקיד הנדרש לסרוויס</p>
+          <h2 className="text-xl font-black" style={{ color: '#141a2e' }}>איזה תפקיד צריך?</h2>
+          <p className="text-sm" style={{ color: '#7a8199' }}>בחר את התפקיד הנדרש לסרוויס</p>
           <div className="space-y-3 mt-4">
             {ROLES.map(r => (
               <button
                 key={r.id}
                 onClick={() => { setRole(r.id); if (isEntryRole(r.id)) setExperience('entry'); }}
-                className={`w-full p-4 rounded-2xl border-2 flex items-center gap-4 transition-all ${
-                  role === r.id
-                    ? 'border-[#5354d3] bg-[#ecebfd]'
-                    : 'border-gray-100 bg-white'
-                }`}
+                className="w-full p-4 flex items-center gap-4 transition-all"
+                style={{
+                  borderRadius: 16,
+                  background: role === r.id ? '#eceefb' : '#fff',
+                  border: role === r.id ? '1px solid #5354d3' : '1px solid #eceef4',
+                }}
               >
                 <div className="text-right flex-1">
-                  <div className="font-bold text-gray-900 flex items-center gap-1.5">
+                  <div className="font-black flex items-center gap-1.5" style={{ color: '#141a2e' }}>
                     {r.label}
-                    {r.entry && <span className="text-[10px] font-bold text-green-700 bg-green-100 rounded-full px-1.5 py-0.5">מתאים ללא ניסיון</span>}
+                    {r.entry && <span className="text-[10px] font-extrabold" style={{ background: '#e3f5ee', color: '#1f9d6b', padding: '2px 6px', borderRadius: 6 }}>מתאים ללא ניסיון</span>}
                   </div>
-                  <div className="text-gray-500 text-sm">{r.desc}</div>
+                  <div className="text-sm" style={{ color: '#7a8199' }}>{r.desc}</div>
                 </div>
-                <div className={`mr-auto w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                  role === r.id ? 'border-[#5354d3] bg-[#5354d3]' : 'border-gray-300'
-                }`}>
+                <div className="mr-auto w-5 h-5 rounded-full border-2 flex items-center justify-center"
+                  style={{ borderColor: role === r.id ? '#5354d3' : '#cbd0e0', background: role === r.id ? '#5354d3' : 'transparent' }}>
                   {role === r.id && <div className="w-2 h-2 bg-white rounded-full" />}
                 </div>
               </button>
@@ -152,7 +159,8 @@ export const CreateJob: React.FC = () => {
           <button
             disabled={!role}
             onClick={() => setStep(2)}
-            className="w-full bg-[#5354d3] text-white rounded-2xl py-4 font-bold text-lg mt-4 disabled:opacity-40 disabled:cursor-not-allowed active:scale-98 transition-transform"
+            className="w-full rounded-2xl py-4 font-extrabold text-lg mt-4 disabled:opacity-40 disabled:cursor-not-allowed active:scale-98 transition-transform"
+            style={{ background: '#5354d3', color: '#fff' }}
           >
             המשך
           </button>
@@ -162,56 +170,59 @@ export const CreateJob: React.FC = () => {
       {/* Step 2 – Times */}
       {step === 2 && (
         <div className="space-y-4 screen-enter">
-          <h2 className="text-xl font-bold text-gray-900">מתי המשמרת?</h2>
-          <p className="text-gray-500 text-sm">הגדר שעות התחלה וסיום</p>
+          <h2 className="text-xl font-black" style={{ color: '#141a2e' }}>מתי המשמרת?</h2>
+          <p className="text-sm" style={{ color: '#7a8199' }}>הגדר שעות התחלה וסיום</p>
 
-          <div className="bg-white rounded-2xl p-5 card-shadow space-y-4">
+          <div className="p-5 space-y-4" style={CARD}>
             {/* תאריך */}
             <div>
-              <label className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5"><Calendar size={14} className="text-gray-400" /> תאריך המשמרת</label>
+              <label className="text-sm font-semibold mb-2 flex items-center gap-1.5" style={{ color: '#7a8199' }}><Calendar size={14} style={{ color: '#7a8199' }} /> תאריך המשמרת</label>
               <input
                 type="date"
                 value={shiftDate}
                 min={new Date().toISOString().slice(0, 10)}
                 onChange={e => setShiftDate(e.target.value)}
-                className="w-full border border-gray-200 rounded-xl py-3 px-4 text-gray-900 font-semibold"
+                className="w-full rounded-xl py-3 px-4 font-semibold border border-[#eceef4] focus:border-[#5354d3] outline-none transition-colors"
+                style={{ color: '#141a2e' }}
               />
             </div>
             <div>
-              <label className="text-sm font-semibold text-gray-700 mb-2 block">שעת התחלה</label>
+              <label className="text-sm font-semibold mb-2 block" style={{ color: '#7a8199' }}>שעת התחלה</label>
               <div className="relative">
-                <Clock size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Clock size={18} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: '#7a8199' }} />
                 <input
                   type="time"
                   value={startTime}
                   onChange={e => setStartTime(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl py-3 pr-10 pl-4 text-gray-900 font-semibold text-right"
+                  className="w-full rounded-xl py-3 pr-10 pl-4 font-semibold text-right border border-[#eceef4] focus:border-[#5354d3] outline-none transition-colors"
+                  style={{ color: '#141a2e' }}
                 />
               </div>
             </div>
             <div>
-              <label className="text-sm font-semibold text-gray-700 mb-2 block">שעת סיום</label>
+              <label className="text-sm font-semibold mb-2 block" style={{ color: '#7a8199' }}>שעת סיום</label>
               <div className="relative">
-                <Clock size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Clock size={18} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: '#7a8199' }} />
                 <input
                   type="time"
                   value={endTime}
                   onChange={e => setEndTime(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl py-3 pr-10 pl-4 text-gray-900 font-semibold text-right"
+                  className="w-full rounded-xl py-3 pr-10 pl-4 font-semibold text-right border border-[#eceef4] focus:border-[#5354d3] outline-none transition-colors"
+                  style={{ color: '#141a2e' }}
                 />
               </div>
             </div>
-            <div className="bg-[#ecebfd] rounded-xl p-3 text-center">
-              <span className="text-[#5354d3] font-bold text-lg">{totalHours} שעות</span>
-              <span className="text-gray-500 text-sm"> · סה״כ משמרת</span>
+            <div className="rounded-xl p-3 text-center" style={{ background: '#eceefb' }}>
+              <span className="font-black text-lg" style={{ color: '#5354d3' }}>{totalHours} שעות</span>
+              <span className="text-sm" style={{ color: '#7a8199' }}> · סה״כ משמרת</span>
             </div>
           </div>
 
           <div className="flex gap-3">
-            <button onClick={() => setStep(1)} className="flex-shrink-0 bg-gray-100 rounded-2xl py-4 px-5 font-bold text-gray-600">
+            <button onClick={() => setStep(1)} className="flex-shrink-0 rounded-2xl py-4 px-5 font-bold" style={{ background: '#f4f5f9', color: '#7a8199' }}>
               <ChevronRight size={20} />
             </button>
-            <button onClick={() => setStep(3)} className="flex-1 bg-[#5354d3] text-white rounded-2xl py-4 font-bold text-lg active:scale-98 transition-transform">
+            <button onClick={() => setStep(3)} className="flex-1 rounded-2xl py-4 font-extrabold text-lg active:scale-98 transition-transform" style={{ background: '#5354d3', color: '#fff' }}>
               המשך
             </button>
           </div>
@@ -221,26 +232,27 @@ export const CreateJob: React.FC = () => {
       {/* Step 3 – Wage + Experience */}
       {step === 3 && (
         <div className="space-y-4 screen-enter">
-          <h2 className="text-xl font-bold text-gray-900">תגמול ורמת ניסיון</h2>
+          <h2 className="text-xl font-black" style={{ color: '#141a2e' }}>תגמול ורמת ניסיון</h2>
 
-          <div className="bg-white rounded-2xl p-5 card-shadow">
-            <label className="text-sm font-semibold text-gray-700 mb-2 block">שכר לשעה (₪)</label>
+          <div className="p-5" style={CARD}>
+            <label className="text-sm font-semibold mb-2 block" style={{ color: '#7a8199' }}>שכר לשעה (₪)</label>
             <div className="relative">
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold text-lg">₪</span>
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 font-bold text-lg" style={{ color: '#7a8199' }}>₪</span>
               <input
                 type="number"
                 value={wage}
                 onChange={e => setWage(e.target.value)}
-                className={`w-full border rounded-xl py-3 pr-10 pl-4 text-gray-900 font-bold text-2xl text-right ${
-                  wage && !wageValid ? 'border-red-300' : 'border-gray-200'
+                className={`w-full border rounded-xl py-3 pr-10 pl-4 font-black text-2xl text-right focus:border-[#5354d3] outline-none transition-colors ${
+                  wage && !wageValid ? 'border-[#e5484d]' : 'border-[#eceef4]'
                 }`}
+                style={{ color: '#141a2e' }}
                 min={MIN_WAGE}
                 max={300}
               />
             </div>
             {wage && !wageValid && (
-              <div className="mt-2 bg-red-50 text-red-600 rounded-xl px-3 py-2 text-sm text-center font-semibold">
-                ⚠️ שכר המינימום הוא ₪{MIN_WAGE} לשעה
+              <div className="mt-2 rounded-xl px-3 py-2 text-sm text-center font-semibold" style={{ background: '#fdecec', color: '#e5484d' }}>
+                שכר המינימום הוא ₪{MIN_WAGE} לשעה
               </div>
             )}
             <div className="flex gap-2 mt-3">
@@ -248,48 +260,50 @@ export const CreateJob: React.FC = () => {
                 <button
                   key={v}
                   onClick={() => setWage(String(v))}
-                  className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-colors ${
-                    wage === String(v) ? 'bg-[#5354d3] text-white' : 'bg-gray-100 text-gray-600'
-                  }`}
+                  className="flex-1 py-2 rounded-lg text-sm font-extrabold transition-colors"
+                  style={wage === String(v) ? { background: '#f4b62c', color: '#3a2c00' } : { background: '#f4f5f9', color: '#7a8199' }}
                 >
                   ₪{v}
                 </button>
               ))}
             </div>
             {wage && (
-              <div className="mt-3 bg-green-50 rounded-xl p-3 text-center">
-                <span className="text-green-700 font-bold">₪{totalPay}</span>
-                <span className="text-gray-500 text-sm"> סה״כ ({totalHours} ש׳ × ₪{wage})</span>
+              <div className="mt-3 rounded-xl p-3 text-center" style={{ background: '#fdf0cf' }}>
+                <span className="font-black" style={{ color: '#8a6300' }}>₪{totalPay}</span>
+                <span className="text-sm" style={{ color: '#7a8199' }}> סה״כ ({totalHours} ש׳ × ₪{wage})</span>
               </div>
             )}
           </div>
 
-          <div className="bg-white rounded-2xl p-5 card-shadow">
-            <label className="text-sm font-semibold text-gray-700 mb-3 block">רמת ניסיון נדרשת</label>
+          <div className="p-5" style={CARD}>
+            <label className="text-sm font-semibold mb-3 block" style={{ color: '#7a8199' }}>רמת ניסיון נדרשת</label>
             <div className="space-y-2">
               {EXPERIENCE.map(e => (
                 <button
                   key={e.id}
                   onClick={() => setExperience(e.id)}
-                  className={`w-full p-3 rounded-xl border-2 flex items-center justify-between transition-all ${
-                    experience === e.id ? 'border-[#5354d3] bg-[#ecebfd]' : 'border-gray-100'
-                  }`}
+                  className="w-full p-3 rounded-xl flex items-center justify-between transition-all"
+                  style={{
+                    background: experience === e.id ? '#eceefb' : '#fff',
+                    border: experience === e.id ? '1px solid #5354d3' : '1px solid #eceef4',
+                  }}
                 >
-                  <span className="font-semibold text-gray-800">{e.label}</span>
-                  <span className="text-gray-500 text-sm">{e.desc}</span>
+                  <span className="font-bold" style={{ color: '#141a2e' }}>{e.label}</span>
+                  <span className="text-sm" style={{ color: '#7a8199' }}>{e.desc}</span>
                 </button>
               ))}
             </div>
           </div>
 
           <div className="flex gap-3">
-            <button onClick={() => setStep(2)} className="flex-shrink-0 bg-gray-100 rounded-2xl py-4 px-5 font-bold text-gray-600">
+            <button onClick={() => setStep(2)} className="flex-shrink-0 rounded-2xl py-4 px-5 font-bold" style={{ background: '#f4f5f9', color: '#7a8199' }}>
               <ChevronRight size={20} />
             </button>
             <button
               disabled={!experience || !wageValid}
               onClick={() => setStep(4)}
-              className="flex-1 bg-[#5354d3] text-white rounded-2xl py-4 font-bold text-lg disabled:opacity-40 active:scale-98 transition-transform"
+              className="flex-1 rounded-2xl py-4 font-extrabold text-lg disabled:opacity-40 active:scale-98 transition-transform"
+              style={{ background: '#5354d3', color: '#fff' }}
             >
               המשך
             </button>
@@ -300,9 +314,9 @@ export const CreateJob: React.FC = () => {
       {/* Step 4 – Summary + Publish */}
       {step === 4 && (
         <div className="space-y-4 screen-enter">
-          <h2 className="text-xl font-bold text-gray-900">סיכום ופרסום</h2>
+          <h2 className="text-xl font-black" style={{ color: '#141a2e' }}>סיכום ופרסום</h2>
 
-          <div className="bg-white rounded-2xl p-5 card-shadow space-y-4">
+          <div className="p-5 space-y-4" style={CARD}>
             {[
               { label: 'תפקיד', value: ROLES.find(r => r.id === role)?.label },
               { label: 'תאריך', value: new Date(shiftDate).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' }) },
@@ -311,37 +325,37 @@ export const CreateJob: React.FC = () => {
               { label: 'סה״כ', value: `₪${totalPay}` },
               { label: 'ניסיון', value: EXPERIENCE.find(e => e.id === experience)?.label },
             ].map(r => (
-              <div key={r.label} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
-                <span className="text-gray-500 text-sm">{r.label}</span>
-                <span className="font-semibold text-gray-900">{r.value}</span>
+              <div key={r.label} className="flex items-center justify-between py-2 border-b last:border-0" style={{ borderColor: '#eceef4' }}>
+                <span className="text-sm" style={{ color: '#7a8199' }}>{r.label}</span>
+                <span className="font-bold" style={{ color: '#141a2e' }}>{r.value}</span>
               </div>
             ))}
 
-            <div className="bg-[#ecebfd] rounded-xl p-3 space-y-1.5">
+            <div className="rounded-xl p-3 space-y-1.5" style={{ background: '#eceefb' }}>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">עמלה שלך ({restCommPct}%){emergency ? ' · חירום' : ''}</span>
-                <span className="font-bold text-[#5354d3]">+₪{(parseFloat(totalPay) * restCommRate).toFixed(0)}</span>
+                <span style={{ color: '#7a8199' }}>עמלה שלך ({restCommPct}%){emergency ? ' · חירום' : ''}</span>
+                <span className="font-bold" style={{ color: '#5354d3' }}>+₪{(parseFloat(totalPay) * restCommRate).toFixed(0)}</span>
               </div>
-              <div className="flex justify-between text-sm font-bold border-t border-[#d7d7f6] pt-1.5">
-                <span className="text-gray-700">סה״כ תשלם</span>
-                <span className="text-[#5354d3]">₪{(parseFloat(totalPay) * (1 + restCommRate)).toFixed(0)}</span>
+              <div className="flex justify-between text-sm font-bold border-t pt-1.5" style={{ borderColor: '#d7d7f6' }}>
+                <span style={{ color: '#2b3350' }}>סה״כ תשלם</span>
+                <span style={{ color: '#5354d3' }}>₪{(parseFloat(totalPay) * (1 + restCommRate)).toFixed(0)}</span>
               </div>
               {/* מע"מ: הסכומים לפני מע"מ. שיעורו על שכר העובד תלוי במעמד
                   שלו (עוסק מורשה מחייב, עוסק פטור לא) — ולכן הסכום המדויק
                   ידוע רק אחרי שהעובד מאושר. העמלה תמיד חייבת במע"מ. */}
-              <p className="text-gray-500 text-xs text-center pt-1 border-t border-[#d7d7f6]">
+              <p className="text-xs text-center pt-1 border-t" style={{ color: '#7a8199', borderColor: '#d7d7f6' }}>
                 הסכומים <b>אינם כוללים מע"מ</b> — יתווסף כדין
               </p>
-              <p className="text-gray-400 text-xs text-center">
+              <p className="text-xs text-center" style={{ color: '#7a8199' }}>
                 העובד ישלם {workerSidePct}% נוסף מצידו
               </p>
             </div>
           </div>
 
           {/* מהות המשמרת */}
-          <div className="bg-white rounded-2xl p-4 card-shadow">
-            <label className="text-sm font-semibold text-gray-700 mb-2 block">
-              מה כוללת המשמרת? <span className="text-gray-400 font-normal">(אופציונלי)</span>
+          <div className="p-4" style={CARD}>
+            <label className="text-sm font-semibold mb-2 block" style={{ color: '#7a8199' }}>
+              מה כוללת המשמרת? <span className="font-normal" style={{ color: '#7a8199' }}>(אופציונלי)</span>
             </label>
             <textarea
               value={duties}
@@ -349,17 +363,18 @@ export const CreateJob: React.FC = () => {
               placeholder={'לדוגמה: עמדת גריל — בעיקר המבורגרים וכבדי עוף. צפי לעומס בינוני. כולל ניקיון העמדה בסוף.'}
               rows={3}
               maxLength={500}
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right text-sm focus:border-[#5354d3] outline-none resize-none text-gray-900"
+              className="w-full border border-[#eceef4] rounded-xl px-4 py-3 text-right text-sm focus:border-[#5354d3] outline-none resize-none transition-colors"
+              style={{ color: '#141a2e' }}
             />
             {duties && (
-              <div className="text-xs text-gray-400 text-left mt-1">{duties.length}/500</div>
+              <div className="text-xs text-left mt-1" style={{ color: '#7a8199' }}>{duties.length}/500</div>
             )}
           </div>
 
           {/* הוראות הגעה */}
-          <div className="bg-white rounded-2xl p-4 card-shadow">
-            <label className="text-sm font-semibold text-gray-700 mb-2 block">
-              הוראות הגעה לעובד <span className="text-gray-400 font-normal">(אופציונלי)</span>
+          <div className="p-4" style={CARD}>
+            <label className="text-sm font-semibold mb-2 block" style={{ color: '#7a8199' }}>
+              הוראות הגעה לעובד <span className="font-normal" style={{ color: '#7a8199' }}>(אופציונלי)</span>
             </label>
             <textarea
               value={instructions}
@@ -367,65 +382,66 @@ export const CreateJob: React.FC = () => {
               placeholder={'לדוגמה: כניסה מאחורי הבניין, קומה 2, לבקש את דני במטבח'}
               rows={3}
               maxLength={300}
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right text-sm focus:border-[#5354d3] outline-none resize-none text-gray-900"
+              className="w-full border border-[#eceef4] rounded-xl px-4 py-3 text-right text-sm focus:border-[#5354d3] outline-none resize-none transition-colors"
+              style={{ color: '#141a2e' }}
             />
             {instructions && (
-              <div className="text-xs text-gray-400 text-left mt-1">{instructions.length}/300</div>
+              <div className="text-xs text-left mt-1" style={{ color: '#7a8199' }}>{instructions.length}/300</div>
             )}
           </div>
 
           {/* Emergency toggle */}
           <button
             onClick={() => setEmergency(e => !e)}
-            className={`w-full rounded-2xl p-4 flex items-center gap-3 border-2 transition-all ${
-              emergency
-                ? 'bg-red-500 border-red-500 text-white'
-                : 'bg-white border-gray-200 text-gray-700'
-            }`}
+            className="w-full rounded-2xl p-4 flex items-center gap-3 transition-all"
+            style={emergency
+              ? { background: '#e5484d', border: '1px solid #e5484d', color: '#fff' }
+              : { background: '#fff', border: '1px solid #eceef4', color: '#2b3350' }}
           >
-            <Zap size={22} className={emergency ? 'fill-white text-white' : 'text-red-500'} />
+            <Zap size={22} className={emergency ? 'fill-white text-white' : ''} style={emergency ? undefined : { color: '#e5484d' }} />
             <div className="text-right flex-1">
-              <div className="font-bold">מצב חירום</div>
-              <div className={`text-sm ${emergency ? 'text-red-100' : 'text-gray-500'}`}>
+              <div className="font-black">מצב חירום</div>
+              <div className="text-sm" style={{ color: emergency ? 'rgba(255,255,255,.85)' : '#7a8199' }}>
                 עובד תוך 30 דק׳ – דחיפות גבוהה לעובדים קרובים
               </div>
             </div>
-            <div className={`w-12 h-6 rounded-full transition-colors ${emergency ? 'bg-white/30' : 'bg-gray-200'}`}>
+            <div className="w-12 h-6 rounded-full transition-colors" style={{ background: emergency ? 'rgba(255,255,255,.3)' : '#e6e8f0' }}>
               <div className={`w-6 h-6 bg-white rounded-full shadow transition-transform ${emergency ? '-translate-x-6' : ''}`} />
             </div>
           </button>
 
           {/* סינון מועמדים — רק למשמרת חירום */}
           {emergency && (
-            <div className="bg-white rounded-2xl p-4 card-shadow space-y-4 screen-enter">
-              <div className="font-bold text-gray-800 text-sm flex items-center gap-1.5">
-                <Filter size={15} className="text-red-500" /> סינון מועמדים לחירום
+            <div className="p-4 space-y-4 screen-enter" style={CARD}>
+              <div className="font-black text-sm flex items-center gap-1.5" style={{ color: '#141a2e' }}>
+                <Filter size={15} style={{ color: '#e5484d' }} /> סינון מועמדים לחירום
               </div>
 
               {/* דירוג מינימלי */}
               <div>
-                <label className="text-xs font-semibold text-gray-500 mb-2 block">דירוג מינימלי נדרש</label>
+                <label className="text-xs font-semibold mb-2 block" style={{ color: '#7a8199' }}>דירוג מינימלי נדרש</label>
                 <div className="flex gap-1.5">
                   {[{ v:0, l:'הכל' }, { v:3, l:'3' }, { v:3.5, l:'3.5' }, { v:4, l:'4' }, { v:4.5, l:'4.5' }].map(o => (
                     <button key={o.v} type="button" onClick={() => setMinRating(o.v)}
-                      className={`flex-1 py-2 rounded-xl text-xs font-bold border flex items-center justify-center gap-0.5 transition-colors ${
-                        minRating === o.v ? 'bg-[#5354d3] text-white border-[#5354d3]' : 'bg-white text-gray-600 border-gray-200'
-                      }`}>
+                      className="flex-1 py-2 rounded-xl text-xs font-bold border flex items-center justify-center gap-0.5 transition-colors"
+                      style={minRating === o.v
+                        ? { background: '#5354d3', color: '#fff', borderColor: '#5354d3' }
+                        : { background: '#fff', color: '#7a8199', borderColor: '#eceef4' }}>
                       {o.v > 0 && <Star size={10} className={minRating === o.v ? 'fill-white' : 'fill-amber-400 text-amber-400'} />}{o.l}
                     </button>
                   ))}
                 </div>
-                <p className="text-gray-400 text-[11px] mt-1.5">המשמרת תוצע רק לעובדים מבוססים עם דירוג מעל הסף</p>
+                <p className="text-[11px] mt-1.5" style={{ color: '#7a8199' }}>המשמרת תוצע רק לעובדים מבוססים עם דירוג מעל הסף</p>
               </div>
 
               {/* עובדים חדשים */}
               <button type="button" onClick={() => setAllowNewWorkers(v => !v)}
                 className="w-full flex items-center justify-between gap-3 text-right">
                 <div>
-                  <div className="font-bold text-gray-800 text-sm">הצע גם לעובדים חדשים</div>
-                  <div className="text-gray-400 text-xs">עובדים עם פחות מ-3 משמרות (תג "עובד חדש")</div>
+                  <div className="font-black text-sm" style={{ color: '#141a2e' }}>הצע גם לעובדים חדשים</div>
+                  <div className="text-xs" style={{ color: '#7a8199' }}>עובדים עם פחות מ-3 משמרות (תג "עובד חדש")</div>
                 </div>
-                <div className={`w-12 h-6 rounded-full flex-shrink-0 transition-colors ${allowNewWorkers ? 'bg-green-500' : 'bg-gray-300'}`}>
+                <div className="w-12 h-6 rounded-full flex-shrink-0 transition-colors" style={{ background: allowNewWorkers ? '#1f9d6b' : '#cbd0e0' }}>
                   <div className={`w-6 h-6 bg-white rounded-full shadow transition-transform ${allowNewWorkers ? '-translate-x-6' : ''}`} />
                 </div>
               </button>
@@ -433,24 +449,25 @@ export const CreateJob: React.FC = () => {
           )}
 
           {publishError && (
-            <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3 text-center font-medium">
-              ⚠️ {publishError}
+            <div className="text-sm rounded-xl px-4 py-3 text-center font-semibold" style={{ background: '#fdecec', border: '1px solid #f7c9ca', color: '#e5484d' }}>
+              {publishError}
             </div>
           )}
 
           {publishing ? (
-            <div className="bg-[#5354d3] rounded-2xl py-5 flex items-center justify-center gap-3">
+            <div className="rounded-2xl py-5 flex items-center justify-center gap-3" style={{ background: '#5354d3' }}>
               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              <span className="text-white font-bold text-lg">מחפש עובדים...</span>
+              <span className="text-white font-extrabold text-lg">מחפש עובדים...</span>
             </div>
           ) : (
             <div className="flex gap-3">
-              <button onClick={() => setStep(3)} className="flex-shrink-0 bg-gray-100 rounded-2xl py-4 px-5 font-bold text-gray-600">
+              <button onClick={() => setStep(3)} className="flex-shrink-0 rounded-2xl py-4 px-5 font-bold" style={{ background: '#f4f5f9', color: '#7a8199' }}>
                 <ChevronRight size={20} />
               </button>
               <button
                 onClick={handlePublish}
-                className="flex-1 bg-[#5354d3] text-white rounded-2xl py-4 font-bold text-lg active:scale-98 transition-transform"
+                className="flex-1 rounded-2xl py-4 font-extrabold text-lg active:scale-98 transition-transform"
+                style={{ background: '#f4b62c', color: '#3a2c00', boxShadow: '0 8px 20px -6px rgba(244,182,44,.5)' }}
               >
                 {emergency ? 'פרסם משמרת חירום' : 'פרסם משמרת'}
               </button>

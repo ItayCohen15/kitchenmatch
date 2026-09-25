@@ -137,16 +137,15 @@ export const WorkerHome: React.FC = () => {
         </div>
       </div>
 
-      {/* ── 4 סטטים ── */}
-      <div className="grid grid-cols-4 rounded-3xl mb-5" style={{ background: '#fff', padding: '16px 2px', boxShadow: '0 1px 2px rgba(20,26,46,.04), 0 6px 20px -8px rgba(20,26,46,.10)' }}>
+      {/* ── 4 כרטיסי סטטיסטיקה פסטליים ── */}
+      <div className="grid grid-cols-4 gap-2.5 mb-5">
         {stats.map((s, i) => (
-          <button key={i} onClick={s.onClick} className="relative text-center active:scale-95 transition-transform">
-            {i > 0 && <span className="absolute right-0 top-1/2 -translate-y-1/2" style={{ width: 1, height: 38, background: '#eceef4' }} />}
-            <div className="flex justify-center mb-1" style={{ color: s.gold ? '#f4b62c' : '#5354d3' }}>{s.icon}</div>
-            <div className="font-black" style={{ fontSize: 18, color: '#141a2e' }}>{s.value}</div>
-            <div className="flex items-center justify-center gap-0.5 font-semibold mt-0.5" style={{ fontSize: 10.5, color: '#7a8199' }}>
-              {s.label} <ChevronLeft size={11} />
-            </div>
+          <button key={i} onClick={s.onClick} className="p-3 text-right active:scale-95 transition-transform"
+            style={{ background: '#fff', border: '1px solid #eceef4', borderRadius: 16, boxShadow: '0 1px 2px rgba(20,26,46,.04), 0 6px 18px -10px rgba(20,26,46,.10)' }}>
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-2"
+              style={{ background: s.gold ? '#fdf0cf' : '#eceefb', color: s.gold ? '#b5701f' : '#5354d3' }}>{s.icon}</div>
+            <div className="text-[10px] font-semibold leading-tight" style={{ color: '#7a8199' }}>{s.label}</div>
+            <div className="font-black text-[15px] mt-0.5" style={{ color: '#141a2e' }}>{s.value}</div>
           </button>
         ))}
       </div>

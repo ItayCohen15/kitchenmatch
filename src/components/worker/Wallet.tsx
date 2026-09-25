@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { FileText, X, Printer, Building2, User, Target, Flame, Scale, Pencil, Wallet, ArrowDownToLine } from 'lucide-react';
+import { FileText, X, Printer, Building2, User, Target, Flame, Scale, Pencil, Wallet, ArrowDownToLine, TrendingUp, Clock, Coins, ShieldCheck } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { haptic } from '../../utils/haptics';
@@ -129,8 +129,8 @@ const ShiftSummaryDoc = ({ shift, rate, onClose }: { shift: any; rate: number; o
         {/* תוכן גלילתי */}
         <div className="flex-1 overflow-y-auto" style={{ WebkitOverflowScrolling:'touch' as any }}>
           <div className="mx-4 mt-3 p-3 rounded-xl text-xs leading-relaxed"
-            style={{ background:'#fff8e1', border:'1px solid #f59e0b', color:'#92400e' }}>
-            ⚠️ <strong>מסמך זה אינו חשבונית רשמית.</strong> לדיווח מס, הוצא חשבונית עצמאית למסעדה על סכום ₪{gross}.
+            style={{ background:'#fdf0cf', border:'1px solid #f4b62c', color:'#8a6300' }}>
+            <strong>מסמך זה אינו חשבונית רשמית.</strong> לדיווח מס, הוצא חשבונית עצמאית למסעדה על סכום ₪{gross}.
           </div>
 
           <div className="p-4 space-y-0">
@@ -507,39 +507,67 @@ export const WorkerWallet: React.FC = () => {
   const myAvgRate = completed.length > 0 ? completed.reduce((s, j) => s + Number(j.HourlyRate || 0), 0) / completed.length : 0;
   const rateDiffPct = marketRate > 0 && myAvgRate > 0 ? Math.round((myAvgRate - marketRate) / marketRate * 100) : null;
 
+  // גרף עמודות משובץ בכותרת — נטו לכל אחת מ-20 המשמרות האחרונות
+  const recentBars = completed.slice(-20).map(j => netOf(j));
+  const maxBar = Math.max(...recentBars, 1);
+  const totalHoursAll = completed.reduce((s, j) => s + hoursOf(j), 0);
+
   return (
     <div className="screen-enter space-y-4 pb-4">
 
-      {/* Header card */}
-      <div className="rounded-3xl p-5 text-white" style={{ background:'#1b1e38' }}>
-        <div className="text-gray-400 text-sm mb-1">סה״כ הכנסות (נטו)</div>
-        <div className="text-4xl font-bold mb-3" style={{ color:'#5354d3' }}>
-          ₪{totalEarnings.toLocaleString()}
-        </div>
-        <div className="grid grid-cols-3 gap-3">
-          {[
-            { l:'משמרות',     v: completedShifts,                         c:'text-white' },
-            { l:'ממוצע/משמרת',v:`₪${avgPerShift}`,                        c:'text-[#5354d3]' },
-            { l:'דירוג',      v: rating > 0 ? `★${rating.toFixed(1)}` : '—', c:'text-blue-300' },
-          ].map(s => (
-            <div key={s.l} className="bg-white/10 rounded-xl p-2.5 text-center">
-              <div className={`font-bold text-sm ${s.c}`}>{s.v}</div>
-              <div className="text-gray-500 text-[10px] mt-0.5">{s.l}</div>
+      {/* Header card — הכנסות + גרף משובץ */}
+      <div className="relative rounded-3xl overflow-hidden text-white" style={{ background:'linear-gradient(135deg,#1b2340,#121828)' }}>
+        <div className="absolute pointer-events-none" style={{ width: 220, height: 220, borderRadius: '50%', top: -90, left: -40, background: 'radial-gradient(circle, rgba(83,84,211,.25), transparent 68%)' }} />
+        <div className="absolute pointer-events-none" style={{ width: 180, height: 180, borderRadius: '50%', bottom: -100, right: -60, background: 'radial-gradient(circle, rgba(244,182,44,.14), transparent 68%)' }} />
+        <div className="relative p-5">
+          <div className="inline-flex items-center gap-1.5 text-[13px] font-semibold mb-1" style={{ color:'#b9c0d8' }}>
+            <Wallet size={14} style={{ color:'#f4b62c' }} /> סה״כ הכנסות (נטו)
+          </div>
+          <div className="font-black" style={{ fontSize: 40, lineHeight: 1.02, color:'#ffffff' }}>
+            ₪{totalEarnings.toLocaleString()}
+          </div>
+          {deltaPct !== null && (
+            <div className="text-[12px] font-bold mt-2 inline-flex items-center gap-1" style={{ color: deltaPct >= 0 ? '#4ade80' : '#ff8b8b' }}>
+              <TrendingUp size={13} /> {deltaPct >= 0 ? '+' : ''}{deltaPct}% בהשוואה לחודש שעבר
             </div>
-          ))}
+          )}
+          {recentBars.length > 1 && (
+            <div className="flex items-end gap-[3px] mt-4" style={{ height: 60 }}>
+              {recentBars.map((v, i) => (
+                <div key={i} className="flex-1 rounded-t" style={{ height: `${Math.max(Math.round(v / maxBar * 100), 6)}%`, background: 'linear-gradient(180deg, #8b8cf0, #4f46c9)' }} />
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
+      {/* 4 כרטיסי סטטיסטיקה פסטליים */}
+      <div className="grid grid-cols-4 gap-2.5">
+        {[
+          { icon:<Wallet size={18} />,      bg:'#eceefb', fg:'#5354d3', l:'תשלומים בהמתנה', v:`₪${Math.round(Number(wallet?.pending)||0).toLocaleString()}` },
+          { icon:<ShieldCheck size={18} />, bg:'#e4f7ee', fg:'#1f9d6b', l:'סה״כ משמרות',    v:`${completedShifts}` },
+          { icon:<Clock size={18} />,       bg:'#eceefb', fg:'#5354d3', l:'שעות עבודה',     v:`${totalHoursAll.toFixed(1)}` },
+          { icon:<Coins size={18} />,       bg:'#fdf0cf', fg:'#b5701f', l:'שכר ממוצע/שעה',  v:`₪${Math.round(myAvgRate)}` },
+        ].map(s => (
+          <div key={s.l} className="p-3" style={{ background:'#fff', border:'1px solid #eceef4', borderRadius:16, boxShadow:'0 1px 2px rgba(20,26,46,.04), 0 6px 18px -10px rgba(20,26,46,.10)' }}>
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-2" style={{ background:s.bg, color:s.fg }}>{s.icon}</div>
+            <div className="text-[10.5px] font-semibold leading-tight" style={{ color:'#7a8199' }}>{s.l}</div>
+            <div className="font-black text-[15px] mt-0.5" style={{ color:'#141a2e' }}>{s.v}</div>
+          </div>
+        ))}
+      </div>
+
       {/* Tabs */}
-      <div className="flex bg-gray-100 rounded-xl p-1">
+      <div className="flex rounded-2xl p-1" style={{ background:'#f4f5f9' }}>
         {[
           { id:'overview', l:'סקירה' },
           { id:'docs',     l:'מסמכים' },
         ].map(t => (
           <button key={t.id} onClick={() => setActiveTab(t.id as any)}
-            className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${
-              activeTab === t.id ? 'bg-white text-gray-900 shadow' : 'text-gray-400'
-            }`}>
+            className="flex-1 py-2 rounded-xl text-sm font-black transition-all"
+            style={activeTab === t.id
+              ? { background:'#fff', color:'#141a2e', boxShadow:'0 1px 2px rgba(20,26,46,.06), 0 4px 12px -6px rgba(20,26,46,.15)' }
+              : { color:'#7a8199' }}>
             {t.l}
           </button>
         ))}
@@ -555,47 +583,47 @@ export const WorkerWallet: React.FC = () => {
 
           {/* 💳 ארנק התשלומים שלי (PayMe · escrow) */}
           {wallet && (
-            <div className="bg-white rounded-2xl p-4 card-shadow">
+            <div className="bg-white p-4" style={{ borderRadius: 20, border: '1px solid #eceef4', boxShadow: '0 1px 2px rgba(20,26,46,.04), 0 6px 20px -8px rgba(20,26,46,.10)' }}>
               <div className="flex items-center gap-2 mb-3">
-                <Wallet size={16} className="text-[#5354d3]" />
-                <span className="font-bold text-gray-800 text-sm">הארנק שלי</span>
-                <span className="text-[10px] text-gray-400 mr-auto">תשלום מאובטח · escrow</span>
+                <Wallet size={16} style={{ color:'#5354d3' }} />
+                <span className="font-black text-[15px]" style={{ color:'#141a2e' }}>הארנק שלי</span>
+                <span className="text-[10px] mr-auto" style={{ color:'#7a8199' }}>תשלום מאובטח · escrow</span>
               </div>
               <div className="grid grid-cols-3 gap-2 mb-3">
-                <div className="rounded-xl p-2.5 text-center" style={{ background:'#fff8e1' }}>
-                  <div className="font-bold text-amber-600 text-base">₪{Math.round(Number(wallet.pending)||0).toLocaleString()}</div>
-                  <div className="text-[10px] text-gray-500 mt-0.5">ממתין</div>
+                <div className="rounded-xl p-2.5 text-center" style={{ background:'#fdf0cf' }}>
+                  <div className="font-black text-base" style={{ color:'#8a6300' }}>₪{Math.round(Number(wallet.pending)||0).toLocaleString()}</div>
+                  <div className="text-[10px] mt-0.5" style={{ color:'#8a6300' }}>ממתין</div>
                 </div>
-                <div className="rounded-xl p-2.5 text-center" style={{ background:'#ecfdf5' }}>
-                  <div className="font-bold text-green-600 text-base">₪{Math.round(Number(wallet.available)||0).toLocaleString()}</div>
-                  <div className="text-[10px] text-gray-500 mt-0.5">זמין למשיכה</div>
+                <div className="rounded-xl p-2.5 text-center" style={{ background:'#e4f7ee' }}>
+                  <div className="font-black text-base" style={{ color:'#1f8f5f' }}>₪{Math.round(Number(wallet.available)||0).toLocaleString()}</div>
+                  <div className="text-[10px] mt-0.5" style={{ color:'#1f8f5f' }}>זמין למשיכה</div>
                 </div>
-                <div className="rounded-xl p-2.5 text-center" style={{ background:'#f1f5f9' }}>
-                  <div className="font-bold text-gray-700 text-base">₪{Math.round(Number(wallet.paid)||0).toLocaleString()}</div>
-                  <div className="text-[10px] text-gray-500 mt-0.5">שולם</div>
+                <div className="rounded-xl p-2.5 text-center" style={{ background:'#f4f5f9' }}>
+                  <div className="font-black text-base" style={{ color:'#2b3350' }}>₪{Math.round(Number(wallet.paid)||0).toLocaleString()}</div>
+                  <div className="text-[10px] mt-0.5" style={{ color:'#7a8199' }}>שולם</div>
                 </div>
               </div>
               <button onClick={handleWithdraw} disabled={withdrawing || !canWithdraw}
-                className="w-full rounded-2xl py-3 font-bold text-sm text-white flex items-center justify-center gap-2 disabled:opacity-50 active:scale-98 transition-transform"
-                style={{ background:'#1f9d6b' }}>
+                className="w-full rounded-2xl py-3 font-extrabold text-sm flex items-center justify-center gap-2 disabled:opacity-50 active:scale-95 transition-transform"
+                style={{ background:'#f4b62c', color:'#3a2c00', boxShadow:'0 8px 20px -6px rgba(244,182,44,.5)' }}>
                 {withdrawing
-                  ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"/> מעבד...</>
+                  ? <><div className="w-4 h-4 border-2 rounded-full animate-spin" style={{ borderColor:'rgba(58,44,0,.3)', borderTopColor:'#3a2c00' }}/> מעבד...</>
                   : <><ArrowDownToLine size={16}/> משוך ₪{Math.round(Number(wallet.available)||0).toLocaleString()}</>}
               </button>
               {!canWithdraw && (
-                <p className="text-[11px] text-center mt-2 text-gray-400">
+                <p className="text-[11px] text-center mt-2" style={{ color:'#7a8199' }}>
                   {accountBlocked
-                    ? <span className="text-amber-600">כדי למשוך, יש להשלים תחילה את הגדרת חשבון קבלת התשלומים למעלה</span>
+                    ? <span style={{ color:'#8a6300' }}>כדי למשוך, יש להשלים תחילה את הגדרת חשבון קבלת התשלומים למעלה</span>
                     : <>מינימום למשיכה: ₪{minPayout} · היתרה תגדל עם סיום משמרות</>}
                 </p>
               )}
               {wallet.autoPayout && (
-                <p className="text-[11px] text-center mt-1.5" style={{ color:'#059669' }}>
+                <p className="text-[11px] text-center mt-1.5" style={{ color:'#1f8f5f' }}>
                   תשלום אוטומטי שבועי פעיל — הכסף יועבר גם בלי שתלחץ
                 </p>
               )}
               {withdrawMsg && (
-                <div className={`mt-2 text-xs text-center rounded-xl px-3 py-2 ${withdrawMsg.ok ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}>
+                <div className="mt-2 text-xs text-center rounded-xl px-3 py-2" style={withdrawMsg.ok ? { background:'#e4f7ee', color:'#1f8f5f' } : { background:'#fde3e3', color:'#cf3030' }}>
                   {withdrawMsg.text}
                 </div>
               )}
@@ -604,33 +632,35 @@ export const WorkerWallet: React.FC = () => {
 
           {/* החודש שלי + צפי */}
           {completed.length > 0 && (
-            <div className="bg-white rounded-2xl p-4 card-shadow">
+            <div className="bg-white p-4" style={{ borderRadius: 20, border: '1px solid #eceef4', boxShadow: '0 1px 2px rgba(20,26,46,.04), 0 6px 20px -8px rgba(20,26,46,.10)' }}>
               <div className="flex items-center justify-between mb-1">
-                <span className="text-gray-400 text-sm">הכנסות {MONTH_NAMES[now.getMonth()]} (נטו)</span>
+                <span className="text-sm font-semibold" style={{ color:'#7a8199' }}>הכנסות {MONTH_NAMES[now.getMonth()]} (נטו)</span>
                 {deltaPct !== null && (
-                  <span className={`text-[11px] font-bold rounded-full px-2 py-0.5 ${deltaPct >= 0 ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-500'}`}>
+                  <span className="text-[10.5px] font-extrabold" style={{ padding:'3px 9px', borderRadius:6, ...(deltaPct >= 0 ? { background:'#e4f7ee', color:'#1f8f5f' } : { background:'#fde3e3', color:'#cf3030' }) }}>
                     {deltaPct >= 0 ? '↑' : '↓'}{Math.abs(deltaPct)}% מחודש שעבר
                   </span>
                 )}
               </div>
-              <div className="font-bold text-3xl text-gray-900">₪{Math.round(thisNet).toLocaleString()}</div>
+              <div className="font-black text-3xl" style={{ color:'#141a2e' }}>₪{Math.round(thisNet).toLocaleString()}</div>
               {projection !== null && (
-                <div className="text-xs text-gray-400 mt-1.5">
-                  בקצב הנוכחי תסיים את החודש עם כ־<b className="text-green-600">₪{Math.round(projection).toLocaleString()}</b>
+                <div className="text-xs mt-1.5" style={{ color:'#7a8199' }}>
+                  בקצב הנוכחי תסיים את החודש עם כ־<b style={{ color:'#1f8f5f' }}>₪{Math.round(projection).toLocaleString()}</b>
                 </div>
               )}
             </div>
           )}
 
-          {/* 🎯 יעד חודשי */}
-          <div className="rounded-2xl p-4 card-shadow text-white" style={{ background: '#1b1e38' }}>
+          {/* יעד חודשי */}
+          <div className="relative rounded-3xl overflow-hidden text-white" style={{ background: '#141a2e' }}>
+            <div className="absolute pointer-events-none" style={{ width: 200, height: 200, borderRadius: '50%', bottom: -110, left: -60, background: 'radial-gradient(circle, rgba(244,182,44,.18), transparent 66%)' }} />
+            <div className="relative p-4">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-1.5">
-                <Target size={16} className="text-[#5354d3]" />
-                <span className="font-bold text-sm">היעד החודשי שלי</span>
+                <Target size={16} style={{ color:'#f4b62c' }} />
+                <span className="font-black text-[15px]">היעד החודשי שלי</span>
               </div>
               {goal > 0 && !editGoal && (
-                <button onClick={() => { setGoalInput(String(goal)); setEditGoal(true); }} className="text-gray-400"><Pencil size={13} /></button>
+                <button onClick={() => { setGoalInput(String(goal)); setEditGoal(true); }} style={{ color:'#8891ac' }}><Pencil size={13} /></button>
               )}
             </div>
             {editGoal || goal === 0 ? (
@@ -638,7 +668,7 @@ export const WorkerWallet: React.FC = () => {
                 <input type="number" inputMode="numeric" value={goalInput} onChange={e => setGoalInput(e.target.value)}
                   placeholder="לדוגמה: 5000"
                   className="flex-1 rounded-xl px-3 py-2.5 text-right text-sm outline-none text-gray-900 bg-white" />
-                <button onClick={saveGoal} className="rounded-xl px-4 py-2.5 text-sm font-bold text-gray-900"
+                <button onClick={saveGoal} className="rounded-xl px-4 py-2.5 text-sm font-extrabold text-white"
                   style={{ background: '#5354d3' }}>
                   שמור
                 </button>
@@ -646,101 +676,81 @@ export const WorkerWallet: React.FC = () => {
             ) : (
               <>
                 <div className="flex justify-between items-end mb-1.5">
-                  <span className="font-bold text-xl" style={{ color: '#5354d3' }}>₪{Math.round(thisNet).toLocaleString()}</span>
-                  <span className="text-gray-400 text-xs">מתוך ₪{goal.toLocaleString()}</span>
+                  <span className="font-black text-2xl" style={{ color: '#f4b62c' }}>₪{Math.round(thisNet).toLocaleString()}</span>
+                  <span className="text-xs" style={{ color:'#8891ac' }}>מתוך ₪{goal.toLocaleString()}</span>
                 </div>
                 <div className="h-2.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
                   <div className="h-full rounded-full transition-all"
-                    style={{ width: `${Math.min(Math.round(thisNet / goal * 100), 100)}%`, background: '#5354d3' }} />
+                    style={{ width: `${Math.min(Math.round(thisNet / goal * 100), 100)}%`, background: '#f4b62c' }} />
                 </div>
-                <div className="text-[11px] text-gray-400 mt-1.5">
+                <div className="text-[11px] mt-1.5" style={{ color:'#8891ac' }}>
                   {thisNet >= goal
                     ? 'הגעת ליעד החודשי'
                     : `${Math.round(thisNet / goal * 100)}% מהיעד · חסרות ₪${Math.round(goal - thisNet).toLocaleString()}${projection && projection >= goal ? ' · בקצב הזה תגיע ליעד' : ''}`}
                 </div>
               </>
             )}
+            </div>
           </div>
 
           {monthlyData.length > 0 && (
-            <div className="bg-white rounded-2xl p-4 card-shadow">
-              <h3 className="font-bold text-gray-800 mb-4">הכנסות חודשיות</h3>
+            <div className="bg-white p-4" style={{ borderRadius: 20, border: '1px solid #eceef4', boxShadow: '0 1px 2px rgba(20,26,46,.04), 0 6px 20px -8px rgba(20,26,46,.10)' }}>
+              <h3 className="font-black mb-4" style={{ fontSize:17, color:'#141a2e' }}>הכנסות חודשיות</h3>
               <ResponsiveContainer width="100%" height={140}>
                 <AreaChart data={monthlyData} margin={{ top:5, right:-20, left:5, bottom:0 }}>
                   <defs>
                     <linearGradient id="eg" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%"  stopColor="#10b981" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                      <stop offset="5%"  stopColor="#1f9d6b" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#1f9d6b" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
                   <XAxis dataKey="month" reversed tick={{ fontSize:10, fill:'#9ca3af' }} axisLine={false} tickLine={false}/>
                   <YAxis orientation="right" tick={{ fontSize:10, fill:'#9ca3af' }} axisLine={false} tickLine={false}/>
                   <Tooltip formatter={(v: any) => [`₪${v}`, 'הכנסות']}/>
-                  <Area type="monotone" dataKey="earn" stroke="#10b981" strokeWidth={2.5} fill="url(#eg)"/>
+                  <Area type="monotone" dataKey="earn" stroke="#1f9d6b" strokeWidth={2.5} fill="url(#eg)"/>
                 </AreaChart>
               </ResponsiveContainer>
             </div>
           )}
 
-          {completed.length > 0 && (
-            <div className="bg-white rounded-2xl p-4 card-shadow">
-              <h3 className="font-bold text-gray-800 mb-3">סטטיסטיקות</h3>
-              <div className="space-y-3">
-                {[
-                  { l:'שעות עבודה סה״כ',
-                    v:`${completed.reduce((s,j) => s + (new Date(j.EndTime).getTime()-new Date(j.StartTime).getTime())/3600000, 0).toFixed(1)} ש׳` },
-                  { l:'תעריף שעתי ממוצע',
-                    v:`₪${(completed.reduce((s,j) => s+j.HourlyRate, 0)/completed.length).toFixed(0)}/ש׳` },
-                  { l:'מסעדות שונות',
-                    v:`${new Set(completed.map(j => j.RestaurantId)).size}` },
-                ].map(s => (
-                  <div key={s.l} className="flex justify-between items-center py-2 border-b border-gray-50 last:border-0">
-                    <span className="text-gray-500 text-sm">{s.l}</span>
-                    <span className="font-bold text-gray-900 text-sm">{s.v}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* 💰 ימי הכסף שלך */}
+          {/* ימי הכסף שלך */}
           {dayRows.length > 1 && (
-            <div className="bg-white rounded-2xl p-4 card-shadow">
-              <h3 className="font-bold text-gray-800 mb-3">ימי הכסף שלך</h3>
+            <div className="bg-white p-4" style={{ borderRadius: 20, border: '1px solid #eceef4', boxShadow: '0 1px 2px rgba(20,26,46,.04), 0 6px 20px -8px rgba(20,26,46,.10)' }}>
+              <h3 className="font-black mb-3" style={{ fontSize:17, color:'#141a2e' }}>ימי הכסף שלך</h3>
               <div className="space-y-2">
                 {dayRows.slice(0, 5).map((d, i) => (
                   <div key={d.day} className="flex items-center gap-2.5">
-                    <span className="text-xs text-gray-500 w-12 flex-shrink-0">{d.day}</span>
-                    <div className="flex-1 h-5 bg-gray-50 rounded-lg overflow-hidden">
+                    <span className="text-xs w-12 flex-shrink-0" style={{ color:'#7a8199' }}>{d.day}</span>
+                    <div className="flex-1 h-5 rounded-lg overflow-hidden" style={{ background:'#f4f5f9' }}>
                       <div className="h-full rounded-lg" style={{
                         width: `${Math.max(Math.round(d.earn / maxDayEarn * 100), 8)}%`,
-                        background: i === 0 ? '#5354d3' : '#e2e8f0',
+                        background: i === 0 ? '#f4b62c' : '#e2e8f0',
                       }} />
                     </div>
-                    <span className={`text-xs font-bold w-16 text-left flex-shrink-0 ${i === 0 ? 'text-[#5354d3]' : 'text-gray-400'}`}>₪{Math.round(d.earn).toLocaleString()}</span>
+                    <span className="text-xs font-black w-16 text-left flex-shrink-0" style={{ color: i === 0 ? '#8a6300' : '#7a8199' }}>₪{Math.round(d.earn).toLocaleString()}</span>
                   </div>
                 ))}
               </div>
-              <p className="text-gray-400 text-[11px] mt-2.5">{dayRows[0]?.day} הוא היום הרווחי שלך — כדאי לתעדף משמרות ביום הזה</p>
+              <p className="text-[11px] mt-2.5" style={{ color:'#7a8199' }}>{dayRows[0]?.day} הוא היום הרווחי שלך — כדאי לתעדף משמרות ביום הזה</p>
             </div>
           )}
 
-          {/* 🏆 המסעדות המשתלמות */}
+          {/* המסעדות המשתלמות */}
           {topRests.length > 0 && (
-            <div className="bg-white rounded-2xl p-4 card-shadow">
-              <h3 className="font-bold text-gray-800 mb-3">המסעדות המשתלמות לך</h3>
+            <div className="bg-white p-4" style={{ borderRadius: 20, border: '1px solid #eceef4', boxShadow: '0 1px 2px rgba(20,26,46,.04), 0 6px 20px -8px rgba(20,26,46,.10)' }}>
+              <h3 className="font-black mb-3" style={{ fontSize:17, color:'#141a2e' }}>המסעדות המשתלמות לך</h3>
               <div className="space-y-2">
                 {topRests.map((r, i) => (
-                  <div key={r.name} className="flex items-center gap-3 py-2 border-b border-gray-50 last:border-0">
-                    <div className="w-8 h-8 rounded-xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
+                  <div key={r.name} className="flex items-center gap-3 py-2 border-b last:border-0" style={{ borderColor:'#eceef4' }}>
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center text-white font-black text-sm flex-shrink-0"
                       style={{ background: i === 0 ? '#e8a020' : i === 1 ? '#94a3b8' : '#b45309' }}>
                       {i + 1}
                     </div>
                     <div className="flex-1">
-                      <div className="font-semibold text-gray-900 text-sm">{r.name}</div>
-                      <div className="text-gray-400 text-xs">{r.count} משמרות · ₪{Math.round(r.avgRate)}/ש' בממוצע</div>
+                      <div className="font-bold text-sm" style={{ color:'#141a2e' }}>{r.name}</div>
+                      <div className="text-xs" style={{ color:'#7a8199' }}>{r.count} משמרות · ₪{Math.round(r.avgRate)}/ש' בממוצע</div>
                     </div>
-                    <span className="font-bold text-green-600 text-sm">₪{Math.round(r.net).toLocaleString()}</span>
+                    <span className="font-black text-sm" style={{ color:'#1f8f5f' }}>₪{Math.round(r.net).toLocaleString()}</span>
                   </div>
                 ))}
               </div>
@@ -750,18 +760,18 @@ export const WorkerWallet: React.FC = () => {
           {/* חירום + עמלות */}
           {completed.length > 0 && (
             <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-2xl p-4 card-shadow" style={{ background: '#1f9d6b' }}>
+              <div className="rounded-2xl p-4" style={{ background: '#1f9d6b', boxShadow:'0 1px 2px rgba(20,26,46,.04), 0 6px 20px -8px rgba(31,157,107,.35)' }}>
                 <Flame size={17} className="text-green-300 mb-2" />
-                <div className="font-bold text-white text-lg">₪{Math.round(emergencySaved).toLocaleString()}</div>
+                <div className="font-black text-white text-lg">₪{Math.round(emergencySaved).toLocaleString()}</div>
                 <div className="text-green-200 text-[11px] mt-0.5">הרווחת נוסף ממשמרות חירום</div>
                 <div className="text-green-300/60 text-[10px] mt-1">עמלה 4% בלבד בחירום</div>
               </div>
-              <div className="bg-white rounded-2xl p-4 card-shadow">
-                <Scale size={17} className="text-indigo-500 mb-2" />
-                <div className="font-bold text-gray-900 text-lg">₪{Math.round(commissionPaid).toLocaleString()}</div>
-                <div className="text-gray-400 text-[11px] mt-0.5">עמלות ששילמת סה"כ</div>
+              <div className="bg-white p-4" style={{ borderRadius: 20, border: '1px solid #eceef4', boxShadow: '0 1px 2px rgba(20,26,46,.04), 0 6px 20px -8px rgba(20,26,46,.10)' }}>
+                <Scale size={17} style={{ color:'#5354d3' }} className="mb-2" />
+                <div className="font-black text-lg" style={{ color:'#141a2e' }}>₪{Math.round(commissionPaid).toLocaleString()}</div>
+                <div className="text-[11px] mt-0.5" style={{ color:'#7a8199' }}>עמלות ששילמת סה"כ</div>
                 {nextCommissionDrop && (
-                  <div className="text-amber-600 text-[10px] font-semibold mt-1">
+                  <div className="text-[10px] font-bold mt-1" style={{ color:'#8a6300' }}>
                     עוד {lvlProg.shiftsNeeded} משמרות לעמלה של {(nextCommissionDrop.commission * 100).toFixed(1)}% בלבד
                   </div>
                 )}
@@ -769,27 +779,27 @@ export const WorkerWallet: React.FC = () => {
             </div>
           )}
 
-          {/* ⚖️ התעריף שלך מול השוק */}
+          {/* התעריף שלך מול השוק */}
           {rateDiffPct !== null && (
-            <div className="bg-white rounded-2xl p-4 card-shadow">
+            <div className="bg-white p-4" style={{ borderRadius: 20, border: '1px solid #eceef4', boxShadow: '0 1px 2px rgba(20,26,46,.04), 0 6px 20px -8px rgba(20,26,46,.10)' }}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5">
-                  <Scale size={15} className="text-indigo-500" />
-                  <span className="font-bold text-gray-800 text-sm">התעריף שלך מול השוק</span>
+                  <Scale size={15} style={{ color:'#5354d3' }} />
+                  <span className="font-black text-[15px]" style={{ color:'#141a2e' }}>התעריף שלך מול השוק</span>
                 </div>
-                <span className={`text-[11px] font-bold rounded-full px-2 py-0.5 ${rateDiffPct >= 0 ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-600'}`}>
+                <span className="text-[10.5px] font-extrabold" style={{ padding:'3px 9px', borderRadius:6, ...(rateDiffPct >= 0 ? { background:'#e4f7ee', color:'#1f8f5f' } : { background:'#fdf0cf', color:'#8a6300' }) }}>
                   {rateDiffPct >= 0 ? `${rateDiffPct}%+ מהממוצע` : `${Math.abs(rateDiffPct)}%- מהממוצע`}
                 </span>
               </div>
               <div className="flex items-center justify-between mt-2.5 text-sm">
-                <span className="text-gray-500">אתה מקבל בממוצע <b className="text-gray-900">₪{Math.round(myAvgRate)}/ש'</b></span>
-                <span className="text-gray-400 text-xs">
+                <span style={{ color:'#7a8199' }}>אתה מקבל בממוצע <b style={{ color:'#141a2e' }}>₪{Math.round(myAvgRate)}/ש'</b></span>
+                <span className="text-xs" style={{ color:'#7a8199' }}>
                   שוק האקסטרות: ₪{Math.round(marketRate)}{marketRange ? ` (${marketRange})` : ''}
-                  {blended?.noTips && <span className="text-amber-500"> · לא כולל טיפים</span>}
+                  {blended?.noTips && <span style={{ color:'#8a6300' }}> · לא כולל טיפים</span>}
                 </span>
               </div>
               {rateDiffPct < -5 && (
-                <p className="text-amber-600 text-[11px] mt-2 bg-amber-50 rounded-lg px-2.5 py-1.5">
+                <p className="text-[11px] mt-2 rounded-lg px-2.5 py-1.5" style={{ background:'#fdf0cf', color:'#8a6300' }}>
                   אתה מתחת לשוק — עם הדירוג שלך אפשר לכוון למשמרות עם שכר גבוה יותר
                 </p>
               )}
@@ -797,10 +807,10 @@ export const WorkerWallet: React.FC = () => {
           )}
 
           {completed.length === 0 && !loading && (
-            <div className="text-center py-10 bg-white rounded-2xl card-shadow">
-              <Wallet size={30} className="text-gray-300 mx-auto mb-3" />
-              <p className="font-bold text-gray-700">אין הכנסות עדיין</p>
-              <p className="text-gray-400 text-sm mt-1">ההכנסות יופיעו כאן לאחר השלמת משמרות</p>
+            <div className="text-center py-10 bg-white" style={{ borderRadius: 20, border: '1px solid #eceef4', boxShadow: '0 1px 2px rgba(20,26,46,.04), 0 6px 20px -8px rgba(20,26,46,.10)' }}>
+              <Wallet size={30} className="mx-auto mb-3" style={{ color:'#c2c7da' }} />
+              <p className="font-black" style={{ color:'#2b3350' }}>אין הכנסות עדיין</p>
+              <p className="text-sm mt-1" style={{ color:'#7a8199' }}>ההכנסות יופיעו כאן לאחר השלמת משמרות</p>
             </div>
           )}
         </>
@@ -810,29 +820,29 @@ export const WorkerWallet: React.FC = () => {
       {activeTab === 'docs' && (
         <div className="space-y-3">
           {/* הסבר */}
-          <div className="bg-white rounded-2xl p-4 card-shadow text-xs text-gray-500 leading-relaxed space-y-1.5">
-            <div className="font-bold text-gray-800 text-sm mb-2">המסמכים שלך</div>
+          <div className="bg-white p-4 text-xs leading-relaxed space-y-1.5" style={{ color:'#7a8199', borderRadius: 20, border: '1px solid #eceef4', boxShadow: '0 1px 2px rgba(20,26,46,.04), 0 6px 20px -8px rgba(20,26,46,.10)' }}>
+            <div className="font-black text-[15px] mb-2" style={{ color:'#141a2e' }}>המסמכים שלך</div>
             <div className="flex items-start gap-2">
-              <span className="text-[#5354d3] font-bold flex-shrink-0">סיכום</span>
+              <span className="font-extrabold flex-shrink-0" style={{ color:'#5354d3' }}>סיכום</span>
               <span>– פירוט תשלום מהפלטפורמה (לא רשמי)</span>
             </div>
             <div className="flex items-start gap-2">
-              <span className="text-blue-600 font-bold flex-shrink-0">חשבונית</span>
+              <span className="font-extrabold flex-shrink-0" style={{ color:'#3b74d1' }}>חשבונית</span>
               <span>– תבנית חשבונית שירות לשליחה למסעדה (עוסק עצמאי)</span>
             </div>
           </div>
 
           {loading && (
             <div className="text-center py-8">
-              <div className="w-7 h-7 border-2 border-[#5354d3] border-t-transparent rounded-full animate-spin mx-auto"/>
+              <div className="w-7 h-7 border-2 rounded-full animate-spin mx-auto" style={{ borderColor:'#5354d3', borderTopColor:'transparent' }}/>
             </div>
           )}
 
           {!loading && completed.length === 0 && compensations.length === 0 && (
-            <div className="text-center py-10 bg-white rounded-2xl card-shadow">
-              <FileText size={30} className="text-gray-300 mx-auto mb-3" />
-              <p className="font-bold text-gray-700">אין מסמכים עדיין</p>
-              <p className="text-gray-400 text-sm mt-1">המסמכים יופיעו כאן לאחר השלמת משמרות</p>
+            <div className="text-center py-10 bg-white" style={{ borderRadius: 20, border: '1px solid #eceef4', boxShadow: '0 1px 2px rgba(20,26,46,.04), 0 6px 20px -8px rgba(20,26,46,.10)' }}>
+              <FileText size={30} className="mx-auto mb-3" style={{ color:'#c2c7da' }} />
+              <p className="font-black" style={{ color:'#2b3350' }}>אין מסמכים עדיין</p>
+              <p className="text-sm mt-1" style={{ color:'#7a8199' }}>המסמכים יופיעו כאן לאחר השלמת משמרות</p>
             </div>
           )}
 
@@ -843,22 +853,22 @@ export const WorkerWallet: React.FC = () => {
             const dateStr = new Date(shift.CancelledAt || shift.StartTime)
               .toLocaleDateString('he-IL', { day:'2-digit', month:'2-digit', year:'2-digit' });
             return (
-              <div key={`comp-${shift.Id}`} className="bg-white rounded-2xl p-4 card-shadow">
+              <div key={`comp-${shift.Id}`} className="bg-white p-4" style={{ borderRadius: 20, border: '1px solid #eceef4', boxShadow: '0 1px 2px rgba(20,26,46,.04), 0 6px 20px -8px rgba(20,26,46,.10)' }}>
                 <div className="flex items-start justify-between mb-3">
                   <div>
-                    <div className="font-bold text-gray-900 text-sm">{shift.RestaurantName}</div>
-                    <div className="text-gray-400 text-xs mt-0.5">{dateStr} · משמרת בוטלה</div>
+                    <div className="font-black text-sm" style={{ color:'#141a2e' }}>{shift.RestaurantName}</div>
+                    <div className="text-xs mt-0.5" style={{ color:'#7a8199' }}>{dateStr} · משמרת בוטלה</div>
                   </div>
                   <div className="text-right">
-                    <div className={`font-bold ${received ? 'text-green-600' : 'text-red-500'}`}>
+                    <div className="font-black" style={{ color: received ? '#1f8f5f' : '#cf3030' }}>
                       {received ? '+' : '-'}₪{fee.toFixed(0)}
                     </div>
-                    <div className="text-gray-400 text-xs">{received ? 'פיצוי' : 'קנס'}</div>
+                    <div className="text-xs" style={{ color:'#7a8199' }}>{received ? 'פיצוי' : 'קנס'}</div>
                   </div>
                 </div>
                 <button onClick={() => setCompShift(shift)}
-                  className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold"
-                  style={{ background:'rgba(5,150,105,0.08)', color:'#059669', border:'1px solid rgba(5,150,105,0.2)' }}>
+                  className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-extrabold"
+                  style={{ background:'#e4f7ee', color:'#1f8f5f', border:'1px solid rgba(31,143,95,0.2)' }}>
                   <FileText size={12} /> {received ? 'אסמכתת פיצוי' : 'אסמכתת קנס'}
                 </button>
               </div>
@@ -873,41 +883,40 @@ export const WorkerWallet: React.FC = () => {
             const net   = (parseFloat(h)*shift.HourlyRate*effectiveNetMultiplier(workerLevel, shift.IsEmergency)).toFixed(0);
 
             return (
-              <div key={shift.Id} className="bg-white rounded-2xl p-4 card-shadow">
+              <div key={shift.Id} className="bg-white p-4" style={{ borderRadius: 20, border: '1px solid #eceef4', boxShadow: '0 1px 2px rgba(20,26,46,.04), 0 6px 20px -8px rgba(20,26,46,.10)' }}>
                 <div className="flex items-start justify-between mb-3">
                   <div>
-                    <div className="font-bold text-gray-900 text-sm">{shift.RestaurantName}</div>
-                    <div className="text-gray-400 text-xs mt-0.5">
+                    <div className="font-black text-sm" style={{ color:'#141a2e' }}>{shift.RestaurantName}</div>
+                    <div className="text-xs mt-0.5" style={{ color:'#7a8199' }}>
                       {start.toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit',year:'2-digit'})} · {h} ש׳
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="font-bold text-green-600">₪{net}</div>
-                    <div className="text-gray-400 text-xs">נטו</div>
+                    <div className="font-black" style={{ color:'#1f8f5f' }}>₪{net}</div>
+                    <div className="text-xs" style={{ color:'#7a8199' }}>נטו</div>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-1.5 mb-3">
-                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full"
-                    style={{ background:'#eef0f5', color:'#5b6070' }}>
+                  <span className="inline-flex items-center gap-1.5 text-xs font-extrabold px-2.5 py-1"
+                    style={{ background:'#f4f5f9', color:'#2b3350', borderRadius:6 }}>
                     <span className="w-2 h-2 rounded-full inline-block" style={{ background: roleDot(shift.Role) }} />
                     {ROLE_LABELS[shift.Role] ?? shift.Role}
                   </span>
-                  <span className="text-xs text-gray-400">₪{shift.HourlyRate}/ש׳</span>
-                  <span className="text-xs text-gray-300">·</span>
-                  <span className="text-xs text-gray-400">ברוטו ₪{gross}</span>
+                  <span className="text-xs font-extrabold" style={{ padding:'3px 9px', borderRadius:6, background:'#fdf0cf', color:'#8a6300' }}>₪{shift.HourlyRate}/ש׳</span>
+                  <span className="text-xs" style={{ color:'#7a8199' }}>ברוטו ₪{gross}</span>
                 </div>
 
                 {/* שני כפתורי מסמך */}
                 <div className="flex gap-2">
                   <button onClick={() => setSummary(shift)}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold"
-                    style={{ background:'rgba(83,84,211,0.1)', color:'#4244b8', border:'1px solid rgba(83,84,211,0.25)' }}>
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-extrabold"
+                    style={{ background:'#ece9fe', color:'#5b4bd0', border:'1px solid rgba(83,84,211,0.2)' }}>
                     <FileText size={12} /> סיכום משמרת
                   </button>
                   <button onClick={() => setInvoice(shift)}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold"
-                    style={{ background:'rgba(99,102,241,0.1)', color:'#4f46e5', border:'1px solid rgba(99,102,241,0.25)' }}>
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-extrabold"
+                    style={{ background:'#e6effb', color:'#3b74d1', border:'1px solid rgba(59,116,209,0.2)' }}>
                     <FileText size={12} /> חשבונית שירות
                   </button>
                 </div>

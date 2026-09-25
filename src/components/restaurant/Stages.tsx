@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { setVisibleInterval } from '../../utils/visibleInterval';
 import { GraduationCap, Check, Star, Send, Users, Plus, X, Calendar, Phone, MessageCircle, Trash2, ChevronRight, Search } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
@@ -26,7 +26,11 @@ const isTrial = (s: any) => s.JobType === 'trial';
 const MIN_WAGE = 40;
 
 // שדה קלט אחיד
-const inputCls = 'w-full border border-gray-200 bg-gray-50 rounded-xl px-4 py-3 text-right outline-none focus:border-[#5354d3] focus:bg-white text-gray-900';
+const inputCls = 'w-full border border-[#eceef4] bg-[#f7f8fb] rounded-xl px-4 py-3 text-right outline-none focus:border-[#5354d3] focus:bg-white text-[#141a2e]';
+
+// כרטיס לבן אחיד + CTA זהב (navy+gold design system)
+const CARD: React.CSSProperties = { background: '#fff', border: '1px solid #eceef4', borderRadius: 20, boxShadow: '0 1px 2px rgba(20,26,46,.04), 0 6px 20px -8px rgba(20,26,46,.10)' };
+const GOLD_CTA: React.CSSProperties = { background: '#f4b62c', color: '#3a2c00', boxShadow: '0 8px 20px -6px rgba(244,182,44,.5)' };
 
 export const RestaurantStages: React.FC = () => {
   const { navToRestaurant, selectWorkerJob, userProfile, refreshProfile } = useApp();
@@ -122,90 +126,93 @@ export const RestaurantStages: React.FC = () => {
 
   return (
     <div className="screen-enter space-y-4">
-      {/* כותרת */}
-      <div className="rounded-3xl p-4 text-white flex items-center gap-3"
-        style={{ background: '#1b1e38' }}>
-        <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
-          style={{ background: 'rgba(83,84,211,0.18)', border: '1px solid rgba(83,84,211,0.3)' }}>
-          <GraduationCap className="text-[#5354d3]" size={22} />
-        </div>
-        <div>
-          <div className="font-bold text-lg leading-tight">סטאז׳ וגיוס</div>
-          <div className="text-xs" style={{ color: '#8899bb' }}>משמרת אחת · ללא עמלה · סטודנטים ובוגרים</div>
+      {/* כותרת — הירו navy עם אקסנט זהב */}
+      <div className="rounded-3xl overflow-hidden relative" style={{ background: '#141a2e' }}>
+        <div className="absolute pointer-events-none" style={{ width: 220, height: 220, borderRadius: '50%', bottom: -110, left: -70, background: 'radial-gradient(circle, rgba(244,182,44,.18), transparent 66%)' }} />
+        <div className="relative p-4 text-white flex items-center gap-3">
+          <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
+            style={{ background: 'rgba(244,182,44,0.16)', border: '1px solid rgba(244,182,44,0.32)' }}>
+            <GraduationCap size={22} style={{ color: '#f4b62c' }} />
+          </div>
+          <div>
+            <div className="font-black text-lg leading-tight">סטאז׳ וגיוס</div>
+            <div className="text-xs" style={{ color: '#b9c0d8' }}>משמרת אחת · ללא עמלה · סטודנטים ובוגרים</div>
+          </div>
         </div>
       </div>
 
       {/* טאבים — הטופס נפתח רק מכפתור הפרסום */}
       {tab !== 'post' && (
-        <div className="flex bg-gray-100 rounded-2xl p-1">
+        <div className="flex rounded-2xl p-1" style={{ background: '#f4f5f9' }}>
           {([['mine', 'הסטאז׳ים שלי'], ['partners', 'הקבועים שלי']] as [Tab, string][]).map(([k, l]) => (
             <button key={k} onClick={() => setTab(k)}
-              className={`relative flex-1 py-2.5 rounded-xl text-sm font-bold transition-all ${tab === k ? 'bg-white text-gray-900 shadow' : 'text-gray-400'}`}>
+              className="relative flex-1 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95"
+              style={tab === k ? { background: '#fff', color: '#141a2e', boxShadow: '0 1px 3px rgba(20,26,46,.10)' } : { color: '#7a8199' }}>
               {l}
               {k === 'mine' && groupApplicants.length > 0 && (
-                <span className="absolute top-1.5 right-2 w-2 h-2 rounded-full bg-blue-500" />
+                <span className="absolute top-1.5 right-2 w-2 h-2 rounded-full" style={{ background: '#5354d3' }} />
               )}
             </button>
           ))}
         </div>
       )}
 
-      {msg && <div className="bg-amber-50 text-amber-700 text-sm rounded-xl px-4 py-2.5 text-center font-semibold">{msg}</div>}
+      {msg && <div className="text-sm rounded-xl px-4 py-2.5 text-center font-semibold" style={{ background: '#fdf0cf', color: '#8a6300' }}>{msg}</div>}
 
       {/* ── פרסום סטאז' ── */}
       {tab === 'post' && (
         <>
-        <button onClick={() => setTab('mine')} className="flex items-center gap-1 text-gray-400 text-sm font-semibold">
+        <button onClick={() => setTab('mine')} className="flex items-center gap-1 text-sm font-semibold active:scale-95 transition-transform" style={{ color: '#7a8199' }}>
           <ChevronRight size={18} /> חזרה לסטאז׳ים שלי
         </button>
-        <div className="bg-white rounded-2xl p-4 card-shadow space-y-4">
-          <div className="bg-green-50 border border-green-100 rounded-xl px-3 py-2.5 text-xs text-gray-600 leading-relaxed">
-            <b className="text-green-700">משמרת סטאז׳ אחת</b> — מועמד מקורס בישול/ברמנים מגיע למשמרת בודדת ואתם רואים אותו בעבודה.
+        <div className="p-4 space-y-4" style={CARD}>
+          <div className="rounded-xl px-3 py-2.5 text-xs leading-relaxed" style={{ background: '#e4f7ee', border: '1px solid #c9efdb', color: '#6b7290' }}>
+            <b style={{ color: '#1f8f5f' }}>משמרת סטאז׳ אחת</b> — מועמד מקורס בישול/ברמנים מגיע למשמרת בודדת ואתם רואים אותו בעבודה.
             <b> ללא עמלה משני הצדדים</b> (רק עמלת הסליקה). אהבתם? אפשר לגייס בתום המשמרת.
           </div>
           <div>
-            <label className="text-sm font-semibold text-gray-600 mb-2 block">תפקיד</label>
+            <label className="text-sm font-semibold mb-2 block" style={{ color: '#6b7290' }}>תפקיד</label>
             <div className="grid grid-cols-2 gap-2">
               {TRIAL_ROLES.map(r => (
                 <button key={r.key} onClick={() => setRole(r.key)}
-                  className={`p-3 rounded-xl border-2 flex items-center gap-2 text-right transition-all ${role === r.key ? 'border-[#5354d3] bg-[#ecebfd]' : 'border-gray-100'}`}>
-                  <span className="text-xl">{r.emoji}</span>
-                  <span className="font-bold text-gray-800 text-sm">{r.label}</span>
+                  className="p-3 rounded-xl border-2 flex items-center gap-2 text-right transition-all active:scale-95"
+                  style={role === r.key ? { borderColor: '#5354d3', background: '#ece9fe' } : { borderColor: '#eceef4', background: '#fff' }}>
+                  <span className="font-bold text-sm" style={{ color: '#141a2e' }}>{r.label}</span>
                 </button>
               ))}
             </div>
           </div>
           <div>
-            <label className="text-sm font-semibold text-gray-600 mb-1.5 block">תאריך המשמרת</label>
+            <label className="text-sm font-semibold mb-1.5 block" style={{ color: '#6b7290' }}>תאריך המשמרת</label>
             <input type="date" value={startDate} min={new Date().toISOString().slice(0, 10)}
               onChange={e => setStartDate(e.target.value)} className={inputCls} />
           </div>
           <div className="flex gap-2">
             <div className="flex-1">
-              <label className="text-sm font-semibold text-gray-600 mb-1.5 block">שעת התחלה</label>
+              <label className="text-sm font-semibold mb-1.5 block" style={{ color: '#6b7290' }}>שעת התחלה</label>
               <input type="time" value={startTime} onChange={e => setStartTime(e.target.value)} dir="ltr" className={inputCls + ' text-center'} />
             </div>
             <div className="flex-1">
-              <label className="text-sm font-semibold text-gray-600 mb-1.5 block">שעת סיום</label>
+              <label className="text-sm font-semibold mb-1.5 block" style={{ color: '#6b7290' }}>שעת סיום</label>
               <input type="time" value={endTime} onChange={e => setEndTime(e.target.value)} dir="ltr" className={inputCls + ' text-center'} />
             </div>
           </div>
           <div>
-            <label className="text-sm font-semibold text-gray-600 mb-1.5 block">שכר לשעה (₪)</label>
+            <label className="text-sm font-semibold mb-1.5 block" style={{ color: '#6b7290' }}>שכר לשעה (₪)</label>
             <input type="number" inputMode="numeric" value={wage} onChange={e => setWage(e.target.value)}
               placeholder="50" min={MIN_WAGE} className={inputCls} />
-            <p className="text-gray-400 text-xs mt-1">
+            <p className="text-xs mt-1" style={{ color: '#7a8199' }}>
               משמרת סטאז׳ היא <b>משמרת בתשלום</b> — מינימום ₪{MIN_WAGE} לשעה. Staffly לא גובה עמלה עליה.
             </p>
           </div>
           <div>
-            <label className="text-sm font-semibold text-gray-600 mb-1.5 block">מה יעשה במשמרת?</label>
+            <label className="text-sm font-semibold mb-1.5 block" style={{ color: '#6b7290' }}>מה יעשה במשמרת?</label>
             <textarea value={duties} onChange={e => setDuties(e.target.value)} rows={3}
               placeholder="לדוגמה: עבודה לצד הטבח הראשי, הכנת מנות פתיחה, היכרות עם המטבח..."
               className={inputCls + ' resize-none text-sm'} />
           </div>
           <button onClick={handlePost} disabled={posting}
-            className="w-full rounded-2xl py-4 font-bold disabled:opacity-40"
+            className="w-full rounded-2xl py-4 font-bold disabled:opacity-40 active:scale-[0.98] transition-transform"
             style={{ background: '#5354d3', color: '#ffffff' }}>
             {posting ? 'מפרסם...' : 'פרסם משמרת סטאז׳'}
           </button>
@@ -223,36 +230,37 @@ export const RestaurantStages: React.FC = () => {
           </button>
 
           {visibleStages.length === 0 && (
-            <div className="text-center py-10 bg-white rounded-2xl card-shadow">
-              <GraduationCap size={30} className="text-gray-300 mx-auto mb-2" />
-              <p className="text-gray-500 font-medium text-sm">אין עדיין סטאז׳ים</p>
-              <p className="text-gray-400 text-xs mt-0.5">פרסמו משמרת סטאז׳ כדי להכיר מועמד בעבודה</p>
+            <div className="text-center py-10" style={CARD}>
+              <GraduationCap size={30} className="mx-auto mb-2" style={{ color: '#c2c7da' }} />
+              <p className="font-bold text-sm" style={{ color: '#141a2e' }}>אין עדיין סטאז׳ים</p>
+              <p className="text-xs mt-0.5" style={{ color: '#7a8199' }}>פרסמו משמרת סטאז׳ כדי להכיר מועמד בעבודה</p>
             </div>
           )}
 
           {/* ממתינים לאישורך — קודם, כי זה דורש פעולה */}
           {groupApplicants.length > 0 && (
             <div className="space-y-2">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-blue-600">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" /> ממתינים לאישורך ({groupApplicants.length})
+              <div className="flex items-center gap-1.5 text-xs font-bold" style={{ color: '#5354d3' }}>
+                <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#5354d3' }} /> ממתינים לאישורך ({groupApplicants.length})
               </div>
               {groupApplicants.map(s => (
-                <div key={s.Id} className="bg-white rounded-2xl p-4 card-shadow border border-blue-100 space-y-2.5">
+                <div key={s.Id} className="p-4 space-y-2.5" style={CARD}>
                   <div className="flex items-center gap-3">
                     <div className="w-11 h-11 rounded-2xl flex items-center justify-center font-bold"
                       style={{ background: avatarTone(s.WorkerName).bg, color: avatarTone(s.WorkerName).fg }}>
                       {(s.WorkerName || 'מ').split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
                     </div>
                     <div className="flex-1">
-                      <div className="font-bold text-gray-900">{s.WorkerName || 'מועמד'}</div>
-                      <div className="text-gray-400 text-xs">
+                      <div className="font-black" style={{ color: '#141a2e' }}>{s.WorkerName || 'מועמד'}</div>
+                      <div className="text-xs" style={{ color: '#7a8199' }}>
                         {ROLE_LABELS[s.Role] || s.Role} · {isTrial(s)
                           ? `${fmtDate(s.StartTime)} · ${fmtTime(s.StartTime)}–${fmtTime(s.EndTime)}`
                           : `${fmtDate(s.StartTime)}–${fmtDate(s.EndTime)}`}
                       </div>
                     </div>
                     <button onClick={() => setCancelId(Number(s.Id))} title="בטל"
-                      className="w-9 h-9 rounded-xl bg-gray-50 border border-gray-200 text-gray-400 flex items-center justify-center">
+                      className="w-9 h-9 rounded-xl flex items-center justify-center active:scale-95 transition-transform"
+                      style={{ background: '#f4f5f9', border: '1px solid #eceef4', color: '#7a8199' }}>
                       <Trash2 size={15} />
                     </button>
                   </div>
@@ -260,7 +268,8 @@ export const RestaurantStages: React.FC = () => {
                     <CancelConfirm onYes={() => doCancelStage(Number(s.Id))} onNo={() => setCancelId(null)} busy={cancelling} />
                   ) : (
                     <button onClick={() => approve(Number(s.Id))}
-                      className="w-full bg-blue-500 text-white rounded-xl py-3 font-bold flex items-center justify-center gap-2">
+                      className="w-full rounded-xl py-3 font-bold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
+                      style={{ background: '#5354d3', color: '#fff' }}>
                       <Check size={16} /> {isTrial(s) ? 'אשר את המועמד לסטאז׳' : "אשר את המועמד לסטאז'"}
                     </button>
                   )}
@@ -272,11 +281,11 @@ export const RestaurantStages: React.FC = () => {
           {/* סטאז' פעיל */}
           {groupActive.length > 0 && (
             <div className="space-y-2">
-              <div className="text-xs font-bold text-gray-400">מאושר / בעבודה ({groupActive.length})</div>
+              <div className="text-xs font-bold" style={{ color: '#7a8199' }}>מאושר / בעבודה ({groupActive.length})</div>
               {groupActive.map(s => {
                 const left = daysLeft(s.EndTime);
                 return (
-                  <div key={s.Id} className="bg-white rounded-2xl p-4 card-shadow space-y-3">
+                  <div key={s.Id} className="p-4 space-y-3" style={CARD}>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="w-11 h-11 rounded-2xl flex items-center justify-center font-bold"
@@ -284,29 +293,31 @@ export const RestaurantStages: React.FC = () => {
                           {(s.WorkerName || 'ע').split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
                         </div>
                         <div>
-                          <div className="font-bold text-gray-900">{s.WorkerName || 'העובד'}</div>
-                          <div className="text-gray-400 text-xs">
+                          <div className="font-black" style={{ color: '#141a2e' }}>{s.WorkerName || 'העובד'}</div>
+                          <div className="text-xs" style={{ color: '#7a8199' }}>
                             {ROLE_LABELS[s.Role] || s.Role} · {isTrial(s)
                               ? `${fmtDate(s.StartTime)} · ${fmtTime(s.StartTime)}–${fmtTime(s.EndTime)}`
                               : `עד ${fmtDate(s.EndTime)}`}
                           </div>
                         </div>
                       </div>
-                      <span className="text-[11px] font-bold text-green-600 bg-green-50 rounded-full px-2.5 py-1">
+                      <span className="text-[11px] font-extrabold" style={isTrial(s)
+                        ? { padding: '3px 9px', borderRadius: 6, background: '#fdf0cf', color: '#8a6300' }
+                        : { padding: '3px 9px', borderRadius: 6, background: '#e4f7ee', color: '#1f8f5f' }}>
                         {isTrial(s) ? 'סטאז׳' : 'פעיל'}
                       </span>
                     </div>
                     {isTrial(s) ? (
-                      <div className="bg-green-50 border border-green-100 rounded-xl px-3 py-2 text-[11px] text-gray-600 leading-snug">
+                      <div className="rounded-xl px-3 py-2 text-[11px] leading-snug" style={{ background: '#e4f7ee', border: '1px solid #c9efdb', color: '#6b7290' }}>
                         משמרת סטאז׳ · ₪{s.HourlyRate}/שעה · ללא עמלה. בתום המשמרת תוכלו להחליט אם לגייס.
                       </div>
                     ) : (
                       <div>
-                        <div className="flex justify-between text-[11px] text-gray-400 mb-1">
+                        <div className="flex justify-between text-[11px] mb-1" style={{ color: '#7a8199' }}>
                           <span>התקדמות</span>
                           <span>{left > 0 ? `עוד ${left} ימים` : 'הסתיימה התקופה'}</span>
                         </div>
-                        <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                        <div className="h-2 rounded-full overflow-hidden" style={{ background: '#eceef4' }}>
                           <div className="h-full rounded-full transition-all"
                             style={{ width: `${stageProgress(s)}%`, background: '#5354d3' }} />
                         </div>
@@ -315,25 +326,28 @@ export const RestaurantStages: React.FC = () => {
                     <div className="flex gap-2">
                       {!isTrial(s) && (
                         <button onClick={() => openSchedule(s)}
-                          className="flex-1 bg-gray-900 text-white rounded-xl py-2.5 font-bold text-sm flex items-center justify-center gap-1.5">
+                          className="flex-1 rounded-xl py-2.5 font-bold text-sm flex items-center justify-center gap-1.5 active:scale-95 transition-transform"
+                          style={{ background: '#141a2e', color: '#fff' }}>
                           <Calendar size={15} /> לוז המשמרות
                         </button>
                       )}
                       <button onClick={() => setChatStage(s)}
-                        className="w-11 rounded-xl bg-[#ecebfd] border border-[#d7d7f6] text-[#5354d3] flex items-center justify-center" title="צ'אט">
+                        className="w-11 rounded-xl flex items-center justify-center active:scale-95 transition-transform" title="צ'אט"
+                        style={{ background: '#ece9fe', border: '1px solid #d9d5fb', color: '#5b4bd0' }}>
                         <MessageCircle size={17} />
                       </button>
                       {s.WorkerPhone && (
                         <a href={`tel:${s.WorkerPhone}`}
-                          className="w-11 rounded-xl bg-green-50 border border-green-200 text-green-600 flex items-center justify-center" title="התקשר">
+                          className="w-11 rounded-xl flex items-center justify-center active:scale-95 transition-transform" title="התקשר"
+                          style={{ background: '#e4f7ee', border: '1px solid #c9efdb', color: '#1f8f5f' }}>
                           <Phone size={17} />
                         </a>
                       )}
                     </div>
                     {left <= 0 && !partnerIds.has(Number(s.WorkerId)) && (
                       <button onClick={() => setKeepJob(s)}
-                        className="w-full rounded-2xl py-3.5 font-bold"
-                        style={{ background: '#5354d3', color: '#ffffff' }}>
+                        className="w-full rounded-2xl py-3.5 font-bold active:scale-[0.98] transition-transform"
+                        style={GOLD_CTA}>
                         גייס לצוות — דמי השמה ₪300
                       </button>
                     )}
@@ -346,22 +360,23 @@ export const RestaurantStages: React.FC = () => {
           {/* בחיפוש מתלמד */}
           {groupSearching.length > 0 && (
             <div className="space-y-2">
-              <div className="text-xs font-bold text-gray-400">בחיפוש מועמד ({groupSearching.length})</div>
+              <div className="text-xs font-bold" style={{ color: '#7a8199' }}>בחיפוש מועמד ({groupSearching.length})</div>
               {groupSearching.map(s => (
-                <div key={s.Id} className="bg-white rounded-2xl p-4 card-shadow space-y-2.5">
+                <div key={s.Id} className="p-4 space-y-2.5" style={CARD}>
                   <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center flex-shrink-0"><Search size={18} className="text-gray-400" /></div>
+                    <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ background: '#f4f5f9' }}><Search size={18} style={{ color: '#7a8199' }} /></div>
                     <div className="flex-1">
-                      <div className="font-bold text-gray-900">{ROLE_LABELS[s.Role] || s.Role}</div>
-                      <div className="text-gray-400 text-xs">
+                      <div className="font-black" style={{ color: '#141a2e' }}>{ROLE_LABELS[s.Role] || s.Role}</div>
+                      <div className="text-xs" style={{ color: '#7a8199' }}>
                         {isTrial(s)
                           ? `סטאז׳ · ${fmtDate(s.StartTime)} · ${fmtTime(s.StartTime)}–${fmtTime(s.EndTime)} · ₪${s.HourlyRate}/ש'`
                           : `מתחיל ${fmtDate(s.StartTime)} · 3 שבועות`}
                       </div>
                     </div>
-                    <span className="text-[11px] font-bold text-amber-600 bg-amber-50 rounded-full px-2.5 py-1 flex-shrink-0">מחפש</span>
+                    <span className="text-[11px] font-extrabold flex-shrink-0" style={{ padding: '3px 9px', borderRadius: 6, background: '#fdf0cf', color: '#8a6300' }}>מחפש</span>
                     <button onClick={() => setCancelId(Number(s.Id))} title="בטל"
-                      className="w-9 h-9 rounded-xl bg-gray-50 border border-gray-200 text-gray-400 flex items-center justify-center flex-shrink-0">
+                      className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 active:scale-95 transition-transform"
+                      style={{ background: '#f4f5f9', border: '1px solid #eceef4', color: '#7a8199' }}>
                       <Trash2 size={15} />
                     </button>
                   </div>
@@ -376,29 +391,29 @@ export const RestaurantStages: React.FC = () => {
           {/* הסתיימו — שורות קומפקטיות */}
           {groupDone.length > 0 && (
             <div className="space-y-2">
-              <div className="text-xs font-bold text-gray-400">הסתיימו ({groupDone.length})</div>
+              <div className="text-xs font-bold" style={{ color: '#7a8199' }}>הסתיימו ({groupDone.length})</div>
               {groupDone.map(s => {
                 const hired = partnerIds.has(Number(s.WorkerId));
                 // רגע ההחלטה: סטאז׳ שהסתיימה, יש עובד, ועוד לא גויס
                 const canHire = isTrial(s) && !!s.WorkerId && !hired;
                 return (
-                  <div key={s.Id} className="bg-white rounded-xl px-3.5 py-2.5 card-shadow space-y-2">
+                  <div key={s.Id} className="px-3.5 py-2.5 space-y-2" style={{ ...CARD, borderRadius: 14 }}>
                     <div className="flex items-center gap-2.5">
-                      <Check size={16} className="text-green-500 flex-shrink-0" />
-                      <span className="font-semibold text-gray-700 text-sm flex-1 truncate">{s.WorkerName || ROLE_LABELS[s.Role] || s.Role}</span>
-                      {hired && <span className="text-[10px] font-bold text-green-700 bg-green-50 rounded-full px-2 py-0.5 flex-shrink-0">גויס לצוות</span>}
-                      <span className="text-gray-400 text-xs flex-shrink-0">
+                      <Check size={16} className="flex-shrink-0" style={{ color: '#1f8f5f' }} />
+                      <span className="font-semibold text-sm flex-1 truncate" style={{ color: '#2b3350' }}>{s.WorkerName || ROLE_LABELS[s.Role] || s.Role}</span>
+                      {hired && <span className="text-[10px] font-extrabold flex-shrink-0" style={{ padding: '2px 8px', borderRadius: 6, background: '#e4f7ee', color: '#1f8f5f' }}>גויס לצוות</span>}
+                      <span className="text-xs flex-shrink-0" style={{ color: '#7a8199' }}>
                         {isTrial(s) ? fmtDate(s.StartTime) : `${fmtDate(s.StartTime)}–${fmtDate(s.EndTime)}`}
                       </span>
                     </div>
                     {canHire && (
                       <>
-                        <p className="text-[11px] text-gray-500 leading-snug">
+                        <p className="text-[11px] leading-snug" style={{ color: '#6b7290' }}>
                           הסטאז׳ הסתיימה — רוצים להמשיך עם {s.WorkerName || 'העובד'}?
                         </p>
                         <button onClick={() => setKeepJob(s)}
-                          className="w-full rounded-xl py-2.5 font-bold text-sm"
-                          style={{ background: '#5354d3', color: '#ffffff' }}>
+                          className="w-full rounded-xl py-2.5 font-bold text-sm active:scale-[0.98] transition-transform"
+                          style={GOLD_CTA}>
                           גייס לצוות — דמי השמה ₪300
                         </button>
                       </>
@@ -414,39 +429,40 @@ export const RestaurantStages: React.FC = () => {
       {/* ── העובדים הקבועים ── */}
       {tab === 'partners' && (
         <div className="space-y-3">
-          <div className="bg-amber-50 border border-amber-100 rounded-2xl p-3 text-center">
-            <span className="text-amber-700 text-sm font-semibold">הצוות שגייסת דרך Staffly — אפשר להזמין אותם שוב בקלות</span>
+          <div className="rounded-2xl p-3 text-center" style={{ background: '#fdf0cf', border: '1px solid #f2e2b0' }}>
+            <span className="text-sm font-semibold" style={{ color: '#8a6300' }}>הצוות שגייסת דרך Staffly — אפשר להזמין אותם שוב בקלות</span>
           </div>
           {partners.length === 0 && (
-            <div className="text-center py-10 bg-white rounded-2xl card-shadow">
-              <Users size={28} className="text-gray-300 mx-auto mb-2" />
-              <p className="text-gray-500 font-medium text-sm">אין עדיין עובדים קבועים</p>
-              <p className="text-gray-400 text-xs mt-0.5">גייס מועמד בתום סטאז׳ כדי להתחיל</p>
+            <div className="text-center py-10" style={CARD}>
+              <Users size={28} className="mx-auto mb-2" style={{ color: '#c2c7da' }} />
+              <p className="font-bold text-sm" style={{ color: '#141a2e' }}>אין עדיין עובדים קבועים</p>
+              <p className="text-xs mt-0.5" style={{ color: '#7a8199' }}>גייס מועמד בתום סטאז׳ כדי להתחיל</p>
             </div>
           )}
           {partners.map(p => (
-            <div key={p.WorkerId} className="bg-white rounded-2xl p-4 card-shadow">
+            <div key={p.WorkerId} className="p-4" style={CARD}>
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-11 h-11 rounded-2xl flex items-center justify-center font-bold"
                   style={{ background: avatarTone(p.Name).bg, color: avatarTone(p.Name).fg }}>{(p.Name || 'ע').slice(0, 2)}</div>
                 <div className="flex-1">
-                  <div className="font-bold text-gray-900">{p.Name}</div>
-                  <div className="text-gray-400 text-xs flex items-center gap-2">
+                  <div className="font-black" style={{ color: '#141a2e' }}>{p.Name}</div>
+                  <div className="text-xs flex items-center gap-2" style={{ color: '#7a8199' }}>
                     <span>{ROLE_LABELS[p.Role] || p.Role}</span>
-                    {p.Rating > 0 && <span className="flex items-center gap-0.5"><Star size={11} className="text-amber-400 fill-amber-400" />{Number(p.Rating).toFixed(1)}</span>}
-                    <span className="text-green-600 font-semibold">קבוע</span>
+                    {p.Rating > 0 && <span className="flex items-center gap-0.5"><Star size={11} style={{ color: '#f4b62c', fill: '#f4b62c' }} />{Number(p.Rating).toFixed(1)}</span>}
+                    <span className="font-semibold" style={{ color: '#1f8f5f' }}>קבוע</span>
                   </div>
                 </div>
               </div>
               <div className="flex gap-2">
                 <button onClick={() => setDirectFor(p)}
-                  className="flex-1 rounded-xl py-2.5 font-bold text-sm flex items-center justify-center gap-1.5"
-                  style={{ background: '#5354d3', color: '#ffffff' }}>
+                  className="flex-1 rounded-xl py-2.5 font-bold text-sm flex items-center justify-center gap-1.5 active:scale-95 transition-transform"
+                  style={{ background: '#5354d3', color: '#fff' }}>
                   <Send size={14} /> שלח משמרת
                 </button>
                 {p.Phone && (
                   <a href={`tel:${p.Phone}`}
-                    className="w-11 rounded-xl bg-green-50 border border-green-200 text-green-600 flex items-center justify-center" title="התקשר">
+                    className="w-11 rounded-xl flex items-center justify-center active:scale-95 transition-transform" title="התקשר"
+                    style={{ background: '#e4f7ee', border: '1px solid #c9efdb', color: '#1f8f5f' }}>
                     <Phone size={17} />
                   </a>
                 )}
@@ -459,21 +475,21 @@ export const RestaurantStages: React.FC = () => {
       {/* מודאל שמירת עובד (₪300) */}
       {keepJob && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center p-6" style={{ background: 'rgba(19,22,38,0.65)' }}>
-          <div className="bg-white rounded-3xl p-6 w-full max-w-sm text-center space-y-3 shadow-2xl">
-            <Star size={36} className="text-amber-400 fill-amber-400 mx-auto" />
-            <h3 className="font-bold text-gray-900 text-lg">לגייס את {keepJob.WorkerName || 'העובד'} לצוות?</h3>
-            <p className="text-gray-500 text-sm">
+          <div className="rounded-3xl p-6 w-full max-w-sm text-center space-y-3" style={{ background: '#fff', boxShadow: '0 20px 60px -12px rgba(20,26,46,.4)' }}>
+            <Star size={36} className="mx-auto" style={{ color: '#f4b62c', fill: '#f4b62c' }} />
+            <h3 className="font-black text-lg" style={{ color: '#141a2e' }}>לגייס את {keepJob.WorkerName || 'העובד'} לצוות?</h3>
+            <p className="text-sm" style={{ color: '#6b7290' }}>
               ייגבו <b>₪300</b> — דמי השמה <b>חד-פעמיים</b>. מכאן ההעסקה ישירה מולך כמעסיק, ללא עמלה נוספת אף פעם —
               Staffly אינה צד ביחסי העבודה.
             </p>
-            <p className="text-gray-400 text-[11px] leading-snug">
+            <p className="text-[11px] leading-snug" style={{ color: '#7a8199' }}>
               נדרש להעסיק אותו כחוק ולא למנוע ממנו להמשיך להשתמש ב-Staffly למשמרות מזדמנות.
             </p>
             <div className="flex gap-2 pt-1">
-              <button onClick={() => setKeepJob(null)} className="flex-1 bg-gray-100 text-gray-600 rounded-2xl py-3 font-bold">ביטול</button>
+              <button onClick={() => setKeepJob(null)} className="flex-1 rounded-2xl py-3 font-bold active:scale-95 transition-transform" style={{ background: '#f4f5f9', color: '#6b7290' }}>ביטול</button>
               <button onClick={doKeep} disabled={keeping}
-                className="flex-1 rounded-2xl py-3 font-bold disabled:opacity-40"
-                style={{ background: '#5354d3', color: '#ffffff' }}>
+                className="flex-1 rounded-2xl py-3 font-bold disabled:opacity-40 active:scale-[0.98] transition-transform"
+                style={GOLD_CTA}>
                 {keeping ? '...' : 'כן, גייס (₪300)'}
               </button>
             </div>
@@ -499,13 +515,14 @@ export const RestaurantStages: React.FC = () => {
 
 // ── אישור ביטול קטן בתוך כרטיס ──
 const CancelConfirm: React.FC<{ onYes: () => void; onNo: () => void; busy: boolean }> = ({ onYes, onNo, busy }) => (
-  <div className="flex items-center gap-2 bg-red-50 border border-red-100 rounded-xl p-2.5">
-    <span className="text-red-600 text-xs font-semibold flex-1">לבטל?</span>
+  <div className="flex items-center gap-2 rounded-xl p-2.5" style={{ background: '#fde3e3', border: '1px solid #f8c9c9' }}>
+    <span className="text-xs font-semibold flex-1" style={{ color: '#cf3030' }}>לבטל?</span>
     <button onClick={onYes} disabled={busy}
-      className="bg-red-500 text-white rounded-lg px-3 py-1.5 text-xs font-bold disabled:opacity-50">
+      className="rounded-lg px-3 py-1.5 text-xs font-bold disabled:opacity-50 active:scale-95 transition-transform"
+      style={{ background: '#cf3030', color: '#fff' }}>
       {busy ? '...' : 'כן, בטל'}
     </button>
-    <button onClick={onNo} className="bg-white border border-gray-200 text-gray-500 rounded-lg px-3 py-1.5 text-xs font-bold">לא</button>
+    <button onClick={onNo} className="rounded-lg px-3 py-1.5 text-xs font-bold active:scale-95 transition-transform" style={{ background: '#fff', border: '1px solid #eceef4', color: '#7a8199' }}>לא</button>
   </div>
 );
 
@@ -545,38 +562,38 @@ const DirectShiftModal: React.FC<{ partner: any; restaurantId: number; onClose: 
 
   return (
     <div className="fixed inset-0 z-[70] flex items-center justify-center p-4" style={{ background: 'rgba(19,22,38,0.65)' }}>
-      <div className="bg-white rounded-3xl p-5 w-full max-w-md max-h-[85vh] overflow-y-auto space-y-3 shadow-2xl">
-        <div className="flex items-center justify-between pb-2 border-b border-gray-100">
-          <h3 className="font-bold text-gray-900 text-lg">משמרת ל{partner.Name}</h3>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500"><X size={17} /></button>
+      <div className="rounded-3xl p-5 w-full max-w-md max-h-[85vh] overflow-y-auto space-y-3" style={{ background: '#fff', boxShadow: '0 20px 60px -12px rgba(20,26,46,.4)' }}>
+        <div className="flex items-center justify-between pb-2" style={{ borderBottom: '1px solid #eceef4' }}>
+          <h3 className="font-black text-lg" style={{ color: '#141a2e' }}>משמרת ל{partner.Name}</h3>
+          <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center active:scale-95 transition-transform" style={{ background: '#f4f5f9', color: '#7a8199' }}><X size={17} /></button>
         </div>
         <div>
-          <label className="text-xs font-semibold text-gray-500 mb-1 block">תאריך</label>
+          <label className="text-xs font-semibold mb-1 block" style={{ color: '#6b7290' }}>תאריך</label>
           <input type="date" value={date} onChange={e => setDate(e.target.value)} className={inputCls} />
         </div>
         {/* התחלה מימין, סיום משמאל (RTL) */}
         <div className="flex gap-2">
           <div className="flex-1">
-            <label className="text-xs font-semibold text-gray-500 mb-1 block">שעת התחלה</label>
+            <label className="text-xs font-semibold mb-1 block" style={{ color: '#6b7290' }}>שעת התחלה</label>
             <input type="time" value={start} onChange={e => setStart(e.target.value)} dir="ltr" className={inputCls + ' text-center'} />
           </div>
           <div className="flex-1">
-            <label className="text-xs font-semibold text-gray-500 mb-1 block">שעת סיום</label>
+            <label className="text-xs font-semibold mb-1 block" style={{ color: '#6b7290' }}>שעת סיום</label>
             <input type="time" value={end} onChange={e => setEnd(e.target.value)} dir="ltr" className={inputCls + ' text-center'} />
           </div>
         </div>
         <div>
-          <label className="text-xs font-semibold text-gray-500 mb-1 block">שכר לשעה (₪)</label>
+          <label className="text-xs font-semibold mb-1 block" style={{ color: '#6b7290' }}>שכר לשעה (₪)</label>
           <input type="number" inputMode="numeric" value={rate} onChange={e => setRate(e.target.value)} placeholder="50" className={inputCls} />
         </div>
         <div>
-          <label className="text-xs font-semibold text-gray-500 mb-1 block">הנחיות לעובד (אופציונלי)</label>
+          <label className="text-xs font-semibold mb-1 block" style={{ color: '#6b7290' }}>הנחיות לעובד (אופציונלי)</label>
           <input type="text" value={duties} onChange={e => setDuties(e.target.value)} placeholder="מה צריך לעשות במשמרת" className={inputCls} />
         </div>
-        <p className="text-amber-700 text-xs text-center bg-amber-50 rounded-xl py-2">{partner.Name} בצוות שלך — הזמנה מהירה למשמרת בודדת</p>
-        {err && <div className="bg-red-50 text-red-600 text-sm rounded-xl px-4 py-2 text-center">{err}</div>}
+        <p className="text-xs text-center rounded-xl py-2" style={{ background: '#fdf0cf', color: '#8a6300' }}>{partner.Name} בצוות שלך — הזמנה מהירה למשמרת בודדת</p>
+        {err && <div className="text-sm rounded-xl px-4 py-2 text-center" style={{ background: '#fde3e3', color: '#cf3030' }}>{err}</div>}
         <button onClick={send} disabled={sending}
-          className="w-full rounded-2xl py-4 font-bold disabled:opacity-40"
+          className="w-full rounded-2xl py-4 font-bold disabled:opacity-40 active:scale-[0.98] transition-transform"
           style={{ background: '#5354d3', color: '#ffffff' }}>
           {sending ? 'שולח...' : 'שלח הצעת משמרת'}
         </button>

@@ -1,6 +1,6 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { setVisibleInterval } from '../../utils/visibleInterval';
-import { Zap, ChefHat, CheckCircle, Star, LogOut, X, GraduationCap, CreditCard, ClipboardList, Users } from 'lucide-react';
+import { Zap, ChefHat, CheckCircle, Star, X, GraduationCap, CreditCard, ClipboardList, Users, ChevronLeft, MapPin } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
@@ -17,7 +17,7 @@ import { haptic } from '../../utils/haptics';
 import { avatarTone } from '../../utils/colors';
 
 export const RestaurantHome: React.FC = () => {
-  const { navToRestaurant, navToWorker, userProfile, resetToLanding, selectWorkerJob, refreshProfile, setEmergencyMode } = useApp();
+  const { navToRestaurant, userProfile, selectWorkerJob, refreshProfile, setEmergencyMode } = useApp();
   const [workers, setWorkers] = useState<any[]>([]);
   const [recentJobs, setRecentJobs] = useState<any[]>([]);
   const [activeShift, setActiveShift] = useState<any>(null);
@@ -82,44 +82,47 @@ export const RestaurantHome: React.FC = () => {
     }
   };
 
+  const stats = [
+    { icon: <CreditCard size={19} />,   gold: true,  value: `₪${walletBalance.toLocaleString()}`, label: 'ארנק' },
+    { icon: <ClipboardList size={19} />, gold: false, value: `${recentJobs.length}`, label: 'משמרות' },
+    { icon: <Users size={19} />,        gold: true,  value: `${areaCount}`, label: 'עובדים זמינים' },
+  ];
+
   return (
     <div className="screen-enter space-y-4 pb-2">
-      {/* Header */}
-      <div className="rounded-3xl p-5 text-white relative overflow-hidden"
-        style={{ background: '#1b1e38', boxShadow: '0 4px 16px rgba(20,28,44,0.16)' }}>
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center font-bold text-lg">
-            {initials}
-          </div>
-          <div className="flex-1">
-            <div className="font-bold text-lg leading-tight">{name}</div>
-            <div className="text-amber-100 text-sm">{city}</div>
-          </div>
-          <div className="flex items-center gap-2">
+      {/* ── כותרת נאבי — סיכום המסעדה ── */}
+      <div className="relative rounded-3xl overflow-hidden" style={{ background: '#141a2e' }}>
+        <div className="absolute pointer-events-none" style={{ width: 240, height: 240, borderRadius: '50%', bottom: -130, left: -70, background: 'radial-gradient(circle, rgba(244,182,44,.20), transparent 66%)' }} />
+        <div className="absolute pointer-events-none" style={{ width: 170, height: 170, borderRadius: '50%', top: -80, left: 60, background: 'radial-gradient(circle, rgba(83,84,211,.22), transparent 68%)' }} />
+        <div className="relative p-5 text-white">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg flex-none"
+              style={{ background: 'rgba(255,255,255,0.12)' }}>
+              {initials}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="font-black text-lg leading-tight truncate">{name}</div>
+              <div className="inline-flex items-center gap-1 text-[13px] font-semibold mt-0.5" style={{ color: '#b9c0d8' }}>
+                <MapPin size={13} style={{ color: '#f4b62c' }} /> {city || 'הסביבה שלך'}
+              </div>
+            </div>
             {rating > 0 && (
-              <div className="flex items-center gap-1 bg-white/20 rounded-lg px-2 py-1">
-                <Star size={12} className="text-yellow-300 fill-yellow-300" />
-                <span className="text-sm font-bold">{rating.toFixed(1)}</span>
+              <div className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 flex-none" style={{ background: 'rgba(255,255,255,0.10)' }}>
+                <Star size={13} style={{ color: '#f4b62c' }} className="fill-current" />
+                <span className="text-sm font-black">{rating.toFixed(1)}</span>
               </div>
             )}
-            <button onClick={resetToLanding} className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
-              <LogOut size={14} />
-            </button>
           </div>
-        </div>
 
-        <div className="grid grid-cols-3 gap-3">
-          {[
-            { label: 'ארנק', value: `₪${walletBalance.toLocaleString()}`, icon: <CreditCard size={18} /> },
-            { label: 'משמרות', value: `${recentJobs.length}`, icon: <ClipboardList size={18} /> },
-            { label: 'עובדים זמינים', value: `${areaCount}`, icon: <Users size={18} /> },
-          ].map(s => (
-            <div key={s.label} className="bg-white/10 rounded-xl p-3 text-center">
-              <div className="mb-1 flex justify-center text-amber-100">{s.icon}</div>
-              <div className="font-bold text-base">{s.value}</div>
-              <div className="text-amber-100 text-xs">{s.label}</div>
-            </div>
-          ))}
+          <div className="grid grid-cols-3 gap-2.5">
+            {stats.map(s => (
+              <div key={s.label} className="rounded-2xl px-2 py-3 text-center" style={{ background: 'rgba(255,255,255,0.07)' }}>
+                <div className="flex justify-center mb-1" style={{ color: s.gold ? '#f4b62c' : '#8f90f0' }}>{s.icon}</div>
+                <div className="font-black text-base">{s.value}</div>
+                <div className="text-[11px] font-semibold mt-0.5" style={{ color: '#9aa2be' }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -149,51 +152,52 @@ export const RestaurantHome: React.FC = () => {
         </div>
       )}
 
-      {/* Quick actions */}
-      <div>
-        <h2 className="font-bold text-gray-800 mb-3 text-base">פעולות מהירות</h2>
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            onClick={() => { haptic('light'); setEmergencyMode(false); navToRestaurant('create_job'); }}
-            className="rounded-2xl p-4 text-right active:scale-[0.98] transition-transform"
-            style={{ background: '#5354d3', color: '#ffffff' }}
-          >
-            <ChefHat size={24} className="mb-2" />
-            <div className="font-bold">פרסם משמרת</div>
-            <div className="text-xs mt-0.5" style={{ color:'#4a4bc4' }}>מצא עובד עכשיו</div>
-          </button>
-          <button
-            onClick={() => { haptic('medium'); setEmergencyMode(true); navToRestaurant('create_job'); }}
-            className="text-white rounded-2xl p-4 text-right active:scale-[0.98] transition-transform"
-            style={{ background: '#e5484d' }}
-          >
-            <div className="flex items-center gap-1 mb-2">
-              <Zap size={18} className="fill-white" />
-              <span className="text-xs font-bold bg-white/20 px-2 py-0.5 rounded-full">חירום</span>
-            </div>
-            <div className="font-bold">מצב חירום</div>
-            <div className="text-white/80 text-xs mt-0.5">לאיוש דחוף עכשיו</div>
-          </button>
+      {/* ── הירו — פרסום משמרת ── */}
+      <div className="relative rounded-3xl overflow-hidden" style={{ background: '#141a2e' }}>
+        <div className="absolute pointer-events-none" style={{ width: 220, height: 220, borderRadius: '50%', bottom: -120, right: -70, background: 'radial-gradient(circle, rgba(244,182,44,.18), transparent 66%)' }} />
+        <div className="relative p-5 text-white">
+          <h1 className="font-black leading-tight mb-1.5" style={{ fontSize: 22 }}>צריך עובד עכשיו?</h1>
+          <p className="text-[13px] leading-relaxed mb-4" style={{ color: '#b9c0d8', maxWidth: '86%' }}>
+            פרסמו משמרת ועובדים מתאימים באזור יקבלו התראה מיידית
+          </p>
+          <div className="flex items-center gap-2.5">
+            <button
+              onClick={() => { haptic('light'); setEmergencyMode(false); navToRestaurant('create_job'); }}
+              className="inline-flex items-center gap-2 font-extrabold text-[15px] px-5 py-3 rounded-2xl active:scale-95 transition-transform"
+              style={{ background: '#f4b62c', color: '#3a2c00', boxShadow: '0 8px 20px -6px rgba(244,182,44,.5)' }}
+            >
+              <ChefHat size={17} /> פרסם משמרת
+            </button>
+            <button
+              onClick={() => { haptic('medium'); setEmergencyMode(true); navToRestaurant('create_job'); }}
+              className="inline-flex items-center gap-1.5 font-bold text-[13px] px-3.5 py-3 rounded-2xl active:scale-95 transition-transform"
+              style={{ background: 'rgba(229,72,77,0.16)', color: '#ff9ea1', border: '1px solid rgba(229,72,77,0.35)' }}
+            >
+              <Zap size={15} className="fill-current" /> חירום
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Talent program entry */}
       <button onClick={() => navToRestaurant('talent')}
         className="w-full rounded-2xl p-4 text-right active:scale-[0.99] transition-transform flex items-center gap-3"
-        style={{ background: '#ecebfd', border: '1px solid #d7d7f6' }}>
-        <GraduationCap size={26} className="flex-shrink-0" style={{ color: '#4244b8' }} />
-        <div className="flex-1">
-          <div className="font-bold" style={{ color: '#35357e' }}>גלה טאלנט טרי</div>
-          <div className="text-xs mt-0.5" style={{ color: '#6d6db4' }}>בוגרי בתי ספר לבישול/ברמנות — מוכנים להזדמנות הראשונה</div>
+        style={{ background: '#eceefb', border: '1px solid #dcdefb' }}>
+        <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-none" style={{ background: '#fff', color: '#5354d3' }}>
+          <GraduationCap size={22} />
         </div>
-        <span className="text-xl" style={{ color: '#4244b8' }}>‹</span>
+        <div className="flex-1">
+          <div className="font-black" style={{ color: '#2b3350' }}>גלה טאלנט טרי</div>
+          <div className="text-xs mt-0.5 font-semibold" style={{ color: '#6b7290' }}>בוגרי בתי ספר לבישול/ברמנות — מוכנים להזדמנות הראשונה</div>
+        </div>
+        <ChevronLeft size={20} style={{ color: '#aeb4cc' }} className="flex-none" />
       </button>
 
       {/* Available workers nearby */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-bold text-gray-800 text-base">עובדים זמינים באזורך ({areaCount})</h2>
-          <span className="text-xs text-green-600 font-semibold bg-green-50 px-2 py-1 rounded-full">
+          <h2 className="font-black" style={{ fontSize: 17, color: '#141a2e' }}>עובדים זמינים באזורך</h2>
+          <span className="text-[11px] font-extrabold" style={{ padding: '3px 9px', borderRadius: 6, background: '#e4f7ee', color: '#1f8f5f' }}>
             עד 30 ק״מ
           </span>
         </div>
@@ -204,30 +208,33 @@ export const RestaurantHome: React.FC = () => {
               subtitle="פרסמו משמרת ועובדים מתאימים יקבלו התראה מיידית" />
           </div>
         )}
-        <div className="space-y-2">
+        <div className="space-y-2.5">
           {topWorkers.map((w: any) => {
             const wName = w.Name || 'עובד';
             const wInitials = wName.split(' ').map((n: string) => n[0]).join('').slice(0,2);
             return (
-              <div key={w.Id} className="bg-white rounded-xl p-3 flex items-center gap-3 card-shadow">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0"
+              <div key={w.Id} className="rounded-2xl p-3 flex items-center gap-3"
+                style={{ background: '#fff', border: '1px solid #eceef4', boxShadow: '0 1px 2px rgba(20,26,46,.04), 0 6px 18px -10px rgba(20,26,46,.10)' }}>
+                <div className="w-11 h-11 rounded-full flex items-center justify-center font-black text-sm flex-shrink-0"
                   style={{ background: avatarTone(wName).bg, color: avatarTone(wName).fg }}>
                   {wInitials}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-semibold text-gray-900 text-sm">{wName}</span>
+                    <span className="font-black text-sm" style={{ color: '#141a2e' }}>{wName}</span>
                     <NewWorkerBadge completedShifts={w.CompletedShifts} size="sm" />
                     <VerifiedBadge isVerified={w.IsVerified} size="sm" />
-                    {w.Rating > 0 && <span className="text-xs text-yellow-500 font-bold">★{w.Rating.toFixed(1)}</span>}
+                    {w.Rating > 0 && (
+                      <span className="inline-flex items-center gap-0.5 text-xs font-bold" style={{ color: '#8a6300' }}>
+                        <Star size={11} className="fill-current" style={{ color: '#f4b62c' }} />{w.Rating.toFixed(1)}
+                      </span>
+                    )}
                   </div>
-                  <div className="text-gray-500 text-xs">{w.City} · {roleLabels(w.Role)}</div>
+                  <div className="text-xs mt-0.5 font-semibold" style={{ color: '#7a8199' }}>{w.City} · {roleLabels(w.Role)}</div>
                 </div>
-                <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                  <span className="text-[10px] font-semibold text-green-600 flex items-center gap-1">
-                    <span className="w-2 h-2 bg-green-500 rounded-full" /> זמין
-                  </span>
-                </div>
+                <span className="text-[11px] font-extrabold flex items-center gap-1 flex-shrink-0" style={{ color: '#1f8f5f' }}>
+                  <span className="w-2 h-2 rounded-full" style={{ background: '#22c55e' }} /> זמין
+                </span>
               </div>
             );
           })}
@@ -236,36 +243,46 @@ export const RestaurantHome: React.FC = () => {
 
       {/* Recent jobs */}
       <div>
-        <h2 className="font-bold text-gray-800 mb-3 text-base">משמרות אחרונות</h2>
+        <h2 className="font-black mb-3" style={{ fontSize: 17, color: '#141a2e' }}>משמרות אחרונות</h2>
         {recentJobs.length === 0 ? (
-          <div className="bg-white rounded-xl p-4 text-center card-shadow">
-            <p className="text-gray-400 text-sm">טרם פרסמת משמרות</p>
-            <button onClick={() => navToRestaurant('create_job')} className="text-[#5354d3] text-sm font-semibold mt-2">
+          <div className="rounded-2xl p-5 text-center" style={{ background: '#fff', border: '1px solid #eceef4', boxShadow: '0 1px 2px rgba(20,26,46,.04), 0 6px 18px -10px rgba(20,26,46,.10)' }}>
+            <p className="text-sm font-semibold" style={{ color: '#7a8199' }}>טרם פרסמת משמרות</p>
+            <button onClick={() => navToRestaurant('create_job')} className="text-sm font-black mt-2" style={{ color: '#5354d3' }}>
               פרסם משמרת ראשונה
             </button>
           </div>
         ) : (
-          <div className="space-y-2">
-            {recentJobs.map((j: any) => (
-              <div key={j.Id} className="bg-white rounded-xl p-3 flex items-center gap-3 card-shadow">
-                <CheckCircle size={18} className={`flex-shrink-0 ${j.Status === 'completed' ? 'text-green-500' : j.Status === 'cancelled' ? 'text-red-400' : 'text-amber-400'}`} />
-                <div className="flex-1">
-                  <span className="font-semibold text-gray-800 text-sm">{ROLE_LABELS[j.Role] || j.Role}</span>
-                  <span className="text-gray-400 text-xs"> · {j.Status === 'searching' ? 'מחפש' : j.Status === 'completed' ? 'הושלם' : j.Status === 'cancelled' ? 'בוטל' : j.Status}</span>
+          <div className="space-y-2.5">
+            {recentJobs.map((j: any) => {
+              const st = j.Status === 'completed'
+                ? { txt: 'הושלם', bg: '#e4f7ee', fg: '#1f8f5f', icon: '#1f9d6b' }
+                : j.Status === 'cancelled'
+                  ? { txt: 'בוטל', bg: '#fde3e3', fg: '#cf3030', icon: '#e5484d' }
+                  : { txt: j.Status === 'searching' ? 'מחפש' : j.Status, bg: '#fdf0cf', fg: '#8a6300', icon: '#f4b62c' };
+              return (
+                <div key={j.Id} className="rounded-2xl p-3 flex items-center gap-3"
+                  style={{ background: '#fff', border: '1px solid #eceef4', boxShadow: '0 1px 2px rgba(20,26,46,.04), 0 6px 18px -10px rgba(20,26,46,.10)' }}>
+                  <CheckCircle size={18} className="flex-shrink-0" style={{ color: st.icon }} />
+                  <div className="flex-1 min-w-0">
+                    <span className="font-black text-sm" style={{ color: '#141a2e' }}>{ROLE_LABELS[j.Role] || j.Role}</span>
+                    <span className="inline-block ml-1 align-middle text-[10px] font-extrabold" style={{ padding: '2px 7px', borderRadius: 6, background: st.bg, color: st.fg }}>{st.txt}</span>
+                  </div>
+                  <div className="text-left flex-shrink-0">
+                    <span className="rounded-lg font-extrabold whitespace-nowrap" style={{ fontSize: 12, padding: '4px 9px', background: '#fdf0cf', color: '#8a6300' }}>
+                      ₪{j.HourlyRate}/ש׳
+                    </span>
+                    {j.TotalPay && <div className="text-[11px] font-bold mt-1" style={{ color: '#1f8f5f' }}>₪{j.TotalPay} סה״כ</div>}
+                  </div>
+                  {j.Status === 'searching' && (
+                    <button onClick={() => setCancelJob(j)}
+                      className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 active:scale-95 transition-transform"
+                      style={{ background: '#fde3e3', color: '#cf3030' }} title="בטל משמרת">
+                      <X size={15} />
+                    </button>
+                  )}
                 </div>
-                <div className="text-right">
-                  <div className="text-gray-700 font-bold text-sm">₪{j.HourlyRate}/ש׳</div>
-                  {j.TotalPay && <div className="text-green-600 text-xs">₪{j.TotalPay} סה״כ</div>}
-                </div>
-                {j.Status === 'searching' && (
-                  <button onClick={() => setCancelJob(j)}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-red-50 text-red-400 active:bg-red-100"
-                    title="בטל משמרת">
-                    <X size={15} />
-                  </button>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

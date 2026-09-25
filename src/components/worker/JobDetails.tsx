@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { setVisibleInterval } from '../../utils/visibleInterval';
-import { MapPin, Star, Shield, Zap, X, Search, XCircle, CheckCircle2, Send, ClipboardList } from 'lucide-react';
+import { MapPin, Shield, X, Search, XCircle, CheckCircle2, Send, ClipboardList, Clock } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { ROLE_LABELS } from '../../data/mockData';
 import { api } from '../../api';
@@ -23,11 +23,12 @@ export const JobDetails: React.FC = () => {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
-          <Search size={30} className="text-gray-300 mx-auto mb-3" />
-          <p className="text-gray-500 font-medium">משמרת לא נמצאה</p>
+          <Search size={30} className="mx-auto mb-3" style={{ color: '#c2c7da' }} />
+          <p className="font-semibold" style={{ color: '#7a8199' }}>משמרת לא נמצאה</p>
           <button
             onClick={() => navToWorker('home')}
-            className="mt-4 bg-[#5354d3] text-white rounded-xl px-6 py-3 font-bold"
+            className="mt-4 text-white rounded-2xl px-6 py-3 font-extrabold active:scale-95 transition-transform"
+            style={{ background: '#5354d3' }}
           >
             חזור למשמרות
           </button>
@@ -101,13 +102,14 @@ export const JobDetails: React.FC = () => {
   if (cancelledByRestaurant) {
     return (
       <div className="screen-enter flex flex-col items-center justify-center min-h-[70vh] text-center gap-4 px-6">
-        <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center">
-          <XCircle size={44} className="text-red-500" />
+        <div className="w-24 h-24 rounded-full flex items-center justify-center" style={{ background: '#fde3e3' }}>
+          <XCircle size={44} style={{ color: '#cf3030' }} />
         </div>
-        <h2 className="text-2xl font-bold text-gray-900">המשמרת בוטלה</h2>
-        <p className="text-gray-500">המסעדה ביטלה את המשמרת. אם הביטול היה מאוחר, קיבלת פיצוי לארנק.</p>
+        <h2 className="text-2xl font-black" style={{ color: '#141a2e' }}>המשמרת בוטלה</h2>
+        <p style={{ color: '#7a8199' }}>המסעדה ביטלה את המשמרת. אם הביטול היה מאוחר, קיבלת פיצוי לארנק.</p>
         <button onClick={() => navToWorker('home')}
-          className="w-full bg-[#5354d3] text-white rounded-2xl py-4 font-bold text-lg">
+          className="w-full text-white rounded-2xl py-4 font-extrabold text-lg active:scale-[0.98] transition-transform"
+          style={{ background: '#5354d3' }}>
           חזור למשמרות
         </button>
       </div>
@@ -119,17 +121,18 @@ export const JobDetails: React.FC = () => {
       <div className="screen-enter flex flex-col items-center justify-center min-h-[70vh] text-center gap-4 px-6">
         {approvedByRestaurant ? (
           <>
-            <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center">
-              <CheckCircle2 size={44} className="text-green-500" />
+            <div className="w-24 h-24 rounded-full flex items-center justify-center" style={{ background: '#e4f7ee' }}>
+              <CheckCircle2 size={44} style={{ color: '#1f9d6b' }} />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900">המשמרת אושרה</h2>
-            <p className="text-gray-500">{restaurantName} מחכה לך</p>
+            <h2 className="text-2xl font-black" style={{ color: '#141a2e' }}>המשמרת אושרה</h2>
+            <p style={{ color: '#7a8199' }}>{restaurantName} מחכה לך</p>
             <button onClick={() => navToWorker('navigation')}
-              className="w-full bg-green-500 text-white rounded-2xl py-4 font-bold text-lg">
+              className="w-full text-white rounded-2xl py-4 font-extrabold text-lg active:scale-[0.98] transition-transform"
+              style={{ background: '#1f9d6b' }}>
               צא לדרך
             </button>
             <button onClick={() => setShowCancel(true)}
-              className="w-full text-red-400 text-sm py-1 font-semibold">
+              className="w-full text-sm py-1 font-semibold" style={{ color: '#cf3030' }}>
               בטל משמרת
             </button>
             {showCancel && (
@@ -146,35 +149,36 @@ export const JobDetails: React.FC = () => {
         ) : (
           <>
             <div className="relative w-28 h-28">
-              <div className="w-28 h-28 bg-[#ecebfd] rounded-full flex items-center justify-center">
-                <Send size={40} className="text-[#5354d3]" />
+              <div className="w-28 h-28 rounded-full flex items-center justify-center" style={{ background: '#ecebfd' }}>
+                <Send size={40} style={{ color: '#5354d3' }} />
               </div>
               <div className="absolute inset-0 rounded-full border-4 border-[#c7c7f5] border-t-[#5354d3] animate-spin" />
             </div>
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-900">מועמדות נשלחה!</h2>
-              <p className="text-gray-500 mt-1">ממתין לאישור <strong>{restaurantName}</strong></p>
+              <h2 className="text-2xl font-black" style={{ color: '#141a2e' }}>מועמדות נשלחה!</h2>
+              <p className="mt-1" style={{ color: '#7a8199' }}>ממתין לאישור <strong style={{ color: '#2b3350' }}>{restaurantName}</strong></p>
             </div>
-            <div className="w-full bg-white rounded-2xl p-4 card-shadow space-y-3">
+            <div className="w-full rounded-[20px] p-4 space-y-3"
+              style={{ background: '#fff', border: '1px solid #eceef4', boxShadow: '0 1px 2px rgba(20,26,46,.04), 0 6px 20px -8px rgba(20,26,46,.10)' }}>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-500">מסעדה</span>
-                <span className="font-semibold text-gray-900">{restaurantName}</span>
+                <span style={{ color: '#7a8199' }}>מסעדה</span>
+                <span className="font-bold" style={{ color: '#141a2e' }}>{restaurantName}</span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-500">שכר</span>
-                <span className="font-semibold text-[#5354d3]">₪{hourlyRate}/ש׳</span>
+                <span style={{ color: '#7a8199' }}>שכר</span>
+                <span className="rounded-lg font-extrabold" style={{ fontSize: 12, padding: '4px 9px', background: '#fdf0cf', color: '#8a6300' }}>₪{hourlyRate}/ש׳</span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-500">שעות</span>
-                <span className="font-semibold text-gray-900">{startStr}–{endStr}</span>
+                <span style={{ color: '#7a8199' }}>שעות</span>
+                <span className="font-bold" style={{ color: '#141a2e' }}>{startStr}–{endStr}</span>
               </div>
-              <div className="border-t pt-3 flex items-center justify-between">
-                <span className="font-bold text-gray-900">תקבל נטו</span>
-                <span className="font-bold text-green-600 text-xl">₪{netPay}</span>
+              <div className="pt-3 flex items-center justify-between" style={{ borderTop: '1px solid #eceef4' }}>
+                <span className="font-black" style={{ color: '#141a2e' }}>תקבל נטו</span>
+                <span className="font-black text-xl" style={{ color: '#1f9d6b' }}>₪{netPay}</span>
               </div>
             </div>
-            <div className="flex items-center gap-2 text-gray-400 text-sm">
-              <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" />
+            <div className="flex items-center gap-2 text-sm" style={{ color: '#7a8199' }}>
+              <div className="w-3 h-3 rounded-full animate-pulse" style={{ background: '#22c55e' }} />
               <span>בודק אישור אוטומטית...</span>
             </div>
 
@@ -191,19 +195,21 @@ export const JobDetails: React.FC = () => {
                 }
               }}
               disabled={withdrawing}
-              className="w-full border border-red-200 text-red-500 rounded-2xl py-3 font-bold text-sm disabled:opacity-50"
+              className="w-full rounded-2xl py-3 font-bold text-sm disabled:opacity-50 active:scale-[0.98] transition-transform"
+              style={{ border: '1px solid #f6c9c9', color: '#cf3030' }}
             >
               {withdrawing ? 'מבטל...' : 'בטל מועמדות'}
             </button>
-            <p className="text-gray-400 text-xs -mt-1">ביטול לפני אישור — ללא קנס</p>
+            <p className="text-xs -mt-1" style={{ color: '#7a8199' }}>ביטול לפני אישור — ללא קנס</p>
           </>
         )}
         {!approvedByRestaurant && error && (
-          <div className="w-full bg-red-50 text-red-600 rounded-xl p-3 text-sm text-center">{error}</div>
+          <div className="w-full rounded-xl p-3 text-sm text-center" style={{ background: '#fde3e3', color: '#cf3030' }}>{error}</div>
         )}
         <button
           onClick={() => navToWorker('home')}
-          className="w-full bg-[#5354d3] text-white rounded-2xl py-4 font-bold text-lg"
+          className="w-full text-white rounded-2xl py-4 font-extrabold text-lg active:scale-[0.98] transition-transform"
+          style={{ background: '#5354d3' }}
         >
           חזור למשמרות
         </button>
@@ -215,56 +221,62 @@ export const JobDetails: React.FC = () => {
     return (
       <div className="screen-enter flex flex-col items-center justify-center min-h-[70vh] text-center gap-4">
         <div className="w-16 h-16 border-4 border-[#c7c7f5] border-t-[#5354d3] rounded-full animate-spin" />
-        <h2 className="text-xl font-bold text-gray-900">שולח מועמדות...</h2>
-        <p className="text-gray-500">רגע אחד</p>
+        <h2 className="text-xl font-black" style={{ color: '#141a2e' }}>שולח מועמדות...</h2>
+        <p style={{ color: '#7a8199' }}>רגע אחד</p>
       </div>
     );
   }
 
   return (
     <div className="screen-enter space-y-4">
-      {/* Header */}
-      <div className="rounded-2xl p-5 text-white"
-        style={{ background: isEmergency ? '#e5484d' : '#1b1e38' }}>
-        {isEmergency && (
-          <div className="flex items-center gap-2 mb-3 bg-white/20 rounded-lg px-3 py-1.5 w-fit">
-            <Zap size={14} className="fill-white" />
-            <span className="text-sm font-bold">חירום – דרוש תוך 30 דק׳</span>
+      {/* Header — הירו נייבי */}
+      <div className="relative rounded-3xl overflow-hidden" style={{ background: '#141a2e' }}>
+        {/* אקסנט זהב + אינדיגו עדין */}
+        <div className="absolute pointer-events-none" style={{ width: 260, height: 260, borderRadius: '50%', bottom: -120, left: -80, background: 'radial-gradient(circle, rgba(244,182,44,.20), transparent 66%)' }} />
+        <div className="absolute pointer-events-none" style={{ width: 180, height: 180, borderRadius: '50%', top: -80, left: 40, background: 'radial-gradient(circle, rgba(83,84,211,.22), transparent 68%)' }} />
+        <div className="relative p-5 text-white">
+          {isEmergency && (
+            <span className="inline-block font-extrabold mb-3" style={{ fontSize: 10.5, padding: '3px 9px', borderRadius: 6, background: '#fde3e3', color: '#cf3030' }}>
+              חירום – דרוש תוך 30 דק׳
+            </span>
+          )}
+          <h2 className="font-black leading-tight mb-1.5" style={{ fontSize: 26 }}>{ROLE_LABELS[role] || role}</h2>
+          <div className="flex items-center gap-1.5 text-[13px] font-semibold mb-3" style={{ color: '#cdd3e8' }}>
+            <MapPin size={14} style={{ color: '#f4b62c' }} />
+            {restaurantName}{restaurantCity ? ` · ${restaurantCity}` : ''}
           </div>
-        )}
-        <h2 className="text-2xl font-bold mb-1">{restaurantName}</h2>
-        {restaurantCity && (
-          <div className="flex items-center gap-2 text-[#c7c7f5] text-sm mb-4">
-            <MapPin size={14} />
-            {restaurantCity}
+          <div className="inline-flex items-center gap-1 font-semibold mb-4" style={{ fontSize: 12.5, color: '#b9c0d8' }}>
+            <Clock size={13} style={{ color: '#8a90ab' }} />{startStr}–{endStr}
           </div>
-        )}
-        <div className="grid grid-cols-3 gap-3">
-          <div className="bg-white/15 rounded-xl p-3 text-center">
-            <div className="font-bold text-xl">₪{hourlyRate}</div>
-            <div className="text-[#c7c7f5] text-xs">/שעה</div>
+          <div className="mb-4">
+            <span className="inline-block rounded-lg font-extrabold" style={{ fontSize: 16, padding: '8px 16px', background: '#fdf0cf', color: '#8a6300' }}>
+              {hourlyRate} ₪ לשעה
+            </span>
           </div>
-          <div className="bg-white/15 rounded-xl p-3 text-center">
-            <div className="font-bold text-xl">{hours}</div>
-            <div className="text-[#c7c7f5] text-xs">שעות</div>
-          </div>
-          <div className="bg-white/15 rounded-xl p-3 text-center">
-            <div className="font-bold text-xl text-green-300">₪{netPay}</div>
-            <div className="text-[#c7c7f5] text-xs">לכיסך</div>
+          <div className="grid grid-cols-2 gap-2.5">
+            <div className="rounded-xl p-3 text-center" style={{ background: 'rgba(255,255,255,.10)' }}>
+              <div className="font-black text-xl">{hours}</div>
+              <div className="text-xs" style={{ color: '#b9c0d8' }}>שעות</div>
+            </div>
+            <div className="rounded-xl p-3 text-center" style={{ background: 'rgba(255,255,255,.10)' }}>
+              <div className="font-black text-xl" style={{ color: '#5bd6a0' }}>₪{netPay}</div>
+              <div className="text-xs" style={{ color: '#b9c0d8' }}>לכיסך</div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Details — תפקיד/שעות */}
-      <div className="bg-white rounded-2xl p-4 card-shadow space-y-0">
+      <div className="rounded-[20px] p-4 space-y-0"
+        style={{ background: '#fff', border: '1px solid #eceef4', boxShadow: '0 1px 2px rgba(20,26,46,.04), 0 6px 20px -8px rgba(20,26,46,.10)' }}>
         {[
           { label: 'תפקיד',     value: ROLE_LABELS[role] || role },
           { label: 'שעות',      value: `${startStr} – ${endStr}` },
           { label: 'סה״כ שעות', value: `${hours} שעות` },
         ].map(d => (
-          <div key={d.label} className="flex justify-between items-center py-2.5 border-b border-gray-50 last:border-0">
-            <span className="text-gray-500 text-sm">{d.label}</span>
-            <span className="font-semibold text-gray-900 text-sm">{d.value}</span>
+          <div key={d.label} className="flex justify-between items-center py-2.5 border-b border-[#f2f3f8] last:border-0">
+            <span className="text-sm font-semibold" style={{ color: '#7a8199' }}>{d.label}</span>
+            <span className="font-bold text-sm" style={{ color: '#141a2e' }}>{d.value}</span>
           </div>
         ))}
       </div>
@@ -274,26 +286,28 @@ export const JobDetails: React.FC = () => {
 
       {/* מה כוללת המשמרת */}
       {jobDuties && (
-        <div className="bg-white rounded-2xl p-4 card-shadow">
-          <h3 className="font-bold text-gray-800 mb-2 text-sm flex items-center gap-1.5"><ClipboardList size={14} className="text-gray-400" /> מה כוללת המשמרת</h3>
-          <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-line">{jobDuties}</p>
+        <div className="rounded-[20px] p-4"
+          style={{ background: '#fff', border: '1px solid #eceef4', boxShadow: '0 1px 2px rgba(20,26,46,.04), 0 6px 20px -8px rgba(20,26,46,.10)' }}>
+          <h3 className="font-black mb-2 text-sm flex items-center gap-1.5" style={{ color: '#141a2e' }}><ClipboardList size={15} style={{ color: '#5354d3' }} /> מה כוללת המשמרת</h3>
+          <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: '#2b3350' }}>{jobDuties}</p>
         </div>
       )}
 
       {/* Restaurant info */}
-      <div className="bg-white rounded-2xl p-4 card-shadow">
-        <h3 className="font-bold text-gray-800 mb-3 text-sm">אודות המסעדה</h3>
+      <div className="rounded-[20px] p-4"
+        style={{ background: '#fff', border: '1px solid #eceef4', boxShadow: '0 1px 2px rgba(20,26,46,.04), 0 6px 20px -8px rgba(20,26,46,.10)' }}>
+        <h3 className="font-black mb-3 text-sm" style={{ color: '#141a2e' }}>אודות המסעדה</h3>
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-sm"
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center font-black text-sm"
             style={{ background: avatarTone(restaurantName).bg, color: avatarTone(restaurantName).fg }}>
             {restaurantName.slice(0, 2)}
           </div>
           <div className="flex-1">
-            <div className="font-semibold text-gray-900">{restaurantName}</div>
-            {restaurantCity && <div className="text-gray-400 text-sm">{restaurantCity}</div>}
-            <div className="flex items-center gap-2 mt-1">
-              <span className="flex items-center gap-1 text-green-600 text-xs">
-                <Shield size={10} />
+            <div className="font-bold" style={{ color: '#141a2e' }}>{restaurantName}</div>
+            {restaurantCity && <div className="text-sm" style={{ color: '#7a8199' }}>{restaurantCity}</div>}
+            <div className="flex items-center gap-2 mt-1.5">
+              <span className="inline-flex items-center gap-1 font-extrabold" style={{ fontSize: 10.5, padding: '3px 9px', borderRadius: 6, background: '#e4f7ee', color: '#1f8f5f' }}>
+                <Shield size={11} />
                 מסעדה מאומתת
               </span>
             </div>
@@ -303,45 +317,46 @@ export const JobDetails: React.FC = () => {
 
       {/* הוראות הגעה */}
       {(jobInstructions || restaurantAddress) && (
-        <div className="bg-amber-50 border border-orange-100 rounded-2xl p-4">
-          <h3 className="font-bold text-amber-800 mb-2 text-sm flex items-center gap-1.5"><MapPin size={14} /> הוראות הגעה</h3>
+        <div className="rounded-[20px] p-4" style={{ background: '#fdf7ea', border: '1px solid #f3e4bd' }}>
+          <h3 className="font-black mb-2 text-sm flex items-center gap-1.5" style={{ color: '#8a6300' }}><MapPin size={14} style={{ color: '#f4b62c' }} /> הוראות הגעה</h3>
           {restaurantAddress && (
-            <div className="text-gray-700 text-sm mb-1 font-medium">
+            <div className="text-sm mb-1 font-semibold" style={{ color: '#2b3350' }}>
               כתובת: {restaurantAddress}{restaurantCity ? `, ${restaurantCity}` : ''}
             </div>
           )}
           {jobInstructions && (
-            <p className="text-gray-700 text-sm leading-relaxed">{jobInstructions}</p>
+            <p className="text-sm leading-relaxed" style={{ color: '#2b3350' }}>{jobInstructions}</p>
           )}
         </div>
       )}
 
       {/* Payment guarantee */}
-      <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-sm text-blue-700">
+      <div className="rounded-xl p-3.5 text-sm" style={{ background: '#f1f0fe', border: '1px solid #ddd9fb', color: '#5b4bd0' }}>
         <strong>תשלום מובטח</strong> — {isSelfEmployed
           ? 'הכסף יועבר לארנקך לאחר אישור סיום המשמרת על ידי המסעדה.'
           : 'הסכום יועבר לשירות "חשבונית לשכיר" לאחר סיום המשמרת, ומשם נטו אליך.'}
       </div>
 
       {error && (
-        <div className="bg-red-50 text-red-600 rounded-xl p-3 text-sm text-center">{error}</div>
+        <div className="rounded-xl p-3 text-sm text-center" style={{ background: '#fde3e3', color: '#cf3030' }}>{error}</div>
       )}
 
       {/* Action buttons */}
       <div className="flex gap-3 pb-2">
         {declining ? (
-          <div className="flex-1 bg-gray-100 rounded-2xl p-4 screen-enter">
-            <div className="text-center font-bold text-gray-800 mb-3 text-sm">סיבת דחייה</div>
+          <div className="flex-1 rounded-2xl p-4 screen-enter" style={{ background: '#f4f5f9' }}>
+            <div className="text-center font-black mb-3 text-sm" style={{ color: '#141a2e' }}>סיבת דחייה</div>
             {['לא פנוי בשעות', 'המרחק רחוק מדי', 'השכר לא מתאים', 'אחר'].map(r => (
               <button
                 key={r}
                 onClick={() => { setDeclining(false); navToWorker('home'); }}
-                className="w-full text-right py-2.5 px-3 mb-2 bg-white rounded-xl text-gray-700 text-sm border border-gray-100 active:bg-gray-50"
+                className="w-full text-right py-2.5 px-3 mb-2 rounded-xl text-sm font-semibold active:scale-[0.99] transition-transform"
+                style={{ background: '#fff', color: '#2b3350', border: '1px solid #eceef4' }}
               >
                 {r}
               </button>
             ))}
-            <button onClick={() => setDeclining(false)} className="w-full text-gray-400 text-sm py-2">
+            <button onClick={() => setDeclining(false)} className="w-full text-sm py-2 font-semibold" style={{ color: '#7a8199' }}>
               ביטול
             </button>
           </div>
@@ -349,16 +364,16 @@ export const JobDetails: React.FC = () => {
           <>
             <button
               onClick={() => setDeclining(true)}
-              className="flex items-center justify-center gap-1 bg-gray-100 text-gray-600 rounded-2xl py-4 px-5 font-semibold text-sm"
+              className="flex items-center justify-center gap-1 rounded-2xl py-4 px-5 font-bold text-sm active:scale-95 transition-transform"
+              style={{ background: '#f4f5f9', color: '#6b7290' }}
             >
               <X size={16} />
               דחה
             </button>
             <button
               onClick={handleAccept}
-              className={`flex-1 text-white rounded-2xl py-4 font-bold text-lg shadow-lg active:scale-98 transition-transform ${
-                isEmergency ? 'bg-red-500' : 'bg-[#5354d3]'
-              }`}
+              className="flex-1 rounded-2xl py-4 font-extrabold text-lg active:scale-[0.98] transition-transform"
+              style={{ background: '#f4b62c', color: '#3a2c00', boxShadow: '0 8px 20px -6px rgba(244,182,44,.5)' }}
             >
               {isEmergency ? 'הגש מועמדות לחירום' : 'הגש מועמדות'}
             </button>

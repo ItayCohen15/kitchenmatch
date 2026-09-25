@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowUpRight, CreditCard, FileText, X, Printer, Lightbulb } from 'lucide-react';
+import { ArrowUpRight, CreditCard, FileText, X, Printer, Lightbulb, Wallet } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
@@ -144,8 +144,8 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
             </button>
           </div>
           <div className="flex items-center justify-between">
-            <div className="text-gray-400 text-xs">עמלת תיווך ({commPct}%){job.IsEmergency ? ' · חירום' : ''}</div>
-            <div className="text-2xl font-bold" style={{ color:'#5354d3' }}>₪{commStr}</div>
+            <div className="text-xs" style={{ color:'#b9c0d8' }}>עמלת תיווך ({commPct}%){job.IsEmergency ? ' · חירום' : ''}</div>
+            <div className="text-2xl font-black" style={{ color:'#f4b62c' }}>₪{commStr}</div>
           </div>
         </div>
 
@@ -153,41 +153,41 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
         <div className="flex-1 overflow-y-auto" style={{ WebkitOverflowScrolling:'touch' as any }}>
           <div className="mx-4 mt-3 p-3 rounded-xl text-xs leading-relaxed"
             style={{ background:'#fef9ec', border:'1px solid #fcd34d', color:'#92400e' }}>
-            ⚖️ <strong>קבלה זו לעמלת תיווך בלבד.</strong> Staffly אינה המעסיקה. חוזה העבודה הוא בינך לבין העובד.
+            <strong>קבלה זו לעמלת תיווך בלבד.</strong> Staffly אינה המעסיקה. חוזה העבודה הוא בינך לבין העובד.
           </div>
 
           <div className="p-4 space-y-3">
-            <div className="rounded-xl p-3" style={{ background:'#f9fafb', border:'1px solid #e5e7eb' }}>
-              <div className="text-xs font-bold text-gray-500 mb-2">פירוט שיבוץ</div>
+            <div className="rounded-xl p-3" style={{ background:'#f4f5f9', border:'1px solid #eceef4' }}>
+              <div className="text-xs font-bold mb-2" style={{ color:'#7a8199' }}>פירוט שיבוץ</div>
               {[
                 { l:'תפקיד', v: ROLE_LABELS[job.Role] ?? job.Role ?? '' },
                 { l:'עובד',  v: job.WorkerName ?? '—' },
                 { l:'תאריך', v: dateStr },
                 { l:'שעות',  v: `${hoursNum.toFixed(2)} ש׳` },
               ].map(r => (
-                <div key={r.l} className="flex justify-between py-1.5 border-b border-gray-100 text-sm last:border-0">
-                  <span className="text-gray-400">{r.l}</span>
-                  <span className="font-semibold text-gray-900">{r.v}</span>
+                <div key={r.l} className="flex justify-between py-1.5 text-sm last:border-0" style={{ borderBottom:'1px solid #eceef4' }}>
+                  <span style={{ color:'#7a8199' }}>{r.l}</span>
+                  <span className="font-semibold" style={{ color:'#141a2e' }}>{r.v}</span>
                 </div>
               ))}
             </div>
 
             <div>
-              <div className="flex justify-between py-2.5 border-b border-gray-50 text-sm">
-                <span className="text-gray-400">סכום משמרת בסיסי</span>
-                <span className="font-semibold text-gray-900">₪{baseStr}</span>
+              <div className="flex justify-between py-2.5 text-sm" style={{ borderBottom:'1px solid #f4f5f9' }}>
+                <span style={{ color:'#7a8199' }}>סכום משמרת בסיסי</span>
+                <span className="font-semibold" style={{ color:'#141a2e' }}>₪{baseStr}</span>
               </div>
-              <div className="flex justify-between py-2.5 border-b border-gray-50 text-sm">
-                <span className="text-gray-400">שיעור עמלה</span>
-                <span className="font-semibold text-gray-900">{commPct}%</span>
+              <div className="flex justify-between py-2.5 text-sm" style={{ borderBottom:'1px solid #f4f5f9' }}>
+                <span style={{ color:'#7a8199' }}>שיעור עמלה</span>
+                <span className="font-semibold" style={{ color:'#141a2e' }}>{commPct}%</span>
               </div>
-              <div className="flex justify-between py-2.5 border-b border-gray-50 text-sm">
-                <span className="text-gray-400">עמלת Staffly</span>
-                <span className="font-semibold text-red-500">₪{commStr}</span>
+              <div className="flex justify-between py-2.5 text-sm" style={{ borderBottom:'1px solid #f4f5f9' }}>
+                <span style={{ color:'#7a8199' }}>עמלת Staffly</span>
+                <span className="font-semibold" style={{ color:'#cf3030' }}>₪{commStr}</span>
               </div>
               <div className="flex justify-between pt-3 pb-1">
-                <span className="font-bold text-gray-900">סה"כ ששילמת</span>
-                <span className="font-bold text-gray-900 text-lg">₪{totalStr}</span>
+                <span className="font-bold" style={{ color:'#141a2e' }}>סה"כ ששילמת</span>
+                <span className="font-black text-lg" style={{ color:'#141a2e' }}>₪{totalStr}</span>
               </div>
             </div>
           </div>
@@ -250,62 +250,69 @@ export const RestaurantWallet: React.FC = () => {
     <div className="screen-enter space-y-4">
 
       {/* Balance card */}
-      <div className="rounded-3xl p-5 text-white" style={{ background:'#1b1e38' }}>
-        <div className="text-gray-400 text-sm mb-1">יתרה בארנק</div>
-        <div className="text-4xl font-bold mb-1" style={{ color:'#5354d3' }}>
-          ₪{walletBalance.toLocaleString()}
-        </div>
-        {name && <div className="text-gray-400 text-sm mb-3">{name}</div>}
+      <div className="relative rounded-3xl overflow-hidden text-white" style={{ background:'#141a2e' }}>
+        <div className="absolute pointer-events-none" style={{ width: 260, height: 260, borderRadius: '50%', bottom: -120, left: -80, background: 'radial-gradient(circle, rgba(244,182,44,.20), transparent 66%)' }} />
+        <div className="absolute pointer-events-none" style={{ width: 180, height: 180, borderRadius: '50%', top: -80, left: 40, background: 'radial-gradient(circle, rgba(83,84,211,.22), transparent 68%)' }} />
+        <div className="relative p-5">
+          <div className="inline-flex items-center gap-1.5 text-[13px] font-semibold mb-2" style={{ color:'#cdd3e8' }}>
+            <Wallet size={14} style={{ color:'#f4b62c' }} /> יתרה בארנק
+          </div>
+          <div className="font-black mb-1" style={{ fontSize: 40, lineHeight: 1.05, color:'#f4b62c' }}>
+            ₪{walletBalance.toLocaleString()}
+          </div>
+          {name && <div className="text-[13px] font-semibold mb-3" style={{ color:'#b9c0d8' }}>{name}</div>}
 
-        {/* טעינת ארנק — חיבור סליקה מאובטח בתהליך. מנוטרל בכוונה כדי שלא ייטען כסף עד שהסליקה תחובר. */}
-        <div className="rounded-xl py-3 px-4 mt-2 flex items-center justify-center gap-2 font-semibold text-sm"
-          style={{ background:'rgba(255,255,255,0.06)', color:'#8899bb', cursor:'not-allowed' }}>
-          <CreditCard size={16} /> בקרוב — חיבור סליקה מאובטח
+          {/* טעינת ארנק — חיבור סליקה מאובטח בתהליך. מנוטרל בכוונה כדי שלא ייטען כסף עד שהסליקה תחובר. */}
+          <div className="rounded-2xl py-3 px-4 mt-2 flex items-center justify-center gap-2 font-semibold text-sm"
+            style={{ background:'rgba(255,255,255,0.06)', color:'#8899bb', cursor:'not-allowed' }}>
+            <CreditCard size={16} /> בקרוב — חיבור סליקה מאובטח
+          </div>
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label:'סה״כ הוצאות',  value:`₪${Math.round(totalSpend).toLocaleString()}`, color:'text-[#5354d3]' },
-          { label:'ממוצע למשמרת', value:`₪${avgPerShift}`,                             color:'text-blue-500' },
-          { label:'משמרות',       value: jobs.length,                                  color:'text-green-500' },
+          { label:'סה״כ הוצאות',  value:`₪${Math.round(totalSpend).toLocaleString()}` },
+          { label:'ממוצע למשמרת', value:`₪${avgPerShift}` },
+          { label:'משמרות',       value: jobs.length },
         ].map(s => (
-          <div key={s.label} className="bg-white rounded-xl p-3 card-shadow text-center">
-            <div className={`font-bold text-lg ${s.color}`}>{s.value}</div>
-            <div className="text-gray-500 text-xs mt-0.5">{s.label}</div>
+          <div key={s.label} className="text-center"
+            style={{ background:'#fff', border:'1px solid #eceef4', borderRadius: 20, padding:'14px 8px', boxShadow:'0 1px 2px rgba(20,26,46,.04), 0 6px 20px -8px rgba(20,26,46,.10)' }}>
+            <div className="font-black" style={{ fontSize: 18, color:'#141a2e' }}>{s.value}</div>
+            <div className="font-semibold mt-0.5" style={{ fontSize: 10.5, color:'#7a8199' }}>{s.label}</div>
           </div>
         ))}
       </div>
 
       {/* Commission explainer */}
-      <div className="bg-white rounded-2xl p-4 card-shadow">
-        <div className="flex items-center gap-2 mb-2">
+      <div style={{ background:'#fff', border:'1px solid #eceef4', borderRadius: 20, padding: 16, boxShadow:'0 1px 2px rgba(20,26,46,.04), 0 6px 20px -8px rgba(20,26,46,.10)' }}>
+        <div className="flex items-center gap-2 mb-3">
           <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-            style={{ background:'rgba(83,84,211,0.15)' }}>
-            <Lightbulb size={15} className="text-[#5354d3]" />
+            style={{ background:'rgba(83,84,211,0.12)' }}>
+            <Lightbulb size={15} style={{ color:'#5354d3' }} />
           </div>
-          <span className="font-bold text-gray-800 text-sm">מבנה עמלות</span>
+          <span className="font-black text-sm" style={{ color:'#141a2e' }}>מבנה עמלות</span>
         </div>
-        <div className="space-y-1.5 text-xs text-gray-500">
+        <div className="space-y-1.5 text-xs" style={{ color:'#7a8199' }}>
           <div className="flex justify-between">
             <span>שכר עובד (ישיר)</span>
-            <span className="font-semibold text-gray-700">סכום בסיסי</span>
+            <span className="font-semibold" style={{ color:'#2b3350' }}>סכום בסיסי</span>
           </div>
           <div className="flex justify-between">
             <span>עמלת Staffly (ממסעדה)</span>
-            <span className="font-semibold text-[#5354d3]">+ 6.5%</span>
+            <span className="font-bold" style={{ color:'#5354d3' }}>+ 6.5%</span>
           </div>
           <div className="flex justify-between">
             <span>עמלת Staffly (מעובד)</span>
-            <span className="font-semibold text-gray-400">6.5% (נגבה מהעובד)</span>
+            <span className="font-semibold" style={{ color:'#7a8199' }}>6.5% (נגבה מהעובד)</span>
           </div>
-          <div className="h-px bg-gray-100 my-1"/>
-          <div className="flex justify-between font-bold text-gray-700">
+          <div className="h-px my-1" style={{ background:'#eceef4' }}/>
+          <div className="flex justify-between font-bold" style={{ color:'#2b3350' }}>
             <span>סה"כ עלות ממסעדה</span>
             <span style={{ color:'#5354d3' }}>× 1.065</span>
           </div>
-          <div className="flex justify-between text-red-500 mt-1">
+          <div className="flex justify-between mt-1" style={{ color:'#cf3030' }}>
             <span>משמרת חירום</span>
             <span className="font-semibold">מסעדה 12% · עובד 4%</span>
           </div>
@@ -313,20 +320,24 @@ export const RestaurantWallet: React.FC = () => {
       </div>
 
       {/* Subscription */}
-      <div className="rounded-2xl p-4 text-white"
-        style={{ background:'#9a5ba6' }}>
-        <div className="font-bold mb-1">מנוי Pro מסעדות</div>
-        <div className="text-purple-100 text-sm mb-3">
-          חסוך עד 5% עמלות · עדיפות בשיבוץ · תמיכה 24/7
+      <div className="relative rounded-3xl overflow-hidden text-white" style={{ background:'#141a2e' }}>
+        <div className="absolute pointer-events-none" style={{ width: 220, height: 220, borderRadius: '50%', bottom: -110, left: -70, background: 'radial-gradient(circle, rgba(244,182,44,.18), transparent 66%)' }} />
+        <div className="absolute pointer-events-none" style={{ width: 160, height: 160, borderRadius: '50%', top: -70, left: 30, background: 'radial-gradient(circle, rgba(83,84,211,.20), transparent 68%)' }} />
+        <div className="relative p-5">
+          <div className="font-black text-base mb-1">מנוי Pro מסעדות</div>
+          <div className="text-[13px] leading-relaxed mb-4" style={{ color:'#b9c0d8' }}>
+            חסוך עד 5% עמלות · עדיפות בשיבוץ · תמיכה 24/7
+          </div>
+          <button className="inline-flex items-center gap-2 font-extrabold text-sm px-5 py-3 rounded-2xl active:scale-95 transition-transform"
+            style={{ background:'#f4b62c', color:'#3a2c00', boxShadow:'0 8px 20px -6px rgba(244,182,44,.5)' }}>
+            רק ₪199/חודש – נסה חינם
+          </button>
         </div>
-        <button className="bg-white text-purple-600 rounded-xl px-4 py-2 font-bold text-sm">
-          רק ₪199/חודש – נסה חינם
-        </button>
       </div>
 
       {/* Transaction history */}
       <div>
-        <h3 className="font-bold text-gray-800 mb-3">היסטוריית משמרות</h3>
+        <h3 className="font-black mb-3" style={{ fontSize: 17, color:'#141a2e' }}>היסטוריית משמרות</h3>
 
         {loading && (
           <div className="text-center py-4">
@@ -335,10 +346,10 @@ export const RestaurantWallet: React.FC = () => {
         )}
 
         {!loading && jobs.length === 0 && (
-          <div className="bg-white rounded-xl p-6 text-center card-shadow">
-            <FileText size={26} className="text-gray-300 mx-auto mb-2" />
-            <p className="text-gray-500 text-sm">אין משמרות עדיין</p>
-            <p className="text-gray-400 text-xs mt-1">פרסמו משמרת ראשונה כדי להתחיל</p>
+          <div className="text-center p-6" style={{ background:'#fff', border:'1px solid #eceef4', borderRadius: 20, boxShadow:'0 1px 2px rgba(20,26,46,.04), 0 6px 20px -8px rgba(20,26,46,.10)' }}>
+            <FileText size={26} className="mx-auto mb-2" style={{ color:'#c2c7da' }} />
+            <p className="text-sm font-semibold" style={{ color:'#7a8199' }}>אין משמרות עדיין</p>
+            <p className="text-xs mt-1" style={{ color:'#a7adc4' }}>פרסמו משמרת ראשונה כדי להתחיל</p>
           </div>
         )}
 
@@ -357,54 +368,55 @@ export const RestaurantWallet: React.FC = () => {
             const restaurantPaidFee = isCancelled && cancelFee > 0 && j.CancelledBy === 'restaurant';
             const restaurantGotComp = isCancelled && cancelFee > 0 && j.CancelledBy === 'worker';
             const charged   = isCompleted ? base * (1 + restaurantRate(j.IsEmergency)) : 0;
-            const statusColor = isCompleted ? 'text-green-500' : isCancelled ? 'text-red-400' : j.Status === 'searching' ? 'text-amber-400' : 'text-blue-400';
+            const statusBadge = isCompleted ? { bg:'#e4f7ee', fg:'#1f8f5f' } : isCancelled ? { bg:'#fde3e3', fg:'#cf3030' } : j.Status === 'searching' ? { bg:'#fdf0cf', fg:'#8a6300' } : { bg:'#ece9fe', fg:'#5b4bd0' };
             const statusLabel = isCompleted ? 'הושלם' : isCancelled ? 'בוטל' : j.Status === 'searching' ? 'מחפש' : j.Status === 'active' ? 'פעיל' : j.Status === 'confirmed' ? 'מאושר' : j.Status;
 
             return (
-              <div key={i} className="bg-white rounded-xl p-3 card-shadow">
+              <div key={i} className="p-3"
+                style={{ background:'#fff', border:'1px solid #eceef4', borderRadius: 16, boxShadow:'0 1px 2px rgba(20,26,46,.04), 0 6px 18px -10px rgba(20,26,46,.10)' }}>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#ecebfd] flex items-center justify-center flex-shrink-0">
-                    <ArrowUpRight size={18} className="text-[#5354d3]" />
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background:'#ece9fe' }}>
+                    <ArrowUpRight size={18} style={{ color:'#5354d3' }} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-gray-900 text-sm">
+                    <div className="font-bold text-sm" style={{ color:'#141a2e' }}>
                       {ROLE_LABELS[j.Role] ?? j.Role} · {hours} ש׳
-                      {j.WorkerName && <span className="text-gray-400 font-normal"> · {j.WorkerName}</span>}
+                      {j.WorkerName && <span className="font-normal" style={{ color:'#7a8199' }}> · {j.WorkerName}</span>}
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-gray-400 text-xs">
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-xs font-semibold" style={{ color:'#7a8199' }}>
                         {start.toLocaleDateString('he-IL', { day:'2-digit', month:'2-digit' })}
                       </span>
-                      <span className={`text-xs font-semibold ${statusColor}`}>{statusLabel}</span>
+                      <span className="inline-block font-extrabold" style={{ fontSize: 10.5, padding:'3px 9px', borderRadius: 6, background: statusBadge.bg, color: statusBadge.fg }}>{statusLabel}</span>
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-1">
                     {charged > 0 ? (
-                      <div className="text-red-500 font-bold text-sm">-₪{charged.toFixed(0)}</div>
+                      <div className="font-black text-sm" style={{ color:'#cf3030' }}>-₪{charged.toFixed(0)}</div>
                     ) : restaurantPaidFee ? (
                       <>
-                        <div className="text-red-500 font-bold text-sm">-₪{cancelFee.toFixed(0)}</div>
-                        <span className="text-[10px] text-red-400">קנס ביטול</span>
+                        <div className="font-black text-sm" style={{ color:'#cf3030' }}>-₪{cancelFee.toFixed(0)}</div>
+                        <span className="text-[10px] font-semibold" style={{ color:'#cf3030' }}>קנס ביטול</span>
                       </>
                     ) : restaurantGotComp ? (
                       <>
-                        <div className="text-green-600 font-bold text-sm">+₪{cancelFee.toFixed(0)}</div>
-                        <span className="text-[10px] text-green-500">פיצוי ביטול</span>
+                        <div className="font-black text-sm" style={{ color:'#1f8f5f' }}>+₪{cancelFee.toFixed(0)}</div>
+                        <span className="text-[10px] font-semibold" style={{ color:'#1f8f5f' }}>פיצוי ביטול</span>
                       </>
                     ) : (
-                      <div className="text-gray-300 font-bold text-sm">₪0</div>
+                      <div className="font-black text-sm" style={{ color:'#c2c7da' }}>₪0</div>
                     )}
                     {isCompleted && (
                       <button onClick={() => setReceiptJob(j)}
-                        className="flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-lg"
-                        style={{ background:'rgba(83,84,211,0.1)', color:'#4244b8' }}>
+                        className="flex items-center gap-1 text-xs font-extrabold px-2 py-1 rounded-lg active:scale-95 transition-transform"
+                        style={{ background:'#ece9fe', color:'#5b4bd0' }}>
                         <FileText size={11} /> עמלה
                       </button>
                     )}
                     {(restaurantPaidFee || restaurantGotComp) && (
                       <button onClick={() => setCompJob(j)}
-                        className="flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-lg"
-                        style={{ background:'rgba(5,150,105,0.08)', color:'#059669' }}>
+                        className="flex items-center gap-1 text-xs font-extrabold px-2 py-1 rounded-lg active:scale-95 transition-transform"
+                        style={{ background:'#e4f7ee', color:'#1f8f5f' }}>
                         <FileText size={11} /> אסמכתא
                       </button>
                     )}
