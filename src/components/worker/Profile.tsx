@@ -190,72 +190,77 @@ export const WorkerProfile: React.FC = () => {
 
   return (
     <div className="screen-enter space-y-4">
-      {/* Profile header */}
-      <div className="rounded-2xl p-5 text-white" style={{ background: '#1b1e38' }}>
-        <div className="flex items-center gap-4 mb-4">
-          <div className="w-20 h-20 bg-[#5354d3] rounded-2xl flex items-center justify-center font-bold text-2xl">
-            {initials}
-          </div>
-          <div className="flex-1">
-            <div className="font-bold text-xl">{name}</div>
-            <div className="text-gray-400 text-xs mt-0.5">{userProfile?.City || ''} · {roleLabels(userProfile?.Role)}</div>
-            <div className="flex items-center gap-2 mt-1">
-              <span className="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full"
-                style={{ background: levelTone(level).bg, color: levelTone(level).fg }}>
-                {currentLevel.label}
-              </span>
-              <VerifiedBadge isVerified={userProfile?.IsVerified} size="sm" />
-              <GradBadge isTrainee={userProfile?.IsTrainee} school={userProfile?.SchoolName} course={userProfile?.CourseType} size="sm" />
+      {/* Profile header — hero navy בסגנון הבית */}
+      <div className="relative rounded-3xl overflow-hidden p-5 text-white" style={{ background: '#141a2e' }}>
+        <div className="absolute pointer-events-none" style={{ width: 240, height: 240, borderRadius: '50%', bottom: -120, left: -70, background: 'radial-gradient(circle, rgba(244,182,44,.18), transparent 66%)' }} />
+        <div className="absolute pointer-events-none" style={{ width: 170, height: 170, borderRadius: '50%', top: -80, left: 40, background: 'radial-gradient(circle, rgba(83,84,211,.22), transparent 68%)' }} />
+        <div className="relative">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-20 h-20 rounded-2xl flex items-center justify-center font-black text-2xl flex-none" style={{ background: '#5354d3' }}>
+              {initials}
             </div>
-            <div className="flex items-center gap-3 mt-2">
-              <span className="flex items-center gap-1 text-yellow-400 text-sm font-bold">
-                <Star size={12} className="fill-yellow-400" />
-                {rating > 0 ? rating.toFixed(1) : '—'}
-              </span>
+            <div className="flex-1 min-w-0">
+              <div className="font-black text-xl truncate">{name}</div>
+              <div className="text-xs mt-0.5" style={{ color: '#aeb4cc' }}>{userProfile?.City || ''} · {roleLabels(userProfile?.Role)}</div>
+              <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                <span className="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-lg"
+                  style={{ background: levelTone(level).bg, color: levelTone(level).fg }}>
+                  {currentLevel.label}
+                </span>
+                <VerifiedBadge isVerified={userProfile?.IsVerified} size="sm" />
+                <GradBadge isTrainee={userProfile?.IsTrainee} school={userProfile?.SchoolName} course={userProfile?.CourseType} size="sm" />
+                <span className="inline-flex items-center gap-1 text-sm font-bold" style={{ color: '#f4b62c' }}>
+                  <Star size={13} className="fill-current" />
+                  {rating > 0 ? rating.toFixed(1) : '—'}
+                </span>
+              </div>
+            </div>
+            <div className="flex gap-2 flex-none">
+              <button onClick={() => setEditingProfile(true)}
+                className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,255,255,.12)' }} title="ערוך פרופיל">
+                <Edit3 size={15} />
+              </button>
+              <button onClick={resetToLanding}
+                className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,255,255,.12)' }} title="התנתק">
+                <LogOut size={15} />
+              </button>
             </div>
           </div>
-          <div className="flex gap-2">
-            <button onClick={() => setEditingProfile(true)}
-              className="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center" title="ערוך פרופיל">
-              <Edit3 size={15} />
-            </button>
-            <button onClick={resetToLanding}
-              className="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center" title="התנתק">
-              <LogOut size={15} />
-            </button>
-          </div>
-        </div>
 
-        {/* Availability toggle */}
-        <div className={`flex items-center justify-between rounded-xl p-3 ${available ? 'bg-green-500/20' : 'bg-white/10'}`}>
-          <span className={`font-semibold text-sm ${available ? 'text-green-300' : 'text-gray-400'}`}>
-            {available ? '● זמין לעבודה' : '○ לא זמין כרגע'}
-          </span>
-          <button
-            onClick={() => handleAvailability(!available)}
-            aria-pressed={available}
-            className={`relative w-12 h-6 rounded-full transition-colors flex-shrink-0 ${available ? 'bg-green-500' : 'bg-gray-600'}`}
-          >
-            <span
-              className="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all duration-200"
-              style={{ left: available ? 2 : 26 }}
-            />
-          </button>
+          {/* Availability toggle */}
+          <div className="flex items-center justify-between rounded-xl p-3"
+            style={{ background: available ? 'rgba(31,157,107,.22)' : 'rgba(255,255,255,.08)' }}>
+            <span className="font-semibold text-sm" style={{ color: available ? '#7ee3b8' : '#aeb4cc' }}>
+              {available ? '● זמין לעבודה' : '○ לא זמין כרגע'}
+            </span>
+            <button
+              onClick={() => handleAvailability(!available)}
+              aria-pressed={available}
+              className="relative w-12 h-6 rounded-full transition-colors flex-shrink-0"
+              style={{ background: available ? '#1f9d6b' : 'rgba(255,255,255,.25)' }}
+            >
+              <span
+                className="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all duration-200"
+                style={{ left: available ? 2 : 26 }}
+              />
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-4 gap-2">
+      {/* Stats — כרטיסים פסטליים בסגנון הבית */}
+      <div className="grid grid-cols-4 gap-2.5">
         {[
-          { label: 'משמרות', value: completedShifts, icon: <CheckCircle2 size={18} className="text-green-500" /> },
-          { label: 'אמינות', value: `${reliabilityScore}%`, icon: <Shield size={18} className="text-blue-500" /> },
-          { label: 'ניסיון', value: yearsExp > 0 ? `${yearsExp} שנ׳` : 'ללא', icon: <Star size={18} className="text-[#5354d3]" /> },
-          { label: 'ביטולים', value: noShows, icon: <XCircle size={18} className="text-gray-400" /> },
+          { label: 'משמרות', value: completedShifts, icon: <CheckCircle2 size={18} />, bg: '#e4f7ee', fg: '#1f9d6b' },
+          { label: 'אמינות', value: `${reliabilityScore}%`, icon: <Shield size={18} />, bg: '#eceefb', fg: '#5354d3' },
+          { label: 'ניסיון', value: yearsExp > 0 ? `${yearsExp} שנ׳` : 'ללא', icon: <Star size={18} />, bg: '#fdf0cf', fg: '#b5701f' },
+          { label: 'ביטולים', value: noShows, icon: <XCircle size={18} />, bg: '#eef0f4', fg: '#7a8199' },
         ].map(s => (
-          <div key={s.label} className="bg-white rounded-xl p-3 card-shadow text-center">
-            <div className="mb-1 flex justify-center">{s.icon}</div>
-            <div className="font-bold text-gray-900 text-sm">{s.value}</div>
-            <div className="text-gray-400 text-xs">{s.label}</div>
+          <div key={s.label} className="p-3 text-right"
+            style={{ background: '#fff', border: '1px solid #eceef4', borderRadius: 16, boxShadow: '0 1px 2px rgba(20,26,46,.04), 0 6px 18px -10px rgba(20,26,46,.10)' }}>
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-2" style={{ background: s.bg, color: s.fg }}>{s.icon}</div>
+            <div className="text-[10px] font-semibold leading-tight" style={{ color: '#7a8199' }}>{s.label}</div>
+            <div className="font-black text-[15px] mt-0.5" style={{ color: '#141a2e' }}>{s.value}</div>
           </div>
         ))}
       </div>
