@@ -93,7 +93,7 @@ export const PayoutAccountCard: React.FC<{
           <span className="font-bold text-gray-800 text-sm">קבלת התשלום שלך</span>
         </div>
         <p className="text-xs text-gray-500 leading-relaxed">
-          מכיוון שאינך עצמאי, התשלום שלך עובר דרך שירות <b className="text-gray-700">"חשבונית לשכיר"</b>.
+          מכיוון שאינך עצמאי, התשלום שלך עובר דרך שירות <b className="text-gray-700">"עצמאי שכיר"</b>.
           השירות מנכה מס הכנסה, ביטוח לאומי ובריאות — ומעביר אליך את הנטו ישירות.
           <br />
           <span className="text-gray-400">את פרטי החשבון שלך תמסור לשירות עצמו — לא כאן.</span>

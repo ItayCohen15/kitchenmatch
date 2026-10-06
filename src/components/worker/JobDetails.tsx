@@ -334,7 +334,7 @@ export const JobDetails: React.FC = () => {
       <div className="rounded-xl p-3.5 text-sm" style={{ background: '#f1f0fe', border: '1px solid #ddd9fb', color: '#5b4bd0' }}>
         <strong>תשלום מובטח</strong> — {isSelfEmployed
           ? 'הכסף יועבר לארנקך לאחר אישור סיום המשמרת על ידי המסעדה.'
-          : 'הסכום יועבר לשירות "חשבונית לשכיר" לאחר סיום המשמרת, ומשם נטו אליך.'}
+          : 'הסכום יועבר לשירות "עצמאי שכיר" לאחר סיום המשמרת, ומשם נטו אליך.'}
       </div>
 
       {error && (

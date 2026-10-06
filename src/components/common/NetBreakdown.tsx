@@ -42,7 +42,7 @@ export const NetBreakdown: React.FC<Props> = ({ base, stafflyRate, isSelfEmploye
         </>
       ) : (
         <>
-          <Row label='מועבר לשירות "חשבונית לשכיר"' value={money(b.remainder)} />
+          <Row label='מועבר לשירות "עצמאי שכיר"' value={money(b.remainder)} />
           <Row label="עמלת שירות (5%)" value={`-${money(b.providerFee)}`} red />
           <Row label="ביטוח לאומי + בריאות (הערכה)" value={`-${money(b.niHealth)}`} red />
           <Row label="מס הכנסה (הערכה)" value={`-${money(b.incomeTax)}`} red />
@@ -52,7 +52,7 @@ export const NetBreakdown: React.FC<Props> = ({ base, stafflyRate, isSelfEmploye
           </div>
           <div className="mt-2 rounded-xl p-2.5 text-[11px] leading-relaxed"
             style={{ background: '#fff8e1', border: '1px solid #f59e0b', color: '#92400e' }}>
-            ℹ️ הערכה בלבד — הנטו הסופי (מס/ב"ל/בריאות) נקבע ע"י שירות "חשבונית לשכיר" לפי נקודות הזיכוי והסטטוס שלך.
+            ℹ️ הערכה בלבד — הנטו הסופי (מס/ב"ל/בריאות) נקבע ע"י שירות "עצמאי שכיר" לפי נקודות הזיכוי והסטטוס שלך.
           </div>
         </>
       )}
