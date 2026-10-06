@@ -67,7 +67,7 @@ export const AdminJobs: React.FC = () => {
             className="flex-1 py-2 rounded-xl text-xs font-bold transition-all"
             style={filter === id
               ? { background: '#5354d3', color: '#ffffff' }
-              : { background: '#1b1e38', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.06)' }}>
+              : { background: '#141a2e', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.06)' }}>
             {label}
           </button>
         ))}
@@ -78,7 +78,7 @@ export const AdminJobs: React.FC = () => {
           <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.4)' }}>{filtered.length} משמרות</span>
           <button onClick={exportJobs} disabled={filtered.length === 0} title="ייצוא ל-CSV"
             className="px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-xs font-bold disabled:opacity-40"
-            style={{ background: '#1b1e38', border: '1px solid rgba(255,255,255,0.08)', color: '#34d399' }}>
+            style={{ background: '#141a2e', border: '1px solid rgba(255,255,255,0.08)', color: '#34d399' }}>
             <Download size={14} /> CSV
           </button>
         </div>
@@ -95,7 +95,7 @@ export const AdminJobs: React.FC = () => {
           {filtered.map(j => {
             const isStage = j.JobType === 'stage' || j.JobType === 'stage_shift';
             return (
-              <div key={j.Id} className="rounded-2xl p-3.5" style={{ background: '#1b1e38', border: '1px solid rgba(255,255,255,0.06)' }}>
+              <div key={j.Id} className="rounded-2xl p-3.5" style={{ background: '#141a2e', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1.5 flex-wrap">

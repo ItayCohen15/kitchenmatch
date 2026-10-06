@@ -45,7 +45,7 @@ export const ReferralScreen: React.FC = () => {
   return (
     <div className="space-y-4 pb-4">
       {/* כותרת + הסבר קצר */}
-      <div className="rounded-2xl p-4 text-white" style={{ background: '#1b1e38' }}>
+      <div className="rounded-2xl p-4 text-white" style={{ background: '#141a2e' }}>
         <div className="flex items-center gap-2">
           <Gift size={20} className="text-[#5354d3]" />
           <h2 className="font-bold text-lg">חבר מביא חבר</h2>

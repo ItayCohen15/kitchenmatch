@@ -160,8 +160,8 @@ export const WorkerMatching: React.FC = () => {
 
       {!loading && applicants.length === 0 && (
         <div className="bg-white rounded-2xl p-8 text-center card-shadow">
-          <div className="w-16 h-16 bg-[#ecebfd] rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-3xl">⏳</span>
+          <div className="w-16 h-16 bg-[#ecebfd] rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Clock size={28} className="text-[#5354d3]" />
           </div>
           <h3 className="font-bold text-gray-800 mb-2">ממתין למועמדים</h3>
           <p className="text-gray-400 text-sm leading-relaxed">

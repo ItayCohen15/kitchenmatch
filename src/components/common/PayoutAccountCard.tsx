@@ -181,7 +181,7 @@ export const PayoutAccountCard: React.FC<{
 
   /* ─── טרם הוגדר ─── */
   return (
-    <div className="rounded-2xl p-4 card-shadow text-white" style={{ background: '#1b1e38' }}>
+    <div className="rounded-2xl p-4 card-shadow text-white" style={{ background: '#141a2e' }}>
       <div className="flex items-center gap-2 mb-1.5">
         <Landmark size={17} style={{ color: '#5354d3' }} />
         <span className="font-bold text-sm">הגדר לאן יגיע הכסף</span>

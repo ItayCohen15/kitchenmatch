@@ -78,7 +78,7 @@ export const StageSchedule: React.FC = () => {
       </button>
 
       {/* כרטיס הסטאז' */}
-      <div className="rounded-3xl p-4 text-white space-y-3" style={{ background: '#1b1e38' }}>
+      <div className="rounded-3xl p-4 text-white space-y-3" style={{ background: '#141a2e' }}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-lg"

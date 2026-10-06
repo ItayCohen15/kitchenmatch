@@ -127,7 +127,7 @@ export const RestaurantEndShift: React.FC = () => {
       <h2 className="text-xl font-bold text-gray-900">סיכום משמרת</h2>
 
       {/* כרטיס עובד + סיכום */}
-      <div className="bg-[#1b1e38] text-white rounded-2xl p-5">
+      <div className="bg-[#141a2e] text-white rounded-2xl p-5">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-xl"
             style={{ background: avatarTone(workerName).bg, color: avatarTone(workerName).fg }}>

@@ -34,7 +34,7 @@ export const TalentBrowse: React.FC = () => {
     <div className="screen-enter space-y-4 pb-2">
       {/* Hero */}
       <div className="rounded-2xl p-5 text-white relative overflow-hidden"
-        style={{ background: '#1b1e38' }}>
+        style={{ background: '#141a2e' }}>
         <div className="flex items-center gap-2 mb-1 relative">
           <GraduationCap size={22} style={{ color: '#5354d3' }} />
           <h2 className="font-bold text-lg">טאלנט טרי · תוכנית הכניסה</h2>
@@ -53,7 +53,7 @@ export const TalentBrowse: React.FC = () => {
           <button key={t.id} onClick={() => setMode(t.id as any)}
             className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all"
             style={{
-              background: mode === t.id ? '#1b1e38' : 'transparent',
+              background: mode === t.id ? '#141a2e' : 'transparent',
               color: mode === t.id ? '#fff' : '#94a3b8',
             }}>
             {t.label}

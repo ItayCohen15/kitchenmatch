@@ -110,7 +110,7 @@ const ShiftSummaryDoc = ({ shift, rate, onClose }: { shift: any; rate: number; o
         style={{ maxHeight: '100%' }}>
 
         {/* Header – דביק */}
-        <div className="flex-shrink-0 p-4 text-white" style={{ background:'#1b1e38' }}>
+        <div className="flex-shrink-0 p-4 text-white" style={{ background:'#141a2e' }}>
           <div className="flex items-center justify-between mb-2">
             <div>
               <div className="font-bold text-sm">Staff<span style={{ color:'#5354d3' }}>ly</span> · סיכום משמרת</div>
@@ -201,7 +201,7 @@ const WorkerInvoiceDoc = ({ shift, worker, onClose }: { shift: any; worker: any;
         .field b{font-weight:700}
         .field-note{font-size:11px;color:#9ca3af;margin-top:3px}
         .desc-section{margin:12px 0;padding:12px 14px;background:#f0f9ff;border-radius:8px;border-right:3px solid #3b82f6}
-        .total-box{background:#1b1e38;color:white;
+        .total-box{background:#141a2e;color:white;
                    padding:16px;border-radius:10px;margin:14px 0;text-align:center}
         .total-label{font-size:12px;color:#9ca3af;margin-bottom:4px}
         .total-amount{font-size:30px;font-weight:900;color:#5354d3}
@@ -279,7 +279,7 @@ const WorkerInvoiceDoc = ({ shift, worker, onClose }: { shift: any; worker: any;
         style={{ maxHeight: '100%' }}>
 
         {/* Header – דביק */}
-        <div className="flex-shrink-0 p-4 text-white" style={{ background:'#1b1e38' }}>
+        <div className="flex-shrink-0 p-4 text-white" style={{ background:'#141a2e' }}>
           <div className="flex items-center justify-between mb-2">
             <div>
               <div className="font-bold text-sm">חשבונית שירות</div>

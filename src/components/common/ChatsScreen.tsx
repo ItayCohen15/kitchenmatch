@@ -48,7 +48,7 @@ export const ChatsScreen: React.FC<{ role: 'restaurant' | 'worker' }> = ({ role 
     <div className="screen-enter space-y-4">
       {/* כותרת */}
       <div className="rounded-3xl p-4 text-white flex items-center gap-3"
-        style={{ background: '#1b1e38' }}>
+        style={{ background: '#141a2e' }}>
         <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
           style={{ background: 'rgba(83,84,211,0.18)', border: '1px solid rgba(83,84,211,0.3)' }}>
           <MessageCircle className="text-[#5354d3]" size={22} />
@@ -159,7 +159,7 @@ export const UnreadChatBanner: React.FC<{ role: 'restaurant' | 'worker'; onOpen:
   return (
     <button onClick={() => onOpen(Number(unreadThread.JobId))}
       className="w-full rounded-2xl p-3.5 flex items-center gap-3 text-right active:scale-[0.98] transition-transform"
-      style={{ background: '#1b1e38', border: '1px solid rgba(83,84,211,0.35)' }}>
+      style={{ background: '#141a2e', border: '1px solid rgba(83,84,211,0.35)' }}>
       <div className="relative flex-shrink-0">
         <MessageCircle size={22} className="text-[#5354d3]" />
         <div className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-red-500" />

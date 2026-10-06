@@ -70,7 +70,7 @@ export const WorkerProfileModal: React.FC<Props> = ({ workerId, initial, onClose
           style={{ maxHeight: '100%' }}>
 
           {/* Header */}
-          <div className="flex-shrink-0 p-4 text-white" style={{ background:'#1b1e38' }}>
+          <div className="flex-shrink-0 p-4 text-white" style={{ background:'#141a2e' }}>
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-lg"

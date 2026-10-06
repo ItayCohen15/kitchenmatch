@@ -40,15 +40,16 @@ export const StageLocked: React.FC = () => {
   return (
     <div className="screen-enter space-y-4">
       {/* כותרת */}
-      <div className="rounded-3xl p-4 text-white flex items-center gap-3"
-        style={{ background: '#1b1e38' }}>
-        <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
-          style={{ background: 'rgba(83,84,211,0.18)', border: '1px solid rgba(83,84,211,0.3)' }}>
-          <GraduationCap className="text-[#5354d3]" size={22} />
+      <div className="relative rounded-3xl overflow-hidden p-4 text-white flex items-center gap-3"
+        style={{ background: '#141a2e' }}>
+        <div className="absolute pointer-events-none" style={{ width: 170, height: 170, borderRadius: '50%', top: -80, left: -30, background: 'radial-gradient(circle, rgba(244,182,44,.16), transparent 66%)' }} />
+        <div className="relative w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
+          style={{ background: 'rgba(83,84,211,0.22)', border: '1px solid rgba(83,84,211,0.35)' }}>
+          <GraduationCap className="text-[#8d8fff]" size={22} />
         </div>
-        <div>
+        <div className="relative">
           <div className="font-bold text-lg leading-tight">סטאז׳</div>
-          <div className="text-xs" style={{ color: '#8899bb' }}>לסטודנטים ולבוגרי בתי ספר קולינריים</div>
+          <div className="text-xs" style={{ color: '#aeb4cc' }}>לסטודנטים ולבוגרי בתי ספר קולינריים</div>
         </div>
       </div>
 

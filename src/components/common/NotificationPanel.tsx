@@ -58,7 +58,7 @@ export const NotificationPanel: React.FC<Props> = ({ onClose }) => {
 
           {/* Header */}
           <div className="flex items-center justify-between px-5 pt-5 pb-4"
-            style={{ background: '#1b1e38' }}>
+            style={{ background: '#141a2e' }}>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center"
                 style={{ background: 'rgba(83,84,211,0.2)' }}>

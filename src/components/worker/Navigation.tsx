@@ -118,26 +118,27 @@ export const WorkerNavigation: React.FC = () => {
 
   return (
     <div className="screen-enter flex flex-col gap-4">
-      {/* כרטיס כחול */}
-      <div className="rounded-2xl p-4 text-white" style={{ background: '#3b74d1' }}>
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+      {/* הירו — בדרך אל המסעדה (navy בסגנון הבית) */}
+      <div className="relative rounded-3xl overflow-hidden p-4 text-white" style={{ background: '#141a2e' }}>
+        <div className="absolute pointer-events-none" style={{ width: 200, height: 200, borderRadius: '50%', top: -90, left: -40, background: 'radial-gradient(circle, rgba(83,84,211,.28), transparent 68%)' }} />
+        <div className="relative flex items-center gap-3 mb-3">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,255,255,.14)' }}>
             <Navigation2 size={22} className="fill-white" />
           </div>
           <div>
             <div className="font-bold">בדרך אל {restaurantName}</div>
-            <div className="text-blue-100 text-sm">{restaurantCity}</div>
+            <div className="text-sm" style={{ color: '#aeb4cc' }}>{restaurantCity}</div>
           </div>
         </div>
-        <div className="flex gap-3">
+        <div className="relative flex gap-3">
           {[
-            { v: `₪${hourlyRate}`, l: '/שעה', c: 'text-green-300' },
-            { v: startStr, l: 'התחלה', c: 'text-white' },
-            { v: endStr,   l: 'סיום',   c: 'text-white' },
+            { v: `₪${hourlyRate}`, l: '/שעה', c: '#7ee3b8' },
+            { v: startStr, l: 'התחלה', c: '#ffffff' },
+            { v: endStr,   l: 'סיום',   c: '#ffffff' },
           ].map(s => (
-            <div key={s.l} className="flex-1 bg-white/15 rounded-xl p-3 text-center">
-              <div className={`text-lg font-bold ${s.c}`}>{s.v}</div>
-              <div className="text-blue-100 text-xs">{s.l}</div>
+            <div key={s.l} className="flex-1 rounded-xl p-3 text-center" style={{ background: 'rgba(255,255,255,.08)' }}>
+              <div className="text-lg font-bold" style={{ color: s.c }}>{s.v}</div>
+              <div className="text-xs" style={{ color: '#aeb4cc' }}>{s.l}</div>
             </div>
           ))}
         </div>

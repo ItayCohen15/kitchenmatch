@@ -148,7 +148,7 @@ export const AssistantBot: React.FC<{ role: BotRole }> = ({ role }) => {
 
             {/* כותרת */}
             <div className="flex items-center justify-between px-4 py-3 flex-shrink-0 text-white"
-              style={{ background: '#1b1e38' }}>
+              style={{ background: '#141a2e' }}>
               <div className="flex items-center gap-2.5">
                 <div className="relative w-9 h-9 flex-shrink-0">
                   <span className="block w-full h-full rounded-full overflow-hidden" style={{ background: '#5354d3' }}>

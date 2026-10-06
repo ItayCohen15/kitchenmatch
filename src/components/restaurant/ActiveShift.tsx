@@ -139,7 +139,7 @@ export const ActiveShift: React.FC = () => {
             <Wallet size={18} /> טען את הארנק
           </button>
           <button onClick={() => { payBlocked.current = false; setPayError(null); setBothDone(true); }}
-            className="w-full bg-[#1b1e38] text-white rounded-2xl py-3 font-bold">
+            className="w-full bg-[#141a2e] text-white rounded-2xl py-3 font-bold">
             נסה לחייב שוב
           </button>
           <button onClick={() => navToRestaurant('home')}
@@ -247,7 +247,7 @@ export const ActiveShift: React.FC = () => {
       {!restaurantConfirmed ? (
         !showConfirmDialog ? (
           <button onClick={() => setShowConfirmDialog(true)}
-            className="w-full bg-[#1b1e38] text-white rounded-2xl py-4 font-bold text-lg active:scale-98 transition-transform flex items-center justify-center gap-2">
+            className="w-full bg-[#141a2e] text-white rounded-2xl py-4 font-bold text-lg active:scale-98 transition-transform flex items-center justify-center gap-2">
             <Flag size={18} /> סיים משמרת
           </button>
         ) : (

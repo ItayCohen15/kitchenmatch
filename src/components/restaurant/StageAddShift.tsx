@@ -82,7 +82,7 @@ export const StageAddShift: React.FC = () => {
 
       {/* כותרת */}
       <div className="rounded-3xl p-4 text-white flex items-center gap-3"
-        style={{ background: '#1b1e38' }}>
+        style={{ background: '#141a2e' }}>
         <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
           style={{ background: 'rgba(83,84,211,0.18)', border: '1px solid rgba(83,84,211,0.3)' }}>
           <Calendar className="text-[#5354d3]" size={20} />

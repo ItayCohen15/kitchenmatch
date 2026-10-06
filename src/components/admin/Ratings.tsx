@@ -41,7 +41,7 @@ export const AdminRatings: React.FC = () => {
             className="flex-1 py-2 rounded-xl text-xs font-bold transition-all"
             style={filter === id
               ? { background: '#5354d3', color: '#ffffff' }
-              : { background: '#1b1e38', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.06)' }}>
+              : { background: '#141a2e', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.06)' }}>
             {label}
           </button>
         ))}
@@ -49,7 +49,7 @@ export const AdminRatings: React.FC = () => {
 
       {/* Summary */}
       {!loading && filtered.length > 0 && (
-        <div className="rounded-2xl p-3 mb-3 flex items-center justify-between" style={{ background: '#1b1e38', border: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="rounded-2xl p-3 mb-3 flex items-center justify-between" style={{ background: '#141a2e', border: '1px solid rgba(255,255,255,0.06)' }}>
           <span className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>{filtered.length} דירוגים</span>
           <div className="flex items-center gap-1.5">
             <span className="text-lg font-bold" style={{ color: '#f5c842' }}>{avg.toFixed(2)}</span>
@@ -69,7 +69,7 @@ export const AdminRatings: React.FC = () => {
           {filtered.map(r => {
             const toWorker = r.ToRole === 'worker';
             return (
-              <div key={r.Id} className="rounded-2xl p-3.5" style={{ background: '#1b1e38', border: '1px solid rgba(255,255,255,0.06)' }}>
+              <div key={r.Id} className="rounded-2xl p-3.5" style={{ background: '#141a2e', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <div className="flex items-center justify-between gap-2 mb-2">
                   <div className="flex items-center gap-1.5 text-xs min-w-0">
                     {toWorker ? <Store size={13} style={{ color: '#5354d3' }} /> : <ChefHat size={13} style={{ color: '#a78bfa' }} />}

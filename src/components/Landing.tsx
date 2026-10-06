@@ -37,7 +37,7 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
 
       {/* Hero */}
       <div className="relative overflow-hidden px-5 pt-9 pb-9"
-        style={{ background: '#1b1e38' }}>
+        style={{ background: '#141a2e' }}>
         {/* Logo */}
         <div className="flex items-center gap-3 mb-8 relative" style={{ marginTop: 'env(safe-area-inset-top)' }}>
           <div className="w-14 h-14 rounded-2xl overflow-hidden flex-shrink-0"
@@ -101,7 +101,7 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
               <button key={r.id} onClick={() => setActiveRole(r.id as any)}
                 className="rounded-2xl p-4 text-center transition-all active:scale-[0.98]"
                 style={{
-                  background: sel ? '#1b1e38' : '#fff',
+                  background: sel ? '#141a2e' : '#fff',
                   border: sel ? '2px solid #5354d3' : '2px solid transparent',
                   boxShadow: sel ? '0 4px 16px rgba(20,28,44,0.10)' : '0 2px 10px rgba(19,22,38,0.06)',
                 }}>
@@ -131,7 +131,7 @@ export const Landing: React.FC<Props> = ({ onStart }) => {
 
         {/* How it works */}
         <div className="rounded-2xl p-5 mb-6 text-white relative overflow-hidden"
-          style={{ background: '#1b1e38' }}>
+          style={{ background: '#141a2e' }}>
           <h3 className="font-bold text-base mb-4 relative" style={{ color: '#5354d3' }}>איך זה עובד?</h3>
           <div className="space-y-3.5 relative">
             {(activeRole === 'restaurant' ? [

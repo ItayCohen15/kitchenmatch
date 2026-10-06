@@ -55,7 +55,7 @@ export const CompensationDoc: React.FC<Props> = ({ job, viewer, workerName, rest
         .party .label{font-size:10px;color:#9ca3af;margin-bottom:3px}
         .party .name{font-size:13px;font-weight:700}
         .arrow{font-size:18px;color:#5354d3}
-        .amount-box{background:#1b1e38;color:white;
+        .amount-box{background:#141a2e;color:white;
                     padding:16px;border-radius:10px;margin:14px 0;text-align:center}
         .amount-label{font-size:12px;color:#9ca3af;margin-bottom:4px}
         .amount{font-size:30px;font-weight:900;color:${amountColor}}
@@ -124,7 +124,7 @@ export const CompensationDoc: React.FC<Props> = ({ job, viewer, workerName, rest
           style={{ maxHeight: '100%' }}>
 
           {/* Header */}
-          <div className="flex-shrink-0 p-4 text-white" style={{ background:'#1b1e38' }}>
+          <div className="flex-shrink-0 p-4 text-white" style={{ background:'#141a2e' }}>
             <div className="flex items-center justify-between mb-2">
               <div>
                 <div className="font-bold text-sm">{title}</div>

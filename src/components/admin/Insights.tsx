@@ -8,7 +8,7 @@ import { api } from '../../api';
 import { ils, num } from './format';
 
 const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
-  <div className={`rounded-2xl p-4 ${className}`} style={{ background: '#1b1e38', border: '1px solid rgba(255,255,255,0.06)' }}>
+  <div className={`rounded-2xl p-4 ${className}`} style={{ background: '#141a2e', border: '1px solid rgba(255,255,255,0.06)' }}>
     {children}
   </div>
 );
@@ -177,7 +177,7 @@ export const AdminInsights: React.FC = () => {
     <div className="space-y-4 pb-4">
       {/* ===== יועץ חכם ===== */}
       <div className="rounded-3xl p-5 relative overflow-hidden"
-        style={{ background: '#1b1e38', border: `1px solid ${statusColor}40` }}>
+        style={{ background: '#141a2e', border: `1px solid ${statusColor}40` }}>
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <Sparkles size={16} style={{ color: '#7b7cee' }} />

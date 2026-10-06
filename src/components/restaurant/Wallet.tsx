@@ -47,7 +47,7 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
         .calc-table td{padding:7px 4px;border-bottom:1px solid #f5f5f5}
         .calc-table .total-row td{font-weight:900;font-size:15px;color:#4244b8;
                                    border-top:2px solid #5354d3;border-bottom:none;padding-top:10px}
-        .total-box{background:#1b1e38;color:white;
+        .total-box{background:#141a2e;color:white;
                    padding:14px;border-radius:10px;margin:14px 0}
         .total-label{font-size:11px;color:#9ca3af;margin-bottom:3px}
         .total-amount{font-size:26px;font-weight:900;color:#5354d3}
@@ -133,7 +133,7 @@ const CommissionReceiptDoc = ({ job, restaurant, onClose }: { job: any; restaura
         style={{ maxHeight: '100%' }}>
 
         {/* Header – דביק */}
-        <div className="flex-shrink-0 p-4 text-white" style={{ background:'#1b1e38' }}>
+        <div className="flex-shrink-0 p-4 text-white" style={{ background:'#141a2e' }}>
           <div className="flex items-center justify-between mb-2">
             <div>
               <div className="font-bold text-sm">קבלת עמלת תיווך</div>

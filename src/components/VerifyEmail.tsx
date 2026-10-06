@@ -83,7 +83,7 @@ export const VerifyEmail: React.FC<Props> = ({ userId, email, onVerified }) => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6"
-      style={{ background: '#1b1e38', paddingTop: 'max(env(safe-area-inset-top), 24px)' }}>
+      style={{ background: '#141a2e', paddingTop: 'max(env(safe-area-inset-top), 24px)' }}>
 
       <div className="w-full max-w-sm">
         {/* Icon */}

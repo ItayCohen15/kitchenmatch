@@ -12,7 +12,7 @@ import { ROLE_LABELS, roleLabels } from '../../utils/roles';
 import { ils, num, monthLabel, LEVEL_LABELS, LEVEL_COLORS } from './format';
 
 const Tip = ({ active, payload, label, money }: any) => active && payload?.length ? (
-  <div className="rounded-xl shadow-lg p-2.5 text-right text-xs" style={{ background: '#1b1e38', border: '1px solid rgba(255,255,255,0.1)' }}>
+  <div className="rounded-xl shadow-lg p-2.5 text-right text-xs" style={{ background: '#141a2e', border: '1px solid rgba(255,255,255,0.1)' }}>
     <p className="font-bold text-white mb-1">{label}</p>
     {payload.map((p: any, i: number) => (
       <p key={i} style={{ color: p.color || p.fill }}>
@@ -23,7 +23,7 @@ const Tip = ({ active, payload, label, money }: any) => active && payload?.lengt
 ) : null;
 
 const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
-  <div className={`rounded-2xl p-4 ${className}`} style={{ background: '#1b1e38', border: '1px solid rgba(255,255,255,0.06)' }}>
+  <div className={`rounded-2xl p-4 ${className}`} style={{ background: '#141a2e', border: '1px solid rgba(255,255,255,0.06)' }}>
     {children}
   </div>
 );
@@ -80,7 +80,7 @@ export const AdminDashboard: React.FC = () => {
     <div className="space-y-4 pb-4">
       {/* ===== הכנסת הפלטפורמה — גיבור ===== */}
       <div className="rounded-3xl p-5 relative overflow-hidden"
-        style={{ background: '#1b1e38', border: '1px solid rgba(83,84,211,0.25)' }}>
+        style={{ background: '#141a2e', border: '1px solid rgba(83,84,211,0.25)' }}>
         <div className="flex items-center gap-2 mb-1">
           <Wallet size={15} style={{ color: '#5354d3' }} />
           <span className="text-xs font-bold" style={{ color: 'rgba(255,255,255,0.6)' }}>סך הכנסות הפלטפורמה</span>
