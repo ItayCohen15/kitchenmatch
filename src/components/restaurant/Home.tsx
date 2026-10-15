@@ -20,6 +20,7 @@ export const RestaurantHome: React.FC = () => {
   const { navToRestaurant, userProfile, selectWorkerJob, refreshProfile, setEmergencyMode } = useApp();
   const [workers, setWorkers] = useState<any[]>([]);
   const [recentJobs, setRecentJobs] = useState<any[]>([]);
+  const [jobCount, setJobCount] = useState(0); // סך כל המשמרות (לא מוגבל ל-3 כמו רשימת "האחרונות")
   const [activeShift, setActiveShift] = useState<any>(null);
   const [loadingWorkers, setLoadingWorkers] = useState(true);
   const [cancelJob, setCancelJob] = useState<any>(null);
@@ -59,6 +60,7 @@ export const RestaurantHome: React.FC = () => {
           const all = (Array.isArray(data) ? data : []).filter((j: any) => !['stage', 'stage_shift', 'trial'].includes(j.JobType));
           const active = all.find((j: any) => ['confirmed','active','pending_completion'].includes(j.Status));
           setActiveShift(active || null);
+          setJobCount(all.length);
           setRecentJobs(all.filter((j: any) => !['confirmed','active','pending_completion'].includes(j.Status)).slice(0, 3));
         })
         .catch(() => {});
@@ -84,7 +86,7 @@ export const RestaurantHome: React.FC = () => {
 
   const stats = [
     { icon: <CreditCard size={19} />,   gold: true,  value: `₪${walletBalance.toLocaleString()}`, label: 'ארנק' },
-    { icon: <ClipboardList size={19} />, gold: false, value: `${recentJobs.length}`, label: 'משמרות' },
+    { icon: <ClipboardList size={19} />, gold: false, value: `${jobCount}`, label: 'משמרות' },
     { icon: <Users size={19} />,        gold: true,  value: `${areaCount}`, label: 'עובדים זמינים' },
   ];
 

@@ -19,21 +19,24 @@ export const ChatModal: React.FC<Props> = ({ jobId, title, myRole, myName, readO
   const [sending, setSending] = useState(false);
   const [sendErr, setSendErr] = useState('');
   const bottomRef = useRef<HTMLDivElement>(null);
+  const lastMarkedRef = useRef(0); // המזהה האחרון שסומן כנקרא — מונע קריאת-שרת בכל poll
 
   const load = () => api.getMessages(jobId)
     .then((d: any) => {
       const list = Array.isArray(d) ? d : [];
       setMessages(list);
-      // סמן כנקרא: מקומית להיעלמות מיידית של הסימון, ובשרת כדי שזה יחזיק
-      // גם במכשירים אחרים ואחרי ניקוי נתונים.
+      // סמן כנקרא רק כשהמזהה האחרון התקדם — אחרת כל poll (כל 4ש') שולח
+      // markChatRead מיותר לשרת.
       const last = list[list.length - 1];
-      if (last?.Id) {
-        chatSeen.mark(jobId, Number(last.Id));
+      const lastId = last?.Id ? Number(last.Id) : 0;
+      if (lastId > lastMarkedRef.current) {
+        lastMarkedRef.current = lastId;
+        chatSeen.mark(jobId, lastId);
         api.markChatRead(jobId).catch(() => {});
       }
     })
     .catch(() => {});
-  useEffect(() => { load(); const iv = setVisibleInterval(load, 4000); return () => clearInterval(iv); }, [jobId]);
+  useEffect(() => { lastMarkedRef.current = 0; load(); const iv = setVisibleInterval(load, 4000); return () => clearInterval(iv); }, [jobId]);
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages.length]);
 
   const send = async () => {
@@ -101,7 +104,7 @@ export const ChatModal: React.FC<Props> = ({ jobId, title, myRole, myName, readO
               <input
                 value={text}
                 onChange={e => setText(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter') send(); }}
+                onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && !(e.nativeEvent as any).isComposing) { e.preventDefault(); send(); } }}
                 placeholder="כתוב הודעה..."
                 className="flex-1 border border-gray-200 bg-gray-50 rounded-2xl px-4 py-2.5 text-sm text-right outline-none focus:border-[#5354d3] focus:bg-white"
               />

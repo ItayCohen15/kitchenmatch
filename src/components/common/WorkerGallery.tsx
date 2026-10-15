@@ -29,21 +29,41 @@ export const WorkerGallery: React.FC<Props> = ({ workerId, editable = false }) =
   const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    const clearInput = () => { if (fileRef.current) fileRef.current.value = ''; };
+    // בדיקת גודל/פורמט לפני הפענוח — אחרת קובץ ענק נטען לזיכרון, ו-HEIC
+    // (שהדפדפן לא יודע לפענח ל-canvas) נופל עם "שגיאה בהעלאה" כללית.
+    const MAX_BYTES = 12 * 1024 * 1024;
+    if (file.size > MAX_BYTES) {
+      setError('הקובץ גדול מדי (עד 12MB) — נסו תמונה קטנה יותר.');
+      clearInput();
+      return;
+    }
+    if (/heic|heif/i.test(file.type) || /\.hei[cf]$/i.test(file.name)) {
+      setError('פורמט HEIC לא נתמך — שמרו כ-JPG/PNG ונסו שוב.');
+      clearInput();
+      return;
+    }
     setUploading(true); setError('');
     try {
       const dataUrl = await compressImage(file, 1000, 0.7);
       const img = await api.addGalleryImage(workerId, dataUrl, '');
       setImages(prev => [img, ...prev]);
     } catch (err: any) {
-      setError(err.message || 'שגיאה בהעלאה');
+      setError(err.message || 'שגיאה בהעלאה — נסו קובץ תמונה אחר (JPG/PNG).');
     }
     setUploading(false);
-    if (fileRef.current) fileRef.current.value = '';
+    clearInput();
   };
 
   const handleDelete = async (id: number) => {
+    const snapshot = images;
     setImages(prev => prev.filter(i => i.Id !== id));
-    await api.deleteGalleryImage(workerId, id).catch(() => {});
+    try {
+      await api.deleteGalleryImage(workerId, id);
+    } catch {
+      setImages(snapshot);              // החזרת התמונה אם המחיקה נכשלה בשרת
+      setError('מחיקת התמונה נכשלה — נסו שוב.');
+    }
   };
 
   if (loading) {

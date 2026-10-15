@@ -1,5 +1,5 @@
 // ===== גרסת מטמון — העלה את המספר כדי לפרוש נכסים חדשים בעדכון הבא =====
-const CACHE_VERSION = 'staffly-cache-v1';
+const CACHE_VERSION = 'staffly-cache-v2';
 
 // מעטפת האפליקציה שנשמור מראש (כדי שדפים/ריענון יעבדו גם אופליין)
 const APP_SHELL = ['/', '/index.html'];
@@ -72,23 +72,21 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // נכסים סטטיים מאותו origin → cache-first (js/css/png/svg/woff...)
+  // נכסים סטטיים מאותו origin → stale-while-revalidate: מגישים מהמטמון מיידית
+  // ובמקביל מביאים גרסה טרייה ומעדכנים את המטמון. קבצי JS/CSS עם hash נטענים
+  // מיד (ה-hash משתנה בכל build), ותמונות/גופנים לא-hashed (hero/icon/logo)
+  // מתעדכנים בביקור הבא — בלי להיתקע במטמון לנצח (cache-first הישן לא התעדכן).
   if (STATIC_ASSET.test(url.pathname)) {
     event.respondWith(
       (async () => {
-        const cached = await caches.match(req);
-        if (cached) return cached;
-        try {
-          const fresh = await fetch(req);
+        const cache = await caches.open(CACHE_VERSION);
+        const cached = await cache.match(req);
+        const network = fetch(req).then(fresh => {
           // שמור רק תגובות מלאות ותקינות (200) — לא 206/שגיאות
-          if (fresh && fresh.status === 200) {
-            const cache = await caches.open(CACHE_VERSION);
-            cache.put(req, fresh.clone()).catch(() => {});
-          }
+          if (fresh && fresh.status === 200) cache.put(req, fresh.clone()).catch(() => {});
           return fresh;
-        } catch {
-          return Response.error();
-        }
+        }).catch(() => null);
+        return cached || (await network) || Response.error();
       })()
     );
     return;

@@ -23,10 +23,14 @@ export const ActiveShift: React.FC = () => {
   const payBlocked = useRef(false);
   // חותמת הצ'ק-אין מהשרת — מקור האמת לשעון (localStorage נדרס בכל כניסה מחדש)
   const [serverStart, setServerStart] = useState<Date | null>(null);
-  // בסיס זמן יציב — מונע איפוס ה-interval בכל רינדור (השעון קופץ)
+  // בסיס זמן יציב — מונע איפוס ה-interval בכל רינדור (השעון קופץ).
+  // כשאין עדיין חותמת אמת (כניסה מחדש לפני שה-poll החזיר ActualStart) לא
+  // ממציאים "42 דק'" — מתחילים מעכשיו ומסמנים "מסנכרן…" עד שמגיע הזמן האמיתי.
+  const realStart = serverStart || shiftStartTime || null;
+  const syncing = !realStart;
   const startTime = useMemo(
-    () => serverStart || shiftStartTime || new Date(Date.now() - 42 * 60000),
-    [serverStart, shiftStartTime]
+    () => realStart || new Date(),
+    [realStart]
   );
   const hourlyRate: number = job ? Number(job.HourlyRate ?? job.hourlyRate ?? 0) : 0;
   const workerName: string = job?.WorkerName || 'העובד';
@@ -72,13 +76,40 @@ export const ActiveShift: React.FC = () => {
   };
 
   // חישוב בזמן אמת
-  const hoursWorked = elapsed / 3600;
+  // תקרה לשעות המתוכננות — החיוב החי לא יחרוג ממה שבאמת ייגבה (השרת מחשב על
+  // שעות בפועל מוגבלות למתוכנן), אחרת הסכום המוצג עולה על החיוב בפועל.
+  const schedHoursCap = job?.StartTime && job?.EndTime
+    ? Math.max((new Date(job.EndTime).getTime() - new Date(job.StartTime).getTime()) / 3600000, 0)
+    : 0;
+  const hoursWorked = Math.min(elapsed / 3600, schedHoursCap > 0 ? schedHoursCap : Infinity);
   const baseAmount = hoursWorked * hourlyRate;
   const isEmergency = Boolean(job?.IsEmergency || job?.isEmergency);
   const restCommRate = restaurantRate(isEmergency);
   const restCommPct = +(restCommRate * 100).toFixed(1);
   const totalWithFee = (baseAmount * (1 + restCommRate)).toFixed(2);
   const perMinute = (hourlyRate / 60).toFixed(2);
+  // "דיווח על בעיה" — עד שיש מסך תמיכה ייעודי, פותח מייל מוכן לתמיכה עם הקשר
+  // המשמרת. ערוץ אמיתי שעובד (support@staffly.com) במקום כפתור שלא עושה כלום.
+  const reportIssue = (reason: string) => {
+    setShowReport(false);
+    const subj = `דיווח על בעיה במשמרת #${jobId}`;
+    const body = [
+      `סיבה: ${reason}`,
+      `משמרת: #${jobId}`,
+      `עובד: ${workerName}`,
+      `מסעדה: ${userProfile?.Name ?? ''}`,
+      '',
+      'פרטים נוספים:',
+      '',
+    ].join('\n');
+    try {
+      window.location.href = `mailto:support@staffly.com?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`;
+      toast.info('פותח דיווח לתמיכה…');
+    } catch {
+      toast.error('לא ניתן לפתוח מייל — כתבו ל-support@staffly.com');
+    }
+  };
+
   const handleConfirmEnd = async () => {
     setConfirming(true);
     try {
@@ -191,7 +222,7 @@ export const ActiveShift: React.FC = () => {
           </div>
           <div className="flex items-center gap-2 bg-white/20 rounded-xl px-3 py-1">
             <Clock size={14} />
-            <span className="font-bold text-lg tracking-widest">{fmt(elapsed)}</span>
+            <span className="font-bold text-lg tracking-widest">{syncing ? 'מסנכרן…' : fmt(elapsed)}</span>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -296,11 +327,12 @@ export const ActiveShift: React.FC = () => {
       {showReport && (
         <div className="bg-white rounded-2xl p-4 card-shadow screen-enter">
           {['העובד לא הגיע', 'העובד לא מתאים', 'בעיית תקשורת', 'אחר'].map(r => (
-            <button key={r} onClick={() => setShowReport(false)}
+            <button key={r} onClick={() => reportIssue(r)}
               className="w-full text-right py-2.5 px-3 mb-2 bg-gray-50 rounded-xl text-gray-700 text-sm">
               {r}
             </button>
           ))}
+          <p className="text-[11px] text-gray-400 text-center mt-1">הדיווח נפתח כמייל לתמיכה (support@staffly.com)</p>
         </div>
       )}
     </div>

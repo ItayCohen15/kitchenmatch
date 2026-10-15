@@ -19,10 +19,14 @@ export const WorkerActiveShift: React.FC = () => {
 
   // חותמת הצ'ק-אין מהשרת — מקור האמת לשעון (localStorage נדרס בכל כניסה מחדש)
   const [serverStart, setServerStart] = useState<Date | null>(null);
-  // בסיס זמן יציב — בלי זה נוצר Date חדש בכל רינדור וה-interval מתאפס (השעון קופץ)
+  // בסיס זמן יציב — בלי זה נוצר Date חדש בכל רינדור וה-interval מתאפס (השעון קופץ).
+  // כשאין עדיין חותמת אמת (כניסה מחדש לפני שה-poll החזיר ActualStart) לא ממציאים
+  // "30 דק'" — מתחילים מעכשיו ומסמנים "מסנכרן…" עד שמגיע הזמן האמיתי מהשרת.
+  const realStart = serverStart || shiftStartTime || null;
+  const syncing = !realStart;
   const startTime = useMemo(
-    () => serverStart || shiftStartTime || new Date(Date.now() - 30 * 60000),
-    [serverStart, shiftStartTime]
+    () => realStart || new Date(),
+    [realStart]
   );
   const hourlyRate = job ? Number(job.HourlyRate ?? job.hourlyRate ?? 0) : 0;
   const restaurantName: string = job?.RestaurantName || job?.restaurantName || 'המסעדה';
@@ -76,7 +80,12 @@ export const WorkerActiveShift: React.FC = () => {
   };
 
   // חישוב הכנסה בזמן אמת לפי שניות
-  const hoursWorked = elapsed / 3600;
+  // תקרה לשעות המתוכננות — אחרת הטיקר החי ממשיך לטפס אחרי סוף המשמרת בעוד
+  // הסיכום מחויב רק לפי המתוכנן, והמספר "יורד" בסיום (פוגע באמון).
+  const schedHoursCap = job?.StartTime && job?.EndTime
+    ? Math.max((new Date(job.EndTime).getTime() - new Date(job.StartTime).getTime()) / 3600000, 0)
+    : 0;
+  const hoursWorked = Math.min(elapsed / 3600, schedHoursCap > 0 ? schedHoursCap : Infinity);
   const ratePerSecond = hourlyRate / 3600;
   const isEmergency = Boolean(job?.IsEmergency || job?.isEmergency);
   const wLevel = levelFromShifts(userProfile?.CompletedShifts || 0).key;
@@ -144,7 +153,7 @@ export const WorkerActiveShift: React.FC = () => {
           </div>
           <div className="flex items-center gap-2 bg-white/20 rounded-xl px-3 py-1">
             <Clock size={14} />
-            <span className="font-bold text-lg tracking-widest">{fmt(elapsed)}</span>
+            <span className="font-bold text-lg tracking-widest">{syncing ? 'מסנכרן…' : fmt(elapsed)}</span>
           </div>
         </div>
         <div className="flex items-center justify-between">

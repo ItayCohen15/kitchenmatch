@@ -4,7 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import type { JobRole, ExperienceLevel } from '../../types';
 import { shiftRolesForBusinessType, isEntryRole } from '../../utils/roles';
-import { restaurantRate, EMERGENCY_WORKER_COMMISSION } from '../../utils/levels';
+import { restaurantRate } from '../../utils/levels';
 
 const EXPERIENCE: { id: ExperienceLevel; label: string; desc: string }[] = [
   { id: 'any',    label: 'כל הרמות', desc: 'לא משנה — כל ניסיון מתקבל' },
@@ -45,14 +45,18 @@ export const CreateJob: React.FC = () => {
   })();
 
   const totalPay = (parseFloat(totalHours) * parseFloat(wage || '0')).toFixed(0);
-  // עמלות לפי חירום: מסעדה 9% (אחרת 6.5%), עובד 5% (אחרת ~6.5%)
+  // עמלת המסעדה: 13% רגיל / 15% חירום. העובד מקבל 100% מהשכר (0% עמלת עובד).
   const restCommRate = restaurantRate(emergency);
   const restCommPct = +(restCommRate * 100).toFixed(1);
-  const workerSidePct = emergency ? +(EMERGENCY_WORKER_COMMISSION * 100).toFixed(1) : 6.5;
 
   const MIN_WAGE = 40;
   const wageNum = parseFloat(wage) || 0;
   const wageValid = wageNum >= MIN_WAGE;
+
+  // משך המשמרת חייב להיות חיובי ומתחת לתקרה (16ש') — אחרת 0ש' או טעות-הקלדה נשלחים
+  const MAX_HOURS = 16;
+  const hoursNum = parseFloat(totalHours) || 0;
+  const hoursValid = hoursNum > 0 && hoursNum <= MAX_HOURS;
 
   const handlePublish = async () => {
     if (!userProfile?.Id) {
@@ -63,12 +67,16 @@ export const CreateJob: React.FC = () => {
       setPublishError(`שכר המינימום הוא ₪${MIN_WAGE} לשעה`);
       return;
     }
+    if (!hoursValid) {
+      setPublishError(hoursNum <= 0
+        ? 'יש לבחור שעת סיום מאוחרת משעת ההתחלה'
+        : `משך משמרת מרבי הוא ${MAX_HOURS} שעות`);
+      return;
+    }
     setPublishing(true);
     setPublishError('');
     setEmergencyMode(emergency);
     try {
-      const [sh, sm] = startTime.split(':').map(Number);
-      const [eh, em] = endTime.split(':').map(Number);
       const startDate = new Date(`${shiftDate}T${startTime}:00`);
       const endDate   = new Date(`${shiftDate}T${endTime}:00`);
       if (endDate <= startDate) endDate.setDate(endDate.getDate() + 1);
@@ -300,7 +308,7 @@ export const CreateJob: React.FC = () => {
               <ChevronRight size={20} />
             </button>
             <button
-              disabled={!experience || !wageValid}
+              disabled={!experience || !wageValid || !hoursValid}
               onClick={() => setStep(4)}
               className="flex-1 rounded-2xl py-4 font-extrabold text-lg disabled:opacity-40 active:scale-[0.98] transition-transform"
               style={{ background: '#5354d3', color: '#fff' }}
@@ -347,7 +355,7 @@ export const CreateJob: React.FC = () => {
                 הסכומים <b>אינם כוללים מע"מ</b> — יתווסף כדין
               </p>
               <p className="text-xs text-center" style={{ color: '#7a8199' }}>
-                העובד ישלם {workerSidePct}% נוסף מצידו
+                העובד מקבל 100% מהשכר — ללא עמלת עובד
               </p>
             </div>
           </div>

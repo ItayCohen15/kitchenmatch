@@ -8,12 +8,13 @@ import { NEW_WORKER_SHIFTS, restaurantRate } from '../../utils/levels';
 import { avatarTone } from '../../utils/colors';
 
 export const RestaurantEndShift: React.FC = () => {
-  const { navToRestaurant, getSelectedJob, shiftStartTime, userProfile } = useApp();
+  const { navToRestaurant, getSelectedJob, shiftStartTime, userProfile, refreshProfile } = useApp();
   const job = getSelectedJob();
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
   // דירוג מורחב לעובד חדש
   const [workerShifts, setWorkerShifts] = useState<number | null>(null);
   const [skillsAsClaimed, setSkillsAsClaimed] = useState('');
@@ -31,7 +32,7 @@ export const RestaurantEndShift: React.FC = () => {
       .then(w => { if (w) setWorkerShifts(Number(w.CompletedShifts) || 0); })
       .catch(() => {});
   }, [job?.WorkerId]);
-  const isNew = workerShifts !== null && workerShifts <= NEW_WORKER_SHIFTS;
+  const isNew = workerShifts !== null && workerShifts < NEW_WORKER_SHIFTS;
 
   // שלוף את המשמרת המעודכנת מהשרת — כדי לתפוס IsEmergency והסכום שחויב בפועל
   const [freshJob, setFreshJob] = useState<any>(null);
@@ -46,6 +47,9 @@ export const RestaurantEndShift: React.FC = () => {
       .catch(() => {});
   }, [userProfile?.Id]);
 
+  // רענן פרופיל (יתרת ארנק) בכניסה — אחרת "יתרה לאחר תשלום" מציגה יתרה ישנה
+  useEffect(() => { refreshProfile(); }, [refreshProfile]);
+
   // נתוני המשמרת — עדיפות למידע הטרי מהשרת
   const j = freshJob || job;
   const isEmergency = Boolean(j?.IsEmergency || j?.isEmergency);
@@ -56,8 +60,11 @@ export const RestaurantEndShift: React.FC = () => {
     : 0;
   const baseScheduled = schedHours * hourlyRate; // הסכום המקורי שנקבע מראש
   // שכר בפועל: מהשרת (TotalPay) אם המשמרת הושלמה, אחרת הערכה לפי השעון
-  const startTime = shiftStartTime || new Date(Date.now() - 5 * 3600000);
-  const estHours = Math.max(Math.min((Date.now() - startTime.getTime()) / 3600000, schedHours || 99), 0.5);
+  // אם אין חותמת התחלה (כניסה מחדש) — הערכה לפי המתוכנן, לא ברירת-מחדל מומצאת
+  // של 5 שעות. העדפה תמיד לסכום שחויב בפועל מהשרת (TotalPay).
+  const estHours = shiftStartTime
+    ? Math.max(Math.min((Date.now() - shiftStartTime.getTime()) / 3600000, schedHours || 99), 0.5)
+    : (schedHours || 0);
   const baseAmount = (freshJob && freshJob.TotalPay != null) ? Number(freshJob.TotalPay) : estHours * hourlyRate;
   const shiftHours = hourlyRate > 0 ? baseAmount / hourlyRate : 0;
   const restCommRate = restaurantRate(isEmergency);            // חירום=12%, אחרת 6.5%
@@ -73,8 +80,9 @@ export const RestaurantEndShift: React.FC = () => {
   const hasConcern = ['partial', 'no'].includes(skillsAsClaimed) || ['maybe', 'no'].includes(wouldHireAgain);
 
   const handleSubmit = async () => {
-    if (rating === 0) return;
+    if (rating === 0 || submitting) return;
     setSubmitting(true);
+    setError('');
     try {
       if (job && userProfile?.Id) {
         const jobId = Number(job.Id || job.id);
@@ -98,11 +106,13 @@ export const RestaurantEndShift: React.FC = () => {
           }).catch(() => {});
         }
       }
+      setSubmitted(true);
+      setTimeout(() => navToRestaurant('home'), 2500);
     } catch {
-      // ממשיך גם אם נכשל
+      // קודם הכשל נבלע וה"הצלחה" הוצגה בכל מקרה — דירוגים אבדו בשקט.
+      setError('הדירוג לא נשלח — נסה שוב. (התשלום כבר בוצע, ללא קשר לדירוג.)');
+      setSubmitting(false);
     }
-    setSubmitted(true);
-    setTimeout(() => navToRestaurant('home'), 2500);
   };
 
   if (submitted) {
@@ -112,7 +122,7 @@ export const RestaurantEndShift: React.FC = () => {
           <CheckCircle size={56} className="text-green-500" />
         </div>
         <h2 className="text-2xl font-bold text-gray-900">המשמרת הסתיימה</h2>
-        <p className="text-gray-500">הדירוג נשלח והתשלום הועבר לעובד</p>
+        <p className="text-gray-500">המשמרת הושלמה והתשלום הועבר לעובד</p>
         <div className="bg-[#ecebfd] rounded-2xl px-8 py-4 w-full text-center">
           <div className="text-3xl font-bold text-[#5354d3]">₪{totalCharged}</div>
           <div className="text-gray-500 text-sm">חויב מהארנק שלך</div>
@@ -288,6 +298,10 @@ export const RestaurantEndShift: React.FC = () => {
         </div>
       )}
 
+      {error && (
+        <div className="bg-red-50 text-red-600 rounded-xl p-3 text-sm text-center">{error}</div>
+      )}
+
       <button
         onClick={handleSubmit}
         disabled={rating === 0 || submitting}
@@ -298,12 +312,13 @@ export const RestaurantEndShift: React.FC = () => {
             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             שולח...
           </div>
-        ) : `אשר ודרג – שלם ₪${totalCharged}`}
+        ) : 'שלח דירוג'}
       </button>
 
       <button onClick={() => navToRestaurant('home')} className="w-full text-gray-400 text-sm py-2">
         דלג על הדירוג
       </button>
+      <p className="text-center text-[11px] text-gray-400 -mt-1">התשלום כבר בוצע — הדירוג אינו תלוי בו.</p>
     </div>
   );
 };

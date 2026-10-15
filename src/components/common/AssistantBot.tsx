@@ -80,6 +80,10 @@ export const AssistantBot: React.FC<{ role: BotRole }> = ({ role }) => {
     return () => document.removeEventListener('scroll', onScroll, true);
   }, []);
 
+  // טיימר ה"מקליד..." — נשמר כדי לנקותו ב-unmount (אחרת setState אחרי פירוק)
+  const askTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (askTimer.current) clearTimeout(askTimer.current); }, []);
+
   const ask = (text: string) => {
     const q = text.trim();
     if (!q || thinking) return;
@@ -89,7 +93,7 @@ export const AssistantBot: React.FC<{ role: BotRole }> = ({ role }) => {
     setThinking(true);
 
     // השהיה קצרה — נותן תחושה טבעית של "מקליד"
-    setTimeout(() => {
+    askTimer.current = setTimeout(() => {
       const ctx: BotCtx = { role, profile: userProfile, wallet };
       setMessages(m => [...m, { role: 'assistant', content: answerFor(q, ctx) }]);
       setThinking(false);

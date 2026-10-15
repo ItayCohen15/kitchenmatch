@@ -45,7 +45,7 @@ export const CityAutocomplete: React.FC<Props> = ({ value, onChange, placeholder
         onChange={e => { setQuery(e.target.value); onChange(e.target.value); setOpen(true); }}
         onFocus={() => setOpen(true)}
         placeholder={placeholder || 'הקלד עיר...'}
-        className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-amber-400 outline-none text-gray-900 font-medium"
+        className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-[#5354d3] outline-none text-gray-900 font-medium"
       />
       {open && matches.length > 0 && (
         <div className="absolute z-30 left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-xl max-h-56 overflow-y-auto">
@@ -54,7 +54,7 @@ export const CityAutocomplete: React.FC<Props> = ({ value, onChange, placeholder
               key={c}
               type="button"
               onClick={() => pick(c)}
-              className="w-full text-right px-4 py-2.5 text-sm text-gray-800 hover:bg-amber-50 border-b border-gray-50 last:border-0"
+              className="w-full text-right px-4 py-2.5 text-sm text-gray-800 hover:bg-[#eef0fb] border-b border-gray-50 last:border-0"
             >
               {c}
             </button>

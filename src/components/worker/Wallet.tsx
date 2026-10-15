@@ -396,7 +396,14 @@ export const WorkerWallet: React.FC = () => {
     setWithdrawing(true); setWithdrawMsg(null);
     try {
       const r = await api.requestWithdraw(userProfile.Id);
-      if (r?.wallet) setWallet({ ...wallet, ...r.wallet });
+      // מונעים משיכה-כפולה: אם השרת לא החזיר ארנק מעודכן, מאפסים אופטימית את
+      // "הזמין" ומושכים מצב טרי — אחרת canWithdraw נשאר true וניתן ללחוץ שוב.
+      if (r?.wallet) {
+        setWallet({ ...wallet, ...r.wallet });
+      } else {
+        setWallet((w: any) => (w ? { ...w, available: 0 } : w));
+        api.getWallet(userProfile.Id).then(setWallet).catch(() => {});
+      }
       setWithdrawMsg({ ok: true, text: `הועברו ₪${Math.round(r?.payout?.amount || 0).toLocaleString()} לחשבון שלך` });
       haptic('success');
       refreshProfile();
@@ -443,14 +450,19 @@ export const WorkerWallet: React.FC = () => {
   const compensations = history.filter(j =>
     j.Status === 'cancelled' && Number(j.CancellationFee ?? 0) > 0);
 
-  /* הכנסות חודשיות */
-  const monthlyMap: Record<string, number> = {};
+  /* הכנסות חודשיות — מפתח לפי שנה+חודש כדי שאוקטובר 2025 ו-2026 לא יתמזגו */
+  const monthlyMap: Record<string, { label: string; val: number; sort: number }> = {};
   completed.forEach(j => {
-    const key = MONTH_NAMES[new Date(j.StartTime).getMonth()];
+    const d = new Date(j.StartTime);
+    const key = `${d.getFullYear()}-${d.getMonth()}`;
     const h = (new Date(j.EndTime).getTime() - new Date(j.StartTime).getTime()) / 3600000;
-    monthlyMap[key] = (monthlyMap[key] ?? 0) + h * j.HourlyRate * effectiveNetMultiplier(workerLevel, j.IsEmergency);
+    const cur = monthlyMap[key] ?? { label: MONTH_NAMES[d.getMonth()], val: 0, sort: d.getFullYear() * 12 + d.getMonth() };
+    cur.val += h * j.HourlyRate * effectiveNetMultiplier(workerLevel, j.IsEmergency);
+    monthlyMap[key] = cur;
   });
-  const monthlyData = Object.entries(monthlyMap).map(([m, v]) => ({ month: m, earn: Math.round(v) }));
+  const monthlyData = Object.values(monthlyMap)
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ label, val }) => ({ month: label, earn: Math.round(val) }));
 
   const avgPerShift = completedShifts > 0 ? (totalEarnings / completedShifts).toFixed(0) : '0';
 

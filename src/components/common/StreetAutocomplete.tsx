@@ -34,12 +34,15 @@ export const StreetAutocomplete: React.FC<Props> = ({ city, value, onChange }) =
     if (!cityCore) { setStreets([]); return; }
     if (cacheRef.current[cityCore]) { setStreets(cacheRef.current[cityCore]); return; }
     let cancelled = false;
+    // timeout+abort — אחרת אם data.gov.il תקוע נשארים ב"טוען רחובות…" לנצח
+    const ctrl = new AbortController();
+    const timeout = setTimeout(() => ctrl.abort(), 10000);
     setLoading(true);
     (async () => {
       try {
         const q = encodeURIComponent(JSON.stringify({ city_name: cityCore }));
         const url = `https://data.gov.il/api/3/action/datastore_search?resource_id=${RESOURCE}&q=${q}&fields=street_name,city_name&limit=15000`;
-        const r = await fetch(url);
+        const r = await fetch(url, { signal: ctrl.signal });
         const j = await r.json();
         const list = [...new Set((j?.result?.records || [])
           .filter((x: any) => (x.city_name || '').trim().startsWith(cityCore))
@@ -48,12 +51,13 @@ export const StreetAutocomplete: React.FC<Props> = ({ city, value, onChange }) =
           .sort((a, b) => (a as string).localeCompare(b as string, 'he')) as string[];
         if (!cancelled) { cacheRef.current[cityCore] = list; setStreets(list); }
       } catch {
-        if (!cancelled) setStreets([]);
+        if (!cancelled) setStreets([]); // כולל AbortError בטיימאאוט — נופלים להקלדה ידנית
       } finally {
+        clearTimeout(timeout);
         if (!cancelled) setLoading(false);
       }
     })();
-    return () => { cancelled = true; };
+    return () => { cancelled = true; clearTimeout(timeout); ctrl.abort(); };
   }, [city]);
 
   const matches = useMemo(() => {
@@ -76,7 +80,7 @@ export const StreetAutocomplete: React.FC<Props> = ({ city, value, onChange }) =
         onChange={e => { setQuery(e.target.value); onChange(e.target.value); setOpen(true); }}
         onFocus={() => setOpen(true)}
         placeholder={disabled ? 'בחר עיר קודם' : 'שם הרחוב'}
-        className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-amber-400 outline-none disabled:bg-gray-50 disabled:text-gray-400"
+        className="w-full border border-gray-200 rounded-xl px-4 py-3 text-right focus:border-[#5354d3] outline-none disabled:bg-gray-50 disabled:text-gray-400"
       />
       {open && !disabled && (
         <div className="absolute z-30 left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-xl max-h-56 overflow-y-auto">
@@ -87,7 +91,7 @@ export const StreetAutocomplete: React.FC<Props> = ({ city, value, onChange }) =
               key={s}
               type="button"
               onClick={() => pick(s)}
-              className="w-full text-right px-4 py-2.5 text-sm text-gray-800 hover:bg-amber-50 border-b border-gray-50 last:border-0"
+              className="w-full text-right px-4 py-2.5 text-sm text-gray-800 hover:bg-[#eef0fb] border-b border-gray-50 last:border-0"
             >
               {s}
             </button>

@@ -58,6 +58,7 @@ export const JobDetails: React.FC = () => {
   const role = job.Role || job.role || 'chef';
 
   const handleAccept = async () => {
+    if (accepting) return; // מונע הגשה כפולה בלחיצה מהירה (לפני שהמסך מתחלף ל"שולח…")
     if (!userProfile?.Id) {
       setError('שגיאה: משתמש לא מזוהה. התנתק והתחבר מחדש.');
       setAccepting(false);
@@ -372,7 +373,8 @@ export const JobDetails: React.FC = () => {
             </button>
             <button
               onClick={handleAccept}
-              className="flex-1 rounded-2xl py-4 font-extrabold text-lg active:scale-[0.98] transition-transform"
+              disabled={accepting}
+              className="flex-1 rounded-2xl py-4 font-extrabold text-lg active:scale-[0.98] transition-transform disabled:opacity-60"
               style={{ background: '#f4b62c', color: '#3a2c00', boxShadow: '0 8px 20px -6px rgba(244,182,44,.5)' }}
             >
               {isEmergency ? 'הגש מועמדות לחירום' : 'הגש מועמדות'}

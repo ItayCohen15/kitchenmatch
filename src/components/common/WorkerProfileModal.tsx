@@ -8,6 +8,7 @@ import { NewWorkerBadge } from './NewWorkerBadge';
 import { GradBadge } from './GradBadge';
 import { VerifiedBadge } from './VerifiedBadge';
 import { avatarTone, levelTone } from '../../utils/colors';
+import { toast } from './Toast';
 
 interface Props {
   workerId: number;
@@ -46,9 +47,9 @@ export const WorkerProfileModal: React.FC<Props> = ({ workerId, initial, onClose
   // כדי שערך זדוני ב-CvData לא יוכל להריץ סקריפט ולגנוב את הטוקן
   const CV_RE = /^data:(application\/pdf|image\/(png|jpe?g|webp|gif));base64,[A-Za-z0-9+/=]+$/;
   const openCv = () => {
-    if (!cvData || !CV_RE.test(cvData)) { alert('קובץ קורות החיים אינו תקין'); return; }
+    if (!cvData || !CV_RE.test(cvData)) { toast.error('קובץ קורות החיים אינו תקין'); return; }
     const w = window.open('');
-    if (!w) return;
+    if (!w) { toast.info('הדפדפן חסם את החלון — אפשרו חלונות קופצים לצפייה בקו"ח'); return; }
     const isPdf = cvData.startsWith('data:application/pdf');
     const el = w.document.createElement(isPdf ? 'iframe' : 'img');
     el.setAttribute('src', cvData);

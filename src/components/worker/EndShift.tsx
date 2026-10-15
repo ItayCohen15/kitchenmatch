@@ -3,7 +3,6 @@ import { CheckCircle, Wallet } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { StarRating } from '../common/StarRating';
 import { api } from '../../api';
-import { effectiveWorkerRate, levelFromShifts } from '../../utils/levels';
 
 export const WorkerEndShift: React.FC = () => {
   const { navToWorker, getSelectedJob, shiftStartTime, userProfile } = useApp();
@@ -29,26 +28,25 @@ export const WorkerEndShift: React.FC = () => {
   }, [userProfile?.Id]);
 
   const j = freshJob || job;
-  const isEmergency = Boolean(j?.IsEmergency || j?.isEmergency);
   const hourlyRate = Number(j?.HourlyRate || j?.hourlyRate || 0);
   const schedHours = j?.StartTime && j?.EndTime
     ? Math.max((new Date(j.EndTime).getTime() - new Date(j.StartTime).getTime()) / 3600000, 0)
     : 0;
-  const startTime = shiftStartTime || new Date(Date.now() - 5 * 3600000);
-  const estHours = Math.max(Math.min((Date.now() - startTime.getTime()) / 3600000, schedHours || 99), 0.5);
-  // שכר ברוטו בפועל: מהשרת (TotalPay) אם הושלם, אחרת הערכה לפי השעון
+  // הערכת שעות: אם אין חותמת התחלה (כניסה מחדש) — לפי המתוכנן, לא ברירת-מחדל
+  // מומצאת של 5 שעות. העדפה תמיד לסכום מהשרת (TotalPay) כשקיים.
+  const estHours = shiftStartTime
+    ? Math.max(Math.min((Date.now() - shiftStartTime.getTime()) / 3600000, schedHours || 99), 0.5)
+    : (schedHours || 0);
   const grossPay = (freshJob && freshJob.TotalPay != null) ? Number(freshJob.TotalPay) : estHours * hourlyRate;
   const shiftHours = hourlyRate > 0 ? grossPay / hourlyRate : 0;
-  const workerRate = effectiveWorkerRate(levelFromShifts(userProfile?.CompletedShifts || 0).key, isEmergency);
-  const ratePct = (workerRate * 100).toFixed(1);
-  const commission = grossPay * workerRate;
-  const netPay = (grossPay - commission).toFixed(0);
+  // מודל חדש: אין עמלת עובד — הנטו = מלוא השכר.
+  const netPay = grossPay.toFixed(0);
   const restaurantName = job?.RestaurantName || job?.restaurantName || 'המסעדה';
 
   const QUICK = ['סרוויס מסודר', 'מטבח נקי', 'ניהול טוב', 'אחזור שוב', 'תנאי עבודה טובים'];
 
   const handleSubmit = async () => {
-    if (rating === 0) return;
+    if (rating === 0 || submitting) return;
     setSubmitting(true);
     setError('');
     try {
@@ -63,11 +61,13 @@ export const WorkerEndShift: React.FC = () => {
           'restaurant'                          // עובד מדרג מסעדה
         );
       }
+      setSubmitted(true);
+      setTimeout(() => navToWorker('wallet'), 2500);
     } catch {
-      // ממשיך גם אם הדירוג נכשל
+      // קודם הכשל נבלע וה"הצלחה" הוצגה בכל מקרה — דירוגים אבדו בשקט.
+      setError('הדירוג לא נשלח — נסה שוב. (התשלום שלך בדרך, ללא קשר לדירוג.)');
+      setSubmitting(false);
     }
-    setSubmitted(true);
-    setTimeout(() => navToWorker('wallet'), 2500);
   };
 
   if (submitted) {
@@ -99,7 +99,7 @@ export const WorkerEndShift: React.FC = () => {
       <div className="text-white rounded-2xl p-5" style={{ background: '#1f9d6b' }}>
         <div className="text-green-100 text-sm mb-1">הרווחת היום</div>
         <div className="text-4xl font-bold mb-4">₪{netPay}</div>
-        <div className="grid grid-cols-3 gap-3 text-center">
+        <div className="grid grid-cols-2 gap-3 text-center">
           <div className="bg-white/15 rounded-xl p-3">
             <div className="font-bold text-lg">{shiftHours.toFixed(1)}</div>
             <div className="text-green-100 text-xs">שעות</div>
@@ -108,31 +108,23 @@ export const WorkerEndShift: React.FC = () => {
             <div className="font-bold text-lg">₪{hourlyRate}</div>
             <div className="text-green-100 text-xs">/שעה</div>
           </div>
-          <div className="bg-white/15 rounded-xl p-3">
-            <div className="font-bold text-lg text-yellow-300">-{ratePct}%</div>
-            <div className="text-green-100 text-xs">עמלה</div>
-          </div>
         </div>
       </div>
 
       {/* פירוט */}
       <div className="bg-white rounded-2xl p-4 card-shadow">
         <h3 className="font-bold text-gray-800 mb-3">פירוט תשלום</h3>
-        <div className="space-y-0">
-          {[
-            { label: `₪${hourlyRate} × ${shiftHours.toFixed(1)} שעות`,  value: `₪${grossPay.toFixed(0)}`,      color: 'text-gray-800' },
-            { label: `עמלת פלטפורמה (${ratePct}%)`,                     value: `-₪${commission.toFixed(0)}`,    color: 'text-red-500'  },
-          ].map(r => (
-            <div key={r.label} className="flex justify-between text-sm py-2 border-b border-gray-50">
-              <span className="text-gray-500">{r.label}</span>
-              <span className={`font-semibold ${r.color}`}>{r.value}</span>
-            </div>
-          ))}
-          <div className="flex justify-between pt-3">
-            <span className="font-bold text-gray-900">סה״כ לארנק</span>
-            <span className="font-bold text-green-600 text-lg">₪{netPay}</span>
-          </div>
+        <div className="flex justify-between text-sm py-2 border-b border-gray-50">
+          <span className="text-gray-500">₪{hourlyRate} × {shiftHours.toFixed(1)} שעות</span>
+          <span className="font-semibold text-gray-800">₪{grossPay.toFixed(0)}</span>
         </div>
+        <div className="flex justify-between pt-3">
+          <span className="font-bold text-gray-900">סה״כ לארנק</span>
+          <span className="font-bold text-green-600 text-lg">₪{netPay}</span>
+        </div>
+        <p className="text-[11px] text-gray-400 mt-2 leading-relaxed">
+          ללא עמלת עובד — מקבל/ת את מלוא השכר. ניכויי מס/ביטוח לאומי מתבצעים ע"י שירות עצמאי-שכיר.
+        </p>
       </div>
 
       {/* דירוג מסעדה */}
@@ -178,12 +170,13 @@ export const WorkerEndShift: React.FC = () => {
             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             שולח...
           </div>
-        ) : `שלח דירוג וקבל ₪${netPay}`}
+        ) : 'שלח דירוג'}
       </button>
 
       <button onClick={() => navToWorker('wallet')} className="w-full text-gray-400 text-sm py-2">
         דלג על הדירוג
       </button>
+      <p className="text-center text-[11px] text-gray-400 -mt-1">התשלום מועבר לארנק ללא קשר לדירוג.</p>
     </div>
   );
 };

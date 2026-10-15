@@ -33,8 +33,11 @@ const handleResponse = async (res: Response) => {
   }
   if (!res.ok) {
     const msg = data?.error || `שגיאת שרת (${res.status})`;
-    // טוקן פג/לא תקין — נקה והחזר למסך כניסה (לא חל על "סיסמא שגויה" בכניסה)
-    if (res.status === 401 && (msg === 'טוקן לא תקין' || msg === 'נדרש אימות')) {
+    // 401 *בזמן שיש טוקן* = הסשן פג/בוטל — נקה והחזר למסך כניסה. מסתמך על עצם
+    // קיום הטוקן ולא על נוסח ההודעה, כך שגם 401 מהתשתית (Render/Vercel/cold start)
+    // או שינוי נוסח עתידי מנתקים. 401 בלי טוקן = ניסיון כניסה/הרשמה עם סיסמה
+    // שגויה — שם לא מנתקים (אין טוקן ממילא).
+    if (res.status === 401 && getToken()) {
       ['km_token', 'km_role', 'km_profile', 'km_onboarding', 'km_screen', 'km_job']
         .forEach(k => localStorage.removeItem(k));
       location.reload();
