@@ -171,7 +171,7 @@ export const WorkerEndShift: React.FC = () => {
       <button
         onClick={handleSubmit}
         disabled={rating === 0 || submitting}
-        className="w-full bg-green-500 text-white rounded-2xl py-4 font-bold text-lg disabled:opacity-40 active:scale-98 transition-transform shadow-lg"
+        className="w-full bg-green-500 text-white rounded-2xl py-4 font-bold text-lg disabled:opacity-40 active:scale-[0.98] transition-transform shadow-lg"
       >
         {submitting ? (
           <div className="flex items-center justify-center gap-2">

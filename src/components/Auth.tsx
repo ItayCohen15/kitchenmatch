@@ -286,6 +286,8 @@ export const Auth: React.FC<Props> = ({ onLogin, onShowLegal }) => {
               בהרשמה דרך ספק אתה מאשר את תנאי השימוש ומדיניות הפרטיות
             </div>
 
+            {notice && <div className="ami-notice">{notice}</div>}
+
             <div className="ami-divider" />
 
             <div className="ami-field">

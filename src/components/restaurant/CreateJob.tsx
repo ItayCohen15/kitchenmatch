@@ -159,7 +159,7 @@ export const CreateJob: React.FC = () => {
           <button
             disabled={!role}
             onClick={() => setStep(2)}
-            className="w-full rounded-2xl py-4 font-extrabold text-lg mt-4 disabled:opacity-40 disabled:cursor-not-allowed active:scale-98 transition-transform"
+            className="w-full rounded-2xl py-4 font-extrabold text-lg mt-4 disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] transition-transform"
             style={{ background: '#5354d3', color: '#fff' }}
           >
             המשך
@@ -222,7 +222,7 @@ export const CreateJob: React.FC = () => {
             <button onClick={() => setStep(1)} className="flex-shrink-0 rounded-2xl py-4 px-5 font-bold" style={{ background: '#f4f5f9', color: '#7a8199' }}>
               <ChevronRight size={20} />
             </button>
-            <button onClick={() => setStep(3)} className="flex-1 rounded-2xl py-4 font-extrabold text-lg active:scale-98 transition-transform" style={{ background: '#5354d3', color: '#fff' }}>
+            <button onClick={() => setStep(3)} className="flex-1 rounded-2xl py-4 font-extrabold text-lg active:scale-[0.98] transition-transform" style={{ background: '#5354d3', color: '#fff' }}>
               המשך
             </button>
           </div>
@@ -302,7 +302,7 @@ export const CreateJob: React.FC = () => {
             <button
               disabled={!experience || !wageValid}
               onClick={() => setStep(4)}
-              className="flex-1 rounded-2xl py-4 font-extrabold text-lg disabled:opacity-40 active:scale-98 transition-transform"
+              className="flex-1 rounded-2xl py-4 font-extrabold text-lg disabled:opacity-40 active:scale-[0.98] transition-transform"
               style={{ background: '#5354d3', color: '#fff' }}
             >
               המשך
@@ -466,7 +466,7 @@ export const CreateJob: React.FC = () => {
               </button>
               <button
                 onClick={handlePublish}
-                className="flex-1 rounded-2xl py-4 font-extrabold text-lg active:scale-98 transition-transform"
+                className="flex-1 rounded-2xl py-4 font-extrabold text-lg active:scale-[0.98] transition-transform"
                 style={{ background: '#f4b62c', color: '#3a2c00', boxShadow: '0 8px 20px -6px rgba(244,182,44,.5)' }}
               >
                 {emergency ? 'פרסם משמרת חירום' : 'פרסם משמרת'}

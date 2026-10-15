@@ -217,7 +217,7 @@ export const WorkerNavigation: React.FC = () => {
       {/* כפתור צ'ק-אין */}
       {!waitingForRestaurant && !restaurantInitiated && (
         <button onClick={handleInitiate} disabled={initiating}
-          className="w-full bg-[#5354d3] text-white rounded-2xl py-4 font-bold text-lg shadow-lg active:scale-98 transition-transform">
+          className="w-full bg-[#5354d3] text-white rounded-2xl py-4 font-bold text-lg shadow-lg active:scale-[0.98] transition-transform">
           {initiating
             ? <div className="flex items-center justify-center gap-2">
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />שולח...

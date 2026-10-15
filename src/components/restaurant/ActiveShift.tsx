@@ -110,6 +110,14 @@ export const ActiveShift: React.FC = () => {
         navTimer = setTimeout(() => navToRestaurant('end_shift'), 2500);
       } catch (e: any) {
         if (cancelled) return;
+        // מרוץ מול הסיכום-ברקע של השרת: כששני הצדדים מאשרים, השרת מסכם את
+        // המשמרת ברקע לפני שה-client מספיק לקרוא completeJob. אז completeJob
+        // מחזיר 409 ("כבר סוכמה") או 400 ("לא במצב הנכון") — אבל העובד *כבר שולם*,
+        // זו הצלחה ולא כשל. רק 402 (אין יתרה בארנק) הוא כשל תשלום אמיתי.
+        if (e?.status === 409 || e?.status === 400) {
+          navTimer = setTimeout(() => navToRestaurant('end_shift'), 1200);
+          return;
+        }
         payBlocked.current = true;
         setPayError(e?.message || 'התשלום נכשל — ודא שיש יתרה בארנק ונסה שוב');
         setBothDone(false);
@@ -247,7 +255,7 @@ export const ActiveShift: React.FC = () => {
       {!restaurantConfirmed ? (
         !showConfirmDialog ? (
           <button onClick={() => setShowConfirmDialog(true)}
-            className="w-full bg-[#141a2e] text-white rounded-2xl py-4 font-bold text-lg active:scale-98 transition-transform flex items-center justify-center gap-2">
+            className="w-full bg-[#141a2e] text-white rounded-2xl py-4 font-bold text-lg active:scale-[0.98] transition-transform flex items-center justify-center gap-2">
             <Flag size={18} /> סיים משמרת
           </button>
         ) : (

@@ -1,7 +1,7 @@
 ﻿import React, { useState, useEffect, useRef } from 'react';
 import { setVisibleInterval } from '../../utils/visibleInterval';
 import { Send, MessageCircle } from 'lucide-react';
-import { api } from '../../api';
+import { api, chatSeen } from '../../api';
 
 interface Props {
   jobId: number;
@@ -15,12 +15,25 @@ export const Chat: React.FC<Props> = ({ jobId, myRole, myName }) => {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
   const bottomRef = useRef<HTMLDivElement>(null);
+  const lastMarkedRef = useRef(0);
 
   useEffect(() => {
     if (!jobId) return;
+    lastMarkedRef.current = 0;
     const load = () => {
       api.getMessages(jobId)
-        .then(data => { if (Array.isArray(data)) setMessages(data); })
+        .then(data => {
+          if (!Array.isArray(data)) return;
+          setMessages(data);
+          // סמן נקרא — רק כשההודעה האחרונה התקדמה (לא בכל poll), כדי לנקות את
+          // הנקודה האדומה/הבאנר על הודעות שנקראו כאן במהלך המשמרת.
+          const lastId = data.length ? Number(data[data.length - 1].Id) || 0 : 0;
+          if (lastId > lastMarkedRef.current) {
+            lastMarkedRef.current = lastId;
+            chatSeen.mark(jobId, lastId);
+            api.markChatRead(jobId).catch(() => {});
+          }
+        })
         .catch(() => {});
     };
     load();
@@ -28,9 +41,11 @@ export const Chat: React.FC<Props> = ({ jobId, myRole, myName }) => {
     return () => clearInterval(iv);
   }, [jobId]);
 
+  // גלילה לתחתית רק כשנוספת הודעה (length משתנה) — לא בכל poll. אחרת גלילה
+  // מעלה לקריאת היסטוריה נזרקת חזרה למטה כל 2 שניות.
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages.length]);
 
   const handleSend = async () => {
     const text = input.trim();

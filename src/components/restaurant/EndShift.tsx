@@ -291,7 +291,7 @@ export const RestaurantEndShift: React.FC = () => {
       <button
         onClick={handleSubmit}
         disabled={rating === 0 || submitting}
-        className="w-full bg-[#5354d3] text-white rounded-2xl py-4 font-bold text-lg disabled:opacity-40 active:scale-98 transition-transform"
+        className="w-full bg-[#5354d3] text-white rounded-2xl py-4 font-bold text-lg disabled:opacity-40 active:scale-[0.98] transition-transform"
       >
         {submitting ? (
           <div className="flex items-center justify-center gap-2">

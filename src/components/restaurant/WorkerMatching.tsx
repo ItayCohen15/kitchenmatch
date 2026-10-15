@@ -298,7 +298,7 @@ export const WorkerMatching: React.FC = () => {
                 <button
                   onClick={() => handleApprove(job)}
                   disabled={isActioning}
-                  className="flex-1 bg-[#5354d3] text-white rounded-xl py-2.5 font-bold text-sm flex items-center justify-center gap-2 disabled:opacity-50 active:scale-98 transition-all"
+                  className="flex-1 bg-[#5354d3] text-white rounded-xl py-2.5 font-bold text-sm flex items-center justify-center gap-2 disabled:opacity-50 active:scale-[0.98] transition-all"
                 >
                   {isActioning ? (
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

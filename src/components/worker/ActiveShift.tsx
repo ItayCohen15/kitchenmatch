@@ -218,7 +218,7 @@ export const WorkerActiveShift: React.FC = () => {
       {!workerConfirmed ? (
         !showConfirmDialog ? (
           <button onClick={() => setShowConfirmDialog(true)}
-            className="w-full bg-gray-900 text-white rounded-2xl py-4 font-bold text-lg active:scale-98 transition-transform flex items-center justify-center gap-2">
+            className="w-full bg-gray-900 text-white rounded-2xl py-4 font-bold text-lg active:scale-[0.98] transition-transform flex items-center justify-center gap-2">
             <Flag size={18} /> סיים משמרת
           </button>
         ) : (

@@ -14,10 +14,17 @@ const AdminApp = lazy(() => import('./components/admin/AdminApp').then(m => ({ d
 
 // רשת ביטחון: אם נטענה גרסה ישנה שהקבצים שלה כבר לא קיימים (נפוץ בכניסה מהתראת PUSH),
 // טעינת המסך נכשלת והמסך נשאר לבן — נטען מחדש פעם אחת אוטומטית כדי לקבל את הגרסה העדכנית.
-class ReloadOnChunkError extends React.Component<{ children: React.ReactNode }, { failed: boolean }> {
-  state = { failed: false };
-  static getDerivedStateFromError() { return { failed: true }; }
+class ReloadOnChunkError extends React.Component<{ children: React.ReactNode }, { failed: boolean; fatal: any }> {
+  state = { failed: false, fatal: null as any };
+  static getDerivedStateFromError(error: any) {
+    // רק כשל-טעינת-chunk (גרסה ישנה) מצדיק ריענון. קריסת render אמיתית
+    // חייבת לעבור ל-ErrorBoundary הגלובלי, אחרת מרעננים בלולאה על באג אמיתי.
+    const s = `${error?.name || ''} ${error?.message || ''}`;
+    const isChunk = /ChunkLoadError|Loading chunk|dynamically imported module|Importing a module script failed|Failed to fetch dynamically/i.test(s);
+    return isChunk ? { failed: true, fatal: null } : { failed: false, fatal: error };
+  }
   componentDidCatch() {
+    if (!this.state.failed) return; // לא chunk — יטופל ע"י ErrorBoundary החיצוני
     try {
       if (!sessionStorage.getItem('km_chunk_reload')) {
         sessionStorage.setItem('km_chunk_reload', '1');
@@ -26,6 +33,7 @@ class ReloadOnChunkError extends React.Component<{ children: React.ReactNode }, 
     } catch { window.location.reload(); }
   }
   render() {
+    if (this.state.fatal) throw this.state.fatal; // האצלה לגבול-השגיאה הגלובלי
     if (this.state.failed) {
       return (
         <div className="flex flex-col items-center justify-center gap-3 p-8 text-center" style={{ height: '100dvh' }}>
@@ -161,8 +169,13 @@ const AppContent: React.FC = () => {
     try { return new URLSearchParams(window.location.search).get('chat'); } catch { return null; }
   });
 
-  // הגרסה נטענה בהצלחה — אפס את מנגנון הריענון האוטומטי
-  useEffect(() => { try { sessionStorage.removeItem('km_chunk_reload'); } catch {} }, []);
+  // אפס את מנגנון הריענון-החד-פעמי רק אחרי שהיה די זמן לגרסה לטעון בהצלחה.
+  // קודם זה נוקה מיד ב-mount — לפני שה-chunk העצל בכלל ניסה להיטען — כך שה-guard
+  // החד-פעמי התאפס תמיד, ו-chunk/deploy שנכשל ברציפות רענן בלי סוף.
+  useEffect(() => {
+    const t = setTimeout(() => { try { sessionStorage.removeItem('km_chunk_reload'); } catch {} }, 8000);
+    return () => clearTimeout(t);
+  }, []);
 
   useEffect(() => {
     const savedToken   = localStorage.getItem('km_token');

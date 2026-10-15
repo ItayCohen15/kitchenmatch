@@ -134,6 +134,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setIsEmergencyMode(false);
     setWorkerSelectedJobId(null);
     setSelectedJobData(null);
+    setUserProfile(null); // מנקה את פרופיל המשתמש הקודם מהזיכרון (אחרת re-login מהיר חושף אותו)
     localStorage.removeItem('km_token');
     localStorage.removeItem('km_role');
     localStorage.removeItem('km_profile');
