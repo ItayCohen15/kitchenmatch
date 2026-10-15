@@ -174,6 +174,7 @@ export const Auth: React.FC<Props> = ({ onLogin, onShowLegal }) => {
           const isNew = !!pendingVerify.data?.isNew;
           finishSession(session, isNew);
         }}
+        onBack={() => { setPendingVerify(null); setError(''); setNotice(''); }}
       />
     );
   }

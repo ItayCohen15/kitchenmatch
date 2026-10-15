@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { setVisibleInterval } from '../../utils/visibleInterval';
 import { Phone, MessageCircle, CheckCircle2, X, Clock, XCircle, Bell } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
@@ -18,6 +18,7 @@ export const LiveTracking: React.FC = () => {
   const [showCancel, setShowCancel]        = useState(false);
   const [cancelledByWorker, setCancelledByWorker] = useState(false);
   const [jobData, setJobData]              = useState<any>(job || null);
+  const dismissedRef = useRef(false);   // "עוד לא" — מדכא הצגה חוזרת של פופאפ ההתחלה ע"י ה-poll
 
   // קונטיינר סטאז' ששוחזר אחרי ריענון — שייך למסך הסטאז', לא לכאן
   useEffect(() => {
@@ -62,7 +63,7 @@ export const LiveTracking: React.FC = () => {
           navToRestaurant('active_shift');
         } else if (s.Status === 'cancelled') {
           setCancelledByWorker(true);
-        } else if (s.StartInitiatedBy === 'worker') {
+        } else if (s.StartInitiatedBy === 'worker' && !dismissedRef.current) {
           setWorkerInit(true);
         }
       } catch {}
@@ -161,7 +162,7 @@ export const LiveTracking: React.FC = () => {
           <div className="font-black text-lg mb-1 flex items-center gap-2"><Bell size={18} /> {workerName} הגיע</div>
           <div className="text-sm mb-4" style={{ color: 'rgba(255,255,255,.85)' }}>העובד ביקש להתחיל משמרת — אשר?</div>
           <div className="flex gap-3">
-            <button onClick={() => setWorkerInit(false)}
+            <button onClick={() => { dismissedRef.current = true; setWorkerInit(false); }}
               className="flex-1 rounded-xl py-3 font-semibold flex items-center justify-center gap-2 active:scale-95 transition-transform"
               style={{ background: 'rgba(255,255,255,.2)' }}>
               <X size={16} /> עוד לא

@@ -13,22 +13,24 @@ export interface LevelInfo {
   perks: string[];      // הטבות הרמה (מצטברות)
 }
 
+// מודל חדש (2026-10): העובד לא משלם עמלה (commission=0 לכל הרמות) — העובד
+// מקבל את מלוא השכר. הרמה קובעת חשיפה/עדיפות/תגים בלבד.
 export const LEVELS: LevelInfo[] = [
-  { key: 'bronze',   label: 'ברונזה',  min: 0,   commission: 0.065, exposure: 1, emoji: '🥉',
+  { key: 'bronze',   label: 'ברונזה',  min: 0,   commission: 0, exposure: 1, emoji: '🥉',
     color: 'text-amber-700 bg-amber-50',  gradient: '#b45309',
-    perks: ['גישה לכל המשמרות הזמינות', 'עמלה 6.5%'] },
-  { key: 'silver',   label: 'כסף',     min: 30,  commission: 0.065, exposure: 2, emoji: '🥈',
+    perks: ['גישה לכל המשמרות הזמינות', 'שכר מלא — ללא עמלת עובד'] },
+  { key: 'silver',   label: 'כסף',     min: 30,  commission: 0, exposure: 2, emoji: '🥈',
     color: 'text-slate-600 bg-slate-100', gradient: '#94a3b8',
     perks: ['חשיפה מוגברת למסעדות', 'תג כסף בפרופיל'] },
-  { key: 'gold',     label: 'זהב',     min: 60,  commission: 0.060, exposure: 3, emoji: '🥇',
+  { key: 'gold',     label: 'זהב',     min: 60,  commission: 0, exposure: 3, emoji: '🥇',
     color: 'text-yellow-600 bg-yellow-50', gradient: '#e8a020',
-    perks: ['עמלה מופחתת 6%', 'עדיפות בתוצאות החיפוש', 'תג זהב בולט'] },
-  { key: 'platinum', label: 'פלטינום', min: 90,  commission: 0.060, exposure: 4, emoji: '💠',
+    perks: ['עדיפות בתוצאות החיפוש', 'תג זהב בולט'] },
+  { key: 'platinum', label: 'פלטינום', min: 90,  commission: 0, exposure: 4, emoji: '💠',
     color: 'text-cyan-600 bg-cyan-50',    gradient: '#22d3ee',
     perks: ['חשיפה גבוהה מאוד למסעדות', 'תמיכה מועדפת', 'תג פלטינום'] },
-  { key: 'diamond',  label: 'דיימונד', min: 120, commission: 0.055, exposure: 5, emoji: '💎',
+  { key: 'diamond',  label: 'דיימונד', min: 120, commission: 0, exposure: 5, emoji: '💎',
     color: 'text-indigo-600 bg-indigo-50', gradient: '#818cf8',
-    perks: ['עמלה הנמוכה ביותר 5.5%', 'עדיפות עליונה בתוצאות', 'פרופיל מומלץ למסעדות', 'תג יוקרה 💎'] },
+    perks: ['עדיפות עליונה בתוצאות', 'פרופיל מומלץ למסעדות', 'תג יוקרה'] },
 ];
 
 // כל ההטבות שנפתחו עד רמה מסוימת (מצטבר)
@@ -70,15 +72,16 @@ export function netMultiplier(levelKey?: string): number {
   return 1 - workerCommissionRate(levelKey);
 }
 
-// ── עמלות חירום ── משמרת חירום: מסעדה 12%, עובד 4% (קבוע). אחרת: מסעדה 6.5%, עובד לפי רמה.
-export const BASE_RESTAURANT_COMMISSION = 0.065;
-export const EMERGENCY_RESTAURANT_COMMISSION = 0.12;
-export const EMERGENCY_WORKER_COMMISSION = 0.04;
+// ── עמלות (מודל חדש 2026-10) ── נגבות רק מהמסעדה: רגילה 13%, חירום 15%.
+// העובד 0% בכל מקרה — מקבל את מלוא השכר (ניכויי המטרייה קורים downstream).
+export const BASE_RESTAURANT_COMMISSION = 0.13;
+export const EMERGENCY_RESTAURANT_COMMISSION = 0.15;
+export const EMERGENCY_WORKER_COMMISSION = 0;
 // שותפות (אחרי סטאז' + ₪300): עמלה מופחתת 4.5% לכל צד
 export const PARTNERSHIP_COMMISSION = 0.045;
 // בתקופת הסטאז' (3 שבועות): מסעדה 4.5%, עובד 6.5%
 export const STAGE_RESTAURANT_COMMISSION = 0.045;
-export const STAGE_WORKER_COMMISSION = 0.065;
+export const STAGE_WORKER_COMMISSION = 0;   // עובד 0% בכל מקום
 
 export function restaurantRate(isEmergency?: boolean): number {
   return isEmergency ? EMERGENCY_RESTAURANT_COMMISSION : BASE_RESTAURANT_COMMISSION;

@@ -27,6 +27,7 @@ export const NotificationPanel: React.FC<Props> = ({ onClose }) => {
   const unread = notifs.filter(n => !n.IsRead).length;
 
   const timeLabel = (min: number) => {
+    if (!Number.isFinite(min)) return '';   // שרת שלא החזיר MinutesAgo → בלי "לפני NaN ימים"
     if (min < 1)  return 'עכשיו';
     if (min < 60) return `לפני ${min} דק׳`;
     const h = Math.floor(min / 60);
@@ -36,12 +37,13 @@ export const NotificationPanel: React.FC<Props> = ({ onClose }) => {
 
   const iconFor = (title: string) => {
     const cls = 'text-[#5354d3]';
-    if (title.includes('מועמדות')) return <Send size={18} className={cls} />;
-    if (title.includes('אושר') || title.includes('אישור')) return <CheckCircle2 size={18} className="text-green-500" />;
-    if (title.includes('הגיע') || title.includes('צ׳ק')) return <MapPin size={18} className={cls} />;
-    if (title.includes('הודעה') || title.includes('צ׳אט')) return <MessageCircle size={18} className="text-blue-500" />;
-    if (title.includes('סיים') || title.includes('סיום')) return <Flag size={18} className={cls} />;
-    if (title.includes('חירום')) return <Zap size={18} className="text-red-500" />;
+    const t = title || '';   // התראה פגומה (Title null) לא תפיל את כל הפאנל
+    if (t.includes('מועמדות')) return <Send size={18} className={cls} />;
+    if (t.includes('אושר') || t.includes('אישור')) return <CheckCircle2 size={18} className="text-green-500" />;
+    if (t.includes('הגיע') || t.includes('צ׳ק')) return <MapPin size={18} className={cls} />;
+    if (t.includes('הודעה') || t.includes('צ׳אט')) return <MessageCircle size={18} className="text-blue-500" />;
+    if (t.includes('סיים') || t.includes('סיום')) return <Flag size={18} className={cls} />;
+    if (t.includes('חירום')) return <Zap size={18} className="text-red-500" />;
     return <Bell size={18} className={cls} />;
   };
 

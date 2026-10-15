@@ -15,13 +15,15 @@ interface Props {
   userId: number;
   email: string;
   onVerified: (session: VerifiedSession) => void;
+  onBack?: () => void;   // חזרה לטופס ההרשמה/כניסה (אימייל שגוי → לא להישאר תקוע)
 }
 
-export const VerifyEmail: React.FC<Props> = ({ userId, email, onVerified }) => {
+export const VerifyEmail: React.FC<Props> = ({ userId, email, onVerified, onBack }) => {
   const [code, setCode] = useState(['', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [resent, setResent] = useState(false);
+  const [resending, setResending] = useState(false);
   const inputs = useRef<(HTMLInputElement | null)[]>([]);
 
   const handleChange = (i: number, val: string) => {
@@ -59,7 +61,13 @@ export const VerifyEmail: React.FC<Props> = ({ userId, email, onVerified }) => {
         body: JSON.stringify({ userId, code: c }),
       });
       const data = await res.json();
-      if (!res.ok) { setError(data.error || 'קוד שגוי'); setLoading(false); return; }
+      if (!res.ok) {
+        setError(data.error || 'קוד שגוי');
+        setCode(['', '', '', '', '', '']);     // נקה קוד שגוי — אחרת נשלח שוב אותו קוד (נספר ל-lockout)
+        inputs.current[0]?.focus();
+        setLoading(false);
+        return;
+      }
       if (!data.token) { setError('האימות הצליח אך לא התקבל סשן — נסה להתחבר'); setLoading(false); return; }
       onVerified({ token: data.token, role: data.role, profile: data.profile });
     } catch {
@@ -69,16 +77,20 @@ export const VerifyEmail: React.FC<Props> = ({ userId, email, onVerified }) => {
   };
 
   const handleResend = async () => {
-    setResent(false);
+    if (resending) return;
+    setResent(false); setResending(true); setError('');
     try {
-      await fetch(`${BASE}/auth/resend-code`, {
+      const r = await fetch(`${BASE}/auth/resend-code`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
         body: JSON.stringify({ userId, email }),
       });
+      if (!r.ok) throw new Error();
       setResent(true);
       setTimeout(() => setResent(false), 5000);
-    } catch {}
+    } catch {
+      setError('לא הצלחנו לשלוח קוד חדש — נסה שוב');
+    } finally { setResending(false); }
   };
 
   return (
@@ -155,12 +167,18 @@ export const VerifyEmail: React.FC<Props> = ({ userId, email, onVerified }) => {
           ) : (
             <p className="text-gray-500 text-sm">
               לא קיבלת?{' '}
-              <button onClick={handleResend} className="font-bold" style={{ color: '#5354d3' }}>
-                שלח שוב
+              <button onClick={handleResend} disabled={resending} className="font-bold disabled:opacity-50" style={{ color: '#5354d3' }}>
+                {resending ? 'שולח...' : 'שלח שוב'}
               </button>
             </p>
           )}
         </div>
+
+        {onBack && (
+          <button onClick={onBack} className="w-full mt-5 py-2 text-sm font-semibold" style={{ color: '#8899bb' }}>
+            חזרה / שינוי אימייל
+          </button>
+        )}
 
         <p className="text-center text-gray-600 text-xs mt-4">
           בדוק גם בתיקיית הספאם

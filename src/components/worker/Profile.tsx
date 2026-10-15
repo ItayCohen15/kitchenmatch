@@ -354,8 +354,8 @@ export const WorkerProfile: React.FC = () => {
             {currentLevel.label}
           </span>
           <div className="text-left">
-            <div className="text-xs text-gray-400">עמלת העובד שלך</div>
-            <div className="font-bold text-green-600 text-sm">{(currentLevel.commission * 100).toFixed(1)}%</div>
+            <div className="text-xs text-gray-400">עמלת העובד</div>
+            <div className="font-bold text-green-600 text-sm">0% · שכר מלא</div>
           </div>
         </div>
 
@@ -380,7 +380,7 @@ export const WorkerProfile: React.FC = () => {
         )}
 
         <p className="text-xs text-gray-400 mt-3 leading-relaxed">
-          ככל שתעלה ברמה — העמלה יורדת והחשיפה שלך למסעדות גדלה (עדיפות בתוצאות החיפוש).
+          ככל שתעלה ברמה — החשיפה שלך למסעדות גדלה ותקבל עדיפות בתוצאות החיפוש. השכר תמיד מלא, ללא עמלת עובד.
         </p>
       </div>
 

@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState, useRef } from 'react';
 import { setVisibleInterval } from '../../utils/visibleInterval';
 import { Navigation2, CheckCircle2, X, Phone, XCircle, MapPin, Bell, Clock } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
@@ -16,6 +16,7 @@ export const WorkerNavigation: React.FC = () => {
   const [showCancel, setShowCancel]              = useState(false);
   const [cancelledByRest, setCancelledByRest]    = useState(false);
   const [restaurantPhone, setRestPhone]          = useState<string>(job?.RestaurantPhone || '');
+  const dismissedRef = useRef(false);   // "עוד לא" — מדכא הצגה חוזרת של פופאפ ההתחלה ע"י ה-poll
 
   // קונטיינר סטאז' ששוחזר אחרי ריענון — שייך למסך הסטאז', לא לצ'ק-אין
   useEffect(() => {
@@ -56,7 +57,7 @@ export const WorkerNavigation: React.FC = () => {
           navToWorker('active_shift');
         } else if (s.Status === 'cancelled') {
           setCancelledByRest(true);
-        } else if (s.StartInitiatedBy === 'restaurant') {
+        } else if (s.StartInitiatedBy === 'restaurant' && !dismissedRef.current) {
           setRestInitiated(true);
         }
       } catch {}
@@ -173,7 +174,7 @@ export const WorkerNavigation: React.FC = () => {
           <div className="font-bold text-lg mb-1 flex items-center gap-2"><Bell size={18} /> {restaurantName} מבקשת להתחיל</div>
           <div className="text-green-100 text-sm mb-4">המסעדה מוכנה. הגעת?</div>
           <div className="flex gap-3">
-            <button onClick={() => setRestInitiated(false)}
+            <button onClick={() => { dismissedRef.current = true; setRestInitiated(false); }}
               className="flex-1 bg-white/20 rounded-xl py-3 font-semibold flex items-center justify-center gap-2">
               <X size={16} /> עוד לא
             </button>

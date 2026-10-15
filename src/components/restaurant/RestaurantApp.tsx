@@ -73,6 +73,7 @@ export const RestaurantApp: React.FC = () => {
     worker_matching: 'home',
     live_tracking:   'home',
     active_shift:    'home',
+    end_shift:       'home',
     talent:          'home',
     chats:           'home',
     stage_schedule:  'stages',

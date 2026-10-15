@@ -6,7 +6,6 @@ import { ROLE_LABELS } from '../../data/mockData';
 import { api } from '../../api';
 import { CancelShiftModal } from '../common/CancelShiftModal';
 import { effectiveWorkerRate, levelFromShifts } from '../../utils/levels';
-import { estimateNet } from '../../utils/payrollEstimate';
 import { NetBreakdown } from '../common/NetBreakdown';
 import { avatarTone } from '../../utils/colors';
 
@@ -45,8 +44,9 @@ export const JobDetails: React.FC = () => {
   const workerLevel = levelFromShifts(userProfile?.CompletedShifts || 0).key;
   const commRate = effectiveWorkerRate(workerLevel, Boolean(job.IsEmergency || job.isEmergency));
   const isSelfEmployed = userProfile?.IsSelfEmployed !== 0; // NULL/1 => עצמאי, 0 => לא-עצמאי
-  const netEst = estimateNet(baseAmount, commRate, isSelfEmployed);
-  const netPay = Math.round(netEst.net).toString();
+  // נטו ראשי = אחרי עמלת Staffly בלבד (עקבי עם הארנק/ההיסטוריה/משמרת-פעילה).
+  // הפירוט המלא כולל מס/ב"ל (לעובד ללא עוסק) מוצג ב-NetBreakdown למטה.
+  const netPay = Math.round(baseAmount * (1 - commRate)).toString();
   const startStr = start.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
   const endStr = end.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
   const restaurantName = job.RestaurantName || job.restaurantName || 'מסעדה';
