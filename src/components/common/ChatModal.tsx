@@ -3,6 +3,7 @@ import { setVisibleInterval } from '../../utils/visibleInterval';
 import { X, Send, MessageCircle, Lock } from 'lucide-react';
 import { api, chatSeen } from '../../api';
 import { avatarTone } from '../../utils/colors';
+import { useModal } from '../../hooks/useModal';
 
 interface Props {
   jobId: number;            // שרשור ההודעות (לסטאז' — מזהה הסטאז')
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export const ChatModal: React.FC<Props> = ({ jobId, title, myRole, myName, readOnly, onClose }) => {
+  const modalRef = useModal<HTMLDivElement>(onClose);
   const [messages, setMessages] = useState<any[]>([]);
   const [text, setText] = useState('');
   const [sending, setSending] = useState(false);
@@ -50,7 +52,7 @@ export const ChatModal: React.FC<Props> = ({ jobId, title, myRole, myName, readO
 
   return (
     <div onClick={onClose} className="fixed inset-0 z-[70] flex items-center justify-center p-4" style={{ background: 'rgba(19,22,38,0.65)', paddingTop: 'max(env(safe-area-inset-top), 16px)', paddingBottom: 'max(env(safe-area-inset-bottom), 16px)' }}>
-      <div onClick={e => e.stopPropagation()} className="bg-white rounded-3xl w-full max-w-md shadow-2xl flex flex-col overflow-hidden" style={{ height: 'min(560px, 85dvh)' }}>
+      <div ref={modalRef} role="dialog" aria-modal="true" onClick={e => e.stopPropagation()} className="bg-white rounded-3xl w-full max-w-md shadow-2xl flex flex-col overflow-hidden" style={{ height: 'min(560px, 85dvh)' }}>
         {/* כותרת */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 flex-shrink-0">
           <div className="flex items-center gap-2">
@@ -63,7 +65,7 @@ export const ChatModal: React.FC<Props> = ({ jobId, title, myRole, myName, readO
               <div className="text-gray-400 text-[11px] flex items-center gap-1"><MessageCircle size={10} /> צ'אט סטאז'</div>
             </div>
           </div>
-          <button onClick={onClose} className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 active:bg-gray-200 transition-colors"><X size={18} /></button>
+          <button onClick={onClose} aria-label="סגור" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 active:bg-gray-200 transition-colors"><X size={18} /></button>
         </div>
 
         {/* הודעות */}
@@ -108,8 +110,8 @@ export const ChatModal: React.FC<Props> = ({ jobId, title, myRole, myName, readO
                 placeholder="כתוב הודעה..."
                 className="flex-1 border border-gray-200 bg-gray-50 rounded-2xl px-4 py-2.5 text-sm text-right outline-none focus:border-[#5354d3] focus:bg-white"
               />
-              <button onClick={send} disabled={sending || !text.trim()}
-                className="w-10 h-10 rounded-2xl flex items-center justify-center disabled:opacity-40 flex-shrink-0"
+              <button onClick={send} disabled={sending || !text.trim()} aria-label="שלח הודעה"
+                className="w-11 h-11 rounded-2xl flex items-center justify-center disabled:opacity-40 flex-shrink-0"
                 style={{ background: '#5354d3', color: '#ffffff' }}>
                 <Send size={17} style={{ transform: 'scaleX(-1)' }} />
               </button>

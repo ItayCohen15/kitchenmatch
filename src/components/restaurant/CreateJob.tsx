@@ -227,7 +227,7 @@ export const CreateJob: React.FC = () => {
           </div>
 
           <div className="flex gap-3">
-            <button onClick={() => setStep(1)} className="flex-shrink-0 rounded-2xl py-4 px-5 font-bold" style={{ background: '#f4f5f9', color: '#7a8199' }}>
+            <button onClick={() => setStep(1)} aria-label="חזרה" className="flex-shrink-0 rounded-2xl py-4 px-5 font-bold" style={{ background: '#f4f5f9', color: '#7a8199' }}>
               <ChevronRight size={20} />
             </button>
             <button onClick={() => setStep(3)} className="flex-1 rounded-2xl py-4 font-extrabold text-lg active:scale-[0.98] transition-transform" style={{ background: '#5354d3', color: '#fff' }}>
@@ -304,7 +304,7 @@ export const CreateJob: React.FC = () => {
           </div>
 
           <div className="flex gap-3">
-            <button onClick={() => setStep(2)} className="flex-shrink-0 rounded-2xl py-4 px-5 font-bold" style={{ background: '#f4f5f9', color: '#7a8199' }}>
+            <button onClick={() => setStep(2)} aria-label="חזרה" className="flex-shrink-0 rounded-2xl py-4 px-5 font-bold" style={{ background: '#f4f5f9', color: '#7a8199' }}>
               <ChevronRight size={20} />
             </button>
             <button
@@ -469,7 +469,7 @@ export const CreateJob: React.FC = () => {
             </div>
           ) : (
             <div className="flex gap-3">
-              <button onClick={() => setStep(3)} className="flex-shrink-0 rounded-2xl py-4 px-5 font-bold" style={{ background: '#f4f5f9', color: '#7a8199' }}>
+              <button onClick={() => setStep(3)} aria-label="חזרה" className="flex-shrink-0 rounded-2xl py-4 px-5 font-bold" style={{ background: '#f4f5f9', color: '#7a8199' }}>
                 <ChevronRight size={20} />
               </button>
               <button

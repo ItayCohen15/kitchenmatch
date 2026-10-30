@@ -3,6 +3,7 @@ import { X, Printer, ArrowLeftRight } from 'lucide-react';
 import { printHTML } from '../../utils/print';
 import { esc } from '../../utils/escapeHtml';
 import { ROLE_LABELS } from '../../data/mockData';
+import { useModal } from '../../hooks/useModal';
 
 interface Props {
   job: any;                       // כולל CancellationFee, CancelledBy, StartTime, CancelledAt, Role, Id
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export const CompensationDoc: React.FC<Props> = ({ job, viewer, workerName, restaurantName, onClose }) => {
+  const modalRef = useModal<HTMLDivElement>(onClose);
   const fee = Number(job.CancellationFee ?? 0);
   const cancelledBy: 'worker' | 'restaurant' = job.CancelledBy;
 
@@ -120,7 +122,7 @@ export const CompensationDoc: React.FC<Props> = ({ job, viewer, workerName, rest
           top: 'calc(env(safe-area-inset-top) + 64px)',
           bottom: 'calc(78px + env(safe-area-inset-bottom))',
         }}>
-        <div className="flex flex-col bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-sm pointer-events-auto"
+        <div ref={modalRef} role="dialog" aria-modal="true" className="flex flex-col bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-sm pointer-events-auto"
           style={{ maxHeight: '100%' }}>
 
           {/* Header */}
@@ -130,7 +132,7 @@ export const CompensationDoc: React.FC<Props> = ({ job, viewer, workerName, rest
                 <div className="font-bold text-sm">{title}</div>
                 <div className="text-gray-400 text-xs mt-0.5">{docId}</div>
               </div>
-              <button onClick={onClose} className="w-8 h-8 rounded-xl flex items-center justify-center bg-white/15">
+              <button onClick={onClose} aria-label="סגור" className="w-9 h-9 rounded-xl flex items-center justify-center bg-white/15">
                 <X size={16} />
               </button>
             </div>

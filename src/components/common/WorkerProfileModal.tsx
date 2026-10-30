@@ -9,6 +9,7 @@ import { GradBadge } from './GradBadge';
 import { VerifiedBadge } from './VerifiedBadge';
 import { avatarTone, levelTone } from '../../utils/colors';
 import { toast } from './Toast';
+import { useModal } from '../../hooks/useModal';
 
 interface Props {
   workerId: number;
@@ -18,6 +19,7 @@ interface Props {
 }
 
 export const WorkerProfileModal: React.FC<Props> = ({ workerId, initial, onClose }) => {
+  const modalRef = useModal<HTMLDivElement>(onClose);
   const [worker, setWorker] = useState<any>(initial || null);
   const [loading, setLoading] = useState(true);
 
@@ -67,7 +69,7 @@ export const WorkerProfileModal: React.FC<Props> = ({ workerId, initial, onClose
           top: 'calc(env(safe-area-inset-top) + 64px)',
           bottom: 'calc(78px + env(safe-area-inset-bottom))',
         }}>
-        <div className="flex flex-col bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-sm pointer-events-auto"
+        <div ref={modalRef} role="dialog" aria-modal="true" className="flex flex-col bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-sm pointer-events-auto"
           style={{ maxHeight: '100%' }}>
 
           {/* Header */}
@@ -99,7 +101,7 @@ export const WorkerProfileModal: React.FC<Props> = ({ workerId, initial, onClose
                   </div>
                 </div>
               </div>
-              <button onClick={onClose} className="w-10 h-10 rounded-xl flex items-center justify-center bg-white/15 active:bg-white/30 transition-colors">
+              <button onClick={onClose} aria-label="סגור" className="w-10 h-10 rounded-xl flex items-center justify-center bg-white/15 active:bg-white/30 transition-colors">
                 <X size={18} />
               </button>
             </div>

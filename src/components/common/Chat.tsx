@@ -109,7 +109,8 @@ export const Chat: React.FC<Props> = ({ jobId, myRole, myName }) => {
         <button
           onClick={handleSend}
           disabled={!input.trim() || sending}
-          className="w-9 h-9 bg-[#5354d3] rounded-xl flex items-center justify-center flex-shrink-0 disabled:opacity-40 active:scale-95 transition-transform"
+          aria-label="שלח הודעה"
+          className="w-11 h-11 bg-[#5354d3] rounded-xl flex items-center justify-center flex-shrink-0 disabled:opacity-40 active:scale-95 transition-transform"
         >
           {sending
             ? <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
@@ -119,7 +120,7 @@ export const Chat: React.FC<Props> = ({ jobId, myRole, myName }) => {
           type="text"
           value={input}
           onChange={e => setInput(e.target.value)}
-          onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+          onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && !(e.nativeEvent as any).isComposing) { e.preventDefault(); handleSend(); } }}
           placeholder="כתוב הודעה..."
           className="flex-1 bg-gray-50 rounded-xl px-3 py-2.5 text-sm text-right outline-none border border-gray-100 focus:border-[#5354d3]"
           style={{ fontSize: '16px' }}

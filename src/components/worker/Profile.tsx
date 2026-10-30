@@ -216,12 +216,12 @@ export const WorkerProfile: React.FC = () => {
               </div>
             </div>
             <div className="flex gap-2 flex-none">
-              <button onClick={() => setEditingProfile(true)}
-                className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,255,255,.12)' }} title="ערוך פרופיל">
+              <button onClick={() => setEditingProfile(true)} aria-label="ערוך פרופיל"
+                className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,255,255,.12)' }} title="ערוך פרופיל">
                 <Edit3 size={15} />
               </button>
-              <button onClick={resetToLanding}
-                className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,255,255,.12)' }} title="התנתק">
+              <button onClick={resetToLanding} aria-label="התנתק"
+                className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,255,255,.12)' }} title="התנתק">
                 <LogOut size={15} />
               </button>
             </div>
@@ -282,7 +282,7 @@ export const WorkerProfile: React.FC = () => {
               className="bg-[#5354d3] text-white rounded-xl px-3 py-2.5">
               {savingPhone ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Check size={16} />}
             </button>
-            <button onClick={() => setEditingPhone(false)} className="bg-gray-100 text-gray-500 rounded-xl px-3 py-2.5">
+            <button onClick={() => setEditingPhone(false)} aria-label="ביטול" className="bg-gray-100 text-gray-500 rounded-xl px-3 py-2.5">
               <X size={16} />
             </button>
           </div>
@@ -323,7 +323,7 @@ export const WorkerProfile: React.FC = () => {
               <FileText size={15} />
               <span className="truncate">{cvName || 'קורות חיים'}</span>
             </button>
-            <button onClick={handleCvDelete}
+            <button onClick={handleCvDelete} aria-label="מחק קורות חיים"
               className="w-10 h-10 rounded-xl bg-red-50 text-red-400 flex items-center justify-center flex-shrink-0">
               <Trash2 size={15} />
             </button>

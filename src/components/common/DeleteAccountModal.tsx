@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, AlertTriangle, Trash2, Archive } from 'lucide-react';
 import { api } from '../../api';
 import { haptic } from '../../utils/haptics';
+import { useModal } from '../../hooks/useModal';
 
 // מחיקת חשבון — פעולה בלתי-הפיכה.
 // שקיפות מלאה: מה נמחק לצמיתות מול מה נשמר מסיבות חוקיות.
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export const DeleteAccountModal: React.FC<Props> = ({ onClose, onDeleted }) => {
+  const modalRef = useModal<HTMLDivElement>(onClose);
   const [password, setPassword] = useState('');
   const [understood, setUnderstood] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -42,7 +44,7 @@ export const DeleteAccountModal: React.FC<Props> = ({ onClose, onDeleted }) => {
           top: 'calc(env(safe-area-inset-top) + 48px)',
           bottom: 'calc(78px + env(safe-area-inset-bottom))',
         }}>
-        <div className="flex flex-col bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-sm pointer-events-auto"
+        <div ref={modalRef} role="dialog" aria-modal="true" className="flex flex-col bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-sm pointer-events-auto"
           style={{ maxHeight: '100%' }}>
 
           {/* כותרת */}
@@ -52,7 +54,7 @@ export const DeleteAccountModal: React.FC<Props> = ({ onClose, onDeleted }) => {
                 <AlertTriangle size={18} />
                 <span className="font-bold text-base">מחיקת חשבון</span>
               </div>
-              <button onClick={onClose}
+              <button onClick={onClose} aria-label="סגור"
                 className="w-10 h-10 rounded-xl flex items-center justify-center bg-white/15 active:bg-white/30 transition-colors">
                 <X size={18} />
               </button>

@@ -3,12 +3,14 @@ import { X, Bell, CheckCheck, Send, CheckCircle2, MapPin, MessageCircle, Flag, Z
 import { api } from '../../api';
 import { Skeleton } from './Skeleton';
 import { toast } from './Toast';
+import { useModal } from '../../hooks/useModal';
 
 interface Props {
   onClose: () => void;
 }
 
 export const NotificationPanel: React.FC<Props> = ({ onClose }) => {
+  const modalRef = useModal<HTMLDivElement>(onClose);
   const [notifs, setNotifs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -55,7 +57,7 @@ export const NotificationPanel: React.FC<Props> = ({ onClose }) => {
       {/* Panel */}
       <div className="fixed top-0 left-0 right-0 z-50 max-w-sm mx-auto"
         style={{ animation: 'slideDown 0.3s cubic-bezier(0.16,1,0.3,1)' }}>
-        <div className="bg-white rounded-b-3xl shadow-2xl overflow-hidden"
+        <div ref={modalRef} role="dialog" aria-modal="true" className="bg-white rounded-b-3xl shadow-2xl overflow-hidden"
           style={{ marginTop: 'env(safe-area-inset-top)', maxHeight: '80dvh' }}>
 
           {/* Header */}
@@ -81,7 +83,7 @@ export const NotificationPanel: React.FC<Props> = ({ onClose }) => {
                   <CheckCheck size={13} /> סמן הכל
                 </button>
               )}
-              <button onClick={onClose}
+              <button onClick={onClose} aria-label="סגור"
                 className="w-10 h-10 rounded-xl flex items-center justify-center active:bg-white/20 transition-colors"
                 style={{ background: 'rgba(255,255,255,0.1)' }}>
                 <X size={18} className="text-white" />

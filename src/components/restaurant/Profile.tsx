@@ -116,7 +116,7 @@ export const RestaurantProfile: React.FC = () => {
                   )}
                 </div>
               </div>
-              <button onClick={() => setEditing(true)} className="rounded-xl p-2.5 active:scale-95 transition-transform"
+              <button onClick={() => setEditing(true)} aria-label="ערוך פרופיל" className="w-11 h-11 rounded-xl flex items-center justify-center active:scale-95 transition-transform"
                 style={{ background: 'rgba(255,255,255,.12)' }}>
                 <Edit3 size={16} />
               </button>

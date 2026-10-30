@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, AlertTriangle } from 'lucide-react';
 import { api } from '../../api';
+import { useModal } from '../../hooks/useModal';
 
 interface Props {
   jobId: number;
@@ -33,6 +34,7 @@ const RESTAURANT_REASONS = [
 export const CancelShiftModal: React.FC<Props> = ({
   jobId, cancelledBy, startTime, isConfirmed, onClose, onCancelled,
 }) => {
+  const modalRef = useModal<HTMLDivElement>(onClose);
   const [reason, setReason]   = useState('');
   const [custom, setCustom]   = useState('');
   const [loading, setLoading] = useState(false);
@@ -68,7 +70,7 @@ export const CancelShiftModal: React.FC<Props> = ({
           top: 'calc(env(safe-area-inset-top) + 64px)',
           bottom: 'calc(78px + env(safe-area-inset-bottom))',
         }}>
-        <div className="flex flex-col bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-sm pointer-events-auto"
+        <div ref={modalRef} role="dialog" aria-modal="true" className="flex flex-col bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-sm pointer-events-auto"
           style={{ maxHeight: '100%' }}>
 
           {/* Header */}
@@ -78,7 +80,7 @@ export const CancelShiftModal: React.FC<Props> = ({
                 <AlertTriangle size={18} />
                 <span className="font-bold text-base">ביטול משמרת</span>
               </div>
-              <button onClick={onClose} className="w-10 h-10 rounded-xl flex items-center justify-center bg-white/15 active:bg-white/30 transition-colors">
+              <button onClick={onClose} aria-label="סגור" className="w-10 h-10 rounded-xl flex items-center justify-center bg-white/15 active:bg-white/30 transition-colors">
                 <X size={18} />
               </button>
             </div>

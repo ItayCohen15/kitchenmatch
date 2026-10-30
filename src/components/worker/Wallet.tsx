@@ -116,7 +116,7 @@ const ShiftSummaryDoc = ({ shift, rate, onClose }: { shift: any; rate: number; o
               <div className="font-bold text-sm">Staff<span style={{ color:'#5354d3' }}>ly</span> · סיכום משמרת</div>
               <div className="text-gray-400 text-xs mt-0.5">{docId}</div>
             </div>
-            <button onClick={onClose} className="w-8 h-8 rounded-xl flex items-center justify-center bg-white/10">
+            <button onClick={onClose} aria-label="סגור" className="w-9 h-9 rounded-xl flex items-center justify-center bg-white/10">
               <X size={16} />
             </button>
           </div>
@@ -285,7 +285,7 @@ const WorkerInvoiceDoc = ({ shift, worker, onClose }: { shift: any; worker: any;
               <div className="font-bold text-sm">חשבונית שירות</div>
               <div className="text-gray-400 text-xs mt-0.5">מס׳ {invoiceNum}</div>
             </div>
-            <button onClick={onClose} className="w-8 h-8 rounded-xl flex items-center justify-center bg-white/10">
+            <button onClick={onClose} aria-label="סגור" className="w-9 h-9 rounded-xl flex items-center justify-center bg-white/10">
               <X size={16} />
             </button>
           </div>
@@ -672,7 +672,7 @@ export const WorkerWallet: React.FC = () => {
                 <span className="font-black text-[15px]">היעד החודשי שלי</span>
               </div>
               {goal > 0 && !editGoal && (
-                <button onClick={() => { setGoalInput(String(goal)); setEditGoal(true); }} style={{ color:'#8891ac' }}><Pencil size={13} /></button>
+                <button onClick={() => { setGoalInput(String(goal)); setEditGoal(true); }} aria-label="ערוך יעד חודשי" className="w-11 h-11 -m-2.5 flex items-center justify-center rounded-xl" style={{ color:'#a9b2cc' }}><Pencil size={14} /></button>
               )}
             </div>
             {editGoal || goal === 0 ? (
@@ -689,13 +689,13 @@ export const WorkerWallet: React.FC = () => {
               <>
                 <div className="flex justify-between items-end mb-1.5">
                   <span className="font-black text-2xl" style={{ color: '#f4b62c' }}>₪{Math.round(thisNet).toLocaleString()}</span>
-                  <span className="text-xs" style={{ color:'#8891ac' }}>מתוך ₪{goal.toLocaleString()}</span>
+                  <span className="text-xs" style={{ color:'#a9b2cc' }}>מתוך ₪{goal.toLocaleString()}</span>
                 </div>
                 <div className="h-2.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
                   <div className="h-full rounded-full transition-all"
                     style={{ width: `${Math.min(Math.round(thisNet / goal * 100), 100)}%`, background: '#f4b62c' }} />
                 </div>
-                <div className="text-[11px] mt-1.5" style={{ color:'#8891ac' }}>
+                <div className="text-[11px] mt-1.5" style={{ color:'#a9b2cc' }}>
                   {thisNet >= goal
                     ? 'הגעת ליעד החודשי'
                     : `${Math.round(thisNet / goal * 100)}% מהיעד · חסרות ₪${Math.round(goal - thisNet).toLocaleString()}${projection && projection >= goal ? ' · בקצב הזה תגיע ליעד' : ''}`}

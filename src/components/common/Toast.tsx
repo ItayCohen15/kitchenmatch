@@ -57,7 +57,7 @@ export const ToastHost: React.FC = () => {
             style={{ background: STYLE[t.type].bg }}>
             <span className="flex-shrink-0">{STYLE[t.type].icon}</span>
             <span className="text-sm font-semibold flex-1 leading-snug">{t.message}</span>
-            <button onClick={() => setItems(prev => prev.filter(x => x.id !== t.id))}
+            <button onClick={() => setItems(prev => prev.filter(x => x.id !== t.id))} aria-label="סגור הודעה"
               className="flex-shrink-0 opacity-70 active:opacity-100">
               <X size={16} />
             </button>

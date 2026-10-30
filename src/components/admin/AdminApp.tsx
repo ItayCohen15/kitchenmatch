@@ -44,7 +44,9 @@ export const AdminApp: React.FC = () => {
       {/* Header */}
       <header className="px-4 flex items-center justify-between flex-shrink-0"
         style={{ background: '#131626', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingTop: 'max(env(safe-area-inset-top), 12px)', paddingBottom: '12px' }}>
-        <button onClick={resetToLanding} style={{ color: 'rgba(255,255,255,0.4)' }} title="יציאה">
+        <button onClick={resetToLanding} aria-label="יציאה" title="יציאה"
+          className="w-11 h-11 -mr-2 flex items-center justify-center rounded-xl active:bg-white/10"
+          style={{ color: 'rgba(255,255,255,0.75)' }}>
           <LogOut size={18} />
         </button>
         <div className="flex items-center gap-2">
@@ -78,11 +80,11 @@ export const AdminApp: React.FC = () => {
                       style={{ background: 'rgba(83,84,211,0.12)', boxShadow: 'inset 0 0 0 1px rgba(83,84,211,0.15)' }} />
                   )}
                   <span className={`relative z-10 transition-all duration-200 ${isActive ? 'scale-110' : 'scale-100'}`}
-                    style={{ color: isActive ? '#5354d3' : 'rgba(255,255,255,0.3)' }}>
+                    style={{ color: isActive ? '#5354d3' : 'rgba(255,255,255,0.55)' }}>
                     {tab.icon}
                   </span>
                   <span className="relative z-10 text-[10px] font-semibold mt-0.5 whitespace-nowrap"
-                    style={{ color: isActive ? '#5354d3' : 'rgba(255,255,255,0.3)' }}>
+                    style={{ color: isActive ? '#5354d3' : 'rgba(255,255,255,0.55)' }}>
                     {tab.label}
                   </span>
                 </button>

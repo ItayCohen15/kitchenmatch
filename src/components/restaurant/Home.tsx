@@ -121,7 +121,7 @@ export const RestaurantHome: React.FC = () => {
               <div key={s.label} className="rounded-2xl px-2 py-3 text-center" style={{ background: 'rgba(255,255,255,0.07)' }}>
                 <div className="flex justify-center mb-1" style={{ color: s.gold ? '#f4b62c' : '#8f90f0' }}>{s.icon}</div>
                 <div className="font-black text-base">{s.value}</div>
-                <div className="text-[11px] font-semibold mt-0.5" style={{ color: '#9aa2be' }}>{s.label}</div>
+                <div className="text-[11px] font-semibold mt-0.5" style={{ color: '#b9c0d8' }}>{s.label}</div>
               </div>
             ))}
           </div>
@@ -276,10 +276,10 @@ export const RestaurantHome: React.FC = () => {
                     {j.TotalPay && <div className="text-[11px] font-bold mt-1" style={{ color: '#1f8f5f' }}>₪{j.TotalPay} סה״כ</div>}
                   </div>
                   {j.Status === 'searching' && (
-                    <button onClick={() => setCancelJob(j)}
-                      className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 active:scale-95 transition-transform"
-                      style={{ background: '#fde3e3', color: '#cf3030' }} title="בטל משמרת">
-                      <X size={15} />
+                    <button onClick={() => setCancelJob(j)} aria-label="בטל משמרת" title="בטל משמרת"
+                      className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 active:scale-95 transition-transform"
+                      style={{ background: '#fde3e3', color: '#cf3030' }}>
+                      <X size={16} />
                     </button>
                   )}
                 </div>

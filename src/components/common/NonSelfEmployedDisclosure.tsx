@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Info, ShieldAlert, ExternalLink, Check } from 'lucide-react';
 import { api } from '../../api';
+import { useModal } from '../../hooks/useModal';
 
 interface Props {
   /** אישר והבין — ממשיך כלא-עצמאי. מקבל את הגרסה שאושרה (לתיעוד) */
@@ -22,6 +23,7 @@ interface Doc {
  * שנשמר ברשומת האישור, וניתן להפיק אותו בדיעבד. שינוי נוסח = גרסה חדשה בשרת.
  */
 export const NonSelfEmployedDisclosure: React.FC<Props> = ({ onAccept, onCancel }) => {
+  const modalRef = useModal<HTMLDivElement>(onCancel);
   const [doc, setDoc] = useState<Doc | null>(null);
   const [loadErr, setLoadErr] = useState('');
   const [ack, setAck] = useState(false);
@@ -53,7 +55,7 @@ export const NonSelfEmployedDisclosure: React.FC<Props> = ({ onAccept, onCancel 
       <div className="fixed inset-0 bg-black/50 z-40" onClick={onCancel} />
       <div className="fixed inset-x-0 z-50 flex items-center justify-center px-3 pointer-events-none"
         style={{ top: 'calc(env(safe-area-inset-top) + 24px)', bottom: 'calc(env(safe-area-inset-bottom) + 24px)' }}>
-        <div className="flex flex-col bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-sm pointer-events-auto"
+        <div ref={modalRef} role="dialog" aria-modal="true" className="flex flex-col bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-sm pointer-events-auto"
           style={{ maxHeight: '100%' }}>
           {children}
         </div>
