@@ -32,7 +32,7 @@ const SCREEN_TITLES: Record<WorkerScreen, string> = {
   referral:      'חבר מביא חבר',
 };
 
-const NAV_TABS: WorkerScreen[] = ['home', 'stages', 'chats', 'wallet', 'history', 'profile'];
+const NAV_TABS: WorkerScreen[] = ['home', 'chats', 'wallet', 'history', 'profile'];
 
 export const WorkerApp: React.FC = () => {
   const { workerScreen, navToWorker, userProfile } = useApp();

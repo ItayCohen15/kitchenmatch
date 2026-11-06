@@ -1,12 +1,11 @@
 import React from 'react';
-import { Home, BarChart2, Wallet, User, Clock, GraduationCap } from 'lucide-react';
+import { Home, BarChart2, Wallet, User, Clock } from 'lucide-react';
 
 interface NavItem { id: string; label: string; icon: React.ReactNode; }
 interface Props { mode: 'restaurant' | 'worker'; active: string; onNav: (id: string) => void; }
 
 const RESTAURANT_TABS: NavItem[] = [
   { id: 'home',       label: 'בית',     icon: <Home size={22} /> },
-  { id: 'stages',     label: 'סטאז׳',  icon: <GraduationCap size={22} /> },
   { id: 'analytics',  label: 'ניתוח',  icon: <BarChart2 size={22} /> },
   { id: 'wallet',     label: 'ארנק',   icon: <Wallet size={22} /> },
   { id: 'profile',    label: 'פרופיל', icon: <User size={22} /> },
@@ -16,7 +15,6 @@ const WORKER_TABS: NavItem[] = [
   { id: 'home',    label: 'בית',      icon: <Home size={22} /> },
   { id: 'history', label: 'היסטוריה', icon: <Clock size={22} /> },
   { id: 'wallet',  label: 'הכנסות',  icon: <Wallet size={22} /> },
-  { id: 'stages',  label: 'סטאז׳',   icon: <GraduationCap size={22} /> },
   { id: 'profile', label: 'פרופיל',  icon: <User size={22} /> },
 ];
 

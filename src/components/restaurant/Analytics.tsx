@@ -7,6 +7,7 @@ import { TrendingUp, Clock, Star, Zap, ChevronDown, ChevronUp, Flame, Handshake,
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { blendedMarket } from '../../utils/marketRates';
+import { restaurantRate } from '../../utils/levels';
 
 const MONTH_NAMES = ['ינו׳','פבר׳','מרץ','אפר׳','מאי','יוני','יולי','אוג׳','ספט׳','אוק׳','נוב׳','דצמ׳'];
 const DAY_NAMES   = ['','ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
@@ -14,9 +15,8 @@ const DAY_NAMES   = ['','ראשון','שני','שלישי','רביעי','חמי�
 const ROLE_LABELS: Record<string,string> = { chef:'שפים', line_cook:'טבחים', prep_cook:'טבחי הכנות', dishwasher:'מדיחים', cleaner:'ניקיון', bartender:'ברמנים', barista:'בריסטות', waiter:'מלצרים', pastry_chef:'קונדיטורים', host:'מארחים' };
 const ROLE_COLORS: Record<string,string> = { chef:'#ef5f3c', line_cook:'#3b74d1', prep_cook:'#12a594', dishwasher:'#3f7d86', cleaner:'#1f9d6b', bartender:'#9a5ba6', barista:'#b5701f', waiter:'#3b74d1', pastry_chef:'#d1568f', host:'#c99a2e' };
 
-// אחוז עמלת המסעדה לפי סוג המשמרת: שותפות/סטאז' 4.5%, חירום 12%, רגיל 6.5%
-const restRate = (j: any) =>
-  (j.JobType === 'direct' || j.JobType === 'stage_shift') ? 0.045 : j.IsEmergency ? 0.12 : 0.065;
+// עמלת המסעדה (מקור אמת יחיד): 13% רגיל / 15% חירום. העובד 0%.
+const restRate = (j: any) => restaurantRate(Boolean(j.IsEmergency));
 const baseOf = (j: any) => Number(j.TotalPay ?? (j.HourlyRate * (j.Hours || 0))) || 0;
 const costOf = (j: any) => baseOf(j) * (1 + restRate(j));
 
