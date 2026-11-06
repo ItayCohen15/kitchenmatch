@@ -1,5 +1,5 @@
 ﻿import React, { useState } from 'react';
-import { ChevronRight, Phone, MapPin, GraduationCap, Check, FileText } from 'lucide-react';
+import { ChevronRight, Phone, MapPin, Check, FileText } from 'lucide-react';
 import { api } from '../api';
 import { WORKER_ROLES, SKILLS_BY_ROLE, ENTRY_ROLE_KEYS } from '../utils/roles';
 import { BUSINESS_TYPES } from '../data/mockData';
@@ -47,9 +47,6 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
   const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
   const [selectedCuisines, setSelectedCuisines] = useState<string[]>([]);
   const [yearsExp, setYearsExp] = useState('1');
-  const [isTrainee, setIsTrainee] = useState(false);
-  const [courseType, setCourseType] = useState('');
-  const [schoolName, setSchoolName] = useState('');
   // מסלול תשלום יחיד: עצמאי שכיר (עצמאי-שכיר). כל העובדים דרך המטרייה → taxStatus='none'.
   // taxStatus שומר על כל הערכים לתאימות לאחור עם משתמשים ותיקים (exempt/licensed),
   // אבל ברישום חדש הוא תמיד 'none' (נקבע עם אישור הגילוי הנאות).
@@ -102,9 +99,6 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
           yearsExp: parseInt(yearsExp),
           skills: selectedSpecialties.join(','),
           phone,
-          isTrainee,
-          courseType: isTrainee ? (courseType || 'אחר') : null,
-          schoolName: isTrainee ? schoolName : null,
           taxStatus,
           isSelfEmployed: isSelfEmployed === null ? true : isSelfEmployed,
           // תיעוד אישור הגילוי הנאות (רק כשנבחר לא-עצמאי ואושר)
@@ -403,47 +397,6 @@ export const Onboarding: React.FC<Props> = ({ role, userId, profileId, onComplet
                     </div>
                   </div>
                   )}
-                  {/* סטטוס מתלמד/סטודנט — פותח גישה לסטאז'ים */}
-                  <div>
-                    <label className="text-sm font-semibold text-gray-600 mb-2 block">סטטוס מקצועי</label>
-                    <button
-                      type="button"
-                      onClick={() => setIsTrainee(v => !v)}
-                      className={`w-full p-3 rounded-xl border-2 flex items-center justify-between text-right transition-all ${isTrainee ? 'border-[#5354d3] bg-[#ecebfd]' : 'border-gray-100'}`}
-                    >
-                      <div>
-                        <div className="font-bold text-gray-900 text-sm flex items-center gap-1.5"><GraduationCap size={15} className="text-[#5354d3]" /> אני סטודנט/מתלמד</div>
-                        <div className="text-gray-500 text-xs">לומד בקורס בישול/ברמנים — אחפש גם סטאז'</div>
-                      </div>
-                      <div className={`w-11 h-6 rounded-full transition-colors relative flex-shrink-0 ${isTrainee ? 'bg-[#5354d3]' : 'bg-gray-300'}`}>
-                        <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-all ${isTrainee ? 'right-0.5' : 'left-0.5'}`} />
-                      </div>
-                    </button>
-                    {isTrainee && (
-                      <>
-                        <div className="grid grid-cols-3 gap-2 mt-2">
-                          {['בישול', 'ברמנים', 'אחר'].map(c => (
-                            <button
-                              key={c}
-                              type="button"
-                              onClick={() => setCourseType(c)}
-                              className={`py-2 rounded-xl text-sm font-semibold border transition-colors ${courseType === c ? 'bg-blue-500 text-white border-blue-500' : 'bg-white text-gray-600 border-gray-200'}`}
-                            >
-                              {c}
-                            </button>
-                          ))}
-                        </div>
-                        <input
-                          type="text"
-                          value={schoolName}
-                          onChange={e => setSchoolName(e.target.value)}
-                          placeholder="שם בית הספר / המכללה (לתוכנית הכניסה למקצוע)"
-                          className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-right focus:border-[#5354d3] outline-none text-sm mt-2"
-                        />
-                      </>
-                    )}
-                  </div>
-
                   {/* ── אופן התשלום — מסלול יחיד: עצמאי שכיר (עצמאי-שכיר) ── */}
                   {/* כל העובדים מקבלים תשלום דרך חברת מטרייה שמנפיקה תלוש — אין צורך בעוסק.
                       חובה לאשר את הגילוי הנאות (ביטוח לאומי / ייפוי כוח) לפני שממשיכים. */}

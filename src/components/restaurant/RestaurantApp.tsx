@@ -13,10 +13,6 @@ import { RestaurantEndShift } from './EndShift';
 import { RestaurantWallet } from './Wallet';
 import { RestaurantAnalytics } from './Analytics';
 import { RestaurantProfile } from './Profile';
-import { RestaurantStages } from './Stages';
-import { StageSchedule } from './StageSchedule';
-import { StageAddShift } from './StageAddShift';
-import { TalentBrowse } from './TalentBrowse';
 import { ReferralScreen } from '../common/ReferralScreen';
 import { ChatsScreen } from '../common/ChatsScreen';
 import { AssistantBot } from '../common/AssistantBot';
@@ -32,11 +28,7 @@ const SCREEN_TITLES: Record<RestaurantScreen, string> = {
   wallet:          'ארנק',
   analytics:       'ניתוח',
   profile:         'הפרופיל שלי',
-  stages:          "סטאז'רים",
-  talent:          'טאלנט',
   chats:           "הצ'אטים שלי",
-  stage_schedule:  "לוז הסטאז'",
-  stage_add_shift: 'קביעת משמרת',
   referral:        'חבר מביא חבר',
 };
 
@@ -74,10 +66,7 @@ export const RestaurantApp: React.FC = () => {
     live_tracking:   'home',
     active_shift:    'home',
     end_shift:       'home',
-    talent:          'home',
     chats:           'home',
-    stage_schedule:  'stages',
-    stage_add_shift: 'stage_schedule',
     referral:        'profile',
   };
   const backTo = BACK_MAP[restaurantScreen];
@@ -97,11 +86,7 @@ export const RestaurantApp: React.FC = () => {
       case 'wallet':          return <RestaurantWallet />;
       case 'analytics':       return <RestaurantAnalytics />;
       case 'profile':         return <RestaurantProfile />;
-      case 'stages':          return <RestaurantStages />;
-      case 'talent':          return <TalentBrowse />;
       case 'chats':           return <ChatsScreen role="restaurant" />;
-      case 'stage_schedule':  return <StageSchedule />;
-      case 'stage_add_shift': return <StageAddShift />;
       case 'referral':        return <ReferralScreen />;
     }
   };

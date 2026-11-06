@@ -20,11 +20,6 @@ export const LiveTracking: React.FC = () => {
   const [jobData, setJobData]              = useState<any>(job || null);
   const dismissedRef = useRef(false);   // "עוד לא" — מדכא הצגה חוזרת של פופאפ ההתחלה ע"י ה-poll
 
-  // קונטיינר סטאז' ששוחזר אחרי ריענון — שייך למסך הסטאז', לא לכאן
-  useEffect(() => {
-    if (jobData?.JobType === 'stage') navToRestaurant('stages');
-  }, [jobData?.JobType]);
-
   const workerName  = jobData?.WorkerName || 'העובד';
   const workerInit  = workerName.split(' ').map((n: string) => n[0]).join('').slice(0,2);
   const hourlyRate  = jobData ? Number(jobData.HourlyRate ?? 0) : 0;

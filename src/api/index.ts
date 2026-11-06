@@ -351,52 +351,6 @@ export const api = {
   markChatRead: (jobId: number) =>
     fetch(`${BASE}/messages/${jobId}/read`, { method: 'PUT', headers: headers() }).then(handleResponse),
 
-  // ========== TRIAL (משמרת סטאז׳) ==========
-  // משמרת אחת בתשלום מלא, ללא עמלה, לסטודנטים/בוגרים בלבד
-  createTrial: (trial: object) =>
-    fetch(`${BASE}/jobs/trial`, { method: 'POST', headers: headers(), body: JSON.stringify(trial) }).then(handleResponse),
-
-  getTrials: () =>
-    fetch(`${BASE}/jobs/trials`, { headers: headers() }).then(handleResponse),
-
-  // ========== STAGES / PARTNERSHIPS ==========
-  createStage: (stage: object) =>
-    fetch(`${BASE}/jobs/stage`, { method: 'POST', headers: headers(), body: JSON.stringify(stage) }).then(handleResponse),
-
-  getStages: () =>
-    fetch(`${BASE}/jobs/stages`, { headers: headers() }).then(handleResponse),
-
-  keepWorker: (jobId: number) =>
-    fetch(`${BASE}/jobs/${jobId}/keep`, { method: 'PUT', headers: headers() }).then(handleResponse),
-
-  getPartners: (restaurantId: number) =>
-    fetch(`${BASE}/jobs/restaurant/${restaurantId}/partners`, { headers: headers() }).then(handleResponse),
-
-  createDirectShift: (shift: object) =>
-    fetch(`${BASE}/jobs/direct`, { method: 'POST', headers: headers(), body: JSON.stringify(shift) }).then(handleResponse),
-
-  getWorkerOffers: (workerId: number) =>
-    fetch(`${BASE}/jobs/worker/${workerId}/offers`, { headers: headers() }).then(handleResponse),
-
-  acceptOffer: (jobId: number) =>
-    fetch(`${BASE}/jobs/${jobId}/accept-offer`, { method: 'PUT', headers: headers() }).then(handleResponse),
-
-  // לוז סטאז' + משוב
-  createStageShift: (shift: object) =>
-    fetch(`${BASE}/jobs/stage-shift`, { method: 'POST', headers: headers(), body: JSON.stringify(shift) }).then(handleResponse),
-
-  getStageShifts: (stageId: number) =>
-    fetch(`${BASE}/jobs/stage/${stageId}/shifts`, { headers: headers() }).then(handleResponse),
-
-  saveStageFeedback: (jobId: number, data: object) =>
-    fetch(`${BASE}/jobs/${jobId}/stage-feedback`, { method: 'PUT', headers: headers(), body: JSON.stringify(data) }).then(handleResponse),
-
-  editStageShift: (jobId: number, data: object) =>
-    fetch(`${BASE}/jobs/${jobId}/edit-stage-shift`, { method: 'PUT', headers: headers(), body: JSON.stringify(data) }).then(handleResponse),
-
-  cancelStage: (jobId: number) =>
-    fetch(`${BASE}/jobs/${jobId}/cancel-stage`, { method: 'PUT', headers: headers() }).then(handleResponse),
-
   // ממוצעי שכר פלטפורמיים לפי תפקיד (השוואת "אני מול השוק")
   getRateBenchmark: () =>
     fetch(`${BASE}/workers/benchmark/rates`, { headers: headers() }).then(handleResponse),

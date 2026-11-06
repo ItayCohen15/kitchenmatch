@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { setVisibleInterval } from '../../utils/visibleInterval';
-import { Zap, ChefHat, CheckCircle, Star, X, GraduationCap, CreditCard, ClipboardList, Users, ChevronLeft, MapPin } from 'lucide-react';
+import { Zap, ChefHat, CheckCircle, Star, X, CreditCard, ClipboardList, Users, MapPin } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { api } from '../../api';
 import { ROLE_LABELS } from '../../data/mockData';
@@ -180,20 +180,6 @@ export const RestaurantHome: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Talent program entry */}
-      <button onClick={() => navToRestaurant('talent')}
-        className="w-full rounded-2xl p-4 text-right active:scale-[0.99] transition-transform flex items-center gap-3"
-        style={{ background: '#eceefb', border: '1px solid #dcdefb' }}>
-        <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-none" style={{ background: '#fff', color: '#5354d3' }}>
-          <GraduationCap size={22} />
-        </div>
-        <div className="flex-1">
-          <div className="font-black" style={{ color: '#2b3350' }}>גלה טאלנט טרי</div>
-          <div className="text-xs mt-0.5 font-semibold" style={{ color: '#6b7290' }}>בוגרי בתי ספר לבישול/ברמנות — מוכנים להזדמנות הראשונה</div>
-        </div>
-        <ChevronLeft size={20} style={{ color: '#aeb4cc' }} className="flex-none" />
-      </button>
 
       {/* Available workers nearby */}
       <div>

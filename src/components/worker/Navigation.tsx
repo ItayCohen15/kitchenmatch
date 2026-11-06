@@ -18,11 +18,6 @@ export const WorkerNavigation: React.FC = () => {
   const [restaurantPhone, setRestPhone]          = useState<string>(job?.RestaurantPhone || '');
   const dismissedRef = useRef(false);   // "עוד לא" — מדכא הצגה חוזרת של פופאפ ההתחלה ע"י ה-poll
 
-  // קונטיינר סטאז' ששוחזר אחרי ריענון — שייך למסך הסטאז', לא לצ'ק-אין
-  useEffect(() => {
-    if (job?.JobType === 'stage') navToWorker('stages');
-  }, [job?.JobType]);
-
   const restaurantName    = job?.RestaurantName    || job?.restaurantName    || 'המסעדה';
   const restaurantCity    = job?.RestaurantCity    || job?.restaurantCity    || '';
   const restaurantAddress = job?.RestaurantAddress || job?.restaurantAddress || '';
